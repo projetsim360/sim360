@@ -1,22 +1,17 @@
 import { ReactNode } from 'react';
 import {
-  BetweenHorizontalStart,
-  Coffee,
-  CreditCard,
-  FileText,
   Globe,
-  IdCard,
+  LayoutGrid,
+  LogOut,
   Moon,
   Settings,
-  Shield,
-  SquareCode,
   UserCircle,
-  Users,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -31,41 +26,37 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Switch } from '@/components/ui/switch';
+import { useAuth } from '@/providers/auth-provider';
 
 const I18N_LANGUAGES = [
+  {
+    label: 'Français',
+    code: 'fr',
+    direction: 'ltr',
+    flag: toAbsoluteUrl('/media/flags/france.svg'),
+  },
   {
     label: 'English',
     code: 'en',
     direction: 'ltr',
     flag: toAbsoluteUrl('/media/flags/united-states.svg'),
   },
-  {
-    label: 'Arabic (Saudi)',
-    code: 'ar',
-    direction: 'rtl',
-    flag: toAbsoluteUrl('/media/flags/saudi-arabia.svg'),
-  },
-  {
-    label: 'French',
-    code: 'fr',
-    direction: 'ltr',
-    flag: toAbsoluteUrl('/media/flags/france.svg'),
-  },
-  {
-    label: 'Chinese',
-    code: 'zh',
-    direction: 'ltr',
-    flag: toAbsoluteUrl('/media/flags/china.svg'),
-  },
 ];
 
 export function UserDropdownMenu({ trigger }: { trigger: ReactNode }) {
+  const { user, logout } = useAuth();
   const currenLanguage = I18N_LANGUAGES[0];
   const { theme, setTheme } = useTheme();
 
   const handleThemeToggle = (checked: boolean) => {
     setTheme(checked ? 'dark' : 'light');
   };
+
+  const fullName = user ? `${user.firstName} ${user.lastName}` : '';
+  const initials = user
+    ? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
+    : '?';
+  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
 
   return (
     <DropdownMenu>
@@ -74,124 +65,56 @@ export function UserDropdownMenu({ trigger }: { trigger: ReactNode }) {
         {/* Header */}
         <div className="flex items-center justify-between p-3">
           <div className="flex items-center gap-2">
-            <img
-              className="size-9 rounded-full border-2 border-green-500"
-              src={toAbsoluteUrl('/media/avatars/300-2.png')}
-              alt="User avatar"
-            />
+            <Avatar className="size-9 border-2 border-green-500">
+              {user?.avatar ? (
+                <AvatarImage
+                  src={`${apiBase}${user.avatar}`}
+                  alt={fullName}
+                  className="size-9"
+                />
+              ) : null}
+              <AvatarFallback className="text-xs font-semibold">{initials}</AvatarFallback>
+            </Avatar>
             <div className="flex flex-col">
               <Link
-                to="#"
+                to="/profile/edit"
                 className="text-sm text-mono hover:text-primary font-semibold"
               >
-                Sean
+                {fullName}
               </Link>
-              <a
-                href={`mailto:sean@kt.com`}
-                className="text-xs text-muted-foreground hover:text-primary"
-              >
-                sean@kt.com
-              </a>
+              <span className="text-xs text-muted-foreground">
+                {user?.email}
+              </span>
             </div>
           </div>
-          <Badge variant="primary" appearance="light" size="sm">
-            Pro
-          </Badge>
+          {user?.role && (
+            <Badge variant="primary" appearance="light" size="sm">
+              {user.role}
+            </Badge>
+          )}
         </div>
 
         <DropdownMenuSeparator />
 
         {/* Menu Items */}
         <DropdownMenuItem asChild>
-          <Link
-            to="#"
-            className="flex items-center gap-2"
-          >
-            <IdCard />
-            Public Profile
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link
-            to="#"
-            className="flex items-center gap-2"
-          >
+          <Link to="/profile/edit" className="flex items-center gap-2">
             <UserCircle />
-            My Profile
+            Mon profil
           </Link>
         </DropdownMenuItem>
 
-        {/* My Account Submenu */}
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger className="flex items-center gap-2">
+        <DropdownMenuItem asChild>
+          <Link to="/dashboard" className="flex items-center gap-2">
             <Settings />
-            My Account
-          </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent className="w-48">
-            <DropdownMenuItem asChild>
-              <Link
-                to="#"
-                className="flex items-center gap-2"
-              >
-                <Coffee />
-                Get Started
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link
-                to="#"
-                className="flex items-center gap-2"
-              >
-                <FileText />
-                My Profile
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link
-                to="#"
-                className="flex items-center gap-2"
-              >
-                <CreditCard />
-                Billing
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link
-                to="#"
-                className="flex items-center gap-2"
-              >
-                <Shield />
-                Security
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link
-                to="#"
-                className="flex items-center gap-2"
-              >
-                <Users />
-                Members & Roles
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link
-                to="#"
-                className="flex items-center gap-2"
-              >
-                <BetweenHorizontalStart />
-                Integrations
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
+            Tableau de bord
+          </Link>
+        </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
-          <Link
-            to="https://devs.keenthemes.com"
-            className="flex items-center gap-2"
-          >
-            <SquareCode />
-            Dev Forum
+          <Link to="/settings/layout" className="flex items-center gap-2">
+            <LayoutGrid />
+            Changer de layout
           </Link>
         </DropdownMenuItem>
 
@@ -200,7 +123,7 @@ export function UserDropdownMenu({ trigger }: { trigger: ReactNode }) {
           <DropdownMenuSubTrigger className="flex items-center gap-2 [&_[data-slot=dropdown-menu-sub-trigger-indicator]]:hidden hover:[&_[data-slot=badge]]:border-input data-[state=open]:[&_[data-slot=badge]]:border-input">
             <Globe />
             <span className="flex items-center justify-between gap-2 grow relative">
-              Language
+              Langue
               <Badge
                 variant="outline"
                 className="absolute end-0 top-1/2 -translate-y-1/2"
@@ -243,7 +166,7 @@ export function UserDropdownMenu({ trigger }: { trigger: ReactNode }) {
         >
           <Moon />
           <div className="flex items-center gap-2 justify-between grow">
-            Dark Mode
+            Mode sombre
             <Switch
               size="sm"
               checked={theme === 'dark'}
@@ -252,8 +175,9 @@ export function UserDropdownMenu({ trigger }: { trigger: ReactNode }) {
           </div>
         </DropdownMenuItem>
         <div className="p-2 mt-1">
-          <Button variant="outline" size="sm" className="w-full">
-            Logout
+          <Button variant="outline" size="sm" className="w-full" onClick={logout}>
+            <LogOut className="size-4 mr-2" />
+            Déconnexion
           </Button>
         </div>
       </DropdownMenuContent>

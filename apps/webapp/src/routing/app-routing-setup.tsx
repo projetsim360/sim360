@@ -1,17 +1,53 @@
 import { Route, Routes, Navigate } from 'react-router';
-import { Layout6 } from '@/components/layouts/layout-6';
+import { DynamicLayout } from '@/components/layouts/dynamic-layout';
 import { Layout6Page } from '@/pages/layout-6/page';
+import { AuthLayout } from '@/components/auth/auth-layout';
+import { ProtectedRoute } from '@/components/auth/protected-route';
+import { SignUpPage } from '@/pages/auth/sign-up';
+import { SignInPage } from '@/pages/auth/sign-in';
+import { VerifyEmailPage } from '@/pages/auth/verify-email';
+import { VerifyEmailSentPage } from '@/pages/auth/verify-email-sent';
+import { ForgotPasswordPage } from '@/pages/auth/forgot-password';
+import { CheckEmailPage } from '@/pages/auth/check-email';
+import { ResetPasswordPage } from '@/pages/auth/reset-password';
+import { ResetPasswordSuccessPage } from '@/pages/auth/reset-password-success';
+import { GoogleCallbackPage } from '@/pages/auth/google-callback';
+import { ProfileWizardPage } from '@/pages/profile/wizard';
+import { EditProfilePage } from '@/pages/profile/edit-profile';
+import { LayoutSelectorPage } from '@/pages/settings/layout-selector';
 
 export function AppRoutingSetup() {
   return (
     <Routes>
-      {/* Layout 6 (demo6) as default layout */}
-      <Route element={<Layout6 />}>
-        <Route path="/" element={<Layout6Page />} />
-        <Route path="/dashboard" element={<Layout6Page />} />
+      {/* Auth routes (public) */}
+      <Route element={<AuthLayout />}>
+        <Route path="/auth/sign-up" element={<SignUpPage />} />
+        <Route path="/auth/sign-in" element={<SignInPage />} />
+        <Route path="/auth/verify-email" element={<VerifyEmailPage />} />
+        <Route path="/auth/verify-email-sent" element={<VerifyEmailSentPage />} />
+        <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/auth/check-email" element={<CheckEmailPage />} />
+        <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/auth/reset-password-success" element={<ResetPasswordSuccessPage />} />
+        <Route path="/auth/google-callback" element={<GoogleCallbackPage />} />
       </Route>
 
-      {/* Catch-all redirect to dashboard */}
+      {/* Profile wizard (protected, no layout) */}
+      <Route element={<ProtectedRoute />}>
+        <Route path="/profile/wizard" element={<ProfileWizardPage />} />
+      </Route>
+
+      {/* Protected routes with dynamic layout */}
+      <Route element={<ProtectedRoute />}>
+        <Route element={<DynamicLayout />}>
+          <Route path="/" element={<Layout6Page />} />
+          <Route path="/dashboard" element={<Layout6Page />} />
+          <Route path="/profile/edit" element={<EditProfilePage />} />
+          <Route path="/settings/layout" element={<LayoutSelectorPage />} />
+        </Route>
+      </Route>
+
+      {/* Catch-all redirect */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
