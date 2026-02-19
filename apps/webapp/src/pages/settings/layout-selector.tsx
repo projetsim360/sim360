@@ -26,13 +26,22 @@ const AVAILABLE_LAYOUTS = [
   { id: 'layout-21', label: 'Sidebar + toolbar' },
   { id: 'layout-22', label: 'Navigation latérale' },
   { id: 'layout-23', label: 'Header double ligne' },
+  { id: 'layout-24', label: 'Sidebar panel' },
   { id: 'layout-25', label: 'Sidebar gradient' },
   { id: 'layout-26', label: 'Panel admin' },
   { id: 'layout-27', label: 'Layout hybride' },
+  { id: 'layout-28', label: 'Header + sidebar content' },
+  { id: 'layout-29', label: 'Double sidebar nav' },
   { id: 'layout-30', label: 'Sidebar rail' },
   { id: 'layout-31', label: 'Navigation tabs' },
   { id: 'layout-32', label: 'Header collapsible' },
+  { id: 'layout-33', label: 'Sidebar + navbar' },
   { id: 'layout-34', label: 'Sidebar contextuelle' },
+  { id: 'layout-35', label: 'Header workspace' },
+  { id: 'layout-36', label: 'Calendrier' },
+  { id: 'layout-37', label: 'Messagerie' },
+  { id: 'layout-38', label: 'Chat IA' },
+  { id: 'layout-39', label: 'Todo list' },
 ] as const;
 
 export function LayoutSelectorPage() {

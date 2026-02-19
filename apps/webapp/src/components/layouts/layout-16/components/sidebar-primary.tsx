@@ -2,15 +2,11 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/providers/auth-provider';
 import {
-  BarChart3,
-  FolderCode,
   Mails,
   NotepadText,
-  ScrollText,
   Settings,
-  ShieldUser,
-  UserCircle,
   Users,
   User,
   Clock,
@@ -24,6 +20,7 @@ import {
   Sun,
   Moon,
 } from 'lucide-react';
+import { APP_ICON_RAIL_MENU } from '@/config/menu.config';
 import {
   Avatar,
   AvatarFallback,
@@ -50,55 +47,25 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 
-const menuItems = [
-  {
-    icon: UserCircle,
-    tooltip: 'Profile',
-    path: '#',
-    rootPath: '#',
-  },
-  {
-    icon: BarChart3,
-    tooltip: 'Dashboard',
-    path: '/layout-16',
-    rootPath: '/layout-16'
-  },
-  {
-    icon: Settings,
-    tooltip: 'Account',
-    path: '#',
-    rootPath: '#',
-  },
-  {
-    icon: Users,
-    tooltip: 'Network',
-    path: '#',
-    rootPath: '#',
-  },
-  {
-    icon: ShieldUser,
-    tooltip: 'Authentication',
-    path: '#',
-    rootPath: '#',
-  },
-  {
-    icon: FolderCode,
-    tooltip: 'Security Logs',
-    path: '#',
-    rootPath: '#',
-  },
-  {
-    icon: ScrollText,
-    tooltip: 'Files',
-    path: '#',
-    rootPath: '#',
-  },
-];
+const menuItems = APP_ICON_RAIL_MENU
+  .filter((item) => !item.separator && item.title && item.icon)
+  .map((item) => ({
+    icon: item.icon!,
+    tooltip: item.title!,
+    path: item.path ?? '#',
+    rootPath: item.rootPath,
+  }));
 
 export function SidebarPrimary() {
   const { pathname } = useLocation();
   const [selectedMenuItem, setSelectedMenuItem] = useState(menuItems[1]);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const { user, logout } = useAuth();
+  const fullName = user ? `${user.firstName} ${user.lastName}` : '';
+  const initials = user
+    ? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
+    : '?';
+  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
@@ -180,8 +147,10 @@ export function SidebarPrimary() {
         <DropdownMenu>
           <DropdownMenuTrigger className="cursor-pointer mb-2.5">
             <Avatar className="size-7">
-              <AvatarImage src={toAbsoluteUrl('/media/avatars/300-2.png')} alt="@reui" />
-              <AvatarFallback>CH</AvatarFallback>
+              {user?.avatar ? (
+                <AvatarImage src={`${apiBase}${user.avatar}`} alt={fullName} />
+              ) : null}
+              <AvatarFallback>{initials}</AvatarFallback>
               <AvatarIndicator className="-end-2 -top-2">
                 <AvatarStatus variant="online" className="size-2.5" />
               </AvatarIndicator>
@@ -191,15 +160,17 @@ export function SidebarPrimary() {
             {/* User Information Section */}
             <div className="flex items-center gap-3 px-3 py-2">
               <Avatar>
-                <AvatarImage src={toAbsoluteUrl('/media/avatars/300-2.png')} alt="@reui" />
-                <AvatarFallback>CH</AvatarFallback>
+                {user?.avatar ? (
+                  <AvatarImage src={`${apiBase}${user.avatar}`} alt={fullName} />
+                ) : null}
+                <AvatarFallback>{initials}</AvatarFallback>
                 <AvatarIndicator className="-end-1.5 -top-1.5">
                   <AvatarStatus variant="online" className="size-2.5" />
                 </AvatarIndicator>
               </Avatar>
               <div className="flex flex-col items-start">
-                <span className="text-sm font-semibold text-foreground">Chris Harris</span>
-                <span className="text-xs text-muted-foreground">Senior Developer</span>
+                <span className="text-sm font-semibold text-foreground">{fullName}</span>
+                <span className="text-xs text-muted-foreground">{user?.role || ''}</span>
                 <Badge variant="success" appearance="outline" size="sm" className="mt-1">Pro Plan</Badge>
               </div>
             </div>
@@ -278,7 +249,7 @@ export function SidebarPrimary() {
             <DropdownMenuSeparator />
 
             {/* Action Items */}
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={logout}>
               <LogOut/>
               <span>Sign out</span>
             </DropdownMenuItem>

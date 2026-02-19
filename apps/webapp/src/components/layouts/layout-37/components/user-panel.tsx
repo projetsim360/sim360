@@ -1,4 +1,5 @@
 import { toAbsoluteUrl } from '@/lib/helpers';
+import { useAuth } from '@/providers/auth-provider';
 import { Moon, Sun, Laptop, LogOut, Plus } from 'lucide-react';
 import {
   DropdownMenu,
@@ -50,6 +51,12 @@ const accounts: Account[] = [
 
 export function UserPanel() {
   const { theme, resolvedTheme, setTheme } = useTheme();
+  const { user, logout } = useAuth();
+  const fullName = user ? `${user.firstName} ${user.lastName}` : '';
+  const initials = user
+    ? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
+    : '?';
+  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
 
   return (
 		<DropdownMenu>
@@ -60,12 +67,14 @@ export function UserPanel() {
 			)}>
 				<div className="flex items-center gap-1.5">  
 					<Avatar className="size-8 border border-background rounded-full overflow-hidden">
-						<AvatarImage src={toAbsoluteUrl('/media/avatars/300-2.png')} alt="@reui"/>
-						<AvatarFallback className="rounded-md">CH</AvatarFallback>
+						{user?.avatar ? (
+							<AvatarImage src={`${apiBase}${user.avatar}`} alt={fullName} />
+						) : null}
+						<AvatarFallback className="rounded-md">{initials}</AvatarFallback>
 					</Avatar>
 					<div className="hidden md:flex flex-col items-start gap-0.25 md:in-data-[sidebar-collapsed=true]:hidden">
-						<span className="text-sm font-medium text-foreground leading-none">Alex</span>
-						<span className="text-xs text-muted-foreground font-normal leading-none">alex.bd@gmail.com</span>
+						<span className="text-sm font-medium text-foreground leading-none">{fullName}</span>
+						<span className="text-xs text-muted-foreground font-normal leading-none">{user?.email}</span>
 					</div>
 				</div> 
 			</DropdownMenuTrigger>
@@ -89,11 +98,9 @@ export function UserPanel() {
 						<Plus />
 						<span className="ps-1.5">Add Account</span>
 					</DropdownMenuItem>
-					<DropdownMenuItem className="ps-3.5" asChild>
-						<Link to="/logout">
-							<LogOut />
-							<span className="ps-1.5">Logout</span>
-						</Link>
+					<DropdownMenuItem className="ps-3.5" onClick={logout}>
+						<LogOut />
+						<span className="ps-1.5">Logout</span>
 					</DropdownMenuItem>
 				</DropdownMenuGroup>  
 				<DropdownMenuSeparator />

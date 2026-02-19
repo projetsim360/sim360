@@ -1,6 +1,6 @@
 import { useTheme } from "next-themes";
-import { toAbsoluteUrl } from "@/lib/helpers";
 import { useLayout } from "./context";
+import { useAuth } from "@/providers/auth-provider";
 import {
 	Avatar,
 	AvatarFallback,
@@ -24,18 +24,26 @@ interface UserDropdownMenuProps {
 export function UserDropdownMenu({ isCollapsed = false }: UserDropdownMenuProps) {
 	const {isMobile} = useLayout();
   const { theme, setTheme } = useTheme();
-  
+  const { user, logout } = useAuth();
+  const fullName = user ? `${user.firstName} ${user.lastName}` : '';
+  const initials = user
+    ? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
+    : '?';
+  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
+
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
   };
-	
+
   return (
     <DropdownMenu>
 			{isCollapsed ? (
 				<DropdownMenuTrigger className="cursor-pointer py-1.5">
 					<Avatar className="size-9">
-						<AvatarImage src={toAbsoluteUrl('/media/avatars/300-2.png')} alt="@reui" />
-						<AvatarFallback>AD</AvatarFallback>
+						{user?.avatar ? (
+							<AvatarImage src={`${apiBase}${user.avatar}`} alt={fullName} />
+						) : null}
+						<AvatarFallback>{initials}</AvatarFallback>
 						<AvatarIndicator className="-end-1.5 -top-1.5">
 							<AvatarStatus variant="online" className="size-2.5" />
 						</AvatarIndicator>
@@ -45,15 +53,17 @@ export function UserDropdownMenu({ isCollapsed = false }: UserDropdownMenuProps)
 				<DropdownMenuTrigger className="cursor-pointer" asChild>
 					<div className="flex items-center flex-nowrap gap-2.5 lg:px-2 py-1.5 rounded-md hover:bg-muted transition-colors w-full overflow-hidden">
 						<Avatar className="size-9">
-							<AvatarImage src={toAbsoluteUrl('/media/avatars/300-2.png')} alt="@reui" />
-							<AvatarFallback>AD</AvatarFallback>
+							{user?.avatar ? (
+								<AvatarImage src={`${apiBase}${user.avatar}`} alt={fullName} />
+							) : null}
+							<AvatarFallback>{initials}</AvatarFallback>
 							<AvatarIndicator className="-end-1.5 -top-1.5">
 								<AvatarStatus variant="online" className="size-2.5" />
 							</AvatarIndicator>
 						</Avatar>
 						<div className="hidden lg:flex flex-col items-start flex-1 min-w-0">
-							<span className="text-sm font-semibold text-foreground truncate w-full">Alex Doe</span>
-							<span className="text-xs text-muted-foreground truncate w-full">alex.doe@gmail.com</span>
+							<span className="text-sm font-semibold text-foreground truncate w-full">{fullName}</span>
+							<span className="text-xs text-muted-foreground truncate w-full">{user?.email}</span>
 						</div>
 					</div>
 				</DropdownMenuTrigger>
@@ -62,15 +72,17 @@ export function UserDropdownMenu({ isCollapsed = false }: UserDropdownMenuProps)
 				{/* User Information Section */}
 				<div className="flex items-center gap-2.5 px-2.5 py-1.5">
 					<Avatar>
-						<AvatarImage src={toAbsoluteUrl('/media/avatars/300-2.png')} alt="@reui" />
-						<AvatarFallback>AD</AvatarFallback>
+						{user?.avatar ? (
+							<AvatarImage src={`${apiBase}${user.avatar}`} alt={fullName} />
+						) : null}
+						<AvatarFallback>{initials}</AvatarFallback>
 						<AvatarIndicator className="-end-1.5 -top-1.5">
 							<AvatarStatus variant="online" className="size-2.5" />
 						</AvatarIndicator>
 					</Avatar>
 					<div className="flex flex-col items-start">
-						<span className="text-sm font-semibold text-foreground">Alex Doe</span>
-						<span className="text-xs text-muted-foreground">alex.doe@gmail.com</span>
+						<span className="text-sm font-semibold text-foreground">{fullName}</span>
+						<span className="text-xs text-muted-foreground">{user?.email}</span>
 					</div>
 				</div>
 
@@ -116,7 +128,7 @@ export function UserDropdownMenu({ isCollapsed = false }: UserDropdownMenuProps)
 				<DropdownMenuSeparator />
 
 				{/* Action Items */}
-				<DropdownMenuItem>
+				<DropdownMenuItem onClick={logout}>
 					<LogOut className="size-4" />
 					<span>Sign out</span>
 				</DropdownMenuItem>

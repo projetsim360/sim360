@@ -2,19 +2,31 @@ import { AppsDropdownMenu } from '@/components/layouts/layout-1/shared/topbar/ap
 import { ChatSheet } from '@/components/layouts/layout-1/shared/topbar/chat-sheet';
 import { UserDropdownMenu } from '@/components/layouts/layout-1/shared/topbar/user-dropdown-menu';
 import { LayoutGrid, MessageCircleMore } from 'lucide-react';
-import { toAbsoluteUrl } from '@/lib/helpers';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/providers/auth-provider';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export function SidebarFooter() {
+  const { user } = useAuth();
+  const initials = user
+    ? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
+    : '?';
+  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
+
   return (
     <div className="flex flex-center justify-between shrink-0 ps-4 pe-3.5 mb-3.5">
       <UserDropdownMenu
         trigger={
-          <img
-            className="size-9 rounded-full border-2 border-mono/25 shrink-0 cursor-pointer"
-            src={toAbsoluteUrl('/media/avatars/300-2.png')}
-            alt="User Avatar"
-          />
+          <Avatar className="size-9 cursor-pointer border-2 border-secondary shrink-0">
+            {user?.avatar ? (
+              <AvatarImage
+                src={`${apiBase}${user.avatar}`}
+                alt={`${user.firstName} ${user.lastName}`}
+                className="size-9"
+              />
+            ) : null}
+            <AvatarFallback className="text-xs font-semibold">{initials}</AvatarFallback>
+          </Avatar>
         }
       />
 

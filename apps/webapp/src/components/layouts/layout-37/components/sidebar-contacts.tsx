@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus } fr
 import { Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toAbsoluteUrl } from '@/lib/helpers';
+import { useAuth } from '@/providers/auth-provider';
 
 interface Contact {
   id: string;
@@ -34,6 +35,13 @@ const contacts: Contact[] = [
 ];
 
 export function SidebarContacts() {
+  const { user } = useAuth();
+  const fullName = user ? `${user.firstName} ${user.lastName}` : '';
+  const initials = user
+    ? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
+    : '?';
+  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
+
   return (
     <div className="space-y-0.5 pt-5">
       <h3 className="text-xs font-normal text-muted-foreground px-2 py-1 mb-1 in-data-[sidebar-collapsed=true]:hidden">
@@ -51,9 +59,15 @@ export function SidebarContacts() {
             )}
           >
             <Avatar className="size-5">
-              <AvatarImage src={toAbsoluteUrl(contact.avatar)} alt={contact.name} />
+              {contact.isYou ? (
+                user?.avatar ? (
+                  <AvatarImage src={`${apiBase}${user.avatar}`} alt={fullName} />
+                ) : null
+              ) : (
+                <AvatarImage src={toAbsoluteUrl(contact.avatar)} alt={contact.name} />
+              )}
               <AvatarFallback>
-                {contact.name.split(' ').map(n => n[0]).join('')}
+                {contact.isYou ? initials : contact.name.split(' ').map(n => n[0]).join('')}
               </AvatarFallback>
               {contact.isOnline && (
                 <AvatarIndicator className="-end-2 -bottom-2">
@@ -61,11 +75,11 @@ export function SidebarContacts() {
                 </AvatarIndicator>
               )}
             </Avatar>
-            
+
             <div className="flex-1 min-w-0 in-data-[sidebar-collapsed=true]:hidden">
               <div className="flex items-center gap-1">
                 <span className="text-2sm font-normal text-foreground group-hover:text-primary">
-                  {contact.name}
+                  {contact.isYou ? fullName : contact.name}
                 </span>
                 {contact.isYou && (
                   <span className="text-xs text-muted-foreground group-hover:text-primary">

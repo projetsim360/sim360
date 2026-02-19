@@ -1,4 +1,4 @@
-import { toAbsoluteUrl } from '@/lib/helpers';
+import { useAuth } from '@/providers/auth-provider';
 import {
   Mails,
   NotepadText,
@@ -17,6 +17,7 @@ import {
   Moon,
   Plus,
 } from 'lucide-react';
+import { APP_ICON_RAIL_MENU } from '@/config/menu.config';
 import {
   Avatar,
   AvatarFallback,
@@ -44,6 +45,12 @@ import { cn } from '@/lib/utils';
 
 export function SidebarPrimary() {
   const { resolvedTheme, setTheme } = useTheme();
+  const { user, logout } = useAuth();
+  const fullName = user ? `${user.firstName} ${user.lastName}` : '';
+  const initials = user
+    ? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
+    : '?';
+  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
   
   const toggleTheme = () => {
     setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
@@ -54,50 +61,23 @@ export function SidebarPrimary() {
   const [activeIndex, setActiveIndex] = useState(1); // Start with Lightning button (index 1) since it's active: true
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   
-  const navItems = [
-    {
-      icon: Target,
-      label: 'Target',
-      href: '#',
-      active: false,
-      className: 'border-white bg-violet-500 hover:bg-violet-600 text-white hover:text-white',
-    },
-    {
-      icon: Zap,
-      label: 'Lightning',
-      href: '/lightning',
-      active: true,
-      className: 'border-white bg-teal-500 hover:bg-teal-600 text-white hover:text-white',
-    },
-    {
-      icon: Users,
-      label: 'Users',
-      href: '/users',
-      active: false,
-      className: 'border-white bg-lime-500 hover:bg-lime-600 text-white hover:text-white',
-    },
-    {
-      icon: NotepadText,
-      label: 'Notes',
-      href: '/notes',
-      active: false,
-      className: 'border-white bg-blue-500 hover:bg-blue-600 text-white hover:text-white',
-    },
-    {
-      icon: Building2,
-      label: 'Building',
-      href: '/building',
-      active: false,
-      className: 'border-white bg-yellow-500 hover:bg-yellow-600 text-white hover:text-white',
-    },
-    {
-      icon: Plus,
-      label: 'Add',
-      href: '/add',
-      active: false,
-      className: 'border border-border bg-background text-foreground hover:bg-background hover:text-foreground',
-    },
+  const colorClasses = [
+    'border-white bg-violet-500 hover:bg-violet-600 text-white hover:text-white',
+    'border-white bg-teal-500 hover:bg-teal-600 text-white hover:text-white',
+    'border-white bg-lime-500 hover:bg-lime-600 text-white hover:text-white',
+    'border-white bg-blue-500 hover:bg-blue-600 text-white hover:text-white',
+    'border-white bg-yellow-500 hover:bg-yellow-600 text-white hover:text-white',
   ];
+
+  const navItems = APP_ICON_RAIL_MENU
+    .filter((item) => !item.separator && item.title && item.icon)
+    .map((item, index) => ({
+      icon: item.icon!,
+      label: item.title!,
+      href: item.path ?? '#',
+      active: index === 0,
+      className: colorClasses[index % colorClasses.length],
+    }));
   
   return (
     <div className="flex flex-col items-center justify-between shrink-0 py-2.5 gap-5 w-[70px] lg:w-(--sidebar-collapsed-width)">
@@ -162,8 +142,10 @@ export function SidebarPrimary() {
         <DropdownMenu>
           <DropdownMenuTrigger className="cursor-pointer mb-2.5">
             <Avatar className="size-7">
-              <AvatarImage src={toAbsoluteUrl('/media/avatars/300-2.png')} alt="@reui" />
-              <AvatarFallback>CH</AvatarFallback>
+              {user?.avatar ? (
+                <AvatarImage src={`${apiBase}${user.avatar}`} alt={fullName} />
+              ) : null}
+              <AvatarFallback>{initials}</AvatarFallback>
               <AvatarIndicator className="-end-2 -top-2">
                 <AvatarStatus variant="online" className="size-2.5" />
               </AvatarIndicator>
@@ -173,15 +155,17 @@ export function SidebarPrimary() {
             {/* User Information Section */}
             <div className="flex items-center gap-3 px-3 py-2">
               <Avatar>
-                <AvatarImage src={toAbsoluteUrl('/media/avatars/300-2.png')} alt="@reui" />
-                <AvatarFallback>CH</AvatarFallback>
+                {user?.avatar ? (
+                  <AvatarImage src={`${apiBase}${user.avatar}`} alt={fullName} />
+                ) : null}
+                <AvatarFallback>{initials}</AvatarFallback>
                 <AvatarIndicator className="-end-1.5 -top-1.5">
                   <AvatarStatus variant="online" className="size-2.5" />
                 </AvatarIndicator>
               </Avatar>
               <div className="flex flex-col items-start">
-                <span className="text-sm font-semibold text-foreground">Chris Harris</span>
-                <span className="text-xs text-muted-foreground">Senior Developer</span>
+                <span className="text-sm font-semibold text-foreground">{fullName}</span>
+                <span className="text-xs text-muted-foreground">{user?.role || ''}</span>
                 <Badge variant="success" appearance="outline" size="sm" className="mt-1">Pro Plan</Badge>
               </div>
             </div>
@@ -260,7 +244,7 @@ export function SidebarPrimary() {
             <DropdownMenuSeparator />
 
             {/* Action Items */}
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={logout}>
               <LogOut/>
               <span>Sign out</span>
             </DropdownMenuItem>
