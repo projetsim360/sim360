@@ -11,6 +11,8 @@ import {
 } from '@/components/ui/accordion-menu';
 import { Badge } from '@/components/ui/badge';
 import { Pattern } from './pattern';
+import { APP_SIDEBAR_MENU } from '@/config/menu.config';
+import type { MenuConfig } from '@/config/types';
 
 interface MenuItem {
   value: string;
@@ -21,91 +23,26 @@ interface MenuItem {
   children?: MenuItem[];
 }
 
-const menuItems: MenuItem[] = [
-  {
-    value: 'cards',
-    label: 'Cards',
-    children: [
-      { value: 'static-cards', label: 'Static Cards', badge: 'New', badgeVariant: 'new' },
-      { value: 'list-cards', label: 'List Cards', badge: 'New', badgeVariant: 'new' },
-      { value: 'table-cards', label: 'Table Cards' },
-      { value: 'timeline-cards', label: 'Timeline Cards' },
-      { value: 'form-cards', label: 'Form Cards' },
-    ],
-  },
-  {
-    value: 'charts',
-    label: 'Charts',
-    children: [
-      { value: 'bar-charts', label: 'Bar Charts' },
-      { value: 'line-charts', label: 'Line Charts' },
-    ],
-  },
-  {
-    value: 'navigation',
-    label: 'Navigation',
-    children: [
-      { value: 'menu-navigation', label: 'Menu Navigation' },
-      { value: 'sidebar-navigation', label: 'Sidebar Navigation' },
-    ],
-  },
-  {
-    value: 'lists',
-    label: 'Lists',
-    children: [
-      { value: 'ordered-lists', label: 'Ordered Lists' },
-      { value: 'unordered-lists', label: 'Unordered Lists' },
-    ],
-  },
-  {
-    value: 'forms',
-    label: 'Forms',
-    children: [
-      { value: 'input-forms', label: 'Input Forms' },
-      { value: 'survey-forms', label: 'Survey Forms' },
-    ],
-  },
-  {
-    value: 'feedback',
-    label: 'Feedback',
-    children: [
-      { value: 'user-feedback', label: 'User Feedback' },
-      { value: 'survey-feedback', label: 'Survey Feedback' },
-    ],
-  },
-  {
-    value: 'marketing',
-    label: 'Marketing',
-    children: [
-      { value: 'campaign-marketing', label: 'Campaign Marketing' },
-      { value: 'email-marketing', label: 'Email Marketing' },
-    ],
-  },
-  {
-    value: 'tables',
-    label: 'Tables',
-    children: [
-      { value: 'data-tables', label: 'Data Tables' },
-      { value: 'grid-tables', label: 'Grid Tables' },
-    ],
-  },
-  {
-    value: 'reports',
-    label: 'Reports',
-    children: [
-      { value: 'summary-reports', label: 'Summary Reports' },
-      { value: 'detailed-reports', label: 'Detailed Reports' },
-    ],
-  },
-  {
-    value: 'analytics',
-    label: 'Analytics',
-    children: [
-      { value: 'user-analytics', label: 'User Analytics' },
-      { value: 'performance-analytics', label: 'Performance Analytics' },
-    ],
-  },
-];
+function toTreeItems(menu: MenuConfig): MenuItem[] {
+  return menu
+    .filter((item) => item.title && !item.heading && !item.separator)
+    .map((item) => ({
+      value: (item.title ?? '').toLowerCase().replace(/\s+/g, '-'),
+      label: item.title ?? '',
+      badge: item.badge,
+      disabled: item.disabled,
+      children: item.children
+        ? item.children.map((child) => ({
+            value: (child.title ?? '').toLowerCase().replace(/\s+/g, '-'),
+            label: child.title ?? '',
+            badge: child.badge,
+            disabled: child.disabled,
+          }))
+        : undefined,
+    }));
+}
+
+const menuItems: MenuItem[] = toTreeItems(APP_SIDEBAR_MENU);
 
 export default function SidebarTree() {
   const renderBadge = (badge?: string | number, badgeVariant?: 'new' | 'count') => {

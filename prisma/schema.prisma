@@ -46,7 +46,7 @@ enum UserRole {
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
-  passwordHash String
+  passwordHash String?
   firstName    String
   lastName     String
   avatar       String?
@@ -55,26 +55,80 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  // Email verification
+  emailVerifiedAt         DateTime?
+  emailVerificationToken  String?   @unique
+  emailVerificationExpiry DateTime?
+
+  // Password reset
+  passwordResetToken  String?   @unique
+  passwordResetExpiry DateTime?
+
+  // Account lockout
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+
+  // OAuth
+  googleId String? @unique
+
+  // GDPR
+  gdprConsentAt        DateTime?
+  gdprConsentIp        String?
+  gdprConsentUserAgent String?
+
+  // Profile
+  profileCompleted Boolean @default(false)
+  language         String? @default("fr")
+  experienceLevel  String?
+  bio              String?
+  phone            String?
+  jobTitle         String?
+
+  // Settings - Preferences
+  profileVisibility    Boolean @default(true)
+  timezone             String? @default("europe_paris")
+  dateFormat           String? @default("dd_mm_yyyy")
+  simulationViewMode   String? @default("modal")
+  showSimulationNames  Boolean @default(true)
+  showLinkedReports    Boolean @default(true)
+  emailVisibility      Boolean @default(true)
+
+  // Settings - Appearance
+  sidebarTransparent   Boolean @default(false)
+
+  // Settings - Notifications
+  notifEmail           Boolean @default(true)
+  notifBrowser         Boolean @default(false)
+  notifDesktopLevel    String? @default("important")
+  notifEmailLevel      String? @default("unread")
+  notifAutoSubscribe   Boolean @default(true)
+
+  // Settings - Layout
+  layoutPreference     String? @default("layout-6")
+
   tenantId String
   tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   refreshTokens RefreshToken[]
   notifications Notification[]
   storageFiles  StorageFile[]
+  auditLogs     AuditLog[]
 
   @@index([tenantId])
   @@index([email])
+  @@index([googleId])
   @@map("users")
 }
 
 // ─── Auth ─────────────────────────────────────────────────
 
 model RefreshToken {
-  id        String   @id @default(cuid())
-  token     String   @unique
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-  revokedAt DateTime?
+  id         String    @id @default(cuid())
+  token      String    @unique
+  expiresAt  DateTime
+  createdAt  DateTime  @default(now())
+  revokedAt  DateTime?
+  rememberMe Boolean   @default(false)
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -82,6 +136,25 @@ model RefreshToken {
   @@index([userId])
   @@index([token])
   @@map("refresh_tokens")
+}
+
+// ─── Audit ──────────────────────────────────────────────
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  ip        String?
+  userAgent String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
 }
 
 // ─── Notifications ────────────────────────────────────────

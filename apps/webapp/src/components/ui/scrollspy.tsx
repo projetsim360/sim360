@@ -12,6 +12,15 @@ type ScrollspyProps = {
   throttleTime?: number;
 };
 
+/** Calculate the offset of an element relative to a scrollable ancestor */
+function getOffsetRelativeTo(element: HTMLElement, ancestor: HTMLElement | Window): number {
+  if (ancestor === window) {
+    return element.getBoundingClientRect().top + window.scrollY;
+  }
+  const ancestorEl = ancestor as HTMLElement;
+  return element.getBoundingClientRect().top - ancestorEl.getBoundingClientRect().top + ancestorEl.scrollTop;
+}
+
 export function Scrollspy({
   children,
   targetRef,
@@ -65,8 +74,9 @@ export function Scrollspy({
       let customOffset = offset;
       const dataOffset = anchor.getAttribute(`data-${dataAttribute}-offset`);
       if (dataOffset) customOffset = parseInt(dataOffset, 10);
-      const delta = Math.abs(sectionElement.offsetTop - customOffset - scrollTop);
-      if (sectionElement.offsetTop - customOffset <= scrollTop && delta < minDelta) {
+      const sectionTop = getOffsetRelativeTo(sectionElement, scrollElement as HTMLElement | Window);
+      const delta = Math.abs(sectionTop - customOffset - scrollTop);
+      if (sectionTop - customOffset <= scrollTop && delta < minDelta) {
         minDelta = delta;
         activeIdx = idx;
       }
@@ -110,7 +120,7 @@ export function Scrollspy({
         customOffset = parseInt(dataOffset, 10);
       }
 
-      const scrollTop = sectionElement.offsetTop - customOffset;
+      const scrollTop = getOffsetRelativeTo(sectionElement, scrollToElement as HTMLElement | Window) - customOffset;
 
       if (scrollToElement && 'scrollTo' in scrollToElement) {
         scrollToElement.scrollTo({

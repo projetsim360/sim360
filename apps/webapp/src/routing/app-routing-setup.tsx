@@ -14,7 +14,7 @@ import { ResetPasswordSuccessPage } from '@/pages/auth/reset-password-success';
 import { GoogleCallbackPage } from '@/pages/auth/google-callback';
 import { ProfileWizardPage } from '@/pages/profile/wizard';
 import { EditProfilePage } from '@/pages/profile/edit-profile';
-import { LayoutSelectorPage } from '@/pages/settings/layout-selector';
+import { SettingsPage } from '@/pages/settings';
 
 export function AppRoutingSetup() {
   return (
@@ -43,7 +43,8 @@ export function AppRoutingSetup() {
           <Route path="/" element={<Layout6Page />} />
           <Route path="/dashboard" element={<Layout6Page />} />
           <Route path="/profile/edit" element={<EditProfilePage />} />
-          <Route path="/settings/layout" element={<LayoutSelectorPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/settings/layout" element={<SettingsPage />} />
         </Route>
       </Route>
 

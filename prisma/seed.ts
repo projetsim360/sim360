@@ -1,12 +1,11 @@
 import { PrismaClient, UserRole, TenantPlan } from '@prisma/client';
-import { randomBytes, scryptSync } from 'crypto';
+import bcryptjs from 'bcryptjs';
+const { hashSync } = bcryptjs;
 
 const prisma = new PrismaClient();
 
 function hashPassword(password: string): string {
-  const salt = randomBytes(16).toString('hex');
-  const hash = scryptSync(password, salt, 64).toString('hex');
-  return `${salt}:${hash}`;
+  return hashSync(password, 12);
 }
 
 async function main() {
@@ -29,7 +28,11 @@ async function main() {
   // Create admin user
   const admin = await prisma.user.upsert({
     where: { email: 'admin@sim360.dev' },
-    update: {},
+    update: {
+      passwordHash: hashPassword('Admin123!'),
+      emailVerifiedAt: new Date(),
+      profileCompleted: true,
+    },
     create: {
       email: 'admin@sim360.dev',
       passwordHash: hashPassword('Admin123!'),
@@ -38,6 +41,8 @@ async function main() {
       role: UserRole.SUPER_ADMIN,
       tenantId: tenant.id,
       isActive: true,
+      emailVerifiedAt: new Date(),
+      profileCompleted: true,
     },
   });
 
@@ -46,7 +51,11 @@ async function main() {
   // Create regular user
   const user = await prisma.user.upsert({
     where: { email: 'user@sim360.dev' },
-    update: {},
+    update: {
+      passwordHash: hashPassword('User123!'),
+      emailVerifiedAt: new Date(),
+      profileCompleted: true,
+    },
     create: {
       email: 'user@sim360.dev',
       passwordHash: hashPassword('User123!'),
@@ -55,6 +64,8 @@ async function main() {
       role: UserRole.MEMBER,
       tenantId: tenant.id,
       isActive: true,
+      emailVerifiedAt: new Date(),
+      profileCompleted: true,
     },
   });
 

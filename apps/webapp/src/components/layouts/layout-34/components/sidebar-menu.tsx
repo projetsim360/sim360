@@ -1,45 +1,18 @@
 import { Link } from "react-router";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { BookOpen, House, Layers, PanelLeft, SquareArrowOutUpRight } from "lucide-react";
+import { APP_SIDEBAR_MENU } from '@/config/menu.config';
 
 export function SidebarMenu() {
-  const items = [
-    {
-      id: 1,
-      title: 'Overview',
-      path: '/layout-34',
-      icon: House,
-    },
-    {
-      id: 2,
-      title: 'Starter kits',
-      path: '#',
-      icon: Layers,
-      badge: '34',
-    },
-    {
-      id: 3,
-      title: 'Apps & Concepts',
-      path: '#',
-      icon: SquareArrowOutUpRight,
-      badge: '12',
-    },
-    {
-      id: 4,
-      title: 'Pages',
-      path: '#',
-      icon: BookOpen,
-      badge: '72',
-    },
-    {
-      id: 5,
-      title: 'Demos',
-      path: '#',
-      icon: PanelLeft,
-      badge: '10',
-    },
-  ];
+  const items = APP_SIDEBAR_MENU
+    .filter((item) => item.title && item.icon && !item.heading)
+    .map((item, index) => ({
+      id: index + 1,
+      title: item.title!,
+      path: item.path ?? '#',
+      icon: item.icon!,
+      badge: item.badge,
+    }));
 
   return (
     <nav className="flex flex-col space-y-0.5 px-2.5 pt-1">

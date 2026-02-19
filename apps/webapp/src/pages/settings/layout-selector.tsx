@@ -1,5 +1,7 @@
 import { LayoutGrid, RotateCcw, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/layout-6/components/toolbar';
 import { useLayoutSwitcher } from '@/providers/layout-switcher-provider';
 
 const AVAILABLE_LAYOUTS = [
@@ -59,50 +61,54 @@ export function LayoutSelectorPage() {
   };
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-3">
-          <LayoutGrid className="size-6 text-primary" />
-          <div>
-            <h1 className="text-2xl font-bold">Changer de layout</h1>
-            <p className="text-sm text-muted-foreground">
-              Sélectionnez un layout pour personnaliser l'interface
-            </p>
-          </div>
-        </div>
-        <Button variant="outline" size="sm" onClick={handleReset}>
-          <RotateCcw className="size-4 mr-2" />
-          Réinitialiser par défaut
-        </Button>
-      </div>
+    <div className="container">
+      <Toolbar>
+        <ToolbarHeading title="Changer de layout" />
+        <ToolbarActions>
+          <Button variant="outline" size="sm" onClick={handleReset}>
+            <RotateCcw className="size-4" />
+            Réinitialiser par défaut
+          </Button>
+        </ToolbarActions>
+      </Toolbar>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {AVAILABLE_LAYOUTS.map(({ id, label }) => {
-          const isActive = currentLayout === id;
-          return (
-            <button
-              key={id}
-              onClick={() => handleSelect(id)}
-              className={`relative flex flex-col items-center gap-3 rounded-xl border-2 p-6 text-left transition-all hover:shadow-md ${
-                isActive
-                  ? 'border-primary bg-primary/5 shadow-sm'
-                  : 'border-border hover:border-primary/50'
-              }`}
-            >
-              {isActive && (
-                <span className="absolute top-2 right-2 flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold text-primary-foreground">
-                  <Check className="size-3" />
-                  Actif
-                </span>
-              )}
-              <span className="text-3xl font-bold text-muted-foreground/50">
-                {id.replace('layout-', '')}
-              </span>
-              <span className="text-sm font-medium text-center">{label}</span>
-            </button>
-          );
-        })}
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <LayoutGrid className="size-4.5" />
+            Layouts disponibles
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {AVAILABLE_LAYOUTS.map(({ id, label }) => {
+              const isActive = currentLayout === id;
+              return (
+                <button
+                  key={id}
+                  onClick={() => handleSelect(id)}
+                  className={`relative flex flex-col items-center gap-3 rounded-xl border-2 p-6 text-left transition-all hover:shadow-md ${
+                    isActive
+                      ? 'border-primary bg-primary/5 shadow-sm'
+                      : 'border-border hover:border-primary/50'
+                  }`}
+                >
+                  {isActive && (
+                    <span className="absolute top-2 right-2 flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold text-primary-foreground">
+                      <Check className="size-3" />
+                      Actif
+                    </span>
+                  )}
+                  <span className="text-3xl font-bold text-muted-foreground/50">
+                    {id.replace('layout-', '')}
+                  </span>
+                  <span className="text-sm font-medium text-center">{label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

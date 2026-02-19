@@ -1,0 +1,15 @@
+-- AlterTable
+ALTER TABLE "users" ADD COLUMN     "dateFormat" TEXT DEFAULT 'dd_mm_yyyy',
+ADD COLUMN     "emailVisibility" BOOLEAN NOT NULL DEFAULT true,
+ADD COLUMN     "layoutPreference" TEXT DEFAULT 'layout-6',
+ADD COLUMN     "notifAutoSubscribe" BOOLEAN NOT NULL DEFAULT true,
+ADD COLUMN     "notifBrowser" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "notifDesktopLevel" TEXT DEFAULT 'important',
+ADD COLUMN     "notifEmail" BOOLEAN NOT NULL DEFAULT true,
+ADD COLUMN     "notifEmailLevel" TEXT DEFAULT 'unread',
+ADD COLUMN     "profileVisibility" BOOLEAN NOT NULL DEFAULT true,
+ADD COLUMN     "showLinkedReports" BOOLEAN NOT NULL DEFAULT true,
+ADD COLUMN     "showSimulationNames" BOOLEAN NOT NULL DEFAULT true,
+ADD COLUMN     "sidebarTransparent" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "simulationViewMode" TEXT DEFAULT 'modal',
+ADD COLUMN     "timezone" TEXT DEFAULT 'europe_paris';

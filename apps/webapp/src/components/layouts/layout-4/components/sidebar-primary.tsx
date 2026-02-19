@@ -3,18 +3,8 @@ import { AppsDropdownMenu } from '@/components/layouts/layout-1/shared/topbar/ap
 import { ChatSheet } from '@/components/layouts/layout-1/shared/topbar/chat-sheet';
 import { UserDropdownMenu } from '@/components/layouts/layout-1/shared/topbar/user-dropdown-menu';
 import {
-  BarChart3,
-  Bell,
-  CheckSquare,
-  Code,
   LayoutGrid,
   MessageCircleMore,
-  MessageSquare,
-  Settings,
-  Shield,
-  ShoppingCart,
-  UserCircle,
-  Users,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { getHeight } from '@/lib/dom';
@@ -28,6 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { APP_ICON_RAIL_MENU } from '@/config/menu.config';
 
 interface MenuItem {
   icon: React.ComponentType<{ className?: string }>;
@@ -36,58 +27,14 @@ interface MenuItem {
   rootPath?: string;
 }
 
-const menuItems: MenuItem[] = [
-  { icon: BarChart3, tooltip: 'Dashboard', path: '#', rootPath: '#' },
-  {
-    icon: UserCircle,
-    tooltip: 'Profile',
-    path: '#',
-    rootPath: '#',
-  },
-  {
-    icon: Settings,
-    tooltip: 'Account',
-    path: '#',
-    rootPath: '#',
-  },
-  {
-    icon: Users,
-    tooltip: 'Network',
-    path: '#',
-    rootPath: '#',
-  },
-  {
-    icon: ShoppingCart,
-    tooltip: 'Store - Client',
-    path: '#',
-    rootPath: '#',
-  },
-  {
-    icon: Shield,
-    tooltip: 'Authentication',
-    path: '#',
-    rootPath: '#',
-  },
-  {
-    icon: MessageSquare,
-    tooltip: 'Security Logs',
-    path: '#',
-    rootPath: '#',
-  },
-  {
-    icon: Bell,
-    tooltip: 'Notifications',
-    path: '#',
-    rootPath: '#',
-  },
-  {
-    icon: CheckSquare,
-    tooltip: 'ACL',
-    path: '#',
-    rootPath: '#',
-  },
-  { icon: Code, tooltip: 'API Keys', path: '#', rootPath: '' },
-];
+const menuItems: MenuItem[] = APP_ICON_RAIL_MENU
+  .filter((item) => !item.separator && item.title && item.icon)
+  .map((item) => ({
+    icon: item.icon!,
+    tooltip: item.title!,
+    path: item.path ?? '#',
+    rootPath: item.rootPath,
+  }));
 
 export function SidebarPrimary() {
   const headerRef = useRef<HTMLDivElement>(null);

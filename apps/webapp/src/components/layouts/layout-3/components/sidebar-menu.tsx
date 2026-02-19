@@ -1,15 +1,3 @@
-import {
-  BarChart3,
-  Bell,
-  CheckSquare,
-  Code,
-  HelpCircle,
-  MessageSquare,
-  Settings,
-  Shield,
-  UserCircle,
-  Users,
-} from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -19,6 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { APP_ICON_RAIL_MENU } from '@/config/menu.config';
 
 export interface Item {
   icon: React.ComponentType<{ className?: string }>;
@@ -29,59 +18,13 @@ export interface Item {
 }
 
 export function SidebarMenu() {
-  const items: Item[] = [
-    {
-      icon: BarChart3,
-      path: '/layout-3',
-      title: 'Dashboard',
-    },
-    {
-      icon: UserCircle,
-      path: '#',
-      title: 'Profile',
-    },
-    {
-      icon: Settings,
-      path: '#',
-      title: 'Account',
-    },
-    {
-      icon: Users,
-      path: '#',
-      title: 'Network',
-      active: true,
-    },
-    {
-      icon: Shield,
-      path: '#',
-      title: 'Plans',
-    },
-    {
-      icon: MessageSquare,
-      path: '#',
-      title: 'Security Logs',
-    },
-    {
-      icon: Bell,
-      path: '#',
-      title: 'Notifications',
-    },
-    {
-      icon: CheckSquare,
-      path: '#',
-      title: 'ACL',
-    },
-    {
-      icon: Code,
-      path: '#',
-      title: 'API Keys',
-    },
-    {
-      icon: HelpCircle,
-      path: 'https://docs.keenthemes.com/metronic-vite',
-      title: 'Docs',
-    },
-  ];
+  const items: Item[] = APP_ICON_RAIL_MENU
+    .filter((item) => !item.separator && item.title && item.icon)
+    .map((item) => ({
+      icon: item.icon!,
+      path: item.path ?? '#',
+      title: item.title!,
+    }));
 
   return (
     <TooltipProvider>

@@ -1,16 +1,4 @@
-import { MenuConfig } from "@/config/types";
+import { APP_HEADER_MENU } from './menu.config';
+import { type MenuConfig } from './types';
 
-export const MENU_HEADER: MenuConfig = [
-  {
-    title: 'Resources',
-    path: '#'
-  },
-  {
-    title: 'Support',
-    path: '#'
-  },
-  {
-    title: 'Pricing',
-    path: '#'
-  },
-];
+export const MENU_HEADER: MenuConfig = APP_HEADER_MENU;

@@ -26,6 +26,7 @@
     "prepare": "echo 'husky not yet configured'"
   },
   "devDependencies": {
+    "playwright": "^1.58.2",
     "prettier": "^3.6.2",
     "prisma": "^6.9.0",
     "tsx": "^4.21.0",
@@ -33,7 +34,8 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "@prisma/client": "^6.9.0"
+    "@prisma/client": "^6.9.0",
+    "bcryptjs": "^3.0.3"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

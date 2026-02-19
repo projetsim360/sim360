@@ -1,0 +1,57 @@
+import { useEffect, useState } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { setTokens } from '@/lib/auth';
+import { api } from '@/lib/api-client';
+import { Loader2 } from 'lucide-react';
+
+export function GoogleCallbackPage() {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const accessToken = searchParams.get('accessToken');
+    const refreshToken = searchParams.get('refreshToken');
+
+    if (!accessToken || !refreshToken) {
+      setError("Erreur lors de l'authentification Google");
+      return;
+    }
+
+    setTokens(accessToken, refreshToken);
+
+    // Fetch user to check profile completion
+    api
+      .get<{ profileCompleted: boolean }>('/users/me')
+      .then((user) => {
+        if (!user.profileCompleted) {
+          navigate('/profile/wizard', { replace: true });
+        } else {
+          navigate('/dashboard', { replace: true });
+        }
+      })
+      .catch(() => {
+        setError("Erreur lors du chargement du profil");
+      });
+  }, [searchParams, navigate]);
+
+  if (error) {
+    return (
+      <div className="text-center">
+        <p className="text-destructive mb-4">{error}</p>
+        <a href="/auth/sign-in" className="text-primary hover:underline">
+          Retour à la connexion
+        </a>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center justify-center min-h-[200px]">
+      <div className="text-center space-y-4">
+        <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
+        <p className="text-muted-foreground">Connexion en cours...</p>
+      </div>
+    </div>
+  );
+}

@@ -2,15 +2,7 @@
 
 import { Fragment } from 'react';
 import {
-  Activity,
-  BarChart,
   ChevronDown,
-  Database,
-  FileText,
-  Lock,
-  Share2,
-  Star,
-  Users,
   type LucideIcon,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -24,6 +16,7 @@ import {
   AccordionMenuSubContent,
   AccordionMenuSubTrigger,
 } from '@/components/ui/accordion-menu';
+import { APP_RESOURCES_MENU } from '@/config/menu.config';
 
 interface Item {
   title: string;
@@ -40,59 +33,16 @@ interface ItemChild {
 }
 
 export function SidebarMenuSecondary() {
-  const items: Item[] = [
-    {
-      title: 'Spaces',
-      value: 'spaces',
-      plus: true,
-      children: [
-        {
-          icon: BarChart,
-          title: 'Metrics Hub',
-          path: '#',
-        },
-        {
-          icon: Database,
-          title: 'Data Lab',
-          active: true,
-          path: '#',
-        },
-        {
-          icon: Share2,
-          title: 'Creative Commons',
-          path: '#',
-        },
-        {
-          icon: Activity,
-          title: 'KPI Monitor',
-          path: '#',
-        },
-      ],
-    },
-    {
-      title: 'Favorites',
-      value: 'favorites',
-      plus: false,
-      children: [
-        {
-          icon: Star,
-          title: 'Post Date',
-          path: '#',
-        },
-        {
-          icon: FileText,
-          title: 'Licencias Creative',
-          path: '#',
-        },
-        {
-          icon: Users,
-          title: 'Open Content',
-          path: '#',
-        },
-        { icon: Lock, title: 'Copyright', path: '#' },
-      ],
-    },
-  ];
+  const items: Item[] = APP_RESOURCES_MENU.map((group) => ({
+    title: group.title ?? 'Ressources',
+    value: (group.title ?? 'ressources').toLowerCase().replace(/\s+/g, '-'),
+    plus: false,
+    children: (group.children ?? []).map((child) => ({
+      icon: child.icon,
+      title: child.title ?? '',
+      path: child.path ?? '#',
+    })),
+  }));
 
   const classNames: AccordionMenuClassNames = {
     root: 'flex flex-col w-full gap-1.5 px-3.5',

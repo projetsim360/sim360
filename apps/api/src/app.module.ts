@@ -8,6 +8,7 @@ import { StorageModule } from './modules/storage/storage.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { AiModule } from './modules/ai/ai.module';
 import { HealthModule } from './modules/health/health.module';
+import { MailModule } from './modules/mail/mail.module';
 import { appConfig } from './config/app.config';
 import { dbConfig } from './config/db.config';
 import { redisConfig } from './config/redis.config';
@@ -23,6 +24,7 @@ import { notificationConfig } from './config/notification.config';
       load: [appConfig, dbConfig, redisConfig, authConfig, storageConfig, aiConfig, notificationConfig],
     }),
     PrismaModule,
+    MailModule,
     AuthModule,
     UsersModule,
     TenantsModule,
