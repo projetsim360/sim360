@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, PanelRight } from 'lucide-react';
+import { Menu, PanelRight } from '@/components/keenicons/icons';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { useLayout } from './context';
 import {

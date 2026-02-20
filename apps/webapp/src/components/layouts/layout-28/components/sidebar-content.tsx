@@ -17,8 +17,8 @@ import {
   Zap,
   Slack,
   Github,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+} from "@/components/keenicons/icons";
+import type { LucideIcon } from "@/components/keenicons/icons";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";

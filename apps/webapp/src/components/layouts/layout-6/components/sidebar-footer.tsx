@@ -1,4 +1,4 @@
-import { MessageCircleMore, MessageSquareDot } from 'lucide-react';
+import { MessageCircleMore, MessageSquareDot } from '@/components/keenicons/icons';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { UserDropdownMenu } from '../../layout-1/shared/topbar/user-dropdown-menu';
@@ -38,7 +38,7 @@ export function SidebarFooter() {
             <Button
               variant="ghost"
               mode="icon"
-              className="hover:bg-background hover:[&_svg]:text-primary"
+              className="hover:bg-background hover:[&_svg]:text-primary [&_i]:text-primary"
             >
               <MessageSquareDot className="size-4.5!" />
             </Button>
@@ -49,7 +49,7 @@ export function SidebarFooter() {
             <Button
               variant="ghost"
               mode="icon"
-              className="hover:bg-background hover:[&_svg]:text-primary"
+              className="hover:bg-background hover:[&_svg]:text-primary [&_i]:text-primary"
             >
               <MessageCircleMore className="size-4.5!" />
             </Button>

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Minimize2, MoveDiagonal } from "lucide-react";
+import { Minimize2, MoveDiagonal } from "@/components/keenicons/icons";
 import { useLayout } from "./context";
 import { cn } from "@/lib/utils";
 

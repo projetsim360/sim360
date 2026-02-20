@@ -1,7 +1,7 @@
 import { AppsDropdownMenu } from '@/components/layouts/layout-1/shared/topbar/apps-dropdown-menu';
 import { ChatSheet } from '@/components/layouts/layout-1/shared/topbar/chat-sheet';
 import { UserDropdownMenu } from '@/components/layouts/layout-1/shared/topbar/user-dropdown-menu';
-import { LayoutGrid, MessageCircleMore } from 'lucide-react';
+import { LayoutGrid, MessageCircleMore } from '@/components/keenicons/icons';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/providers/auth-provider';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -36,7 +36,7 @@ export function SidebarFooter() {
             <Button
               variant="ghost"
               mode="icon"
-              className="hover:bg-background hover:[&_svg]:text-primary"
+              className="hover:bg-background hover:[&_svg]:text-primary [&_i]:text-primary"
             >
               <MessageCircleMore className="size-4.5!" />
             </Button>
@@ -48,7 +48,7 @@ export function SidebarFooter() {
             <Button
               variant="ghost"
               mode="icon"
-              className="hover:bg-background hover:[&_svg]:text-primary"
+              className="hover:bg-background hover:[&_svg]:text-primary [&_i]:text-primary"
             >
               <LayoutGrid className="size-4.5!" />
             </Button>

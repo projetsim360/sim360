@@ -1,4 +1,4 @@
-import { EllipsisVertical } from 'lucide-react';
+import { EllipsisVertical } from '@/components/keenicons/icons';
 import { Link } from 'react-router';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import {

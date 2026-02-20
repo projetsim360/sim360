@@ -3,7 +3,7 @@ import { Navbar } from "@/components/layouts/layout-30/components/navbar";
 import { Toolbar, ToolbarHeading, ToolbarPageTitle, ToolbarDescription, ToolbarActions } from "@/components/layouts/layout-30/components/toolbar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MessageSquareCode, NotebookText, Pin, Plus } from "lucide-react";
+import { MessageSquareCode, NotebookText, Pin, Plus } from "@/components/keenicons/icons";
 
 export function Layout30Page() {
   const { isMobile } = useLayout();

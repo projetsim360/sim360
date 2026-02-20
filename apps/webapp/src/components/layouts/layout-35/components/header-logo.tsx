@@ -4,7 +4,7 @@ import { useLayout } from './context';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetBody } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { Menu } from "@/components/keenicons/icons";
 import { useEffect } from 'react';
 import { Navbar } from './navbar';
 import { WorkspaceMenu } from './workspace-menu';

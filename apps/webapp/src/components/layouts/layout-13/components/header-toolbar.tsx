@@ -1,4 +1,4 @@
-import { BellDot, Settings, SquareChevronDown, Clock, User, Bell, Keyboard, Gift, HelpCircle, LogOut, VolumeX, Download, ExternalLink, FileText, Users, Briefcase, Zap, Sun, Moon } from "lucide-react";
+import { BellDot, Settings, SquareChevronDown, Clock, User, Bell, Keyboard, Gift, HelpCircle, LogOut, VolumeX, Download, ExternalLink, FileText, Users, Briefcase, Zap, Sun, Moon } from "@/components/keenicons/icons";
 import { toAbsoluteUrl } from "@/lib/helpers";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus } from "@/components/ui/avatar";

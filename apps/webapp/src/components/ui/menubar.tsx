@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { Check, ChevronRight, Circle } from 'lucide-react';
+import { Check, ChevronRight, Circle } from '@/components/ui/icons';
 import { Menubar as MenubarPrimitive } from 'radix-ui';
 
 function MenubarMenu({ ...props }: React.ComponentProps<typeof MenubarPrimitive.Menu>) {
@@ -39,7 +39,7 @@ function MenubarTrigger({ className, ...props }: React.ComponentProps<typeof Men
         'flex cursor-pointer select-none items-center rounded-md px-3 py-1.5 text-sm font-medium outline-hidden',
         'focus:bg-accent focus:text-accent-foreground',
         'data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
-        '[&>svg]:pointer-events-none [&_svg:not([role=img]):not([class*=text-])]:opacity-60 [&_svg:not([class*=size-])]:size-4 [&>svg]:shrink-0',
+        '[&>svg]:pointer-events-none [&>i]:pointer-events-none [&_svg:not([role=img]):not([class*=text-])]:opacity-60 [&_svg:not([class*=size-])]:size-4 [&_i:not([class*=size-])]:text-base [&>svg]:shrink-0 [&>i]:shrink-0',
         'data-[here=true]:bg-accent',
         className,
       )}
@@ -63,7 +63,7 @@ function MenubarSubTrigger({
         'flex cursor-pointer select-none items-center rounded-md px-2 py-1.5 text-sm outline-hidden',
         'focus:bg-accent focus:text-accent-foreground',
         'data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
-        '[&>svg]:pointer-events-none [&_svg:not([role=img]):not([class*=text-])]:opacity-60 [&_svg:not([class*=size-])]:size-4 [&>svg]:shrink-0',
+        '[&>svg]:pointer-events-none [&>i]:pointer-events-none [&_svg:not([role=img]):not([class*=text-])]:opacity-60 [&_svg:not([class*=size-])]:size-4 [&_i:not([class*=size-])]:text-base [&>svg]:shrink-0 [&>i]:shrink-0',
         'data-[here=true]:bg-accent data-[here=true]:text-accent-foreground',
         inset && 'ps-8',
         className,

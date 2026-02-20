@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
-import { CircleCheck } from 'lucide-react';
+import { CircleCheck } from '@/components/keenicons/icons';
 import { useAuth } from '@/providers/auth-provider';
 import { api } from '@/lib/api-client';
 import { toast } from 'sonner';

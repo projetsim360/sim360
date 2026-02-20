@@ -1,4 +1,4 @@
-import { Settings, User, Clock, Shield, Building2, Users, LogOut, Download, ExternalLink, Zap, Target, Sun, Moon, Menu } from "lucide-react";
+import { Settings, User, Clock, Shield, Building2, Users, LogOut, Download, ExternalLink, Zap, Target, Sun, Moon, Menu } from "@/components/keenicons/icons";
 import { toAbsoluteUrl } from "@/lib/helpers";
 import {
   Avatar,

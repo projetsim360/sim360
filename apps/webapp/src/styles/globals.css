@@ -3,6 +3,14 @@
 
 @import 'tw-animate-css';
 
+/* KeenIcons */
+@import '../components/keenicons/assets/styles.css';
+
+/* KeenIcons default size — low specificity so parent [&_i]:text-* can override */
+i[class*="ki-"] {
+  font-size: 1.125rem; /* 18px, equivalent to text-lg */
+}
+
 /** Dark Mode Variant **/
 @custom-variant dark (&:is(.dark *));
 

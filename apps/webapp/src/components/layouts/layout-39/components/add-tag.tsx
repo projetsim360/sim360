@@ -1,7 +1,7 @@
 import { toast } from 'sonner';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { CircleCheck } from 'lucide-react';
+import { CircleCheck } from '@/components/keenicons/icons';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';

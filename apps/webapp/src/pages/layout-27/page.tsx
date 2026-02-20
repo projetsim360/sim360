@@ -1,7 +1,7 @@
 import { Toolbar, ToolbarHeading, ToolbarPageTitle, ToolbarDescription, ToolbarActions } from "@/components/layouts/layout-27/components/toolbar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Coffee, MessageSquareCode, NotebookText, Pin, Plus } from "lucide-react";
+import { Coffee, MessageSquareCode, NotebookText, Pin, Plus } from "@/components/keenicons/icons";
 
 export function Layout27Page() {
   return (

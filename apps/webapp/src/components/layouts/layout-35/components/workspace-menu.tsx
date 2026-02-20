@@ -22,7 +22,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormMessage } 
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { Plus, User, CircleAlert, ChevronsUpDown, Check, Gem, Hexagon, Layers2, Zap } from "lucide-react";
+import { Plus, User, CircleAlert, ChevronsUpDown, Check, Gem, Hexagon, Layers2, Zap } from "@/components/keenicons/icons";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";

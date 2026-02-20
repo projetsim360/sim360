@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Component, X } from "lucide-react";
+import { Component, X } from "@/components/keenicons/icons";
 import { useLayout } from "./context";
 
 export function SidebarSecondaryHeader() {

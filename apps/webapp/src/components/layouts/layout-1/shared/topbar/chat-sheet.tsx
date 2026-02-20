@@ -7,7 +7,7 @@ import {
   Shield,
   Upload,
   Users,
-} from 'lucide-react';
+} from '@/components/keenicons/icons';
 import { Link } from 'react-router-dom';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { cn } from '@/lib/utils';

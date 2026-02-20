@@ -1,4 +1,4 @@
-import { Heart, Search, ShoppingCart, UserCircle } from 'lucide-react';
+import { Heart, Search, ShoppingCart, UserCircle } from '@/components/keenicons/icons';
 import { useLocation } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

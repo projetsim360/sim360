@@ -2,7 +2,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarHeader } from "./sidebar-header";
 import { useLayout } from "./context";
 import { useState } from "react";
-import type { LucideIcon } from "lucide-react";
+import type { LucideIcon } from "@/components/keenicons/icons";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -13,7 +13,7 @@ import {
   Settings,
   Share2,
   Shield,
-} from "lucide-react";
+} from "@/components/keenicons/icons";
 import { SidebarFooter } from "./sidebar-footer";
 
 export function SidebarContent() {

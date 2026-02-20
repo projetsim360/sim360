@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { ChevronsUpDown, User, Users, Sparkles, LogOut, Sun, Moon } from "lucide-react";
+import { ChevronsUpDown, User, Users, Sparkles, LogOut, Sun, Moon } from "@/components/keenicons/icons";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/providers/auth-provider";
 

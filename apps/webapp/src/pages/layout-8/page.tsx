@@ -4,7 +4,7 @@ import { Toolbar, ToolbarActions, ToolbarHeading } from "@/components/layouts/la
 import { SearchDialog } from "@/components/layouts/layout-1/shared/dialogs/search/search-dialog";
 import { ChatSheet } from "@/components/layouts/layout-1/shared/topbar/chat-sheet";
 import { Link } from "react-router-dom";
-import { Download, MessageCircleMore, Search } from "lucide-react";
+import { Download, MessageCircleMore, Search } from "@/components/keenicons/icons";
 
 export function Layout8Page() {  
   return (
@@ -17,7 +17,7 @@ export function Layout8Page() {
               <Button
                 variant="ghost"
                 mode="icon"
-                className="hover:[&_svg]:text-primary"
+                className="hover:[&_svg]:text-primary [&_i]:text-primary"
               >
                 <Search className="size-4.5!" />
               </Button>
@@ -28,7 +28,7 @@ export function Layout8Page() {
               <Button
                 variant="ghost"
                 mode="icon"
-                className="hover:[&_svg]:text-primary"
+                className="hover:[&_svg]:text-primary [&_i]:text-primary"
               >
                 <MessageCircleMore className="size-4.5!" />
               </Button>
@@ -37,7 +37,7 @@ export function Layout8Page() {
           <Button
             variant="outline"
             asChild
-            className="ms-2.5 hover:text-primary hover:[&_svg]:text-primary"
+            className="ms-2.5 hover:text-primary hover:[&_svg]:text-primary [&_i]:text-primary"
           >
             <Link to={'#'}>
               <Download />

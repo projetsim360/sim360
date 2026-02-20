@@ -8,7 +8,7 @@ import {
   Play,
   Settings,
   UserCircle,
-} from 'lucide-react';
+} from '@/components/keenicons/icons';
 import { type MenuConfig } from './types';
 
 // ---------------------------------------------------------------------------
@@ -263,7 +263,7 @@ export const APP_NAVBAR_MENU: MenuConfig = [
 interface NavItem {
   id: string;
   title?: string;
-  icon?: import('lucide-react').LucideIcon;
+  icon?: import('@/components/keenicons/icons').IconType;
   path?: string;
   badge?: string;
   pinnable?: boolean;

@@ -7,7 +7,7 @@ import {
 import { ModelSelector } from "@/components/layouts/layout-38/components/model-selector";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Share2 } from "lucide-react";
+import { Share2 } from "@/components/keenicons/icons";
 
 export function Layout38Page() {
   const [selectedModelId, setSelectedModelId] = useState<string>("gpt-4");

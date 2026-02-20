@@ -6,7 +6,7 @@ import {
   Eraser,
   Crop,
   TypeOutline,
-} from 'lucide-react';
+} from '@/components/keenicons/icons';
 import {
   Tooltip,
   TooltipContent,

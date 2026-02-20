@@ -5,7 +5,7 @@ import {
   ShoppingCart,
   User,
   Users,
-} from 'lucide-react';
+} from '@/components/keenicons/icons';
 import { Link, useLocation } from 'react-router-dom';
 import { MENU_HELP, MENU_SIDEBAR } from '@/config/layout-8.config';
 import { MenuConfig } from '@/config/types';

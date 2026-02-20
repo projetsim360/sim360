@@ -1,7 +1,7 @@
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbSeparator, BreadcrumbLink, BreadcrumbPage } from "@/components/ui/breadcrumb";
 import { useLayout } from "./context";
 import { Button } from "@/components/ui/button";
-import { PanelRight } from "lucide-react";
+import { PanelRight } from "@/components/keenicons/icons";
 
 export function HeaderBreadcrumbs() {
   const { isMobile, sidebarToggle } = useLayout();

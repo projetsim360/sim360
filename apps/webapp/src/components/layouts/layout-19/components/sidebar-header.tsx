@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { EllipsisVertical, Hexagon, Gem, Zap, Layers2, Check } from "lucide-react";
+import { EllipsisVertical, Hexagon, Gem, Zap, Layers2, Check } from "@/components/keenicons/icons";
 import { useState } from "react";
 import { Link } from "react-router";
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Copy, Info } from 'lucide-react';
+import { Copy, Info } from '@/components/keenicons/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 

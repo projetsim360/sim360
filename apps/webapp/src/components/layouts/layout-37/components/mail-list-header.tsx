@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { PanelLeftClose, PanelLeftOpen, RefreshCcw, Search } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen, RefreshCcw, Search } from "@/components/keenicons/icons";
 import { useLayout } from "./context";
 import { Input, InputWrapper } from "@/components/ui/input";
 import { CategorySelector } from "./category-selector";

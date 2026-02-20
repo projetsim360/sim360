@@ -13,7 +13,7 @@ import {
   ExternalLink,
   Sun,
   Moon,
-} from "lucide-react";
+} from "@/components/keenicons/icons";
 import { toAbsoluteUrl } from "@/lib/helpers";
 import {
   Avatar,

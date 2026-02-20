@@ -16,18 +16,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Column } from '@tanstack/react-table';
-import {
-  ArrowDown,
-  ArrowLeft,
-  ArrowLeftToLine,
-  ArrowRight,
-  ArrowRightToLine,
-  ArrowUp,
-  Check,
-  ChevronsUpDown,
-  PinOff,
-  Settings2,
-} from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check } from '@/components/ui/icons';
+import { ArrowDown, ArrowLeftToLine, ArrowRightToLine, ArrowUp, ChevronsUpDown, PinOff, Settings2 } from '@/components/keenicons/icons';
 
 interface DataGridColumnHeaderProps<TData, TValue> extends HTMLAttributes<HTMLDivElement> {
   column: Column<TData, TValue>;
@@ -83,7 +73,7 @@ function DataGridColumnHeader<TData, TValue>({
     return (
       <div
         className={cn(
-          'text-accent-foreground font-normal inline-flex h-full items-center gap-1.5 text-[0.8125rem] leading-[calc(1.125/0.8125)] [&_svg]:size-3.5 [&_svg]:opacity-60',
+          'text-accent-foreground font-normal inline-flex h-full items-center gap-1.5 text-[0.8125rem] leading-[calc(1.125/0.8125)] [&_svg]:size-3.5 [&_i]:text-sm [&_svg]:opacity-60 [&_i]:opacity-60',
           className,
         )}
       >

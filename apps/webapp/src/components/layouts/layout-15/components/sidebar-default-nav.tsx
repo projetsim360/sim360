@@ -11,10 +11,10 @@ import {
     DropdownMenuTrigger,
     DropdownMenuGroup
 } from '@/components/ui/dropdown-menu';
-import { Plus, StickyNote, PinOff, Pin } from 'lucide-react';
+import { Plus, StickyNote, PinOff, Pin } from '@/components/keenicons/icons';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Ellipsis } from 'lucide-react';
+import { Ellipsis } from '@/components/keenicons/icons';
 import {
   Tooltip,
   TooltipContent,

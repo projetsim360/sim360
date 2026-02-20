@@ -2,7 +2,7 @@ import { Toolbar, ToolbarActions, ToolbarDescription, ToolbarHeading, ToolbarPag
 import { Button } from "@/components/ui/button";
 import { Input, InputWrapper } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Coffee, Pin, MessageSquareCode, VectorSquare, Search } from "lucide-react";
+import { Coffee, Pin, MessageSquareCode, VectorSquare, Search } from "@/components/keenicons/icons";
 
 export function Layout28Page() {
   const handleInputChange = () => {};

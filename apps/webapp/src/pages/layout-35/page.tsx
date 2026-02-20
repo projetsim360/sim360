@@ -9,7 +9,7 @@ import {
 } from "@/components/layouts/layout-35/components/toolbar";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { AudioLines, Download, Plus } from "lucide-react";
+import { AudioLines, Download, Plus } from "@/components/keenicons/icons";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 

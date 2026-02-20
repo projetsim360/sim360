@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { Coffee, MessageSquareCode, NotebookText, Pin, Plus } from 'lucide-react';
+import { Coffee, MessageSquareCode, NotebookText, Pin, Plus } from '@/components/keenicons/icons';
 
 function Toolbar() {
   return (

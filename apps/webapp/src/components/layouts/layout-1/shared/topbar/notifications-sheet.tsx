@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Calendar, Settings, Settings2, Shield, Users } from 'lucide-react';
+import { Calendar, Settings, Settings2, Shield, Users } from '@/components/keenicons/icons';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {

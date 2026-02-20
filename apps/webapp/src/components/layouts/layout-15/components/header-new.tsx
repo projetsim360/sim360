@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { CirclePlus } from 'lucide-react';
+import { CirclePlus } from '@/components/keenicons/icons';
 
 export function HeaderNew() {
   return (

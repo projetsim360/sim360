@@ -1,4 +1,4 @@
-import { EllipsisVertical } from 'lucide-react';
+import { EllipsisVertical } from '@/components/keenicons/icons';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import {
   AccordionMenu,

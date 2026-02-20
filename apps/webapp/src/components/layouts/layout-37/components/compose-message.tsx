@@ -4,7 +4,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/compon
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { SquarePen, Send, Plus, Sparkles, Type, Bold, Italic, Underline, List, AlignLeft, Undo, Redo, Strikethrough, CircleX, CircleCheck, Loader2 } from 'lucide-react';
+import { SquarePen, Send, Plus, Sparkles, Type, Bold, Italic, Underline, List, AlignLeft, Undo, Redo, Strikethrough, CircleX, CircleCheck, Loader2 } from '@/components/keenicons/icons';
 import { useState, useRef } from 'react';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';

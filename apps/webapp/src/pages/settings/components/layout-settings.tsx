@@ -1,4 +1,4 @@
-import { LayoutGrid, RotateCcw, Check } from 'lucide-react';
+import { LayoutGrid, RotateCcw, Check } from '@/components/keenicons/icons';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useLayoutSwitcher } from '@/providers/layout-switcher-provider';

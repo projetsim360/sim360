@@ -10,7 +10,7 @@ import {
   AccordionMenuItem,
 } from '@/components/ui/accordion-menu';
 import { Badge } from '@/components/ui/badge';
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus } from "@/components/keenicons/icons";
 
 export function SidebarWorkspacesMenu() {
   const { pathname } = useLocation();

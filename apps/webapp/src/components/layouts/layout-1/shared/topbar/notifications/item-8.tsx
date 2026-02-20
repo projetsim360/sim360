@@ -1,4 +1,4 @@
-import { Download } from 'lucide-react';
+import { Download } from '@/components/keenicons/icons';
 import { Link } from 'react-router-dom';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import {

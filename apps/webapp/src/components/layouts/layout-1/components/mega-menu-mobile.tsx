@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX, useCallback } from 'react';
-import { LucideIcon } from 'lucide-react';
+import { LucideIcon } from '@/components/keenicons/icons';
 import { Link, useLocation } from 'react-router-dom';
 import { MENU_MEGA_MOBILE } from '@/config/layout-1.config';
 import { cn } from '@/lib/utils';

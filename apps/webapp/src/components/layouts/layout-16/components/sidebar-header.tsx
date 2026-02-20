@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Check, ChevronsUpDown, Gem, Hexagon, Layers2, Zap } from 'lucide-react';
+import { Check, ChevronsUpDown, Gem, Hexagon, Layers2, Zap } from '@/components/keenicons/icons';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,

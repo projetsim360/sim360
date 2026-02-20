@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { CloudCog, FileInput, Settings, ThumbsDown } from 'lucide-react';
+import { CloudCog, FileInput, Settings, ThumbsDown } from '@/components/keenicons/icons';
 import { Link } from 'react-router-dom';
 import {
   DropdownMenu,

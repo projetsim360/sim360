@@ -1,7 +1,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RiGatsbyLine, RiNextjsLine, RiReactjsLine } from '@remixicon/react';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GitFork } from "lucide-react";
+import { GitFork } from "@/components/keenicons/icons";
 import { Separator } from "@/components/ui/separator";
 
 export function SidebarPrimary() {

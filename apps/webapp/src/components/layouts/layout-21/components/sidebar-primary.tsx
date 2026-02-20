@@ -16,7 +16,7 @@ import {
   Sun,
   Moon,
   Plus,
-} from 'lucide-react';
+} from '@/components/keenicons/icons';
 import { APP_ICON_RAIL_MENU } from '@/config/menu.config';
 import {
   Avatar,

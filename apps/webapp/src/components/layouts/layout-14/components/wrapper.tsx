@@ -4,7 +4,7 @@ import { Sidebar } from './sidebar';
 import { Header } from './header';
 import { Toolbar, ToolbarActions, ToolbarHeading } from './toolbar';
 import { Button } from '@/components/ui/button';
-import { Eye, Funnel, MessageSquareCode, Search } from 'lucide-react';
+import { Eye, Funnel, MessageSquareCode, Search } from '@/components/keenicons/icons';
 import { ToolbarMenu } from './toolbar-menu';
 import { ToolbarMenuMobile } from './toolbar-menu-mobile';
 import { HeaderBreadcrumbs } from './header-breadcrumbs';

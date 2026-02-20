@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { MENU_HEADER } from "@/config/layout-19.config";
 import { Button } from "@/components/ui/button";
 import { useLayout } from "./context";
-import { ChevronDown, HelpCircle, BookOpen, MessageCircle, Video, FileText, ExternalLink } from "lucide-react";
+import { ChevronDown, HelpCircle, BookOpen, MessageCircle, Video, FileText, ExternalLink } from "@/components/keenicons/icons";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
 

@@ -1,4 +1,4 @@
-import { CircleCheck } from 'lucide-react';
+import { CircleCheck } from '@/components/keenicons/icons';
 import { Link } from 'react-router-dom';
 import {
   Avatar,

@@ -16,7 +16,7 @@ import {
   Trash2,
   Pin,
   Copy
-} from "lucide-react";
+} from "@/components/keenicons/icons";
 import { SectionHeader } from "./section-header";
 import { ChatThread } from "./types";
 

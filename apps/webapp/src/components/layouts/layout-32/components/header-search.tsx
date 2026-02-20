@@ -1,6 +1,6 @@
 import { Input, InputWrapper } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search } from "lucide-react";
+import { Search } from "@/components/keenicons/icons";
 
 export function HeaderSearch() {
   const handleInputChange = () => {};

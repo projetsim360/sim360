@@ -6,7 +6,7 @@ import {
   NotepadText,
   Timer,
   Users,
-} from 'lucide-react';
+} from '@/components/keenicons/icons';
 import { Link } from 'react-router-dom';
 import {
   Avatar,

@@ -1,6 +1,6 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus } from "@/components/ui/avatar";
-import { Clock, Target, Users, Building2, User, Settings, Shield, Moon, Sun, Zap, Download, ExternalLink, LogOut } from "lucide-react";
+import { Clock, Target, Users, Building2, User, Settings, Shield, Moon, Sun, Zap, Download, ExternalLink, LogOut } from "@/components/keenicons/icons";
 import { Badge } from "@/components/ui/badge";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/providers/auth-provider";

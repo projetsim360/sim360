@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router';
-import type { LucideIcon } from 'lucide-react';
-import { CalendarCheck, ListTodo, Clock3, Flag, CheckCircle2 } from 'lucide-react';
+import type { LucideIcon } from '@/components/keenicons/icons';
+import { CalendarCheck, ListTodo, Clock3, Flag, CheckCircle2 } from '@/components/keenicons/icons';
 import {
   AccordionMenu,
   AccordionMenuIndicator,

@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { useLocation } from "react-router-dom";
 import { useMenu } from "@/hooks/use-menu";
-import { Menu } from "lucide-react";
+import { Menu } from "@/components/keenicons/icons";
 import { MENU_HEADER } from "@/config/layout-25.config";
 import {
   DropdownMenu,

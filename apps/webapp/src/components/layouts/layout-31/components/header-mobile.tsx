@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetBody } from '@/components/ui/sheet';
-import { Menu } from 'lucide-react';
+import { Menu } from '@/components/keenicons/icons';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { toAbsoluteUrl } from '@/lib/helpers';

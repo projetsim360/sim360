@@ -5,7 +5,7 @@ import {
   MessageSquareDot,
   Search,
   Users,
-} from 'lucide-react';
+} from '@/components/keenicons/icons';
 import { Link } from 'react-router-dom';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { Button } from '@/components/ui/button';
@@ -33,7 +33,7 @@ export function HeaderTopbar() {
               variant="ghost"
               mode="icon"
               shape="circle"
-              className="hover:bg-transparent hover:[&_svg]:text-primary"
+              className="hover:bg-transparent hover:[&_svg]:text-primary [&_i]:text-primary"
             >
               <Search className="size-4.5!" />
             </Button>
@@ -45,7 +45,7 @@ export function HeaderTopbar() {
               variant="ghost"
               mode="icon"
               shape="circle"
-              className="hover:bg-transparent hover:[&_svg]:text-primary"
+              className="hover:bg-transparent hover:[&_svg]:text-primary [&_i]:text-primary"
             >
               <MessageCircleMore className="size-4.5!" />
             </Button>
@@ -57,7 +57,7 @@ export function HeaderTopbar() {
               variant="ghost"
               mode="icon"
               shape="circle"
-              className="hover:bg-transparent hover:[&_svg]:text-primary"
+              className="hover:bg-transparent hover:[&_svg]:text-primary [&_i]:text-primary"
             >
               <LayoutGrid className="size-4.5!" />
             </Button>
@@ -69,7 +69,7 @@ export function HeaderTopbar() {
               variant="ghost"
               mode="icon"
               shape="circle"
-              className="hover:bg-transparent hover:[&_svg]:text-primary"
+              className="hover:bg-transparent hover:[&_svg]:text-primary [&_i]:text-primary"
             >
               <MessageSquareDot className="size-4.5!" />
             </Button>

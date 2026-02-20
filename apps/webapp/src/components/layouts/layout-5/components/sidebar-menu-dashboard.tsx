@@ -7,7 +7,7 @@ import {
   Settings,
   SquareCode,
   UserCircle,
-} from 'lucide-react';
+} from '@/components/keenicons/icons';
 import { Link, useLocation } from 'react-router-dom';
 import {
   AccordionMenu,

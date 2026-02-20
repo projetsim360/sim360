@@ -4,7 +4,7 @@ import {
   MessageCircleMore,
   MessageSquareDot,
   Search,
-} from 'lucide-react';
+} from '@/components/keenicons/icons';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { Button } from '@/components/ui/button';
 import { ChatSheet } from '../../layout-1/shared/topbar/chat-sheet';
@@ -25,7 +25,7 @@ export function HeaderTopbar() {
             variant="ghost"
             mode="icon"
             shape="circle"
-            className="hover:[&_svg]:text-primary"
+            className="hover:[&_svg]:text-primary [&_i]:text-primary"
           >
             <Search className="size-4.5!" />
           </Button>
@@ -37,7 +37,7 @@ export function HeaderTopbar() {
             variant="ghost"
             mode="icon"
             shape="circle"
-            className="hover:[&_svg]:text-primary"
+            className="hover:[&_svg]:text-primary [&_i]:text-primary"
           >
             <MessageCircleMore className="size-4.5!" />
           </Button>
@@ -49,7 +49,7 @@ export function HeaderTopbar() {
             variant="ghost"
             mode="icon"
             shape="circle"
-            className="hover:[&_svg]:text-primary"
+            className="hover:[&_svg]:text-primary [&_i]:text-primary"
           >
             <LayoutGrid className="size-4.5!" />
           </Button>
@@ -61,7 +61,7 @@ export function HeaderTopbar() {
             variant="ghost"
             mode="icon"
             shape="circle"
-            className="hover:[&_svg]:text-primary"
+            className="hover:[&_svg]:text-primary [&_i]:text-primary"
           >
             <MessageSquareDot className="size-4.5!" />
           </Button>

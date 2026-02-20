@@ -8,7 +8,7 @@ import {
   Settings,
   Share2,
   ThumbsDown,
-} from 'lucide-react';
+} from '@/components/keenicons/icons';
 import { Link } from 'react-router-dom';
 import {
   DropdownMenu,

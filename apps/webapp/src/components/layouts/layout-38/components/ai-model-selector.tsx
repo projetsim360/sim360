@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Brain, Cpu, Sparkles } from "lucide-react";
+import { Brain, Cpu, Sparkles } from "@/components/keenicons/icons";
 import { SectionHeader } from "./section-header";
 import { AIModel } from "./types";
 

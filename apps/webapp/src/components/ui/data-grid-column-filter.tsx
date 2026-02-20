@@ -14,7 +14,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import { Column } from '@tanstack/react-table';
-import { Check, CirclePlus } from 'lucide-react';
+import { Check, CirclePlus } from '@/components/ui/icons';
 
 interface DataGridColumnFilterProps<TData, TValue> {
   column?: Column<TData, TValue>;
@@ -85,7 +85,7 @@ function DataGridColumnFilter<TData, TValue>({ column, title, options }: DataGri
                     <div
                       className={cn(
                         'me-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
-                        isSelected ? 'bg-primary text-primary-foreground' : 'opacity-50 [&_svg]:invisible',
+                        isSelected ? 'bg-primary text-primary-foreground' : 'opacity-50 [&_svg]:invisible [&_i]:invisible',
                       )}
                     >
                       <Check className={cn('h-4 w-4')} />

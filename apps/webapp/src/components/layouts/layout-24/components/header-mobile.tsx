@@ -2,7 +2,7 @@ import { toAbsoluteUrl } from '@/lib/helpers';
 import { Link } from 'react-router-dom';
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetBody } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Menu, VectorSquare } from 'lucide-react';
+import { Menu, VectorSquare } from '@/components/keenicons/icons';
 import { useState } from 'react';
 import { Sidebar } from './sidebar';
 import { Aside } from './aside';

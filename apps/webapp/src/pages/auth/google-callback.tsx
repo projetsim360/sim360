@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { setTokens } from '@/lib/auth';
 import { api } from '@/lib/api-client';
-import { Loader2 } from 'lucide-react';
+import { Loader2 } from '@/components/keenicons/icons';
 
 export function GoogleCallbackPage() {
   const [searchParams] = useSearchParams();

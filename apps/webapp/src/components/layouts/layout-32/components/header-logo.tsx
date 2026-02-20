@@ -3,11 +3,11 @@ import { toAbsoluteUrl } from '@/lib/helpers';
 import { HeaderSearch } from './header-search';
 import { useLayout } from './context';
 import { Button } from '@/components/ui/button';
-import { Check, Grip } from 'lucide-react';
+import { Check, Grip } from '@/components/keenicons/icons';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useState } from 'react';
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetBody } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { Menu } from "@/components/keenicons/icons";
 import { SidebarMenu } from './sidebar-menu';
 import { useEffect } from 'react';
 

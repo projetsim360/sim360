@@ -7,7 +7,7 @@ import {
   Pencil,
   Send,
   Trash2,
-} from 'lucide-react';
+} from '@/components/keenicons/icons';
 import { Link } from 'react-router-dom';
 import {
   DropdownMenu,

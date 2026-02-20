@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { UserDropdownMenu } from "./user-dropdown-menu";
-import { LogOut, Mails, NotepadText, Settings } from "lucide-react";
+import { LogOut, Mails, NotepadText, Settings } from "@/components/keenicons/icons";
 
 export function SidebarFooter() {
   return (

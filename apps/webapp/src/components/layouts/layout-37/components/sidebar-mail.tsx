@@ -7,7 +7,7 @@ import {
   AccordionMenuLabel,
 } from '@/components/ui/accordion-menu';
 import { cn } from "@/lib/utils";
-import { LucideIcon, Send, Inbox, FileText } from "lucide-react";
+import { LucideIcon, Send, Inbox, FileText } from "@/components/keenicons/icons";
 
 interface NavItem {
   title: string;

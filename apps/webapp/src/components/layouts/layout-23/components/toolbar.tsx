@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { PanelRight } from 'lucide-react';
+import { PanelRight } from '@/components/keenicons/icons';
 import { Button } from '@/components/ui/button';
 import { useLayout } from './context';
 

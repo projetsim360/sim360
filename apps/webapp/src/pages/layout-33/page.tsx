@@ -2,7 +2,7 @@ import { useLayout } from "@/components/layouts/layout-33/components/context";
 import { Toolbar, ToolbarHeading, ToolbarActions } from "@/components/layouts/layout-33/components/toolbar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { PanelRight } from "lucide-react";
+import { PanelRight } from "@/components/keenicons/icons";
 import { Navbar } from "@/components/layouts/layout-33/components/navbar";
 import { TabsTrigger } from "@/components/ui/tabs";
 import { TabsList } from "@/components/ui/tabs";

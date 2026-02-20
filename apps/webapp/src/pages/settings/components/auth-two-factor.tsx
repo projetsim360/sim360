@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MessageSquareText, ShieldCheck, type LucideIcon } from 'lucide-react';
+import { MessageSquareText, ShieldCheck, type LucideIcon } from '@/components/keenicons/icons';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

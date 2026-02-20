@@ -1,4 +1,4 @@
-import { X, ChevronLeft, ChevronRight, Reply, FileText, Star, Trash2, MoreHorizontal, CircleCheck, Flag, Eye, EyeOff, Copy, Archive, Forward, Download, Printer, Bookmark, Plus } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Reply, FileText, Star, Trash2, MoreHorizontal, CircleCheck, Flag, Eye, EyeOff, Copy, Archive, Forward, Download, Printer, Bookmark, Plus } from "@/components/keenicons/icons";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";

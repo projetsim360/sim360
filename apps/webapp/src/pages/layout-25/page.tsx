@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Toolbar, ToolbarHeading, ToolbarPageTitle, ToolbarActions } from "@/components/layouts/layout-25/components/toolbar";
 import { ToolbarBreadcrumbs } from "@/components/layouts/layout-25/components/toolbar-breadcrumbs";
 import { Button } from "@/components/ui/button";
-import { MessageSquareCode, NotebookText, Pin, Plus } from "lucide-react";
+import { MessageSquareCode, NotebookText, Pin, Plus } from "@/components/keenicons/icons";
 
 export function Layout25Page() {
   return (

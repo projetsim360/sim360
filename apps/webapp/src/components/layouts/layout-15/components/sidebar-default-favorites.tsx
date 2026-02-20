@@ -7,7 +7,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import { Plus, File, StarOff, ChevronRight, Star } from 'lucide-react';
+import { Plus, File, StarOff, ChevronRight, Star } from '@/components/keenicons/icons';
 import {
   Tooltip,
   TooltipContent,

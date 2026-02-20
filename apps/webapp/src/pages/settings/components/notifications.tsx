@@ -1,5 +1,5 @@
 import { useState, useEffect, useId } from 'react';
-import { Mail, Bell } from 'lucide-react';
+import { Mail, Bell } from '@/components/keenicons/icons';
 import { useAuth } from '@/providers/auth-provider';
 import { api } from '@/lib/api-client';
 import { toast } from 'sonner';

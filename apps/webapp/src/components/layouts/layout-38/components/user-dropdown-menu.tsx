@@ -1,6 +1,6 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus } from "@/components/ui/avatar";
-import { MessageSquarePlus, History, Settings, HelpCircle, LogOut, Moon, Sun } from "lucide-react";
+import { MessageSquarePlus, History, Settings, HelpCircle, LogOut, Moon, Sun } from "@/components/keenicons/icons";
 import { useTheme } from "next-themes";
 import { useLayout } from "./context";
 import { useAuth } from "@/providers/auth-provider";

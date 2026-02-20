@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Image as ImageIcon } from 'lucide-react';
+import { ImageIcon } from '@/components/keenicons/icons';
 import { Link } from 'react-router-dom';
 import {
   Avatar,

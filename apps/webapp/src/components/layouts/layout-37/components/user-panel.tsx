@@ -1,6 +1,6 @@
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { useAuth } from '@/providers/auth-provider';
-import { Moon, Sun, Laptop, LogOut, Plus } from 'lucide-react';
+import { Moon, Sun, Laptop, LogOut, Plus } from '@/components/keenicons/icons';
 import {
   DropdownMenu,
   DropdownMenuContent,

@@ -79,7 +79,7 @@ const tabsListVariants = cva('flex items-center shrink-0', {
 
 // Variants for TabsTrigger
 const tabsTriggerVariants = cva(
-  'shrink-0 cursor-pointer whitespace-nowrap inline-flex justify-center items-center font-medium ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:shrink-0 [&_svg]:text-muted-foreground [&:hover_svg]:text-primary [&[data-state=active]_svg]:text-primary',
+  'shrink-0 cursor-pointer whitespace-nowrap inline-flex justify-center items-center font-medium ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:shrink-0 [&_i]:shrink-0 [&_svg]:text-muted-foreground [&_i]:text-muted-foreground [&:hover_svg]:text-primary [&[data-state=active]_svg]:text-primary',
   {
     variants: {
       variant: {
@@ -90,10 +90,10 @@ const tabsTriggerVariants = cva(
         line: 'border-b-2 text-muted-foreground border-transparent data-[state=active]:border-primary hover:text-primary data-[state=active]:text-primary data-[state=active]:border-primary data-[state=active]:text-primary',
       },
       size: {
-        lg: 'gap-2.5 [&_svg]:size-5 text-sm',
-        md: 'gap-2 [&_svg]:size-4 text-sm',
-        sm: 'gap-1.5 [&_svg]:size-3.5 text-xs',
-        xs: 'gap-1 [&_svg]:size-3.5 text-xs',
+        lg: 'gap-2.5 [&_svg]:size-5 [&_i]:text-xl text-sm',
+        md: 'gap-2 [&_svg]:size-4 [&_i]:text-base text-sm',
+        sm: 'gap-1.5 [&_svg]:size-3.5 [&_i]:text-sm text-xs',
+        xs: 'gap-1 [&_svg]:size-3.5 [&_i]:text-sm text-xs',
       },
     },
     compoundVariants: [

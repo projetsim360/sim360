@@ -1,4 +1,4 @@
-import { Check, ChevronsUpDown, Gem, Hexagon, Layers2, PanelLeft, Zap } from 'lucide-react';
+import { Check, ChevronsUpDown, Gem, Hexagon, Layers2, PanelLeft, Zap } from '@/components/keenicons/icons';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,

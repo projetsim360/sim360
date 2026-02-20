@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetBody } from '@/components/ui/sheet';
-import { Menu, PanelTopBottomDashed, SlidersHorizontal } from 'lucide-react';
+import { Menu, PanelTopBottomDashed, SlidersHorizontal } from '@/components/keenicons/icons';
 import { useState } from 'react';
 import { SidebarSearch } from './sidebar-search';
 import { SidebarMenu } from './sidebar-menu';

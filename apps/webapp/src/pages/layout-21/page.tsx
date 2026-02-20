@@ -3,7 +3,7 @@ import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tabs } from "@/components/ui/tabs";
 import { Toolbar, ToolbarWrapper, ToolbarHeading, ToolbarPageTitle, ToolbarActions } from "@/components/layouts/layout-21/components/toolbar";
 import { Button } from "@/components/ui/button";
-import { Funnel, Eye, MessageSquareCode, Search } from "lucide-react";
+import { Funnel, Eye, MessageSquareCode, Search } from "@/components/keenicons/icons";
 
 export function Layout21Page() {
   return (

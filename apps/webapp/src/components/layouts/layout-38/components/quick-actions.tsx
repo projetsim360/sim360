@@ -6,7 +6,7 @@ import {
   Trash2, 
   History, 
   FileText, 
-} from "lucide-react";
+} from "@/components/keenicons/icons";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { SectionHeader } from "./section-header";
 

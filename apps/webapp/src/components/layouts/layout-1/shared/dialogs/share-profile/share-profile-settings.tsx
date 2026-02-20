@@ -1,4 +1,4 @@
-import { LoaderPinwheel, User } from 'lucide-react';
+import { LoaderPinwheel, User } from '@/components/keenicons/icons';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 

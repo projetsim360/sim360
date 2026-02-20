@@ -2,11 +2,11 @@ import { Link, useLocation } from 'react-router-dom';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { Check, ChevronsUpDown } from 'lucide-react';
+import { Check, ChevronsUpDown } from '@/components/keenicons/icons';
 import { useLayout } from './context';
 import { useEffect, useState } from 'react';
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetBody } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { Menu } from "@/components/keenicons/icons";
 import { SidebarContent } from './sidebar-content';
 
 interface Project {

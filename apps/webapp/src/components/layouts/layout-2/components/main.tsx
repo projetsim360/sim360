@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { addDays, format } from 'date-fns';
-import { CalendarDays } from 'lucide-react';
+import { CalendarDays } from '@/components/keenicons/icons';
 import { DateRange } from 'react-day-picker';
 import { Outlet, useLocation } from 'react-router-dom';
 import { useBodyClass } from '@/hooks/use-body-class';

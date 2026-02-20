@@ -1,7 +1,7 @@
 import { StoreClientTopbar } from '@/components/layouts/layout-1/shared/topbar/topbar';
 import { SearchDialog } from '@/components/layouts/layout-1/shared/dialogs/search/search-dialog';
 import { NotificationsSheet } from '@/components/layouts/layout-1/shared/topbar/notifications-sheet';
-import { Download, MessageSquareDot, Search } from 'lucide-react';
+import { Download, MessageSquareDot, Search } from '@/components/keenicons/icons';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useBodyClass } from '@/hooks/use-body-class';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -48,7 +48,7 @@ export function Main() {
                             <Button
                               variant="ghost"
                               mode="icon"
-                              className="hover:bg-primary/10 hover:[&_svg]:text-primary"
+                              className="hover:bg-primary/10 hover:[&_svg]:text-primary [&_i]:text-primary"
                             >
                               <Search className="size-4.5!" />
                             </Button>
@@ -59,7 +59,7 @@ export function Main() {
                             <Button
                               variant="ghost"
                               mode="icon"
-                              className="hover:bg-primary/10 hover:[&_svg]:text-primary"
+                              className="hover:bg-primary/10 hover:[&_svg]:text-primary [&_i]:text-primary"
                             >
                               <MessageSquareDot className="size-4.5!" />
                             </Button>
@@ -67,7 +67,7 @@ export function Main() {
                         />
                         <Button
                           variant="outline"
-                          className="hover:bg-background hover:[&_svg]:text-primary hover:text-primary ms-2.5 "
+                          className="hover:bg-background hover:[&_svg]:text-primary [&_i]:text-primary hover:text-primary ms-2.5 "
                           asChild
                         >
                           <Link to={'/layout-4/empty'}>

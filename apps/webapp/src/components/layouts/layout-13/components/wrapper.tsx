@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import { Coffee, MessageSquareCode, PanelRightOpen, Pin, Search } from 'lucide-react';
+import { Coffee, MessageSquareCode, PanelRightOpen, Pin, Search } from '@/components/keenicons/icons';
 import { Input, InputWrapper } from "@/components/ui/input";
 import { Button } from '@/components/ui/button';
 import { useLayout } from './context';

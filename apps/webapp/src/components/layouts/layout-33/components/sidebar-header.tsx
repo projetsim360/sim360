@@ -1,4 +1,4 @@
-import { PanelLeft } from 'lucide-react';
+import { PanelLeft } from '@/components/keenicons/icons';
 import { Button } from '@/components/ui/button';
 import { useLayout } from './context';
 import { toAbsoluteUrl } from '@/lib/helpers';

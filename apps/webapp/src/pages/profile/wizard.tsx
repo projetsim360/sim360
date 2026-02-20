@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/providers/auth-provider';
 import { api } from '@/lib/api-client';
 import { AvatarUpload } from '@/components/common/avatar-upload';
-import { Check } from 'lucide-react';
+import { Check } from '@/components/keenicons/icons';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

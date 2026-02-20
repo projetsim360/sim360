@@ -6,13 +6,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { LucideIcon } from "lucide-react";
+import type { LucideIcon } from "@/components/keenicons/icons";
 import {
   ChevronDown,
   Brain,
   Workflow,
   Code2,
-} from "lucide-react";
+} from "@/components/keenicons/icons";
 
 const modelOptions = [
   {

@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight } from "@/components/keenicons/icons";
 import { SectionHeader } from "./section-header";
 import { RECENT_CHATS } from "./recent-chats";
 

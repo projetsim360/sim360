@@ -16,7 +16,7 @@ import {
   Check,
   Plus,
   Crown,
-} from 'lucide-react';
+} from '@/components/keenicons/icons';
 import { cn } from '@/lib/utils';
 import { useLayout } from './context';
 

@@ -8,7 +8,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Menu } from 'lucide-react';
+import { Menu } from '@/components/keenicons/icons';
 import { useState } from 'react';
 import { SidebarSecondary } from './sidebar-secondary';
 import { HeaderTitle } from './header-title';

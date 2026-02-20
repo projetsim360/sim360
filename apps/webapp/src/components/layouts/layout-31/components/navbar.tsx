@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { AlertOctagon, Archive, FileText, Mail, Plus, Send, Star, Trash2 } from "lucide-react";
+import { AlertOctagon, Archive, FileText, Mail, Plus, Send, Star, Trash2 } from "@/components/keenicons/icons";
 
 export function Navbar() {
   return (

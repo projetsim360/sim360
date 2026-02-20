@@ -32,7 +32,7 @@ import {
   List,
   Grid3X3,
   Layout
-} from "lucide-react";
+} from "@/components/keenicons/icons";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function Layout12Page() {

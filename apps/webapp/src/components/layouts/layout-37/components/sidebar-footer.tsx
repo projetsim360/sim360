@@ -6,7 +6,7 @@ import {
   AccordionMenuItem,
 } from '@/components/ui/accordion-menu';
 import { cn } from "@/lib/utils";
-import { LucideIcon, Settings, MessageSquare, Headset } from "lucide-react";
+import { LucideIcon, Settings, MessageSquare, Headset } from "@/components/keenicons/icons";
 
 interface MenuConfig {
   title: string;

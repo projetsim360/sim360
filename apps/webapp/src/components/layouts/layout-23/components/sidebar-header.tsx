@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, ChevronsUpDown, Gem, Hexagon, Layers2, PanelRight, Zap } from 'lucide-react';
+import { Check, ChevronsUpDown, Gem, Hexagon, Layers2, PanelRight, Zap } from '@/components/keenicons/icons';
 import { useLayout } from './context';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';

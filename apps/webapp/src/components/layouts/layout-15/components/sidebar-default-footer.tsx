@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { UserRoundPlus, CircleHelp } from "lucide-react";
+import { UserRoundPlus, CircleHelp } from "@/components/keenicons/icons";
 import { Tooltip, TooltipTrigger, TooltipContent  } from "@/components/ui/tooltip";
 import { useLayout } from "./layout-context";
 

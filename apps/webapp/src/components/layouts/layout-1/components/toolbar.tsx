@@ -1,5 +1,5 @@
 import { Fragment, ReactNode } from 'react';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight } from '@/components/keenicons/icons';
 import { Link, useLocation } from 'react-router-dom';
 import { MENU_SIDEBAR } from '@/config/layout-1.config';
 import { MenuItem } from '@/config/types';

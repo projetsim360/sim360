@@ -23,7 +23,7 @@ import {
   Sun,
   Moon,
   SwatchBook
-} from 'lucide-react';
+} from '@/components/keenicons/icons';
 import {
   Avatar,
   AvatarFallback,

@@ -1,4 +1,4 @@
-import { ChevronFirst } from 'lucide-react';
+import { ChevronFirst } from '@/components/keenicons/icons';
 import { Link } from 'react-router-dom';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { cn } from '@/lib/utils';

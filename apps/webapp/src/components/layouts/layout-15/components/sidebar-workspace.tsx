@@ -13,7 +13,7 @@ import {
   CheckCircle,
   AlertCircle,
   LogOut
-} from 'lucide-react';
+} from '@/components/keenicons/icons';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';

@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 import { useLayout } from './context';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { Button } from '@/components/ui/button';
-import { PanelLeft, PanelRight } from 'lucide-react';
+import { PanelLeft, PanelRight } from '@/components/keenicons/icons';
 
 export function SidebarHeader() {
   const { sidebarToggle, isSidebarOpen } = useLayout();

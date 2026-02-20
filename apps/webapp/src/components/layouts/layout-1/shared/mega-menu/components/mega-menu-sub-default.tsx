@@ -31,7 +31,7 @@ const MegaMenuSubDefault = (items: MenuConfig) => {
               to={item.path || ''}
               className={cn(
                 'flex flex-row items-center gap-2.5 px-2.5 py-2 rounded-md hover:bg-accent/50 text-sm',
-                '[&_svg]:text-muted-foreground hover:[&_svg]:text-primary [&[data-active=true]_svg]:text-primary',
+                '[&_svg]:text-muted-foreground [&_i]:text-muted-foreground hover:[&_svg]:text-primary [&_i]:text-primary [&[data-active=true]_svg]:text-primary',
               )}
             >
               {item.icon && <item.icon className="size-4" />}

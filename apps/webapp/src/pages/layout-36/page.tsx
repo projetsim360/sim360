@@ -16,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ChevronDown, ChevronLeft, ChevronRight} from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight} from "@/components/keenicons/icons";
 
 export function Layout36Page() {
   const [viewMode, setViewMode] = useState<"Month" | "Week" | "Day">("Week");

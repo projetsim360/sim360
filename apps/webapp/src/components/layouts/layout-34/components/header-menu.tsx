@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from "@/components/keenicons/icons";
 
 export function HeaderMenu() {
   const { pathname } = useLocation();

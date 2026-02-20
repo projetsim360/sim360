@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { ChevronRight, MoreHorizontal } from 'lucide-react';
+import { ChevronRight, MoreHorizontal } from '@/components/ui/icons';
 import { Slot as SlotPrimitive } from 'radix-ui';
 
 function Breadcrumb({
@@ -57,7 +57,7 @@ const BreadcrumbSeparator = ({ children, className, ...props }: React.ComponentP
     data-slot="breadcrumb-separator"
     role="presentation"
     aria-hidden="true"
-    className={cn('[&>svg]:w-3.5 [&>svg]:h-3.5', className)}
+    className={cn('[&>svg]:w-3.5 [&>i]:w-3.5 [&>svg]:h-3.5 [&>i]:h-3.5', className)}
     {...props}
   >
     {children ?? <ChevronRight className="rtl:rotate-180" />}

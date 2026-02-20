@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetBody } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { PanelRightOpen } from "lucide-react";
+import { PanelRightOpen } from "@/components/keenicons/icons";
 import { SidebarSecondaryHeader } from "./sidebar-secondary-header";
 import { SidebarSecondaryContent } from "./sidebar-secondary-content";
 

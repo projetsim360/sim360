@@ -1,4 +1,4 @@
-import { LucideIcon } from 'lucide-react';
+import { LucideIcon } from '@/components/keenicons/icons';
 
 export interface ChatThread {
   id: string;

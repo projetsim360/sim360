@@ -3,7 +3,7 @@ import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { Check, Copy } from 'lucide-react';
+import { Check, Copy } from '@/components/ui/icons';
 import { Slot as SlotPrimitive } from 'radix-ui';
 
 export interface CodeProps extends React.HTMLAttributes<HTMLElement>, VariantProps<typeof codeVariants> {

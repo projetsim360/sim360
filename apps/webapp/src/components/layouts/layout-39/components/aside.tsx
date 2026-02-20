@@ -1,4 +1,4 @@
-import { Sparkles, X } from "lucide-react";
+import { Sparkles, X } from "@/components/keenicons/icons";
 import { Button } from "@/components/ui/button";
 import { useLayout } from "./context";
 import { cn } from "@/lib/utils";

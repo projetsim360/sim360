@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Copy, FileUp, Pencil, Search, Trash2 } from 'lucide-react';
+import { Copy, FileUp, Pencil, Search, Trash2 } from '@/components/keenicons/icons';
 import { Link } from 'react-router-dom';
 import {
   DropdownMenu,

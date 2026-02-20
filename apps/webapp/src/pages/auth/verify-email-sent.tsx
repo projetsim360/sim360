@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { api } from '@/lib/api-client';
-import { Mail } from 'lucide-react';
+import { Mail } from '@/components/keenicons/icons';
 import { Button } from '@/components/ui/button';
 
 export function VerifyEmailSentPage() {

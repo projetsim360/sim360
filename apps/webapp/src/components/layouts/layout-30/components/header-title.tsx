@@ -17,7 +17,7 @@ import {
   Plus,
   Crown,
 	ChevronsDownUp,
-} from 'lucide-react';
+} from '@/components/keenicons/icons';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 

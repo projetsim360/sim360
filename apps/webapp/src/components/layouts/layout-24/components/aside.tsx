@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input, InputWrapper } from "@/components/ui/input";
-import { Coffee, MessageSquareCode, Pin, Search, VectorSquare } from "lucide-react";
+import { Coffee, MessageSquareCode, Pin, Search, VectorSquare } from "@/components/keenicons/icons";
 
 export function Aside() {
   const handleInputChange = () => {};

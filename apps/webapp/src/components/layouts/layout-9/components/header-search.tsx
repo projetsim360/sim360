@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react';
+import { Search } from '@/components/keenicons/icons';
 import { Input } from '@/components/ui/input';
 
 export function HeaderSearch() {

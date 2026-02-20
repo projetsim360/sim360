@@ -1,4 +1,4 @@
-import { Heart, Mail } from 'lucide-react';
+import { Heart, Mail } from '@/components/keenicons/icons';
 import { Link } from 'react-router-dom';
 import {
   Avatar,

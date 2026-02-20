@@ -1,4 +1,4 @@
-import { PanelRight } from 'lucide-react';
+import { PanelRight } from '@/components/keenicons/icons';
 import { useLayout } from './context';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router';

@@ -6,7 +6,7 @@ import {
   Moon,
   Settings,
   UserCircle,
-} from 'lucide-react';
+} from '@/components/keenicons/icons';
 import { useTheme } from 'next-themes';
 import { Link } from 'react-router-dom';
 import { toAbsoluteUrl } from '@/lib/helpers';

@@ -7,7 +7,7 @@ import {
   AccordionMenuLabel,
 } from '@/components/ui/accordion-menu';
 import { cn } from "@/lib/utils";
-import { LucideIcon, Plus, Clock, Archive, AlertTriangle, Trash, Tag } from "lucide-react";
+import { LucideIcon, Plus, Clock, Archive, AlertTriangle, Trash, Tag } from "@/components/keenicons/icons";
 import { Button } from '@/components/ui/button';
 import CreateLabelDialog from './create-label';
 

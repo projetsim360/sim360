@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { useLayout } from './layout-context';
-import { PanelRightClose } from 'lucide-react';
+import { PanelRightClose } from '@/components/keenicons/icons';
 import { cn } from '@/lib/utils';
 
 export function ContentHeader({ children, className }: { children: React.ReactNode, className?: string }) {

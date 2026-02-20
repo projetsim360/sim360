@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Bot, User, Mic, X, FileText, Plus, Fullscreen, Group } from 'lucide-react';
+import { Send, Bot, User, Mic, X, FileText, Plus, Fullscreen, Group } from '@/components/keenicons/icons';
 import { useState, useRef, useEffect } from 'react';
 import {
   Dialog,

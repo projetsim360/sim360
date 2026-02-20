@@ -5,7 +5,7 @@ import { UserDropdownMenu } from '@/components/layouts/layout-1/shared/topbar/us
 import {
   LayoutGrid,
   MessageCircleMore,
-} from 'lucide-react';
+} from '@/components/keenicons/icons';
 import { Link, useLocation } from 'react-router-dom';
 import { getHeight } from '@/lib/dom';
 import { toAbsoluteUrl } from '@/lib/helpers';
@@ -131,7 +131,7 @@ export function SidebarPrimary() {
               <Button
                 variant="ghost"
                 mode="icon"
-                className="size-9 hover:bg-background hover:[&_svg]:text-primary"
+                className="size-9 hover:bg-background hover:[&_svg]:text-primary [&_i]:text-primary"
               >
                 <MessageCircleMore className="size-4.5!" />
               </Button>
@@ -142,7 +142,7 @@ export function SidebarPrimary() {
               <Button
                 variant="ghost"
                 mode="icon"
-                className="size-9 hover:bg-background hover:[&_svg]:text-primary"
+                className="size-9 hover:bg-background hover:[&_svg]:text-primary [&_i]:text-primary"
               >
                 <LayoutGrid className="size-4.5!" />
               </Button>

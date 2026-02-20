@@ -2,7 +2,7 @@ import { useLayout } from "@/components/layouts/layout-29/components/context";
 import { Toolbar, ToolbarHeading, ToolbarPageTitle, ToolbarDescription, ToolbarActions } from "@/components/layouts/layout-29/components/toolbar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { PanelRight } from "lucide-react";
+import { PanelRight } from "@/components/keenicons/icons";
 import { Navbar } from "@/components/layouts/layout-29/components/navbar";
 
 export function Layout29Page() {

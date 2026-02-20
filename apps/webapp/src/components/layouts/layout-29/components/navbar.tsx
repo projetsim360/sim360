@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Coffee, MessageSquareCode, Pin, NotebookText, Plus } from "lucide-react";
+import { Coffee, MessageSquareCode, Pin, NotebookText, Plus } from "@/components/keenicons/icons";
 import { UserDropdownMenu } from "./user-dropdown-menu";
 import { useLayout } from "./context";
 

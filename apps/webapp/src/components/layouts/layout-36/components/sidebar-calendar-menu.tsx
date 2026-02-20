@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calendar, Clock, CheckSquare, Bell, Users, Settings } from 'lucide-react';
+import { Calendar, Clock, CheckSquare, Bell, Users, Settings } from '@/components/keenicons/icons';
 import { cn } from '@/lib/utils';
 
 interface MenuItem {

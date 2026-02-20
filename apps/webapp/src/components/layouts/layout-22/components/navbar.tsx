@@ -21,8 +21,8 @@ export function Navbar() {
                   to={item.path || '#'}
                   className={cn(
                     "gap-2 inline-flex items-center border-b border-transparent text-sm font-normal whitespace-nowrap text-secondary-foreground hover:text-primary py-2.5 lg:py-0", 
-                    "[&_svg]:text-muted-foreground",
-                    active && "text-primary border-primary [&_svg]:text-primary")}
+                    "[&_svg]:text-muted-foreground [&_i]:text-muted-foreground",
+                    active && "text-primary border-primary [&_svg]:text-primary [&_i]:text-primary")}
                 >
                   {item.icon && <item.icon className="size-4"/>}
                   <span>{item.title}</span>

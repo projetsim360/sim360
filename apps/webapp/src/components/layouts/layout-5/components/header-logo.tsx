@@ -7,7 +7,7 @@ import {
   UserCircle,
   Users,
   type LucideIcon,
-} from 'lucide-react';
+} from '@/components/keenicons/icons';
 import { Link, useLocation } from 'react-router-dom';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { cn } from '@/lib/utils';

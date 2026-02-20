@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { CircleX, CircleCheck } from 'lucide-react';
+import { CircleX, CircleCheck } from '@/components/keenicons/icons';
 import {
   Dialog,
   DialogContent,

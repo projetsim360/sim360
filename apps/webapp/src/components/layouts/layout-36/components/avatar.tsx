@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Ellipsis } from 'lucide-react';
+import { Ellipsis } from '@/components/keenicons/icons';
 
 export default function AvatarDemo() {
   return (

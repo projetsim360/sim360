@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { api } from '@/lib/api-client';
-import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { CheckCircle, XCircle, Loader2 } from '@/components/keenicons/icons';
 import { Button } from '@/components/ui/button';
 
 export function VerifyEmailPage() {

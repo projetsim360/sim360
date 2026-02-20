@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { Menu, Sparkles } from 'lucide-react';
+import { Menu, Sparkles } from '@/components/keenicons/icons';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import {
   Sheet,

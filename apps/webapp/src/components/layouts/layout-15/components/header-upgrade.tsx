@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Award } from 'lucide-react';
+import { Award } from '@/components/keenicons/icons';
 
 export function HeaderUpgrade() {
   return (

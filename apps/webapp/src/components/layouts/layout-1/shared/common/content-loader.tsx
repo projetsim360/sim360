@@ -1,4 +1,4 @@
-import { LoaderCircleIcon } from 'lucide-react';
+import { LoaderCircleIcon } from '@/components/keenicons/icons';
 import { cn } from '@/lib/utils';
 
 export function ContentLoader({ className }: { className?: string }) {

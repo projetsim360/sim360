@@ -1,7 +1,7 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MailViewWrapper } from "./mail-view-wrapper";
 import { Button } from "@/components/ui/button";
-import { Mail, Plus, Sparkles } from "lucide-react";
+import { Mail, Plus, Sparkles } from "@/components/keenicons/icons";
 import { Reply } from "./reply";
 import { ZeroChat } from "./zero-chat";
 import { useState } from "react";

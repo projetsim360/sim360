@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus } from '@/components/ui/avatar';
-import { Plus } from 'lucide-react';
+import { Plus } from '@/components/keenicons/icons';
 import { cn } from '@/lib/utils';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { useAuth } from '@/providers/auth-provider';

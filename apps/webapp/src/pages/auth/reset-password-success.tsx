@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle } from '@/components/keenicons/icons';
 import { Button } from '@/components/ui/button';
 
 export function ResetPasswordSuccessPage() {

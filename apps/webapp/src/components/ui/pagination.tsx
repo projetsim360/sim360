@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal } from '@/components/ui/icons';
 
 const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
   <nav

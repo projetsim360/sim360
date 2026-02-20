@@ -5,7 +5,7 @@ import {
   Pin,
   ClipboardList,
   Plus,
-} from "lucide-react";
+} from "@/components/keenicons/icons";
 import { Button } from "@/components/ui/button";
 import { Input, InputWrapper } from "@/components/ui/input";
 import { useLayout } from "./context";

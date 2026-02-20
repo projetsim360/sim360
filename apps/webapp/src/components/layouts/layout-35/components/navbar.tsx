@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useLayout } from "./context";
-import { ChevronDown, Settings, Users, Shield, CreditCard, HelpCircle, FileText } from "lucide-react";
+import { ChevronDown, Settings, Users, Shield, CreditCard, HelpCircle, FileText } from "@/components/keenicons/icons";
 
 export function Navbar({ isVertical = false }: { isVertical?: boolean }) {
   const { isMobile } = useLayout();

@@ -1,5 +1,5 @@
 import { ReactNode, useState } from 'react';
-import { Award, Coffee, Info, TrendingUp } from 'lucide-react';
+import { Award, Coffee, Info, TrendingUp } from '@/components/keenicons/icons';
 import {
   DropdownMenu,
   DropdownMenuContent,

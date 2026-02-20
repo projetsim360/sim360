@@ -1,7 +1,7 @@
 import { toAbsoluteUrl } from "@/lib/helpers";
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetBody } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { Menu } from "@/components/keenicons/icons";
 import { useEffect, useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { SidebarContent } from "./sidebar-content";

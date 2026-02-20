@@ -1,5 +1,5 @@
 import { useState, forwardRef, type InputHTMLAttributes } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from '@/components/keenicons/icons';
 
 interface PasswordInputProps extends InputHTMLAttributes<HTMLInputElement> {
   showStrength?: boolean;

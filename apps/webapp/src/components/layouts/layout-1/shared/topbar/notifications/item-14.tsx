@@ -1,4 +1,4 @@
-import { Check } from 'lucide-react';
+import { Check } from '@/components/keenicons/icons';
 
 export default function Item14() {
   return (

@@ -1,4 +1,4 @@
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown } from '@/components/keenicons/icons';
 import { Link, useLocation } from 'react-router-dom';
 import { MenuConfig } from '@/config/types';
 import { cn } from '@/lib/utils';

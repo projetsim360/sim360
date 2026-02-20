@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { format } from "date-fns"
-import { PlusIcon } from "lucide-react"
+import { PlusIcon } from "@/components/keenicons/icons"
 
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"

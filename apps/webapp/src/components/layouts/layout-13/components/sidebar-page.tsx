@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { Plus } from "lucide-react";
+import { Plus } from "@/components/keenicons/icons";
 import {
   AccordionMenu,
   AccordionMenuIndicator,

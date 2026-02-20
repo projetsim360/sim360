@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus } from '@/components/keenicons/icons';
 import { AddTagDialog } from './add-tag';
 import { Button } from '@/components/ui/button';
 import { BadgeDot } from '@/components/ui/badge';

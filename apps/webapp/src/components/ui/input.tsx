@@ -28,13 +28,13 @@ const inputVariants = cva(
 );
 
 const inputAddonVariants = cva(
-  'flex items-center shrink-0 justify-center bg-muted border border-input shadow-xs shadow-[rgba(0,0,0,0.05)] text-secondary-foreground [&_svg]:text-secondary-foreground/60',
+  'flex items-center shrink-0 justify-center bg-muted border border-input shadow-xs shadow-[rgba(0,0,0,0.05)] text-secondary-foreground [&_svg]:text-secondary-foreground/60 [&_i]:text-secondary-foreground/60',
   {
     variants: {
       variant: {
-        sm: 'rounded-md h-7 min-w-7 text-xs px-2.5 [&_svg:not([class*=size-])]:size-3.5',
-        md: 'rounded-md h-8.5 min-w-8.5 px-3 text-[0.8125rem] leading-(--text-sm--line-height) [&_svg:not([class*=size-])]:size-4.5',
-        lg: 'rounded-md h-10 min-w-10 px-4 text-sm [&_svg:not([class*=size-])]:size-4.5',
+        sm: 'rounded-md h-7 min-w-7 text-xs px-2.5 [&_svg:not([class*=size-])]:size-3.5 [&_i:not([class*=size-])]:text-sm',
+        md: 'rounded-md h-8.5 min-w-8.5 px-3 text-[0.8125rem] leading-(--text-sm--line-height) [&_svg:not([class*=size-])]:size-4.5 [&_i:not([class*=size-])]:text-lg',
+        lg: 'rounded-md h-10 min-w-10 px-4 text-sm [&_svg:not([class*=size-])]:size-4.5 [&_i:not([class*=size-])]:text-lg',
       },
       mode: {
         default: '',
@@ -99,15 +99,15 @@ const inputWrapperVariants = cva(
     [&_[data-slot=input]]:disabled:cursor-not-allowed
     [&_[data-slot=input]]:disabled:opacity-50    
 
-    [&_svg]:text-muted-foreground 
-    [&_svg]:shrink-0
+    [&_svg]:text-muted-foreground [&_i]:text-muted-foreground 
+    [&_svg]:shrink-0 [&_i]:shrink-0
   `,
   {
     variants: {
       variant: {
-        sm: 'gap-1.25 [&_svg:not([class*=size-])]:size-3.5',
-        md: 'gap-1.5 [&_svg:not([class*=size-])]:size-4',
-        lg: 'gap-1.5 [&_svg:not([class*=size-])]:size-4',
+        sm: 'gap-1.25 [&_svg:not([class*=size-])]:size-3.5 [&_i:not([class*=size-])]:text-sm',
+        md: 'gap-1.5 [&_svg:not([class*=size-])]:size-4 [&_i:not([class*=size-])]:text-base',
+        lg: 'gap-1.5 [&_svg:not([class*=size-])]:size-4 [&_i:not([class*=size-])]:text-base',
       },
     },
     defaultVariants: {

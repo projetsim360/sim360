@@ -18,7 +18,7 @@ import {
   Plus,
   Crown,
   LogOut,
-} from 'lucide-react';
+} from '@/components/keenicons/icons';
 import { useLayout } from './layout-context';
 import { cn } from '@/lib/utils';
 

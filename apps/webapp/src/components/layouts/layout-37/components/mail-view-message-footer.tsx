@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Reply, ReplyAll, Forward, Mail, Download, Folder } from "lucide-react";
+import { Reply, ReplyAll, Forward, Mail, Download, Folder } from "@/components/keenicons/icons";
 import { Reply as ReplyDialog } from "./reply";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";

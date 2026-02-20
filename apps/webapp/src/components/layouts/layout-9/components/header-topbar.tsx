@@ -1,4 +1,4 @@
-import { ChevronDown, MessageCircleMore, MessageSquareDot } from 'lucide-react';
+import { ChevronDown, MessageCircleMore, MessageSquareDot } from '@/components/keenicons/icons';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -18,7 +18,7 @@ export function HeaderTopbar() {
               variant="ghost"
               mode="icon"
               shape="circle"
-              className="hover:bg-transparent hover:[&_svg]:text-primary"
+              className="hover:bg-transparent hover:[&_svg]:text-primary [&_i]:text-primary"
             >
               <MessageCircleMore className="size-4.5!" />
             </Button>
@@ -31,7 +31,7 @@ export function HeaderTopbar() {
               variant="ghost"
               mode="icon"
               shape="circle"
-              className="hover:bg-transparent hover:[&_svg]:text-primary"
+              className="hover:bg-transparent hover:[&_svg]:text-primary [&_i]:text-primary"
             >
               <MessageSquareDot className="size-4.5!" />
             </Button>

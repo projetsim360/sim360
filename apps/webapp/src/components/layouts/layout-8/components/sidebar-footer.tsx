@@ -1,4 +1,4 @@
-import { LayoutGrid, MessageCircleMore } from 'lucide-react';
+import { LayoutGrid, MessageCircleMore } from '@/components/keenicons/icons';
 import { Button } from '@/components/ui/button';
 import { ChatSheet } from '../../layout-1/shared/topbar/chat-sheet';
 import { AppsDropdownMenu } from '../../layout-1/shared/topbar/apps-dropdown-menu';
@@ -21,7 +21,7 @@ export function SidebarFooter() {
             <Button
               variant="ghost"
               mode="icon"
-              className="hover:bg-background hover:[&_svg]:text-primary"
+              className="hover:bg-background hover:[&_svg]:text-primary [&_i]:text-primary"
             >
               <MessageCircleMore className="size-4.5!" />
             </Button>
@@ -32,7 +32,7 @@ export function SidebarFooter() {
             <Button
               variant="ghost"
               mode="icon"
-              className="hover:bg-background hover:[&_svg]:text-primary"
+              className="hover:bg-background hover:[&_svg]:text-primary [&_i]:text-primary"
             >
               <LayoutGrid className="size-4.5!" />
             </Button>

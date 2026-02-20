@@ -4,7 +4,7 @@ import * as React from 'react';
 import { isValidElement, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { cva, VariantProps } from 'class-variance-authority';
-import { Check, ChevronDown, ChevronUp } from 'lucide-react';
+import { Check, ChevronDown, ChevronUp } from '@/components/ui/icons';
 import { Select as SelectPrimitive } from 'radix-ui';
 
 // Create a Context for `indicatorPosition` and `indicator` control

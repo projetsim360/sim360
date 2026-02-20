@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
-import { Upload, X, User } from 'lucide-react';
+import { Upload, X, User } from '@/components/keenicons/icons';
 import { api } from '@/lib/api-client';
 
 interface AvatarUploadProps {

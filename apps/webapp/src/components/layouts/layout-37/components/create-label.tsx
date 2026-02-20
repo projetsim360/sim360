@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { CircleCheck } from 'lucide-react';
+import { CircleCheck } from '@/components/keenicons/icons';
 
 interface CreateLabelDialogProps {
   open: boolean;

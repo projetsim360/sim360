@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MENU_SIDEBAR_MAIN } from '@/config/layout-30.config';
 import { useTheme } from 'next-themes';
-import { Building2, Clock, Download, ExternalLink, LogOut, Mails, Moon, NotepadText, Settings, Shield, Sun, Target, User, Users, Zap } from 'lucide-react';
+import { Building2, Clock, Download, ExternalLink, LogOut, Mails, Moon, NotepadText, Settings, Shield, Sun, Target, User, Users, Zap } from '@/components/keenicons/icons';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';

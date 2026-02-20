@@ -8,7 +8,7 @@ import {
   Users,
   ShieldUser,
   Plus,
-} from 'lucide-react';
+} from '@/components/keenicons/icons';
 
 const menuItems = [
   {

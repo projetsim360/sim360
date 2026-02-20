@@ -15,7 +15,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {Plus, CheckSquare, ListTodo, Settings, HelpCircle, LogOut, Moon, Sun } from "lucide-react";
+import {Plus, CheckSquare, ListTodo, Settings, HelpCircle, LogOut, Moon, Sun } from "@/components/keenicons/icons";
 
 interface UserDropdownMenuProps {
   isCollapsed?: boolean;

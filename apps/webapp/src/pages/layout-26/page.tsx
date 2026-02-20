@@ -1,6 +1,6 @@
 import { Toolbar, ToolbarActions, ToolbarDescription, ToolbarHeading, ToolbarPageTitle, ToolbarSidebarToggle } from "@/components/layouts/layout-26/components/toolbar";
 import { Button } from "@/components/ui/button";
-import { ClipboardList, Coffee, MessageSquareCode, Pin, Plus } from "lucide-react";
+import { ClipboardList, Coffee, MessageSquareCode, Pin, Plus } from "@/components/keenicons/icons";
 
 export function Layout26Page() {
   return (

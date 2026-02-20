@@ -1,4 +1,4 @@
-import { Plus, Sparkles } from "lucide-react";
+import { Plus, Sparkles } from "@/components/keenicons/icons";
 import { Button } from "@/components/ui/button";
 import {
   Toolbar,
