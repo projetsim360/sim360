@@ -7,6 +7,8 @@ import { Toaster } from '@/components/ui/sonner';
 import { QueryProvider } from '@/providers/query-provider';
 import { LayoutSwitcherProvider } from '@/providers/layout-switcher-provider';
 import { AuthProvider } from '@/providers/auth-provider';
+import { SocketProvider } from '@/providers/socket-provider';
+import { NotificationProvider } from '@/providers/notification-provider';
 
 const { BASE_URL } = import.meta.env;
 
@@ -26,8 +28,12 @@ export function App() {
             <QueryProvider>
               <LayoutSwitcherProvider>
                 <AuthProvider>
-                  <Toaster />
-                  <AppRouting />
+                  <SocketProvider>
+                    <NotificationProvider>
+                      <Toaster />
+                      <AppRouting />
+                    </NotificationProvider>
+                  </SocketProvider>
                 </AuthProvider>
               </LayoutSwitcherProvider>
             </QueryProvider>

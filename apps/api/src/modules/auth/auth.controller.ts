@@ -14,7 +14,7 @@ import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
-import { Public } from '../../common/decorators';
+import { Public, Auditable } from '../../common/decorators';
 import { CurrentUser } from '../../common/decorators';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
@@ -45,6 +45,7 @@ export class AuthController {
   @Post('register')
   @Public()
   @Throttle({ short: { ttl: 60000, limit: 5 } })
+  @Auditable('auth.register', 'Auth')
   @ApiOperation({ summary: 'Register a new user' })
   async register(@Body() dto: RegisterDto, @Req() req: Request) {
     return this.authService.register(
@@ -57,6 +58,7 @@ export class AuthController {
   @Post('login')
   @Public()
   @Throttle({ short: { ttl: 60000, limit: 10 } })
+  @Auditable('auth.login', 'Auth')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login with email and password' })
   async login(@Body() dto: LoginDto) {
@@ -73,6 +75,7 @@ export class AuthController {
 
   @Post('verify-email')
   @Public()
+  @Auditable('auth.verify-email', 'Auth')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Verify email with token' })
   async verifyEmail(@Body() dto: VerifyEmailDto) {
@@ -100,6 +103,7 @@ export class AuthController {
   @Post('reset-password')
   @Public()
   @Throttle({ short: { ttl: 60000, limit: 5 } })
+  @Auditable('auth.reset-password', 'Auth')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Reset password with token' })
   async resetPassword(@Body() dto: ResetPasswordDto) {
@@ -148,6 +152,7 @@ export class AuthController {
   @Post('logout')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @Auditable('auth.logout', 'Auth')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Logout and revoke tokens' })
   async logout(
@@ -162,6 +167,7 @@ export class AuthController {
   @Post('social/unlink-google')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @Auditable('auth.unlink-google', 'Auth')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Unlink Google account' })
   async unlinkGoogle(
@@ -188,6 +194,7 @@ export class AuthController {
   @Post('2fa/enable')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @Auditable('auth.enable-2fa', 'Auth')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Enable 2FA after verifying code' })
   async enableTwoFactor(
@@ -200,6 +207,7 @@ export class AuthController {
   @Post('2fa/disable')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @Auditable('auth.disable-2fa', 'Auth')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Disable 2FA' })
   async disableTwoFactor(

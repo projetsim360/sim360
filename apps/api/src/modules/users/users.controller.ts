@@ -17,7 +17,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiConsumes } from '@nestjs/swagger';
 import { UserRole } from '@prisma/client';
 import { UsersService } from './users.service';
-import { CurrentUser, CurrentTenant, Roles } from '../../common/decorators';
+import { CurrentUser, CurrentTenant, Roles, Auditable } from '../../common/decorators';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -49,6 +49,7 @@ export class UsersController {
   }
 
   @Patch('me/profile')
+  @Auditable('user.update-profile', 'User')
   @ApiOperation({ summary: 'Update current user profile' })
   updateProfile(@CurrentUser('id') userId: string, @Body() dto: UpdateProfileDto) {
     return this.usersService.updateProfile(userId, dto);
@@ -67,12 +68,14 @@ export class UsersController {
   }
 
   @Post('me/change-password')
+  @Auditable('user.change-password', 'User')
   @ApiOperation({ summary: 'Change password' })
   changePassword(@CurrentUser('id') userId: string, @Body() dto: ChangePasswordDto) {
     return this.usersService.changePassword(userId, dto);
   }
 
   @Post('me/avatar')
+  @Auditable('user.upload-avatar', 'User')
   @ApiOperation({ summary: 'Upload avatar' })
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file'))
@@ -98,6 +101,7 @@ export class UsersController {
   }
 
   @Delete('me')
+  @Auditable('user.delete-account', 'User')
   @ApiOperation({ summary: 'Delete account' })
   deleteAccount(@CurrentUser('id') userId: string, @Body() dto: DeleteAccountDto) {
     return this.usersService.deleteAccount(userId, dto.password || '');
@@ -105,6 +109,7 @@ export class UsersController {
 
   @Post('me/change-email')
   @Throttle({ short: { ttl: 60000, limit: 3 } })
+  @Auditable('user.change-email', 'User')
   @ApiOperation({ summary: 'Request email change' })
   changeEmail(@CurrentUser('id') userId: string, @Body() dto: ChangeEmailDto) {
     return this.usersService.requestEmailChange(userId, dto.newEmail, dto.password);

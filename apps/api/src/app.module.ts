@@ -7,7 +7,9 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { TenantsModule } from './modules/tenants/tenants.module';
 import { StorageModule } from './modules/storage/storage.module';
+import { EventStoreModule } from './modules/event-store/event-store.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { AuditModule } from './modules/audit/audit.module';
 import { AiModule } from './modules/ai/ai.module';
 import { HealthModule } from './modules/health/health.module';
 import { MailModule } from './modules/mail/mail.module';
@@ -44,11 +46,13 @@ import { notificationConfig } from './config/notification.config';
     ]),
     PrismaModule,
     MailModule,
+    EventStoreModule,
     AuthModule,
     UsersModule,
     TenantsModule,
     StorageModule,
     NotificationsModule,
+    AuditModule,
     AiModule,
     HealthModule,
   ],

@@ -77,6 +77,27 @@ export class MailService {
     }
   }
 
+  async sendNotificationEmail(to: string, firstName: string, title: string, body: string): Promise<void> {
+    try {
+      await this.transporter.sendMail({
+        from: this.from,
+        to,
+        subject: `${title} - Sim360`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #333;">Bonjour ${firstName},</h2>
+            <p style="color: #555; font-size: 16px;">${body}</p>
+            <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
+            <p style="color: #999; font-size: 12px;">Cet email a ete envoye automatiquement par Sim360.</p>
+          </div>
+        `,
+      });
+      this.logger.log(`Notification email sent to ${to}: ${title}`);
+    } catch (error) {
+      this.logger.error(`Failed to send notification email to ${to}`, error);
+    }
+  }
+
   async sendPasswordResetConfirmation(to: string, firstName: string): Promise<void> {
     const loginUrl = `${this.frontendUrl}/auth/sign-in`;
     try {

@@ -29,6 +29,7 @@ model Tenant {
   users         User[]
   notifications Notification[]
   storageFiles  StorageFile[]
+  auditLogs     AuditLog[]
 
   @@map("tenants")
 }
@@ -143,58 +144,93 @@ model RefreshToken {
   @@map("refresh_tokens")
 }
 
+// ─── Domain Events ────────────────────────────────────────
+
+model DomainEvent {
+  id            String   @id @default(cuid())
+  type          String
+  aggregateType String
+  aggregateId   String
+  data          Json
+  metadata      Json
+  tenantId      String?
+  occurredAt    DateTime
+  createdAt     DateTime @default(now())
+
+  consumers DomainEventConsumer[]
+
+  @@index([type, occurredAt])
+  @@index([aggregateType, aggregateId])
+  @@index([tenantId])
+  @@map("domain_events")
+}
+
+model DomainEventConsumer {
+  id           String    @id @default(cuid())
+  eventId      String
+  event        DomainEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  consumerName String
+  status       String    @default("PENDING")
+  processedAt  DateTime?
+  errorMessage String?
+  retryCount   Int       @default(0)
+
+  @@unique([eventId, consumerName])
+  @@index([consumerName, status])
+  @@map("domain_event_consumers")
+}
+
 // ─── Audit ──────────────────────────────────────────────
 
 model AuditLog {
-  id        String   @id @default(cuid())
-  action    String
-  ip        String?
-  userAgent String?
-  metadata  Json?
-  createdAt DateTime @default(now())
+  id           String   @id @default(cuid())
+  action       String
+  entity       String   @default("SYSTEM")
+  entityId     String?
+  ip           String?
+  userAgent    String?
+  oldValue     Json?
+  newValue     Json?
+  metadata     Json?
+  success      Boolean  @default(true)
+  errorMessage String?
+  createdAt    DateTime @default(now())
 
-  userId String?
-  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId   String?
+  user     User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  tenantId String?
+  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
 
   @@index([userId])
+  @@index([tenantId])
   @@index([action])
+  @@index([entity, entityId])
   @@index([createdAt])
   @@map("audit_logs")
 }
 
 // ─── Notifications ────────────────────────────────────────
 
-enum NotificationType {
-  SYSTEM
-  ALERT
-  INFO
-  ACTION_REQUIRED
-}
-
-enum NotificationChannel {
-  EMAIL
-  PUSH
-  IN_APP
-  SMS
-}
-
 model Notification {
-  id        String              @id @default(cuid())
-  type      NotificationType
-  channel   NotificationChannel
-  title     String
-  body      String
-  data      Json?
-  readAt    DateTime?
-  sentAt    DateTime?
-  createdAt DateTime            @default(now())
+  id         String    @id @default(cuid())
+  eventId    String?
+  type       String
+  category   String    @default("system")
+  title      String
+  body       String
+  data       Json?
+  priority   Int       @default(1)
+  readAt     DateTime?
+  archivedAt DateTime?
+  createdAt  DateTime  @default(now())
 
   userId   String
   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   tenantId String
   tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
+  @@index([userId, readAt])
+  @@index([userId, archivedAt])
   @@index([tenantId])
   @@index([createdAt])
   @@map("notifications")
