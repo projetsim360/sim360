@@ -23,6 +23,13 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { ResendVerificationDto } from './dto/resend-verification.dto';
+import {
+  GenerateTwoFactorDto,
+  EnableTwoFactorDto,
+  DisableTwoFactorDto,
+  VerifyTwoFactorLoginDto,
+  RegenerateBackupCodesDto,
+} from './dto/two-factor.dto';
 import { ConfigService } from '@nestjs/config';
 
 @ApiTags('Auth')
@@ -114,9 +121,16 @@ export class AuthController {
   async googleCallback(@Req() req: Request, @Res() res: Response) {
     const result = await this.authService.googleLogin(req.user as any);
     const frontendUrl = this.config.get<string>('auth.frontendUrl', 'http://localhost:5173');
-    res.redirect(
-      `${frontendUrl}/auth/google-callback?accessToken=${result.tokens.accessToken}&refreshToken=${result.tokens.refreshToken}`,
-    );
+
+    if (result.requires2FA) {
+      res.redirect(
+        `${frontendUrl}/auth/google-callback?requires2FA=true&tempToken=${result.tempToken}`,
+      );
+    } else {
+      res.redirect(
+        `${frontendUrl}/auth/google-callback?accessToken=${result.tokens!.accessToken}&refreshToken=${result.tokens!.refreshToken}`,
+      );
+    }
   }
 
   @Post('logout')
@@ -129,5 +143,63 @@ export class AuthController {
     @Body() dto: { refreshToken?: string },
   ) {
     return this.authService.logout(userId, dto.refreshToken);
+  }
+
+  // ─── Two-Factor Authentication ───────────────────────────
+
+  @Post('2fa/generate')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Generate 2FA secret and QR code' })
+  async generateTwoFactor(
+    @CurrentUser('id') userId: string,
+    @Body() dto: GenerateTwoFactorDto,
+  ) {
+    return this.authService.generateTwoFactorSecret(userId, dto.password);
+  }
+
+  @Post('2fa/enable')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Enable 2FA after verifying code' })
+  async enableTwoFactor(
+    @CurrentUser('id') userId: string,
+    @Body() dto: EnableTwoFactorDto,
+  ) {
+    return this.authService.enableTwoFactor(userId, dto.code);
+  }
+
+  @Post('2fa/disable')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Disable 2FA' })
+  async disableTwoFactor(
+    @CurrentUser('id') userId: string,
+    @Body() dto: DisableTwoFactorDto,
+  ) {
+    return this.authService.disableTwoFactor(userId, dto.password, dto.code);
+  }
+
+  @Post('2fa/verify')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Verify 2FA code during login' })
+  async verifyTwoFactorLogin(@Body() dto: VerifyTwoFactorLoginDto) {
+    return this.authService.verifyTwoFactorLogin(dto.tempToken, dto.code, dto.backupCode);
+  }
+
+  @Post('2fa/backup-codes')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Regenerate backup codes' })
+  async regenerateBackupCodes(
+    @CurrentUser('id') userId: string,
+    @Body() dto: RegenerateBackupCodesDto,
+  ) {
+    return this.authService.regenerateBackupCodes(userId, dto.password, dto.code);
   }
 }

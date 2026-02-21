@@ -14,4 +14,8 @@ export const authConfig = registerAs('auth', () => ({
   maxFailedAttempts: 5,
   lockoutDurationMs: 15 * 60 * 1000, // 15min
   frontendUrl: process.env.APP_URL || 'http://localhost:5173',
+  twoFactorIssuer: 'Sim360',
+  twoFactorBackupCodesCount: 10,
+  twoFactorTempTokenExpiresIn: '5m',
+  twoFactorEncryptionKey: process.env.TWO_FACTOR_ENCRYPTION_KEY || '',
 }));

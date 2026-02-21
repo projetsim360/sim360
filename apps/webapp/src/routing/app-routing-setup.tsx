@@ -12,6 +12,7 @@ import { CheckEmailPage } from '@/pages/auth/check-email';
 import { ResetPasswordPage } from '@/pages/auth/reset-password';
 import { ResetPasswordSuccessPage } from '@/pages/auth/reset-password-success';
 import { GoogleCallbackPage } from '@/pages/auth/google-callback';
+import { VerifyTwoFactorPage } from '@/pages/auth/verify-2fa';
 import { ProfileWizardPage } from '@/pages/profile/wizard';
 import { EditProfilePage } from '@/pages/profile/edit-profile';
 import { SettingsPage } from '@/pages/settings';
@@ -30,6 +31,7 @@ export function AppRoutingSetup() {
         <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
         <Route path="/auth/reset-password-success" element={<ResetPasswordSuccessPage />} />
         <Route path="/auth/google-callback" element={<GoogleCallbackPage />} />
+        <Route path="/auth/verify-2fa" element={<VerifyTwoFactorPage />} />
       </Route>
 
       {/* Profile wizard (protected, no layout) */}

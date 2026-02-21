@@ -36,6 +36,7 @@ const USER_SELECT = {
   notifEmailLevel: true,
   notifAutoSubscribe: true,
   layoutPreference: true,
+  twoFactorEnabled: true,
   createdAt: true,
   updatedAt: true,
 };

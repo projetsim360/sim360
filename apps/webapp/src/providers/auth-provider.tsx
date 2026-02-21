@@ -13,6 +13,7 @@ interface AuthUser {
   tenantId: string;
   profileCompleted: boolean;
   emailVerifiedAt?: string;
+  twoFactorEnabled: boolean;
   profileVisibility: boolean;
   timezone?: string;
   dateFormat?: string;
@@ -33,7 +34,7 @@ interface AuthContextType {
   user: AuthUser | null;
   isLoading: boolean;
   isLoggedIn: boolean;
-  login: (email: string, password: string, rememberMe?: boolean) => Promise<AuthUser>;
+  login: (email: string, password: string, rememberMe?: boolean) => Promise<AuthUser | null>;
   register: (data: {
     email: string;
     password: string;
@@ -80,20 +81,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback(
     async (email: string, password: string, rememberMe = false) => {
       const response = await api.post<{
-        tokens: { accessToken: string; refreshToken: string };
-        user: AuthUser;
+        requires2FA?: boolean;
+        tempToken?: string;
+        tokens?: { accessToken: string; refreshToken: string };
+        user?: AuthUser;
       }>('/auth/login', { email, password, rememberMe });
 
-      setTokens(response.tokens.accessToken, response.tokens.refreshToken);
-      setUser(response.user);
+      // 2FA required: store temp token and redirect to verification
+      if (response.requires2FA && response.tempToken) {
+        sessionStorage.setItem('sim360_2fa_temp_token', response.tempToken);
+        navigate('/auth/verify-2fa');
+        return null;
+      }
 
-      if (!response.user.profileCompleted) {
+      setTokens(response.tokens!.accessToken, response.tokens!.refreshToken);
+      setUser(response.user!);
+
+      if (!response.user!.profileCompleted) {
         navigate('/profile/wizard');
       } else {
         navigate('/dashboard');
       }
 
-      return response.user;
+      return response.user!;
     },
     [navigate],
   );

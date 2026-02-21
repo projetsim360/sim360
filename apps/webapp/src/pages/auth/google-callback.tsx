@@ -10,6 +10,16 @@ export function GoogleCallbackPage() {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    // Handle 2FA redirect from Google OAuth
+    const requires2FA = searchParams.get('requires2FA');
+    const tempToken = searchParams.get('tempToken');
+
+    if (requires2FA === 'true' && tempToken) {
+      sessionStorage.setItem('sim360_2fa_temp_token', tempToken);
+      navigate('/auth/verify-2fa', { replace: true });
+      return;
+    }
+
     const accessToken = searchParams.get('accessToken');
     const refreshToken = searchParams.get('refreshToken');
 

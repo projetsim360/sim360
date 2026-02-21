@@ -39,8 +39,10 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
+    "qrcode": "^1.5.4",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "speakeasy": "^2.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.4.9",
@@ -52,6 +54,8 @@
     "@types/nodemailer": "^6.4.17",
     "@types/passport-google-oauth20": "^2.0.17",
     "@types/passport-jwt": "^4.0.1",
+    "@types/qrcode": "^1.5.6",
+    "@types/speakeasy": "^2.0.10",
     "prisma": "^6.9.0",
     "typescript": "^5.9.2"
   }

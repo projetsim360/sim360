@@ -9,10 +9,13 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
 import { randomBytes } from 'crypto';
+import * as speakeasy from 'speakeasy';
+import * as QRCode from 'qrcode';
 import { PrismaService } from '../../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { encrypt, decrypt } from '../../common/utils/crypto.util';
 
 @Injectable()
 export class AuthService {
@@ -133,6 +136,15 @@ export class AuthService {
         where: { id: user.id },
         data: { failedLoginAttempts: 0, lockedUntil: null },
       });
+    }
+
+    // 2FA check: if enabled, return temp token instead of full tokens
+    if (user.twoFactorEnabled) {
+      const tempToken = this.jwtService.sign(
+        { sub: user.id, type: '2fa_temp', rememberMe: dto.rememberMe ?? false },
+        { expiresIn: this.config.get<string>('auth.twoFactorTempTokenExpiresIn', '5m') },
+      );
+      return { requires2FA: true, tempToken };
     }
 
     const rememberMe = dto.rememberMe ?? false;
@@ -347,9 +359,18 @@ export class AuthService {
       });
     }
 
+    // 2FA check for Google login
+    if (user.twoFactorEnabled) {
+      const tempToken = this.jwtService.sign(
+        { sub: user.id, type: '2fa_temp', rememberMe: false },
+        { expiresIn: this.config.get<string>('auth.twoFactorTempTokenExpiresIn', '5m') },
+      );
+      return { requires2FA: true, tempToken, tokens: null, user };
+    }
+
     const tokens = await this.generateTokens(user.id, user.email, user.tenantId, user.role, false);
 
-    return { tokens, user };
+    return { requires2FA: false, tokens, user };
   }
 
   async logout(userId: string, refreshToken?: string) {
@@ -367,6 +388,250 @@ export class AuthService {
 
     return { message: 'Déconnexion réussie' };
   }
+
+  // ─── Two-Factor Authentication ───────────────────────────
+
+  async generateTwoFactorSecret(userId: string, password: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new BadRequestException('Utilisateur non trouvé');
+
+    if (user.twoFactorEnabled) {
+      throw new BadRequestException('Le 2FA est déjà activé');
+    }
+
+    // Verify password (OAuth-only users can't set up 2FA without a password)
+    if (!user.passwordHash) {
+      throw new BadRequestException('Vous devez définir un mot de passe avant d\'activer le 2FA');
+    }
+
+    const isValid = await bcrypt.compare(password, user.passwordHash);
+    if (!isValid) {
+      throw new BadRequestException('Mot de passe incorrect');
+    }
+
+    const issuer = this.config.get<string>('auth.twoFactorIssuer', 'Sim360');
+    const generated = speakeasy.generateSecret({
+      name: `${issuer}:${user.email}`,
+      issuer,
+    });
+    const secret = generated.base32;
+    const otpauthUrl = generated.otpauth_url!;
+
+    // Encrypt and store secret temporarily (not enabled yet)
+    const encryptionKey = this.config.get<string>('auth.twoFactorEncryptionKey')!;
+    const encryptedSecret = encrypt(secret, encryptionKey);
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { twoFactorSecret: encryptedSecret },
+    });
+
+    const qrCodeDataUri = await QRCode.toDataURL(otpauthUrl);
+
+    return { qrCode: qrCodeDataUri, secret };
+  }
+
+  async enableTwoFactor(userId: string, code: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new BadRequestException('Utilisateur non trouvé');
+
+    if (user.twoFactorEnabled) {
+      throw new BadRequestException('Le 2FA est déjà activé');
+    }
+
+    if (!user.twoFactorSecret) {
+      throw new BadRequestException('Veuillez d\'abord générer un secret 2FA');
+    }
+
+    // Decrypt and verify
+    const encryptionKey = this.config.get<string>('auth.twoFactorEncryptionKey')!;
+    const secret = decrypt(user.twoFactorSecret, encryptionKey);
+    const isValid = speakeasy.totp.verify({ secret, encoding: 'base32', token: code, window: 1 });
+
+    if (!isValid) {
+      throw new BadRequestException('Code 2FA invalide');
+    }
+
+    // Generate backup codes
+    const backupCodesCount = this.config.get<number>('auth.twoFactorBackupCodesCount', 10);
+    const plainBackupCodes: string[] = [];
+    const hashedBackupCodes: string[] = [];
+
+    for (let i = 0; i < backupCodesCount; i++) {
+      const code = `${randomBytes(2).toString('hex')}-${randomBytes(2).toString('hex')}`;
+      plainBackupCodes.push(code);
+      hashedBackupCodes.push(await bcrypt.hash(code, 10));
+    }
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        twoFactorEnabled: true,
+        twoFactorBackupCodes: hashedBackupCodes,
+      },
+    });
+
+    return { backupCodes: plainBackupCodes };
+  }
+
+  async disableTwoFactor(userId: string, password: string, code: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new BadRequestException('Utilisateur non trouvé');
+
+    if (!user.twoFactorEnabled) {
+      throw new BadRequestException('Le 2FA n\'est pas activé');
+    }
+
+    // Verify password
+    if (!user.passwordHash) {
+      throw new BadRequestException('Mot de passe requis');
+    }
+    const passwordValid = await bcrypt.compare(password, user.passwordHash);
+    if (!passwordValid) {
+      throw new BadRequestException('Mot de passe incorrect');
+    }
+
+    // Verify TOTP code
+    const encryptionKey = this.config.get<string>('auth.twoFactorEncryptionKey')!;
+    const secret = decrypt(user.twoFactorSecret!, encryptionKey);
+    const codeValid = speakeasy.totp.verify({ secret, encoding: 'base32', token: code, window: 1 });
+    if (!codeValid) {
+      throw new BadRequestException('Code 2FA invalide');
+    }
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        twoFactorEnabled: false,
+        twoFactorSecret: null,
+        twoFactorBackupCodes: [],
+      },
+    });
+
+    return { message: '2FA désactivé avec succès' };
+  }
+
+  async verifyTwoFactorLogin(tempToken: string, code?: string, backupCode?: string) {
+    if (!code && !backupCode) {
+      throw new BadRequestException('Veuillez fournir un code TOTP ou un code de secours');
+    }
+
+    let payload: { sub: string; type: string; rememberMe: boolean };
+    try {
+      payload = this.jwtService.verify(tempToken);
+    } catch {
+      throw new UnauthorizedException('Token temporaire invalide ou expiré');
+    }
+
+    if (payload.type !== '2fa_temp') {
+      throw new UnauthorizedException('Token invalide');
+    }
+
+    const user = await this.prisma.user.findUnique({ where: { id: payload.sub } });
+    if (!user || !user.twoFactorEnabled || !user.twoFactorSecret) {
+      throw new UnauthorizedException('Configuration 2FA invalide');
+    }
+
+    const encryptionKey = this.config.get<string>('auth.twoFactorEncryptionKey')!;
+
+    if (code) {
+      const secret = decrypt(user.twoFactorSecret, encryptionKey);
+      const isValid = speakeasy.totp.verify({ secret, encoding: 'base32', token: code, window: 1 });
+      if (!isValid) {
+        throw new UnauthorizedException('Code 2FA invalide');
+      }
+    } else if (backupCode) {
+      // Find and consume a matching backup code
+      let matched = false;
+      const remaining: string[] = [];
+
+      for (const hashedCode of user.twoFactorBackupCodes) {
+        if (!matched && await bcrypt.compare(backupCode, hashedCode)) {
+          matched = true;
+          // Don't add to remaining (consumed)
+        } else {
+          remaining.push(hashedCode);
+        }
+      }
+
+      if (!matched) {
+        throw new UnauthorizedException('Code de secours invalide');
+      }
+
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: { twoFactorBackupCodes: remaining },
+      });
+    }
+
+    const tokens = await this.generateTokens(
+      user.id,
+      user.email,
+      user.tenantId,
+      user.role,
+      payload.rememberMe,
+    );
+
+    return {
+      tokens,
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        avatar: user.avatar,
+        role: user.role,
+        tenantId: user.tenantId,
+        profileCompleted: user.profileCompleted,
+        emailVerifiedAt: user.emailVerifiedAt?.toISOString(),
+      },
+    };
+  }
+
+  async regenerateBackupCodes(userId: string, password: string, code: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new BadRequestException('Utilisateur non trouvé');
+
+    if (!user.twoFactorEnabled || !user.twoFactorSecret) {
+      throw new BadRequestException('Le 2FA n\'est pas activé');
+    }
+
+    // Verify password
+    if (!user.passwordHash) {
+      throw new BadRequestException('Mot de passe requis');
+    }
+    const passwordValid = await bcrypt.compare(password, user.passwordHash);
+    if (!passwordValid) {
+      throw new BadRequestException('Mot de passe incorrect');
+    }
+
+    // Verify TOTP code
+    const encryptionKey = this.config.get<string>('auth.twoFactorEncryptionKey')!;
+    const secret = decrypt(user.twoFactorSecret, encryptionKey);
+    const codeValid = speakeasy.totp.verify({ secret, encoding: 'base32', token: code, window: 1 });
+    if (!codeValid) {
+      throw new BadRequestException('Code 2FA invalide');
+    }
+
+    const backupCodesCount = this.config.get<number>('auth.twoFactorBackupCodesCount', 10);
+    const plainBackupCodes: string[] = [];
+    const hashedBackupCodes: string[] = [];
+
+    for (let i = 0; i < backupCodesCount; i++) {
+      const backupCodeStr = `${randomBytes(2).toString('hex')}-${randomBytes(2).toString('hex')}`;
+      plainBackupCodes.push(backupCodeStr);
+      hashedBackupCodes.push(await bcrypt.hash(backupCodeStr, 10));
+    }
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { twoFactorBackupCodes: hashedBackupCodes },
+    });
+
+    return { backupCodes: plainBackupCodes };
+  }
+
+  // ─── Private helpers ─────────────────────────────────────
 
   private async generateTokens(
     userId: string,

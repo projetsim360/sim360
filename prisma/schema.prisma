@@ -71,6 +71,11 @@ model User {
   // OAuth
   googleId String? @unique
 
+  // Two-Factor Authentication
+  twoFactorEnabled    Boolean  @default(false)
+  twoFactorSecret     String?
+  twoFactorBackupCodes String[] @default([])
+
   // GDPR
   gdprConsentAt        DateTime?
   gdprConsentIp        String?
