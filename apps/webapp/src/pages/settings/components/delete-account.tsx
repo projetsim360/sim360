@@ -1,11 +1,34 @@
 import { useState } from 'react';
+import { useAuth } from '@/providers/auth-provider';
+import { api } from '@/lib/api-client';
+import { toast } from 'sonner';
+import { clearTokens } from '@/lib/auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 export function DeleteAccount() {
+  const { logout } = useAuth();
   const [confirmed, setConfirmed] = useState(false);
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleDelete = async () => {
+    if (!confirmed) return;
+    setLoading(true);
+    try {
+      await api.delete('/users/me', { password });
+      clearTokens();
+      toast.success('Compte supprimé');
+      window.location.href = '/auth/sign-in';
+    } catch (error: any) {
+      toast.error(error.message || 'Erreur lors de la suppression');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Card>
@@ -23,6 +46,17 @@ export function DeleteAccount() {
             </Button>{' '}
             si vous souhaitez continuer.
           </div>
+          <div className="w-full">
+            <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
+              <Label className="flex w-full max-w-56">Mot de passe</Label>
+              <Input
+                type="password"
+                placeholder="Confirmez avec votre mot de passe"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+          </div>
           <div className="flex items-center space-x-2">
             <Checkbox
               id="confirm_delete"
@@ -35,11 +69,8 @@ export function DeleteAccount() {
           </div>
         </div>
         <div className="flex justify-end gap-2.5">
-          <Button variant="outline" disabled>
-            Désactiver plutôt
-          </Button>
-          <Button variant="destructive" disabled={!confirmed}>
-            Supprimer le compte
+          <Button variant="destructive" disabled={!confirmed || loading} onClick={handleDelete}>
+            {loading ? 'Suppression...' : 'Supprimer le compte'}
           </Button>
         </div>
       </CardContent>

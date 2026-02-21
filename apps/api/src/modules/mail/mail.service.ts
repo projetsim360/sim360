@@ -4,6 +4,7 @@ import * as nodemailer from 'nodemailer';
 import { verificationEmailTemplate } from './templates/verification.template';
 import { passwordResetTemplate } from './templates/password-reset.template';
 import { welcomeTemplate } from './templates/welcome.template';
+import { emailChangeTemplate } from './templates/email-change.template';
 
 @Injectable()
 export class MailService {
@@ -58,6 +59,21 @@ export class MailService {
       this.logger.log(`Password reset email sent to ${to}`);
     } catch (error) {
       this.logger.error(`Failed to send password reset email to ${to}`, error);
+    }
+  }
+
+  async sendEmailChangeVerification(to: string, firstName: string, token: string): Promise<void> {
+    const confirmUrl = `${this.frontendUrl}/auth/confirm-email-change?token=${token}`;
+    try {
+      await this.transporter.sendMail({
+        from: this.from,
+        to,
+        subject: 'Changement d\'adresse email - Sim360',
+        html: emailChangeTemplate(firstName, confirmUrl),
+      });
+      this.logger.log(`Email change verification sent to ${to}`);
+    } catch (error) {
+      this.logger.error(`Failed to send email change verification to ${to}`, error);
     }
   }
 

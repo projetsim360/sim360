@@ -31,13 +31,15 @@ export function GoogleCallbackPage() {
     setTokens(accessToken, refreshToken);
 
     // Fetch user to check profile completion
+    const savedPath = sessionStorage.getItem('sim360_redirect_after_login');
+    sessionStorage.removeItem('sim360_redirect_after_login');
     api
       .get<{ profileCompleted: boolean }>('/users/me')
       .then((user) => {
         if (!user.profileCompleted) {
           navigate('/profile/wizard', { replace: true });
         } else {
-          navigate('/dashboard', { replace: true });
+          navigate(savedPath || '/dashboard', { replace: true });
         }
       })
       .catch(() => {

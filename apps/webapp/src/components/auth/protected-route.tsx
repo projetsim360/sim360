@@ -14,6 +14,8 @@ export function ProtectedRoute() {
   }
 
   if (!isLoggedIn) {
+    // Save for OAuth redirect which loses React Router state
+    sessionStorage.setItem('sim360_redirect_after_login', location.pathname);
     return <Navigate to="/auth/sign-in" state={{ from: location }} replace />;
   }
 

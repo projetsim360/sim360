@@ -5,6 +5,7 @@ import { mkdirSync, existsSync, unlinkSync } from 'fs';
 import { writeFile } from 'fs/promises';
 import { randomUUID } from 'crypto';
 import { extname } from 'path';
+import sharp from 'sharp';
 
 @Injectable()
 export class StorageService {
@@ -31,7 +32,10 @@ export class StorageService {
     }
 
     const filepath = join(dir, filename);
-    await writeFile(filepath, file.buffer);
+    const resizedBuffer = await sharp(file.buffer)
+      .resize(200, 200, { fit: 'cover' })
+      .toBuffer();
+    await writeFile(filepath, resizedBuffer);
 
     const avatarUrl = `/uploads/avatars/${userId}/${filename}`;
     this.logger.log(`Avatar uploaded: ${avatarUrl}`);
