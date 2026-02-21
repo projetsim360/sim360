@@ -17,7 +17,9 @@ async function bootstrap() {
   const appUrl = config.get<string>('app.appUrl', 'http://localhost:5173');
 
   // Security
-  app.use(helmet());
+  app.use(helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  }));
 
   // CORS
   app.enableCors({

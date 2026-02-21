@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { setTokens } from '@/lib/auth';
-import { api } from '@/lib/api-client';
 import { Loader2 } from '@/components/keenicons/icons';
 
 export function GoogleCallbackPage() {
@@ -30,21 +29,12 @@ export function GoogleCallbackPage() {
 
     setTokens(accessToken, refreshToken);
 
-    // Fetch user to check profile completion
     const savedPath = sessionStorage.getItem('sim360_redirect_after_login');
     sessionStorage.removeItem('sim360_redirect_after_login');
-    api
-      .get<{ profileCompleted: boolean }>('/users/me')
-      .then((user) => {
-        if (!user.profileCompleted) {
-          navigate('/profile/wizard', { replace: true });
-        } else {
-          navigate(savedPath || '/dashboard', { replace: true });
-        }
-      })
-      .catch(() => {
-        setError("Erreur lors du chargement du profil");
-      });
+
+    // Full page reload to re-initialize AuthProvider with the new tokens
+    // This avoids race conditions with AuthProvider's initial fetchUser
+    window.location.replace(savedPath || '/dashboard');
   }, [searchParams, navigate]);
 
   if (error) {

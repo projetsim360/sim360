@@ -33,7 +33,8 @@ export function AuthSocial() {
   };
 
   const handleLinkGoogle = () => {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
+    sessionStorage.setItem('sim360_redirect_after_login', '/settings');
     window.location.href = `${apiUrl}/auth/google`;
   };
 

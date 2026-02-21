@@ -73,6 +73,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    // Skip auto-fetch on OAuth callback pages — they handle tokens themselves
+    if (window.location.pathname === '/auth/google-callback') {
+      setIsLoading(false);
+      return;
+    }
     if (isAuthenticated()) {
       fetchUser().finally(() => setIsLoading(false));
     } else {

@@ -131,13 +131,11 @@ export class AuthController {
     const frontendUrl = this.config.get<string>('auth.frontendUrl', 'http://localhost:5173');
 
     if (result.requires2FA) {
-      res.redirect(
-        `${frontendUrl}/auth/google-callback?requires2FA=true&tempToken=${result.tempToken}`,
-      );
+      const url = `${frontendUrl}/auth/google-callback?requires2FA=true&tempToken=${result.tempToken}`;
+      res.redirect(url);
     } else {
-      res.redirect(
-        `${frontendUrl}/auth/google-callback?accessToken=${result.tokens!.accessToken}&refreshToken=${result.tokens!.refreshToken}`,
-      );
+      const url = `${frontendUrl}/auth/google-callback?accessToken=${result.tokens!.accessToken}&refreshToken=${result.tokens!.refreshToken}`;
+      res.redirect(url);
     }
   }
 

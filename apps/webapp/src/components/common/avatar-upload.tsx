@@ -23,7 +23,9 @@ export function AvatarUpload({
   const fileRef = useRef<HTMLInputElement>(null);
 
   const initials = `${firstName[0] || ''}${lastName[0] || ''}`.toUpperCase();
-  const displayUrl = preview || currentAvatar;
+  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
+  const avatarSrc = currentAvatar?.startsWith('http') ? currentAvatar : currentAvatar ? `${apiBase}${currentAvatar}` : null;
+  const displayUrl = preview || avatarSrc;
 
   const handleFile = useCallback(
     async (file: File) => {
