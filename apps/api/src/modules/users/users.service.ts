@@ -2,6 +2,8 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../../prisma/prisma.service';
+import { RedisCacheService } from '../../common/services/redis-cache.service';
+import { Cacheable, CacheEvict } from '../../common/decorators';
 import { StorageService } from '../storage/storage.service';
 import { MailService } from '../mail/mail.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -49,6 +51,7 @@ const USER_SELECT = {
 export class UsersService {
   constructor(
     private prisma: PrismaService,
+    private cache: RedisCacheService,
     private storageService: StorageService,
     private mailService: MailService,
     private jwtService: JwtService,
@@ -115,6 +118,7 @@ export class UsersService {
     });
   }
 
+  @Cacheable({ key: 'user:profile::arg0', ttl: 300 })
   async getFullProfile(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -128,6 +132,7 @@ export class UsersService {
     return user;
   }
 
+  @CacheEvict({ key: 'user:profile::arg0' })
   async updateProfile(userId: string, dto: UpdateProfileDto) {
     return this.prisma.user.update({
       where: { id: userId },
@@ -136,6 +141,7 @@ export class UsersService {
     });
   }
 
+  @CacheEvict({ key: 'user:profile::arg0' })
   async completeProfileWizard(userId: string, dto: CompleteProfileWizardDto) {
     return this.prisma.user.update({
       where: { id: userId },
@@ -147,6 +153,7 @@ export class UsersService {
     });
   }
 
+  @CacheEvict({ key: 'user:profile::arg0' })
   async changePassword(userId: string, dto: ChangePasswordDto) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user || !user.passwordHash) {
@@ -173,6 +180,7 @@ export class UsersService {
     return { message: 'Mot de passe modifié avec succès' };
   }
 
+  @CacheEvict({ key: 'user:profile::arg0' })
   async uploadAvatar(userId: string, file: Express.Multer.File) {
     const avatarUrl = await this.storageService.uploadToLocal(file, userId);
 
@@ -183,6 +191,7 @@ export class UsersService {
     });
   }
 
+  @CacheEvict({ key: 'user:profile::arg0' })
   async updateSettings(userId: string, dto: UpdateSettingsDto) {
     return this.prisma.user.update({
       where: { id: userId },
@@ -191,6 +200,7 @@ export class UsersService {
     });
   }
 
+  @CacheEvict({ key: 'user:profile::arg0' })
   async deleteAvatar(userId: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (user?.avatar) {

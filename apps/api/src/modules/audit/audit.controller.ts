@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, Res, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { Response } from 'express';
 import { UserRole } from '@prisma/client';
 import { AuditService } from './audit.service';
 import { CurrentTenant, Roles } from '../../common/decorators';
@@ -36,6 +37,35 @@ export class AuditController {
       page: page ? +page : 1,
       limit: limit ? +limit : 20,
     });
+  }
+
+  @Get('export/pdf')
+  @ApiOperation({ summary: 'Export audit logs as PDF (ADMIN)' })
+  async exportPdf(
+    @CurrentTenant() tenantId: string,
+    @Res() res: Response,
+    @Query('userId') userId?: string,
+    @Query('action') action?: string,
+    @Query('entity') entity?: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+  ) {
+    const pdf = await this.auditService.exportPdf({
+      tenantId,
+      userId,
+      action,
+      entity,
+      startDate,
+      endDate,
+    });
+
+    const filename = `audit-${new Date().toISOString().slice(0, 10)}.pdf`;
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="${filename}"`,
+      'Content-Length': pdf.length,
+    });
+    res.end(pdf);
   }
 
   @Get('entity/:entity/:id')

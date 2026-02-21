@@ -1,11 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { RedisCacheService } from '../../common/services/redis-cache.service';
+import { Cacheable, CacheEvict } from '../../common/decorators';
 import { ListNotificationsDto } from './dto/list-notifications.dto';
 import { PaginatedNotificationsDto, UnreadCountDto } from './dto/notification-response.dto';
 
 @Injectable()
 export class NotificationsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private cache: RedisCacheService,
+  ) {}
 
   async findAll(
     userId: string,
@@ -54,6 +59,7 @@ export class NotificationsService {
     return notification;
   }
 
+  @Cacheable({ key: 'notif:unread::arg0::arg1', ttl: 30 })
   async getUnreadCount(userId: string, tenantId: string): Promise<UnreadCountDto> {
     const count = await this.prisma.notification.count({
       where: { userId, tenantId, readAt: null, archivedAt: null },
@@ -61,6 +67,7 @@ export class NotificationsService {
     return { count };
   }
 
+  @CacheEvict({ pattern: 'notif:unread::arg1:*' })
   async markAsRead(id: string, userId: string) {
     const notification = await this.prisma.notification.findFirst({
       where: { id, userId },
@@ -74,6 +81,7 @@ export class NotificationsService {
     });
   }
 
+  @CacheEvict({ pattern: 'notif:unread::arg0:*' })
   async markAllAsRead(userId: string, tenantId: string) {
     const result = await this.prisma.notification.updateMany({
       where: { userId, tenantId, readAt: null },
@@ -82,6 +90,7 @@ export class NotificationsService {
     return { count: result.count };
   }
 
+  @CacheEvict({ pattern: 'notif:unread::arg1:*' })
   async archive(id: string, userId: string) {
     const notification = await this.prisma.notification.findFirst({
       where: { id, userId },
@@ -95,6 +104,7 @@ export class NotificationsService {
     });
   }
 
+  @CacheEvict({ pattern: 'notif:unread::arg1:*' })
   async bulkArchive(ids: string[], userId: string) {
     const result = await this.prisma.notification.updateMany({
       where: { id: { in: ids }, userId },

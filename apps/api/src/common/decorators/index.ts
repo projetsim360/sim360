@@ -3,3 +3,4 @@ export * from './tenant.decorator';
 export * from './public.decorator';
 export * from './roles.decorator';
 export * from './auditable.decorator';
+export * from './cache.decorator';

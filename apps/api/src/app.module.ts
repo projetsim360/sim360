@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { RedisCacheModule } from './common/services/redis-cache.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
@@ -44,6 +45,7 @@ import { notificationConfig } from './config/notification.config';
         limit: 100,
       },
     ]),
+    RedisCacheModule,
     PrismaModule,
     MailModule,
     EventStoreModule,
