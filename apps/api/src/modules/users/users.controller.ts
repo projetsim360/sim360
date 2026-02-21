@@ -15,22 +15,28 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiConsumes } from '@nestjs/swagger';
+import { UserRole } from '@prisma/client';
 import { UsersService } from './users.service';
-import { CurrentUser, CurrentTenant } from '../../common/decorators';
+import { CurrentUser, CurrentTenant, Roles } from '../../common/decorators';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { CompleteProfileWizardDto } from './dto/complete-profile-wizard.dto';
 import { UpdateSettingsDto } from './dto/update-settings.dto';
+import { DeleteAccountDto } from './dto/delete-account.dto';
+import { ChangeEmailDto } from './dto/change-email.dto';
+import { Throttle, SkipThrottle } from '@nestjs/throttler';
 
 @ApiTags('Users')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'List all users in tenant' })
   findAll(@CurrentTenant() tenantId: string) {
     return this.usersService.findAll(tenantId);
@@ -91,13 +97,28 @@ export class UsersController {
     return this.usersService.deleteAvatar(userId);
   }
 
+  @Delete('me')
+  @ApiOperation({ summary: 'Delete account' })
+  deleteAccount(@CurrentUser('id') userId: string, @Body() dto: DeleteAccountDto) {
+    return this.usersService.deleteAccount(userId, dto.password || '');
+  }
+
+  @Post('me/change-email')
+  @Throttle({ short: { ttl: 60000, limit: 3 } })
+  @ApiOperation({ summary: 'Request email change' })
+  changeEmail(@CurrentUser('id') userId: string, @Body() dto: ChangeEmailDto) {
+    return this.usersService.requestEmailChange(userId, dto.newEmail, dto.password);
+  }
+
   @Get(':id')
+  @Roles(UserRole.MANAGER)
   @ApiOperation({ summary: 'Get user by ID' })
   findOne(@Param('id') id: string, @CurrentTenant() tenantId: string) {
     return this.usersService.findOne(id, tenantId);
   }
 
   @Patch(':id')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Update user' })
   update(
     @Param('id') id: string,

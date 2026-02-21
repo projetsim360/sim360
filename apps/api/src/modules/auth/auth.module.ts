@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { RolesGuard } from './guards/roles.guard';
 import { GoogleStrategy } from './strategies/google.strategy';
 
 @Module({
@@ -27,6 +28,7 @@ import { GoogleStrategy } from './strategies/google.strategy';
     AuthService,
     JwtStrategy,
     JwtAuthGuard,
+    RolesGuard,
     // Google strategy only registered if credentials are configured
     {
       provide: GoogleStrategy,
@@ -40,6 +42,6 @@ import { GoogleStrategy } from './strategies/google.strategy';
       inject: [ConfigService],
     },
   ],
-  exports: [AuthService, JwtAuthGuard],
+  exports: [AuthService, JwtAuthGuard, RolesGuard],
 })
 export class AuthModule {}

@@ -1,6 +1,9 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
+import { MailService } from '../mail/mail.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { CompleteProfileWizardDto } from './dto/complete-profile-wizard.dto';
@@ -37,6 +40,7 @@ const USER_SELECT = {
   notifAutoSubscribe: true,
   layoutPreference: true,
   twoFactorEnabled: true,
+  googleId: true,
   createdAt: true,
   updatedAt: true,
 };
@@ -46,6 +50,9 @@ export class UsersService {
   constructor(
     private prisma: PrismaService,
     private storageService: StorageService,
+    private mailService: MailService,
+    private jwtService: JwtService,
+    private config: ConfigService,
   ) {}
 
   async findAll(tenantId: string) {
@@ -157,6 +164,12 @@ export class UsersService {
       data: { passwordHash },
     });
 
+    // Revoke all existing refresh tokens
+    await this.prisma.refreshToken.updateMany({
+      where: { userId, revokedAt: null },
+      data: { revokedAt: new Date() },
+    });
+
     return { message: 'Mot de passe modifié avec succès' };
   }
 
@@ -190,4 +203,58 @@ export class UsersService {
       select: USER_SELECT,
     });
   }
+
+  async deleteAccount(userId: string, password: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+
+    // For OAuth-only accounts (no password), allow deletion without password check
+    if (user.passwordHash) {
+      const isValid = await bcrypt.compare(password, user.passwordHash);
+      if (!isValid) {
+        throw new BadRequestException('Mot de passe incorrect');
+      }
+    }
+
+    // Delete avatar file if exists
+    if (user.avatar) {
+      await this.storageService.deleteLocalFile(user.avatar);
+    }
+
+    // Cascade delete handles refresh tokens, etc.
+    await this.prisma.user.delete({ where: { id: userId } });
+
+    return { message: 'Compte supprimé avec succès' };
+  }
+
+  async requestEmailChange(userId: string, newEmail: string, password: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user || !user.passwordHash) {
+      throw new BadRequestException('Impossible de changer l\'email pour ce compte');
+    }
+
+    const isValid = await bcrypt.compare(password, user.passwordHash);
+    if (!isValid) {
+      throw new BadRequestException('Mot de passe incorrect');
+    }
+
+    // Check if email is already taken
+    const existing = await this.prisma.user.findUnique({ where: { email: newEmail } });
+    if (existing) {
+      throw new BadRequestException('Cet email est déjà utilisé');
+    }
+
+    // Generate a verification token
+    const token = this.jwtService.sign(
+      { userId, newEmail, type: 'email_change' },
+      { secret: this.config.get<string>('auth.jwtSecret')!, expiresIn: '1h' },
+    );
+
+    await this.mailService.sendEmailChangeVerification(newEmail, user.firstName, token);
+
+    return { message: 'Un email de vérification a été envoyé à la nouvelle adresse' };
+  }
+
 }

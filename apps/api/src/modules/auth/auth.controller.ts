@@ -30,6 +30,7 @@ import {
   VerifyTwoFactorLoginDto,
   RegenerateBackupCodesDto,
 } from './dto/two-factor.dto';
+import { UnlinkGoogleDto } from './dto/social.dto';
 import { ConfigService } from '@nestjs/config';
 
 @ApiTags('Auth')
@@ -106,6 +107,13 @@ export class AuthController {
     return this.authService.checkEmailAvailability(email);
   }
 
+  @Get('confirm-email-change')
+  @Public()
+  @ApiOperation({ summary: 'Confirm email change via token' })
+  async confirmEmailChange(@Query('token') token: string) {
+    return this.authService.confirmEmailChange(token);
+  }
+
   @Get('google')
   @Public()
   @UseGuards(GoogleAuthGuard)
@@ -143,6 +151,20 @@ export class AuthController {
     @Body() dto: { refreshToken?: string },
   ) {
     return this.authService.logout(userId, dto.refreshToken);
+  }
+
+  // ─── Social Account Management ───────────────────────────
+
+  @Post('social/unlink-google')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Unlink Google account' })
+  async unlinkGoogle(
+    @CurrentUser('id') userId: string,
+    @Body() dto: UnlinkGoogleDto,
+  ) {
+    return this.authService.unlinkGoogle(userId, dto.password);
   }
 
   // ─── Two-Factor Authentication ───────────────────────────

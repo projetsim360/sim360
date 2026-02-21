@@ -631,6 +631,63 @@ export class AuthService {
     return { backupCodes: plainBackupCodes };
   }
 
+  async confirmEmailChange(token: string) {
+    try {
+      const payload = this.jwtService.verify<{ userId: string; newEmail: string; type: string }>(
+        token,
+        { secret: this.config.get<string>('auth.jwtSecret')! },
+      );
+
+      if (payload.type !== 'email_change') {
+        throw new BadRequestException('Token invalide');
+      }
+
+      const existing = await this.prisma.user.findUnique({ where: { email: payload.newEmail } });
+      if (existing) {
+        throw new BadRequestException('Cet email est déjà utilisé');
+      }
+
+      await this.prisma.user.update({
+        where: { id: payload.userId },
+        data: { email: payload.newEmail, emailVerifiedAt: new Date() },
+      });
+
+      return { message: 'Email modifié avec succès' };
+    } catch (err) {
+      if (err instanceof BadRequestException) throw err;
+      throw new BadRequestException('Token invalide ou expiré');
+    }
+  }
+
+  // ─── Social Account Management ─────────────────────────
+
+  async unlinkGoogle(userId: string, password: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new BadRequestException('Utilisateur non trouvé');
+
+    if (!user.googleId) {
+      throw new BadRequestException('Aucun compte Google lié');
+    }
+
+    if (!user.passwordHash) {
+      throw new BadRequestException(
+        'Impossible de délier Google : vous n\'avez pas de mot de passe défini. Vous seriez verrouillé hors de votre compte.',
+      );
+    }
+
+    const isValid = await bcrypt.compare(password, user.passwordHash);
+    if (!isValid) {
+      throw new BadRequestException('Mot de passe incorrect');
+    }
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { googleId: null },
+    });
+
+    return { message: 'Compte Google délié avec succès' };
+  }
+
   // ─── Private helpers ─────────────────────────────────────
 
   private async generateTokens(

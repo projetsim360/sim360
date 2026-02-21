@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { api } from '@/lib/api-client';
 import { isAuthenticated, setTokens, clearTokens } from '@/lib/auth';
 
@@ -14,6 +14,7 @@ interface AuthUser {
   profileCompleted: boolean;
   emailVerifiedAt?: string;
   twoFactorEnabled: boolean;
+  googleId?: string;
   profileVisibility: boolean;
   timezone?: string;
   dateFormat?: string;
@@ -53,6 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const fetchUser = useCallback(async () => {
     try {
@@ -100,12 +102,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!response.user!.profileCompleted) {
         navigate('/profile/wizard');
       } else {
-        navigate('/dashboard');
+        const from = (location.state as any)?.from?.pathname || '/dashboard';
+        navigate(from);
       }
 
       return response.user!;
     },
-    [navigate],
+    [navigate, location],
   );
 
   const register = useCallback(
