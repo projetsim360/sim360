@@ -14,6 +14,7 @@ import {
 import { aiConfig } from './config/ai.config';
 import { AiModule } from './modules/ai/ai.module';
 import { SimulationsModule } from './modules/simulations/simulations.module';
+import { MeetingsModule } from './modules/meetings/meetings.module';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { SimulationsModule } from './modules/simulations/simulations.module';
       {
         name: 'short',
         ttl: 1000,
-        limit: 3,
+        limit: 10,
       },
       {
         name: 'medium',
@@ -41,6 +42,7 @@ import { SimulationsModule } from './modules/simulations/simulations.module';
     CoreModule,
     AiModule,
     SimulationsModule,
+    MeetingsModule,
   ],
   providers: [
     {

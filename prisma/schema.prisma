@@ -506,6 +506,7 @@ model Simulation {
   phases       SimulationPhase[]
   decisions    Decision[]
   randomEvents RandomEvent[]
+  meetings     Meeting[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -581,4 +582,83 @@ model RandomEvent {
 
   @@index([simulationId])
   @@map("random_events")
+}
+
+// ─── Meetings ────────────────────────────────────────────
+
+enum MeetingStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model Meeting {
+  id              String        @id @default(cuid())
+  simulationId    String
+  simulation      Simulation    @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+  phaseOrder      Int
+  templateId      String?
+  title           String
+  description     String?       @db.Text
+  type            String        @default("STEERING")
+  objectives      String[]
+  durationMinutes Int           @default(30)
+  status          MeetingStatus @default(SCHEDULED)
+  startedAt       DateTime?
+  completedAt     DateTime?
+
+  participants MeetingParticipant[]
+  messages     MeetingMessage[]
+  summary      MeetingSummary?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([simulationId])
+  @@map("meetings")
+}
+
+model MeetingParticipant {
+  id               String  @id @default(cuid())
+  meetingId        String
+  meeting          Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  name             String
+  role             String
+  personality      String?
+  cooperationLevel Int     @default(3)
+  avatar           String?
+
+  messages MeetingMessage[]
+
+  @@index([meetingId])
+  @@map("meeting_participants")
+}
+
+model MeetingMessage {
+  id            String              @id @default(cuid())
+  meetingId     String
+  meeting       Meeting             @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  participantId String?
+  participant   MeetingParticipant? @relation(fields: [participantId], references: [id])
+  content       String              @db.Text
+  role          String              @default("USER")
+  metadata      Json?
+  createdAt     DateTime            @default(now())
+
+  @@index([meetingId])
+  @@map("meeting_messages")
+}
+
+model MeetingSummary {
+  id           String   @id @default(cuid())
+  meetingId    String   @unique
+  meeting      Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  summary      String   @db.Text
+  keyDecisions String[]
+  actionItems  Json?
+  kpiImpact    Json?
+  createdAt    DateTime @default(now())
+
+  @@map("meeting_summaries")
 }

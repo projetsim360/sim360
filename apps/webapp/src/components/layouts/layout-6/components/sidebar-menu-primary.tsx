@@ -45,7 +45,7 @@ export function SidebarMenuPrimary() {
       if (!item.heading && !item.disabled) {
         return buildMenuItemRoot(item, index);
       } else {
-        return <></>;
+        return <span key={`empty-${index}`} />;
       }
     });
   };
@@ -94,7 +94,7 @@ export function SidebarMenuPrimary() {
       if (!item.heading && !item.disabled) {
         return buildMenuItemChild(item, index, level);
       } else {
-        return <></>;
+        return <span key={`empty-child-${level}-${index}`} />;
       }
     });
   };

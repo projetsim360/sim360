@@ -38,6 +38,16 @@ export enum EventType {
   // Random Event
   RANDOM_EVENT_TRIGGERED = 'event.triggered',
   RANDOM_EVENT_RESOLVED = 'event.resolved',
+
+  // Meeting
+  MEETING_STARTED = 'meeting.started',
+  MEETING_MESSAGE_SENT = 'meeting.message_sent',
+  MEETING_COMPLETED = 'meeting.completed',
+
+  // AI
+  AI_MEETING_RESPONSE = 'ai.meeting_response',
+  AI_DECISION_EVALUATED = 'ai.decision_evaluated',
+  AI_REPORT_GENERATED = 'ai.report_generated',
 }
 
 export enum AggregateType {
@@ -51,6 +61,7 @@ export enum AggregateType {
   SIMULATION = 'Simulation',
   DECISION = 'Decision',
   RANDOM_EVENT = 'RandomEvent',
+  MEETING = 'Meeting',
 }
 
 export type ChannelType = 'socket' | 'email';
@@ -256,6 +267,22 @@ export const EVENT_NOTIFICATION_CONFIG: Partial<Record<EventType, EventNotificat
     bodyTemplate: 'L\'evenement a ete traite.',
     defaultChannels: ['socket'],
     defaultPriority: 1,
+  },
+  [EventType.MEETING_STARTED]: {
+    notificationType: 'meeting',
+    category: 'simulation',
+    titleTemplate: 'Reunion demarree',
+    bodyTemplate: 'La reunion "{{data.title}}" a commence.',
+    defaultChannels: ['socket'],
+    defaultPriority: 1,
+  },
+  [EventType.MEETING_COMPLETED]: {
+    notificationType: 'meeting',
+    category: 'simulation',
+    titleTemplate: 'Reunion terminee',
+    bodyTemplate: 'La reunion "{{data.title}}" est terminee. Consultez le compte-rendu.',
+    defaultChannels: ['socket'],
+    defaultPriority: 2,
   },
 };
 

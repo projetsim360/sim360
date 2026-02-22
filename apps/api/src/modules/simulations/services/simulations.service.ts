@@ -25,6 +25,14 @@ const SIMULATION_INCLUDE = {
   phases: { orderBy: { order: 'asc' as const } },
   decisions: { orderBy: { phaseOrder: 'asc' as const } },
   randomEvents: { orderBy: { phaseOrder: 'asc' as const } },
+  meetings: {
+    orderBy: { createdAt: 'asc' as const },
+    include: {
+      participants: true,
+      summary: true,
+      _count: { select: { messages: true } },
+    },
+  },
 };
 
 @Injectable()
@@ -157,6 +165,32 @@ export class SimulationsService {
         });
       }
 
+      // Instantiate meetings for phase 0
+      if (firstPhase?.meetingTemplates.length) {
+        for (const tpl of firstPhase.meetingTemplates) {
+          await tx.meeting.create({
+            data: {
+              simulationId: simulation.id,
+              phaseOrder: 0,
+              templateId: tpl.id,
+              title: tpl.title,
+              description: tpl.description,
+              type: tpl.type,
+              objectives: tpl.objectives,
+              durationMinutes: tpl.durationMinutes,
+              participants: {
+                create: (tpl.participants as any[]).map((p) => ({
+                  name: p.name,
+                  role: p.role,
+                  personality: p.personality,
+                  cooperationLevel: p.cooperationLevel ?? 3,
+                })),
+              },
+            },
+          });
+        }
+      }
+
       // Update project status
       await tx.project.update({
         where: { id: project.id },
@@ -282,7 +316,7 @@ export class SimulationsService {
     // Load scenario phase templates for next phase
     const scenarioPhases = await this.prisma.scenarioPhase.findMany({
       where: { scenarioId: simulation.scenarioId },
-      include: { decisionTemplates: true, randomEventTemplates: true },
+      include: { decisionTemplates: true, randomEventTemplates: true, meetingTemplates: true },
       orderBy: { order: 'asc' },
     });
 
@@ -364,6 +398,32 @@ export class SimulationsService {
               severity: tpl.severity,
               options: tpl.options as any,
             })),
+          });
+        }
+      }
+
+      // Instantiate meetings for next phase
+      if (nextScenarioPhase?.meetingTemplates.length) {
+        for (const tpl of nextScenarioPhase.meetingTemplates) {
+          await tx.meeting.create({
+            data: {
+              simulationId: id,
+              phaseOrder: nextPhaseOrder,
+              templateId: tpl.id,
+              title: tpl.title,
+              description: tpl.description,
+              type: tpl.type,
+              objectives: tpl.objectives,
+              durationMinutes: tpl.durationMinutes,
+              participants: {
+                create: (tpl.participants as any[]).map((p: any) => ({
+                  name: p.name,
+                  role: p.role,
+                  personality: p.personality,
+                  cooperationLevel: p.cooperationLevel ?? 3,
+                })),
+              },
+            },
           });
         }
       }

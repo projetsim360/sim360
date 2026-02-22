@@ -94,6 +94,22 @@ export interface SimulationKpi extends KpiValues {
   id: string;
 }
 
+export interface SimulationMeeting {
+  id: string;
+  phaseOrder: number;
+  title: string;
+  description: string | null;
+  type: string;
+  objectives: string[];
+  durationMinutes: number;
+  status: 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+  startedAt: string | null;
+  completedAt: string | null;
+  participants: Array<{ id: string; name: string; role: string }>;
+  summary: { id: string; summary: string } | null;
+  _count?: { messages: number };
+}
+
 export interface Simulation {
   id: string;
   status: 'DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED' | 'ABANDONED';
@@ -106,6 +122,7 @@ export interface Simulation {
   phases: SimulationPhase[];
   decisions: Decision[];
   randomEvents: RandomEvent[];
+  meetings?: SimulationMeeting[];
 }
 
 export interface TimelineEntry {

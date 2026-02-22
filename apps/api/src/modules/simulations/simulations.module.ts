@@ -12,6 +12,6 @@ import { KpiEngineService } from './services/kpi-engine.service';
   imports: [CoreModule],
   controllers: [ScenariosController, SimulationsController, ProjectsController],
   providers: [ScenariosService, SimulationsService, ProjectsService, KpiEngineService],
-  exports: [ScenariosService, SimulationsService, ProjectsService],
+  exports: [ScenariosService, SimulationsService, ProjectsService, KpiEngineService],
 })
 export class SimulationsModule {}

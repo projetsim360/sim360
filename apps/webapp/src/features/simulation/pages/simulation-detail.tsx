@@ -395,6 +395,80 @@ export default function SimulationDetailPage() {
         </Card>
       </div>
 
+      {/* Meetings */}
+      {sim.meetings && sim.meetings.length > 0 && (
+        <Card className="mb-5">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm flex items-center gap-2">
+                🗣 Reunions
+                {sim.meetings.filter((m) => m.status === 'SCHEDULED' || m.status === 'IN_PROGRESS').length > 0 && (
+                  <span className="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full">
+                    {sim.meetings.filter((m) => m.status === 'SCHEDULED' || m.status === 'IN_PROGRESS').length}
+                  </span>
+                )}
+              </CardTitle>
+              <Link
+                to={`/meetings?simId=${sim.id}`}
+                className="text-xs text-primary hover:underline"
+              >
+                Voir tout →
+              </Link>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {sim.meetings
+                .filter((m) => m.phaseOrder === sim.currentPhaseOrder)
+                .map((meeting) => (
+                  <Link
+                    key={meeting.id}
+                    to={`/meetings/${meeting.id}`}
+                    className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-xs font-bold">
+                        🗣
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-medium">{meeting.title}</h4>
+                        <p className="text-[10px] text-muted-foreground">
+                          {meeting.participants.length} participant(s) · {meeting.durationMinutes} min
+                          {meeting._count?.messages ? ` · ${meeting._count.messages} msg` : ''}
+                        </p>
+                      </div>
+                    </div>
+                    <span
+                      className={`px-2 py-0.5 rounded text-[10px] font-medium ${
+                        meeting.status === 'SCHEDULED'
+                          ? 'bg-gray-100 text-gray-700'
+                          : meeting.status === 'IN_PROGRESS'
+                            ? 'bg-blue-100 text-blue-700'
+                            : meeting.status === 'COMPLETED'
+                              ? 'bg-green-100 text-green-700'
+                              : 'bg-red-100 text-red-700'
+                      }`}
+                    >
+                      {meeting.status === 'SCHEDULED'
+                        ? 'Demarrer →'
+                        : meeting.status === 'IN_PROGRESS'
+                          ? 'Reprendre →'
+                          : meeting.status === 'COMPLETED'
+                            ? 'Terminee'
+                            : 'Annulee'}
+                    </span>
+                  </Link>
+                ))}
+              {sim.meetings.filter((m) => m.phaseOrder === sim.currentPhaseOrder).length === 0 && (
+                <p className="text-xs text-muted-foreground py-4 text-center">
+                  Aucune reunion pour cette phase.
+                </p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Team members */}
       {sim.project?.teamMembers && sim.project.teamMembers.length > 0 && (
         <Card className="mb-5">

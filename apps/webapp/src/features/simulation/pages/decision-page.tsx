@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router';
 import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/layout-6/components/toolbar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { simulationApi } from '../api/simulation.api';
+import { aiApi, type AiEvaluationResult } from '../api/ai.api';
 import type { Simulation, Decision } from '../types/simulation.types';
 
 function kpiColor(value: number): string {
@@ -29,6 +30,8 @@ export default function DecisionPage() {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [aiAnalysis, setAiAnalysis] = useState<AiEvaluationResult | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -42,6 +45,13 @@ export default function DecisionPage() {
           if (dec.selectedOption !== null) {
             setSelectedOption(dec.selectedOption);
             setSubmitted(true);
+            // Load AI analysis for already-submitted decision
+            setAiLoading(true);
+            aiApi
+              .evaluateDecision(data.id, dec.id, dec.selectedOption)
+              .then(setAiAnalysis)
+              .catch(() => {})
+              .finally(() => setAiLoading(false));
           }
         }
       })
@@ -53,13 +63,21 @@ export default function DecisionPage() {
     if (!id || !decId || selectedOption === null) return;
     setSubmitting(true);
     try {
-      const updated = await simulationApi.makeDecision(id, decId, selectedOption);
+      await simulationApi.makeDecision(id, decId, selectedOption);
       // Reload to get impact
       const simData = await simulationApi.getSimulation(id);
       setSim(simData);
       const dec = simData.decisions?.find((d: Decision) => d.id === decId);
       if (dec) setDecision(dec);
       setSubmitted(true);
+
+      // Trigger AI analysis (fail silently)
+      setAiLoading(true);
+      aiApi
+        .evaluateDecision(id, decId, selectedOption)
+        .then(setAiAnalysis)
+        .catch(() => {})
+        .finally(() => setAiLoading(false));
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -261,7 +279,7 @@ export default function DecisionPage() {
 
       {submitted && (!decision.kpiImpact || Object.keys(decision.kpiImpact).length === 0) && (
         <div className="mt-5 text-center">
-          <p className="text-sm text-green-600 mb-3">✅ Decision enregistree.</p>
+          <p className="text-sm text-green-600 mb-3">Decision enregistree.</p>
           <Link
             to={`/simulations/${id}`}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors"
@@ -269,6 +287,36 @@ export default function DecisionPage() {
             Retour au tableau de bord
           </Link>
         </div>
+      )}
+
+      {/* AI Analysis section */}
+      {submitted && aiLoading && (
+        <Card className="mt-5 border-blue-200 bg-blue-50">
+          <CardContent className="py-6 text-center">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mx-auto mb-2" />
+            <p className="text-sm text-blue-600">Analyse IA en cours...</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {submitted && aiAnalysis && (
+        <Card className="mt-5 border-blue-200 bg-blue-50">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm text-blue-700">Analyse IA</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <h4 className="text-xs font-semibold text-blue-600 mb-1">Coaching</h4>
+              <p className="text-sm whitespace-pre-wrap">{aiAnalysis.coaching}</p>
+            </div>
+            {aiAnalysis.comparison && (
+              <div>
+                <h4 className="text-xs font-semibold text-blue-600 mb-1">Comparaison avec l'optimal</h4>
+                <p className="text-sm whitespace-pre-wrap">{aiAnalysis.comparison}</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       )}
     </div>
   );
