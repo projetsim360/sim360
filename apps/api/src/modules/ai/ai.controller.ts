@@ -1,8 +1,8 @@
-import { Controller, Post, Body, UseGuards, Sse, Req, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Get, Put, Body, UseGuards, Sse, Req, NotFoundException, BadRequestException } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { AiService } from './ai.service';
-import { AiOrchestratorService } from './services';
+import { AiOrchestratorService, TokenTrackerService } from './services';
 import { MeetingRespondDto, MeetingSummaryDto, DecisionEvaluateDto, SimulationReportDto } from './dto';
 import { JwtAuthGuard, CurrentUser, EventPublisherService, EventType, AggregateType } from '@sim360/core';
 import { SimulationsService } from '../simulations/services/simulations.service';
@@ -23,6 +23,7 @@ export class AiController {
     private simulationsService: SimulationsService,
     private kpiEngine: KpiEngineService,
     private eventPublisher: EventPublisherService,
+    private tokenTracker: TokenTrackerService,
   ) {}
 
   @Post('complete')
@@ -36,8 +37,16 @@ export class AiController {
       maxTokens?: number;
       temperature?: number;
     },
+    @CurrentUser() user: any,
   ) {
-    return this.aiService.complete(dto);
+    return this.aiService.complete({
+      ...dto,
+      trackingContext: {
+        tenantId: user.tenantId,
+        userId: user.id,
+        operation: 'complete',
+      },
+    });
   }
 
   @Sse('meeting/respond')
@@ -88,6 +97,7 @@ export class AiController {
       { actorId: user.id, actorType: 'user', tenantId: user.tenantId, channels: ['socket'] },
     );
 
+    // Track tokens for meeting response (non-streaming tracked separately)
     return this.orchestrator.meeting.streamResponse(
       participantCtx,
       context,
@@ -152,6 +162,12 @@ export class AiController {
         return { selectedOption: d.selectedOption!, optimalOption: bestIdx, kpiImpact: selectedImpact };
       });
 
+    const trackingCtx = {
+      tenantId: user.tenantId,
+      userId: user.id,
+      simulationId: dto.simulationId,
+      operation: 'decision_evaluate',
+    };
     const result = await this.orchestrator.decision.evaluateDecision({
       title: decision.title,
       context: decision.context,
@@ -167,7 +183,7 @@ export class AiController {
         riskLevel: kpis.riskLevel,
       },
       decisionHistory: pastDecisions,
-    });
+    }, trackingCtx);
 
     // Publish event
     await this.eventPublisher.publish(
@@ -213,11 +229,18 @@ export class AiController {
           kpiImpact: d.kpiImpact,
         }));
 
+      const trackingCtx = {
+        tenantId: user.tenantId,
+        userId: user.id,
+        simulationId: dto.simulationId,
+        operation: 'phase_report',
+      };
       report = await this.orchestrator.feedback.generatePhaseReport(
         { name: phase.name, order: phase.order },
         phaseDecisions,
         kpiValues, // approximation — before = current for simplicity
         kpiValues,
+        trackingCtx,
       );
     } else {
       const finalScore = this.kpiEngine.calculateFinalScore(kpiValues);
@@ -231,12 +254,19 @@ export class AiController {
           phaseOrder: d.phaseOrder,
         }));
 
+      const trackingCtx = {
+        tenantId: user.tenantId,
+        userId: user.id,
+        simulationId: dto.simulationId,
+        operation: 'final_report',
+      };
       report = await this.orchestrator.feedback.generateFinalReport(
         simulation.scenario.title,
         kpiValues,
         finalScore,
         allDecisions,
         simulation.phases.map((p) => ({ name: p.name, order: p.order })),
+        trackingCtx,
       );
     }
 
@@ -250,5 +280,30 @@ export class AiController {
     );
 
     return { report };
+  }
+
+  @Get('usage')
+  @ApiOperation({ summary: 'Get current month AI token usage' })
+  getUsage(@CurrentUser() user: any) {
+    return this.tokenTracker.getUsage(user.tenantId);
+  }
+
+  @Get('usage/quota')
+  @ApiOperation({ summary: 'Get AI token quota and remaining' })
+  getQuota(@CurrentUser() user: any) {
+    return this.tokenTracker.getQuota(user.tenantId);
+  }
+
+  @Put('usage/quota')
+  @ApiOperation({ summary: 'Update AI token quota (admin)' })
+  updateQuota(
+    @CurrentUser() user: any,
+    @Body() dto: { monthlyInputLimit: number; monthlyOutputLimit: number },
+  ) {
+    return this.tokenTracker.updateQuota(
+      user.tenantId,
+      dto.monthlyInputLimit,
+      dto.monthlyOutputLimit,
+    );
   }
 }

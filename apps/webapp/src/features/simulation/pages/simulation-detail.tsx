@@ -474,9 +474,13 @@ export default function SimulationDetailPage() {
                   key={member.id}
                   className="flex items-center gap-3 p-2 rounded-lg border border-border"
                 >
-                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
-                    {member.name.charAt(0)}
-                  </div>
+                  {member.avatar ? (
+                    <img src={member.avatar} alt={member.name} className="w-8 h-8 rounded-full object-cover shrink-0" />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold shrink-0">
+                      {member.name.charAt(0)}
+                    </div>
+                  )}
                   <div className="min-w-0 flex-1">
                     <p className="text-xs font-medium truncate">{member.name}</p>
                     <p className="text-[10px] text-muted-foreground truncate">

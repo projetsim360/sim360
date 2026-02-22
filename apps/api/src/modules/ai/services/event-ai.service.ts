@@ -9,6 +9,7 @@ export class EventAiService {
     event: { title: string; type: string; severity: string },
     kpis: Record<string, number>,
     phaseName: string,
+    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string },
   ): Promise<string> {
     const result = await this.aiService.complete({
       prompt: [
@@ -23,6 +24,7 @@ export class EventAiService {
       ].join('\n'),
       maxTokens: 150,
       temperature: 0.7,
+      trackingContext,
     });
 
     return result.content;

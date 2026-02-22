@@ -87,4 +87,20 @@ export class MeetingsController {
   getSummary(@Param('id') id: string, @CurrentUser() user: any) {
     return this.meetingsService.getSummary(id, user.id);
   }
+
+  @Post('meetings/:id/realtime-session')
+  @ApiOperation({ summary: 'Create ephemeral token for OpenAI Realtime audio' })
+  createRealtimeSession(@Param('id') id: string, @CurrentUser() user: any) {
+    return this.meetingsService.createRealtimeSession(id, user.id);
+  }
+
+  @Post('meetings/:id/transcriptions')
+  @ApiOperation({ summary: 'Save audio transcriptions as meeting messages' })
+  saveTranscriptions(
+    @Param('id') id: string,
+    @CurrentUser() user: any,
+    @Body() dto: { transcriptions: Array<{ role: 'user' | 'assistant'; content: string; participantId?: string }> },
+  ) {
+    return this.meetingsService.saveTranscriptions(id, user.id, dto.transcriptions);
+  }
 }

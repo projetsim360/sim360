@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { PrismaService, EventPublisherService, EventType, AggregateType } from '@sim360/core';
+import { ConfigService } from '@nestjs/config';
 import { AiOrchestratorService } from '../ai/services';
 import { SendMessageDto } from './dto';
 
@@ -31,6 +32,7 @@ export class MeetingsService {
     private prisma: PrismaService,
     private eventPublisher: EventPublisherService,
     private orchestrator: AiOrchestratorService,
+    private config: ConfigService,
   ) {}
 
   async findAllBySimulation(
@@ -361,5 +363,92 @@ export class MeetingsService {
 
     if (!summary) throw new NotFoundException('Resume introuvable');
     return summary;
+  }
+
+  async createRealtimeSession(id: string, userId: string) {
+    const meeting = await this.findOne(id, userId);
+
+    if (meeting.status !== 'IN_PROGRESS') {
+      throw new BadRequestException('La reunion doit etre en cours pour demarrer une session audio');
+    }
+
+    const openaiKey = this.config.get<string>('ai.openaiApiKey');
+    if (!openaiKey) {
+      throw new BadRequestException('OpenAI API key non configuree');
+    }
+
+    // Determine voice based on first participant personality
+    const participant = meeting.participants[0];
+    const voice = this.mapPersonalityToVoice(participant?.personality);
+
+    // Build system instructions (same as text mode)
+    const kpis = meeting.simulation.kpis;
+    const instructions = participant
+      ? [
+          `Tu es ${participant.name}, ${participant.role} dans un projet de gestion.`,
+          `Personnalite: ${participant.personality ?? 'COOPERATIVE'}.`,
+          `Contexte: "${meeting.simulation.scenario.title}" — Phase: ${meeting.simulation.phases[0]?.name ?? 'Inconnue'}.`,
+          kpis ? `KPIs: Budget ${kpis.budget}/100, Delai ${kpis.schedule}/100, Qualite ${kpis.quality}/100, Moral ${kpis.teamMorale}/100, Risque ${kpis.riskLevel}/100.` : '',
+          `Reponds en tant que ce personnage. Reste concis (2-4 phrases). Ne sors jamais du role.`,
+        ].filter(Boolean).join('\n')
+      : 'Tu es un participant dans une reunion de gestion de projet. Reponds de maniere professionnelle et concise.';
+
+    const response = await fetch('https://api.openai.com/v1/realtime/sessions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openaiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-realtime-preview-2025-06-03',
+        voice,
+        instructions,
+        input_audio_transcription: { model: 'gpt-4o-mini-transcribe' },
+        turn_detection: { type: 'server_vad' },
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      this.logger.error(`OpenAI Realtime session error: ${errorText}`);
+      throw new BadRequestException('Impossible de creer la session audio');
+    }
+
+    const data = await response.json();
+
+    return {
+      clientSecret: data.client_secret?.value,
+      expiresAt: data.client_secret?.expires_at,
+      sessionId: data.id,
+      voice,
+    };
+  }
+
+  async saveTranscriptions(
+    id: string,
+    userId: string,
+    transcriptions: Array<{ role: 'user' | 'assistant'; content: string; participantId?: string }>,
+  ) {
+    const meeting = await this.findOne(id, userId);
+
+    const data = transcriptions.map((t) => ({
+      meetingId: id,
+      content: t.content,
+      role: t.role === 'user' ? 'USER' : 'PARTICIPANT',
+      participantId: t.participantId ?? meeting.participants[0]?.id ?? null,
+    }));
+
+    await this.prisma.meetingMessage.createMany({ data });
+
+    return { saved: data.length };
+  }
+
+  private mapPersonalityToVoice(personality?: string | null): string {
+    switch (personality?.toUpperCase()) {
+      case 'RESISTANT': return 'echo';
+      case 'NEUTRAL': return 'sage';
+      case 'COOPERATIVE': return 'coral';
+      default: return 'alloy';
+    }
   }
 }

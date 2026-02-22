@@ -7,6 +7,7 @@ export interface Meeting {
   type: string;
   objectives: string[];
   durationMinutes: number;
+  mode: 'TEXT' | 'AUDIO';
   status: 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
   startedAt: string | null;
   completedAt: string | null;

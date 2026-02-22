@@ -92,6 +92,7 @@ export class MeetingAiService {
     context: MeetingContext,
     history: Array<{ role: 'user' | 'assistant'; content: string }>,
     userMessage: string,
+    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string },
   ): Promise<string> {
     const systemPrompt = this.buildParticipantSystemPrompt(participant, context);
 
@@ -107,6 +108,7 @@ export class MeetingAiService {
       messages,
       maxTokens: 200,
       temperature: 0.8,
+      trackingContext,
     });
 
     return result.content;
@@ -139,6 +141,7 @@ export class MeetingAiService {
     meetingTitle: string,
     history: Array<{ role: 'user' | 'assistant'; content: string }>,
     kpis: Record<string, number>,
+    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string },
   ): Promise<string> {
     const conversationText = history
       .map((m) => `${m.role === 'user' ? 'Utilisateur' : 'Participant'}: ${m.content}`)
@@ -157,6 +160,7 @@ export class MeetingAiService {
       ].join('\n'),
       maxTokens: 300,
       temperature: 0.3,
+      trackingContext,
     });
 
     return result.content;
@@ -167,6 +171,7 @@ export class MeetingAiService {
     history: Array<{ role: 'user' | 'assistant'; content: string }>,
     kpis: Record<string, number>,
     participantNames: string[],
+    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string },
   ): Promise<{
     summary: string;
     keyDecisions: string[];
@@ -202,6 +207,7 @@ export class MeetingAiService {
       ].join('\n'),
       maxTokens: 800,
       temperature: 0.2,
+      trackingContext,
     });
 
     try {

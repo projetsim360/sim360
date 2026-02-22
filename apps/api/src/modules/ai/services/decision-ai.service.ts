@@ -24,7 +24,7 @@ export interface PatternAnalysis {
 export class DecisionAiService {
   constructor(private aiService: AiService) {}
 
-  async evaluateDecision(decision: DecisionContext): Promise<{
+  async evaluateDecision(decision: DecisionContext, trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string }): Promise<{
     score: number;
     scoreJustification: string;
     coaching: string;
@@ -36,11 +36,11 @@ export class DecisionAiService {
     const optimalOpt = decision.options[optimalIndex];
 
     const { score, justification } = this.calculateScore(decision, optimalIndex);
-    const coaching = await this.getCoaching(decision, selectedOpt);
+    const coaching = await this.getCoaching(decision, selectedOpt, trackingContext);
 
     let comparison: string | null = null;
     if (optimalIndex !== decision.selectedOption) {
-      comparison = await this.compareWithOptimal(decision, selectedOpt, optimalOpt);
+      comparison = await this.compareWithOptimal(decision, selectedOpt, optimalOpt, trackingContext);
     }
 
     // Detect decision-making pattern if history available
@@ -173,6 +173,7 @@ export class DecisionAiService {
   private async getCoaching(
     decision: DecisionContext,
     selectedOpt: { label: string; description: string; kpiImpact?: Record<string, number> },
+    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string },
   ): Promise<string> {
     const result = await this.aiService.complete({
       prompt: [
@@ -192,6 +193,7 @@ export class DecisionAiService {
       ].join('\n'),
       maxTokens: 300,
       temperature: 0.6,
+      trackingContext,
     });
 
     return result.content;
@@ -201,6 +203,7 @@ export class DecisionAiService {
     decision: DecisionContext,
     selectedOpt: { label: string; description: string },
     optimalOpt: { label: string; description: string },
+    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string },
   ): Promise<string> {
     const result = await this.aiService.complete({
       prompt: [
@@ -214,6 +217,7 @@ export class DecisionAiService {
       ].join('\n'),
       maxTokens: 200,
       temperature: 0.5,
+      trackingContext,
     });
 
     return result.content;

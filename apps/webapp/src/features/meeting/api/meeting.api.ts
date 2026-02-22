@@ -29,4 +29,15 @@ export const meetingApi = {
 
   getSummary: (id: string) =>
     api.get<MeetingSummaryRecord>(`/meetings/${id}/summary`),
+
+  createRealtimeSession: (id: string) =>
+    api.post<{ clientSecret: string; expiresAt: number; sessionId: string; voice: string }>(
+      `/meetings/${id}/realtime-session`,
+    ),
+
+  saveTranscriptions: (
+    id: string,
+    transcriptions: Array<{ role: 'user' | 'assistant'; content: string; participantId?: string }>,
+  ) =>
+    api.post<{ saved: number }>(`/meetings/${id}/transcriptions`, { transcriptions }),
 };

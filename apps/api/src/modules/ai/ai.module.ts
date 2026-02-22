@@ -8,6 +8,7 @@ import {
   FeedbackAiService,
   EventAiService,
   AiOrchestratorService,
+  TokenTrackerService,
 } from './services';
 import { SimulationsModule } from '../simulations/simulations.module';
 
@@ -21,7 +22,8 @@ import { SimulationsModule } from '../simulations/simulations.module';
     FeedbackAiService,
     EventAiService,
     AiOrchestratorService,
+    TokenTrackerService,
   ],
-  exports: [AiService, AiOrchestratorService],
+  exports: [AiService, AiOrchestratorService, TokenTrackerService],
 })
 export class AiModule {}

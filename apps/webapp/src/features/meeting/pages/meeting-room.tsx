@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { KeenIcon } from '@/components/keenicons';
 import { streamAiResponse } from '@/lib/sse-client';
 import { meetingApi } from '../api/meeting.api';
+import { AudioMeeting } from '../components/audio-meeting';
 import type { ChatMessage, MeetingDetail, MeetingParticipant } from '../types/meeting.types';
 
 const STATUS_LABELS: Record<string, string> = {
@@ -48,6 +49,7 @@ export default function MeetingRoomPage() {
   const [error, setError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [selectedParticipant, setSelectedParticipant] = useState<MeetingParticipant | null>(null);
+  const [meetingMode, setMeetingMode] = useState<'TEXT' | 'AUDIO'>('TEXT');
   const bottomRef = useRef<HTMLDivElement>(null);
   const elapsed = useChronometer(meeting?.startedAt ?? null, meeting?.status === 'IN_PROGRESS');
 
@@ -234,9 +236,13 @@ export default function MeetingRoomPage() {
                     key={p.id}
                     className="flex items-center gap-3 p-2 rounded-lg border border-border"
                   >
-                    <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
-                      {p.name.charAt(0)}
-                    </div>
+                    {p.avatar ? (
+                      <img src={p.avatar} alt={p.name} className="w-8 h-8 rounded-full object-cover shrink-0" />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold shrink-0">
+                        {p.name.charAt(0)}
+                      </div>
+                    )}
                     <div>
                       <p className="text-xs font-medium">{p.name}</p>
                       <p className="text-[10px] text-muted-foreground">{p.role}</p>
@@ -370,12 +376,33 @@ export default function MeetingRoomPage() {
     );
   }
 
-  // IN_PROGRESS — Chat interface
+  // IN_PROGRESS — Chat or Audio interface
   return (
     <div className="container">
       <Toolbar>
         <ToolbarHeading title={meeting.title} />
         <ToolbarActions>
+          {/* Mode toggle */}
+          <div className="flex items-center rounded-lg border border-border overflow-hidden">
+            <button
+              onClick={() => setMeetingMode('TEXT')}
+              className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                meetingMode === 'TEXT' ? 'bg-primary text-white' : 'bg-background text-muted-foreground hover:bg-muted'
+              }`}
+            >
+              <KeenIcon icon="message-text" style="filled" className="size-3.5 inline mr-1" />
+              Texte
+            </button>
+            <button
+              onClick={() => setMeetingMode('AUDIO')}
+              className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                meetingMode === 'AUDIO' ? 'bg-primary text-white' : 'bg-background text-muted-foreground hover:bg-muted'
+              }`}
+            >
+              <KeenIcon icon="microphone" style="filled" className="size-3.5 inline mr-1" />
+              Audio
+            </button>
+          </div>
           <Badge variant="primary" appearance="light">
             {formatElapsed(elapsed)}
           </Badge>
@@ -385,98 +412,127 @@ export default function MeetingRoomPage() {
         </ToolbarActions>
       </Toolbar>
 
-      {/* Participant selector */}
-      {meeting.participants.length > 1 && (
-        <div className="flex items-center gap-2 mb-4">
-          <span className="text-xs text-muted-foreground">Parler a :</span>
-          {meeting.participants.map((p) => (
-            <Button
-              key={p.id}
-              onClick={() => setSelectedParticipant(p)}
-              variant={selectedParticipant?.id === p.id ? 'primary' : 'ghost'}
-              size="sm"
-            >
-              <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px] font-bold">
-                {p.name.charAt(0)}
-              </span>
-              {p.name}
-            </Button>
-          ))}
-        </div>
-      )}
-
-      {/* Chat area */}
-      <Card className="mb-4">
-        <CardContent className="p-4">
-          <div className="h-[400px] overflow-y-auto space-y-3 mb-4">
-            {messages.length === 0 && (
-              <p className="text-center text-muted-foreground text-sm py-8">
-                Commencez la conversation avec les participants.
-              </p>
-            )}
-            {messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div className="max-w-[75%]">
-                  {msg.role === 'assistant' && msg.participantName && (
-                    <p className="text-[10px] text-muted-foreground mb-0.5 ml-1">
-                      {msg.participantName}
-                    </p>
-                  )}
-                  <div
-                    className={`rounded-lg px-3 py-2 text-sm ${
-                      msg.role === 'user'
-                        ? 'bg-primary text-white'
-                        : 'bg-muted text-foreground'
-                    }`}
-                  >
-                    {msg.content || (
-                      <span className="inline-block animate-pulse">...</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-            <div ref={bottomRef} />
-          </div>
-
-          {/* Input */}
-          <div className="flex gap-2">
-            <Input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  sendMessage();
-                }
-              }}
-              placeholder={`Message pour ${selectedParticipant?.name ?? 'le participant'}...`}
-              disabled={streaming}
+      {meetingMode === 'AUDIO' ? (
+        <>
+          {/* Audio mode */}
+          <div className="mb-4">
+            <AudioMeeting
+              meetingId={meetingId!}
+              participants={meeting.participants}
             />
+          </div>
+
+          {/* Complete button */}
+          <div className="flex justify-center mb-4">
             <Button
-              onClick={sendMessage}
-              disabled={!input.trim() || streaming}
+              variant="outline"
+              onClick={handleComplete}
+              disabled={actionLoading}
             >
-              Envoyer
+              {actionLoading ? 'Cloture en cours...' : 'Cloturer la reunion'}
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </>
+      ) : (
+        <>
+          {/* Participant selector */}
+          {meeting.participants.length > 1 && (
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-xs text-muted-foreground">Parler a :</span>
+              {meeting.participants.map((p) => (
+                <Button
+                  key={p.id}
+                  onClick={() => setSelectedParticipant(p)}
+                  variant={selectedParticipant?.id === p.id ? 'primary' : 'ghost'}
+                  size="sm"
+                >
+                  {p.avatar ? (
+                    <img src={p.avatar} alt={p.name} className="w-5 h-5 rounded-full object-cover" />
+                  ) : (
+                    <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px] font-bold">
+                      {p.name.charAt(0)}
+                    </span>
+                  )}
+                  {p.name}
+                </Button>
+              ))}
+            </div>
+          )}
 
-      {/* Complete button */}
-      <div className="flex justify-center mb-4">
-        <Button
-          variant="outline"
-          onClick={handleComplete}
-          disabled={actionLoading || messages.length === 0}
-        >
-          {actionLoading ? 'Cloture en cours...' : 'Cloturer la reunion'}
-        </Button>
-      </div>
+          {/* Chat area */}
+          <Card className="mb-4">
+            <CardContent className="p-4">
+              <div className="h-[400px] overflow-y-auto space-y-3 mb-4">
+                {messages.length === 0 && (
+                  <p className="text-center text-muted-foreground text-sm py-8">
+                    Commencez la conversation avec les participants.
+                  </p>
+                )}
+                {messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div className="max-w-[75%]">
+                      {msg.role === 'assistant' && msg.participantName && (
+                        <p className="text-[10px] text-muted-foreground mb-0.5 ml-1">
+                          {msg.participantName}
+                        </p>
+                      )}
+                      <div
+                        className={`rounded-lg px-3 py-2 text-sm ${
+                          msg.role === 'user'
+                            ? 'bg-primary text-white'
+                            : 'bg-muted text-foreground'
+                        }`}
+                      >
+                        {msg.content || (
+                          <span className="inline-block animate-pulse">...</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <div ref={bottomRef} />
+              </div>
+
+              {/* Input */}
+              <div className="flex gap-2">
+                <Input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      sendMessage();
+                    }
+                  }}
+                  placeholder={`Message pour ${selectedParticipant?.name ?? 'le participant'}...`}
+                  disabled={streaming}
+                />
+                <Button
+                  onClick={sendMessage}
+                  disabled={!input.trim() || streaming}
+                >
+                  Envoyer
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Complete button */}
+          <div className="flex justify-center mb-4">
+            <Button
+              variant="outline"
+              onClick={handleComplete}
+              disabled={actionLoading || messages.length === 0}
+            >
+              {actionLoading ? 'Cloture en cours...' : 'Cloturer la reunion'}
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 }

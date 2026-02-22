@@ -3,3 +3,4 @@ export { DecisionAiService, type DecisionPattern, type PatternAnalysis } from '.
 export { FeedbackAiService } from './feedback-ai.service';
 export { EventAiService } from './event-ai.service';
 export { AiOrchestratorService } from './ai-orchestrator.service';
+export { TokenTrackerService } from './token-tracker.service';

@@ -27,6 +27,7 @@ export interface ProjectTeamMember {
   personality: string;
   availability: number;
   morale: number;
+  avatar: string | null;
 }
 
 export interface Deliverable {
@@ -102,10 +103,11 @@ export interface SimulationMeeting {
   type: string;
   objectives: string[];
   durationMinutes: number;
+  mode: 'TEXT' | 'AUDIO';
   status: 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
   startedAt: string | null;
   completedAt: string | null;
-  participants: Array<{ id: string; name: string; role: string }>;
+  participants: Array<{ id: string; name: string; role: string; avatar: string | null }>;
   summary: { id: string; summary: string } | null;
   _count?: { messages: number };
 }

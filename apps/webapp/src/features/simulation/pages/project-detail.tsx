@@ -161,9 +161,13 @@ function StatCard({ label, value, color }: { label: string; value: string; color
 function TeamMemberRow({ member }: { member: ProjectTeamMember }) {
   return (
     <div className="flex items-center gap-3 py-1.5">
-      <div className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">
-        {member.name.charAt(0).toUpperCase()}
-      </div>
+      {member.avatar ? (
+        <img src={member.avatar} alt={member.name} className="w-7 h-7 rounded-full object-cover shrink-0" />
+      ) : (
+        <div className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">
+          {member.name.charAt(0).toUpperCase()}
+        </div>
+      )}
       <div className="min-w-0 flex-1">
         <p className="text-xs font-medium truncate">{member.name}</p>
         <p className="text-[10px] text-muted-foreground">{member.role}</p>

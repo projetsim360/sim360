@@ -1,9 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Optional } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Anthropic from '@anthropic-ai/sdk';
 import OpenAI from 'openai';
 import { RedisCacheService } from '@sim360/core';
 import { Observable } from 'rxjs';
+import { TokenTrackerService } from './services/token-tracker.service';
 
 export interface AiCompletionResult {
   content: string;
@@ -20,6 +21,12 @@ export interface AiCompletionOptions {
   maxTokens?: number;
   temperature?: number;
   messages?: Array<{ role: 'user' | 'assistant'; content: string }>;
+  trackingContext?: {
+    tenantId: string;
+    userId: string;
+    simulationId?: string;
+    operation: string;
+  };
 }
 
 interface MessageEvent {
@@ -35,6 +42,7 @@ export class AiService {
   constructor(
     private config: ConfigService,
     private cache: RedisCacheService,
+    @Optional() private tokenTracker?: TokenTrackerService,
   ) {
     const anthropicKey = this.config.get<string>('ai.anthropicApiKey');
     const openaiKey = this.config.get<string>('ai.openaiApiKey');
@@ -44,6 +52,11 @@ export class AiService {
   }
 
   async complete(dto: AiCompletionOptions): Promise<AiCompletionResult> {
+    // Check quota before calling AI
+    if (dto.trackingContext && this.tokenTracker) {
+      await this.tokenTracker.checkQuota(dto.trackingContext.tenantId);
+    }
+
     const provider = dto.provider || this.config.get<string>('ai.defaultProvider', 'anthropic');
 
     // Resolve system prompt from cache if cacheKey provided
@@ -51,16 +64,31 @@ export class AiService {
 
     const options = { ...dto, systemPrompt: systemPrompt ?? dto.systemPrompt };
 
+    let result: AiCompletionResult;
     if (provider === 'anthropic') {
-      return this.withFallback(
+      result = await this.withFallback(
         () => this.completeWithAnthropic(options),
         () => this.completeWithOpenAI(options),
       );
+    } else {
+      result = await this.withFallback(
+        () => this.completeWithOpenAI(options),
+        () => this.completeWithAnthropic(options),
+      );
     }
-    return this.withFallback(
-      () => this.completeWithOpenAI(options),
-      () => this.completeWithAnthropic(options),
-    );
+
+    // Fire-and-forget token tracking
+    if (dto.trackingContext && this.tokenTracker) {
+      this.tokenTracker.track(
+        dto.trackingContext,
+        result.provider,
+        result.model,
+        result.usage.inputTokens,
+        result.usage.outputTokens,
+      ).catch((err) => this.logger.warn(`Token tracking failed: ${err.message}`));
+    }
+
+    return result;
   }
 
   streamWithAnthropic(dto: AiCompletionOptions): Observable<MessageEvent> {

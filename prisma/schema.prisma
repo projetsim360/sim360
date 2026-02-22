@@ -32,6 +32,7 @@ model Tenant {
   auditLogs     AuditLog[]
   projects      Project[]
   simulations   Simulation[]
+  aiTokenQuota  AiTokenQuota?
 
   @@map("tenants")
 }
@@ -623,6 +624,7 @@ model Meeting {
   type            String        @default("STEERING")
   objectives      String[]
   durationMinutes Int           @default(30)
+  mode            String        @default("TEXT") // "TEXT" | "AUDIO"
   status          MeetingStatus @default(SCHEDULED)
   startedAt       DateTime?
   completedAt     DateTime?
@@ -680,4 +682,38 @@ model MeetingSummary {
   createdAt    DateTime @default(now())
 
   @@map("meeting_summaries")
+}
+
+// ─── AI Token Tracking ──────────────────────────────────
+
+model AiTokenUsage {
+  id           String   @id @default(cuid())
+  tenantId     String
+  userId       String
+  simulationId String?
+  operation    String
+  provider     String
+  model        String
+  inputTokens  Int
+  outputTokens Int
+  metadata     Json?
+  createdAt    DateTime @default(now())
+
+  @@index([tenantId, createdAt])
+  @@index([userId, createdAt])
+  @@map("ai_token_usage")
+}
+
+model AiTokenQuota {
+  id                 String   @id @default(cuid())
+  tenantId           String   @unique
+  tenant             Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  monthlyInputLimit  Int      @default(500000)
+  monthlyOutputLimit Int      @default(200000)
+  currentMonthInput  Int      @default(0)
+  currentMonthOutput Int      @default(0)
+  periodStart        DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@map("ai_token_quotas")
 }

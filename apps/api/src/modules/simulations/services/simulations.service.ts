@@ -119,13 +119,14 @@ export class SimulationsService {
           status: 'NOT_STARTED',
           teamMembers: projectTemplate.team
             ? {
-                create: (projectTemplate.team as any[]).map((member: any) => ({
+                create: (projectTemplate.team as any[]).map((member: any, index: number) => ({
                   name: member.name,
                   role: member.role,
                   expertise: member.expertise ?? 'INTERMEDIATE',
                   personality: member.personality ?? 'COOPERATIVE',
                   availability: member.availability ?? 1.0,
                   morale: member.morale ?? 75,
+                  avatar: member.avatar ?? `/media/avatars/300-${(index % 36) + 1}.png`,
                 })),
               }
             : undefined,
@@ -203,11 +204,12 @@ export class SimulationsService {
               objectives: tpl.objectives,
               durationMinutes: tpl.durationMinutes,
               participants: {
-                create: (tpl.participants as any[]).map((p) => ({
+                create: (tpl.participants as any[]).map((p: any, index: number) => ({
                   name: p.name,
                   role: p.role,
                   personality: p.personality,
                   cooperationLevel: p.cooperationLevel ?? 3,
+                  avatar: p.avatar ?? `/media/avatars/300-${(index % 36) + 1}.png`,
                 })),
               },
             },
@@ -468,11 +470,12 @@ export class SimulationsService {
               objectives: tpl.objectives,
               durationMinutes: tpl.durationMinutes,
               participants: {
-                create: (tpl.participants as any[]).map((p: any) => ({
+                create: (tpl.participants as any[]).map((p: any, index: number) => ({
                   name: p.name,
                   role: p.role,
                   personality: p.personality,
                   cooperationLevel: p.cooperationLevel ?? 3,
+                  avatar: p.avatar ?? `/media/avatars/300-${(index % 36) + 1}.png`,
                 })),
               },
             },

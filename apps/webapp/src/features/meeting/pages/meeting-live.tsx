@@ -217,9 +217,13 @@ export default function MeetingLivePage() {
               variant={selectedParticipant?.id === p.id ? 'primary' : 'ghost'}
               size="sm"
             >
-              <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px] font-bold">
-                {p.name.charAt(0)}
-              </span>
+              {p.avatar ? (
+                <img src={p.avatar} alt={p.name} className="w-5 h-5 rounded-full object-cover" />
+              ) : (
+                <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px] font-bold">
+                  {p.name.charAt(0)}
+                </span>
+              )}
               {p.name}
             </Button>
           ))}
