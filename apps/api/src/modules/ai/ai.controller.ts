@@ -136,6 +136,22 @@ export class AiController {
     const currentPhase = simulation.phases.find((p) => p.order === decision.phaseOrder);
     const kpis = simulation.kpis!;
 
+    // Build decision history for pattern detection
+    const pastDecisions = simulation.decisions
+      .filter((d) => d.selectedOption !== null && d.id !== decision.id)
+      .map((d) => {
+        const opts = d.options as Array<{ kpiImpact?: Record<string, number> }>;
+        const selectedImpact = opts[d.selectedOption!]?.kpiImpact ?? {};
+        let bestIdx = 0;
+        let bestScore = -Infinity;
+        for (let i = 0; i < opts.length; i++) {
+          const imp = opts[i].kpiImpact ?? {};
+          const sc = (imp.budget ?? 0) * 0.25 + (imp.schedule ?? 0) * 0.25 + (imp.quality ?? 0) * 0.25 + (imp.teamMorale ?? 0) * 0.15 - (imp.riskLevel ?? 0) * 0.10;
+          if (sc > bestScore) { bestScore = sc; bestIdx = i; }
+        }
+        return { selectedOption: d.selectedOption!, optimalOption: bestIdx, kpiImpact: selectedImpact };
+      });
+
     const result = await this.orchestrator.decision.evaluateDecision({
       title: decision.title,
       context: decision.context,
@@ -150,6 +166,7 @@ export class AiController {
         teamMorale: kpis.teamMorale,
         riskLevel: kpis.riskLevel,
       },
+      decisionHistory: pastDecisions,
     });
 
     // Publish event

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { useParams, Link } from 'react-router';
+import { useParams, Link, useNavigate } from 'react-router';
 import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/layout-6/components/toolbar';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -9,13 +9,6 @@ import { KeenIcon } from '@/components/keenicons';
 import { streamAiResponse } from '@/lib/sse-client';
 import { meetingApi } from '../api/meeting.api';
 import type { ChatMessage, MeetingDetail, MeetingParticipant } from '../types/meeting.types';
-
-const STATUS_LABELS: Record<string, string> = {
-  SCHEDULED: 'Planifiee',
-  IN_PROGRESS: 'En cours',
-  COMPLETED: 'Terminee',
-  CANCELLED: 'Annulee',
-};
 
 function formatElapsed(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -38,8 +31,9 @@ function useChronometer(startedAt: string | null, active: boolean) {
   return elapsed;
 }
 
-export default function MeetingRoomPage() {
+export default function MeetingLivePage() {
   const { meetingId } = useParams<{ meetingId: string }>();
+  const navigate = useNavigate();
   const [meeting, setMeeting] = useState<MeetingDetail | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -51,14 +45,22 @@ export default function MeetingRoomPage() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const elapsed = useChronometer(meeting?.startedAt ?? null, meeting?.status === 'IN_PROGRESS');
 
-  // Load meeting data
   const loadMeeting = useCallback(async () => {
     if (!meetingId) return;
     try {
       const data = await meetingApi.getMeeting(meetingId);
       setMeeting(data);
 
-      // Convert existing messages to ChatMessage format
+      // If meeting is not in progress, redirect
+      if (data.status === 'SCHEDULED') {
+        navigate(`/meetings/${meetingId}`, { replace: true });
+        return;
+      }
+      if (data.status === 'COMPLETED') {
+        navigate(`/meetings/${meetingId}/summary`, { replace: true });
+        return;
+      }
+
       const chatMessages: ChatMessage[] = data.messages.map((m) => ({
         id: m.id,
         role: m.role === 'USER' ? 'user' as const : 'assistant' as const,
@@ -68,7 +70,6 @@ export default function MeetingRoomPage() {
       }));
       setMessages(chatMessages);
 
-      // Set default participant
       if (data.participants.length > 0 && !selectedParticipant) {
         setSelectedParticipant(data.participants[0]);
       }
@@ -77,7 +78,7 @@ export default function MeetingRoomPage() {
     } finally {
       setLoading(false);
     }
-  }, [meetingId, selectedParticipant]);
+  }, [meetingId, selectedParticipant, navigate]);
 
   useEffect(() => {
     loadMeeting();
@@ -87,25 +88,12 @@ export default function MeetingRoomPage() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  async function handleStart() {
-    if (!meetingId) return;
-    setActionLoading(true);
-    try {
-      await meetingApi.startMeeting(meetingId);
-      await loadMeeting();
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setActionLoading(false);
-    }
-  }
-
   async function handleComplete() {
     if (!meetingId) return;
     setActionLoading(true);
     try {
       await meetingApi.completeMeeting(meetingId);
-      await loadMeeting();
+      navigate(`/meetings/${meetingId}/summary`);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -176,13 +164,13 @@ export default function MeetingRoomPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Reunion" />
+          <ToolbarHeading title="Reunion en direct" />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-destructive text-sm">{error || 'Reunion introuvable.'}</p>
             <Button variant="link" asChild>
-              <Link to="/simulations">Retour aux simulations</Link>
+              <Link to="/meetings">Retour aux reunions</Link>
             </Button>
           </CardContent>
         </Card>
@@ -190,200 +178,33 @@ export default function MeetingRoomPage() {
     );
   }
 
-  // SCHEDULED — Show briefing
-  if (meeting.status === 'SCHEDULED') {
-    return (
-      <div className="container">
-        <Toolbar>
-          <ToolbarHeading title={meeting.title} />
-          <ToolbarActions>
-            <Button variant="outline" asChild>
-              <Link to={`/simulations/${meeting.simulationId}`}>Retour</Link>
-            </Button>
-          </ToolbarActions>
-        </Toolbar>
-
-        <Card className="mb-5">
-          <CardHeader>
-            <CardTitle className="text-sm">Briefing de la reunion</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {meeting.description && (
-              <p className="text-sm text-muted-foreground">{meeting.description}</p>
-            )}
-
-            {meeting.objectives.length > 0 && (
-              <div>
-                <h4 className="text-xs font-semibold mb-2">Objectifs</h4>
-                <ul className="space-y-1">
-                  {meeting.objectives.map((obj, i) => (
-                    <li key={i} className="text-xs text-muted-foreground flex items-start gap-2">
-                      <span className="text-primary mt-0.5">-</span>
-                      {obj}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            <div>
-              <h4 className="text-xs font-semibold mb-2">Participants</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {meeting.participants.map((p) => (
-                  <div
-                    key={p.id}
-                    className="flex items-center gap-3 p-2 rounded-lg border border-border"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
-                      {p.name.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="text-xs font-medium">{p.name}</p>
-                      <p className="text-[10px] text-muted-foreground">{p.role}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex justify-center pt-2">
-              <Button
-                onClick={handleStart}
-                disabled={actionLoading}
-              >
-                {actionLoading ? 'Demarrage...' : 'Demarrer la reunion'}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // COMPLETED — Show summary
-  if (meeting.status === 'COMPLETED') {
-    return (
-      <div className="container">
-        <Toolbar>
-          <ToolbarHeading title={meeting.title} />
-          <ToolbarActions>
-            <Badge variant="success" appearance="light">
-              {STATUS_LABELS[meeting.status]}
-            </Badge>
-            <Button variant="outline" asChild>
-              <Link to={`/simulations/${meeting.simulationId}`}>Retour</Link>
-            </Button>
-          </ToolbarActions>
-        </Toolbar>
-
-        {meeting.summary && (
-          <Card className="mb-5 border-primary/20 bg-primary/5">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-primary">Resume de la reunion</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm whitespace-pre-wrap">{meeting.summary.summary}</p>
-              {meeting.summary.keyDecisions.length > 0 && (
-                <div className="mt-3">
-                  <h4 className="text-xs font-semibold text-primary mb-1">Decisions cles</h4>
-                  <ul className="space-y-1">
-                    {meeting.summary.keyDecisions.map((d, i) => (
-                      <li key={i} className="text-xs text-primary">- {d}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {meeting.summary.actionItems && meeting.summary.actionItems.length > 0 && (
-                <div className="mt-3">
-                  <h4 className="text-xs font-semibold text-primary mb-1">Actions a mener</h4>
-                  <div className="space-y-1.5">
-                    {meeting.summary.actionItems.map((item, i) => (
-                      <div key={i} className="flex items-start gap-2 text-xs text-primary">
-                        <span className="shrink-0 mt-0.5">-</span>
-                        <div>
-                          <span className="font-medium">{item.task}</span>
-                          <span className="text-primary"> ({item.assignee})</span>
-                          {item.deadline && <span className="text-primary/60"> - {item.deadline}</span>}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {meeting.summary.kpiImpact && Object.keys(meeting.summary.kpiImpact).length > 0 && (
-                <div className="mt-3">
-                  <h4 className="text-xs font-semibold text-primary mb-1">Impact KPIs</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {Object.entries(meeting.summary.kpiImpact).map(([key, val]) => (
-                      <Badge
-                        key={key}
-                        variant={val > 0 ? 'success' : val < 0 ? 'destructive' : 'secondary'}
-                        appearance="light"
-                        size="sm"
-                      >
-                        {key}: {val > 0 ? '+' : ''}{val}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Show conversation history */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Historique de la conversation</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3 max-h-[400px] overflow-y-auto">
-              {messages.map((msg) => (
-                <div
-                  key={msg.id}
-                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div className="max-w-[75%]">
-                    {msg.role === 'assistant' && msg.participantName && (
-                      <p className="text-[10px] text-muted-foreground mb-0.5 ml-1">
-                        {msg.participantName}
-                      </p>
-                    )}
-                    <div
-                      className={`rounded-lg px-3 py-2 text-sm ${
-                        msg.role === 'user'
-                          ? 'bg-primary text-white'
-                          : 'bg-muted text-foreground'
-                      }`}
-                    >
-                      {msg.content}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // IN_PROGRESS — Chat interface
   return (
     <div className="container">
       <Toolbar>
-        <ToolbarHeading title={meeting.title} />
+        <ToolbarHeading title={meeting.title} description="Reunion en direct" />
         <ToolbarActions>
           <Badge variant="primary" appearance="light">
             {formatElapsed(elapsed)}
+          </Badge>
+          <Badge variant="success" appearance="light">
+            {messages.length} messages
           </Badge>
           <Button variant="outline" asChild>
             <Link to={`/simulations/${meeting.simulationId}`}>Retour</Link>
           </Button>
         </ToolbarActions>
       </Toolbar>
+
+      {/* Objectives reminder */}
+      {meeting.objectives.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-4">
+          {meeting.objectives.map((obj, i) => (
+            <Badge key={i} variant="primary" appearance="light" size="sm">
+              {obj}
+            </Badge>
+          ))}
+        </div>
+      )}
 
       {/* Participant selector */}
       {meeting.participants.length > 1 && (

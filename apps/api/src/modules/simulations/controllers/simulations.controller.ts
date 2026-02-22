@@ -93,6 +93,12 @@ export class SimulationsController {
     return this.simulationsService.getKpis(id, userId);
   }
 
+  @Get(':id/kpis/history')
+  @ApiOperation({ summary: 'Historique des snapshots KPI' })
+  getKpiHistory(@Param('id') id: string, @CurrentUser('id') userId: string) {
+    return this.simulationsService.getKpiHistory(id, userId);
+  }
+
   @Get(':id/timeline')
   @ApiOperation({ summary: 'Timeline des actions' })
   getTimeline(@Param('id') id: string, @CurrentUser('id') userId: string) {

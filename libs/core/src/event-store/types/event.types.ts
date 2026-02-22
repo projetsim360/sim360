@@ -44,6 +44,9 @@ export enum EventType {
   MEETING_MESSAGE_SENT = 'meeting.message_sent',
   MEETING_COMPLETED = 'meeting.completed',
 
+  // KPI
+  KPI_UPDATED = 'kpi.updated',
+
   // AI
   AI_MEETING_RESPONSE = 'ai.meeting_response',
   AI_DECISION_EVALUATED = 'ai.decision_evaluated',
@@ -273,6 +276,14 @@ export const EVENT_NOTIFICATION_CONFIG: Partial<Record<EventType, EventNotificat
     category: 'simulation',
     titleTemplate: 'Reunion demarree',
     bodyTemplate: 'La reunion "{{data.title}}" a commence.',
+    defaultChannels: ['socket'],
+    defaultPriority: 1,
+  },
+  [EventType.KPI_UPDATED]: {
+    notificationType: 'kpi',
+    category: 'simulation',
+    titleTemplate: 'KPIs mis a jour',
+    bodyTemplate: 'Les indicateurs de la simulation ont ete mis a jour.',
     defaultChannels: ['socket'],
     defaultPriority: 1,
   },

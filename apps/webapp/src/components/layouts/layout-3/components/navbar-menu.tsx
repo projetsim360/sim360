@@ -1,6 +1,6 @@
 import { ChevronDown } from '@/components/keenicons/icons';
 import { Link, useLocation } from 'react-router-dom';
-import { MENU_SIDEBAR, MENU_SIDEBAR_CUSTOM } from '@/config/layout-3.config';
+import { MENU_SIDEBAR } from '@/config/layout-3.config';
 import { MenuConfig } from '@/config/types';
 import { cn } from '@/lib/utils';
 import { useMenu } from '@/hooks/use-menu';
@@ -17,19 +17,11 @@ import {
 
 export function NavbarMenu() {
   const { pathname } = useLocation();
-  let navbarMenu;
 
-  if (pathname.includes('/layout-3')) {
-    navbarMenu = MENU_SIDEBAR?.[2];
-  } else if (pathname.includes('/layout-3')) {
-    navbarMenu = MENU_SIDEBAR?.[4];
-  } else if (pathname.includes('/layout-3')) {
-    navbarMenu = MENU_SIDEBAR_CUSTOM?.[0];
-  } else if (pathname.includes('/layout-3')) {
-    navbarMenu = MENU_SIDEBAR?.[5];
-  } else {
-    navbarMenu = MENU_SIDEBAR?.[3];
-  }
+  // Pick the sidebar section whose children to display horizontally
+  const navbarMenu = MENU_SIDEBAR?.find(
+    (item) => item.children && item.path && pathname.startsWith(item.path),
+  ) ?? MENU_SIDEBAR?.find((item) => item.children);
 
   const { isActive, hasActiveChild } = useMenu(pathname);
 
@@ -120,7 +112,7 @@ export function NavbarMenu() {
     <div className="grid">
       <div className="kt-scrollable-x-auto flex items-stretch">
         <Menubar className="space-x-0 flex items-stretch border-none bg-transparent gap-5 p-0 h-auto">
-          {buildMenu(navbarMenu.children as MenuConfig)}
+          {buildMenu((navbarMenu?.children ?? []) as MenuConfig)}
         </Menubar>
       </div>
     </div>

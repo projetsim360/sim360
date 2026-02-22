@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DomainEvent } from '@prisma/client';
 import { NotificationGateway } from '../../notifications/notification.gateway';
+import { EventType } from '../types/event.types';
 import {
   IEventConsumer,
   getMetadata,
@@ -26,6 +27,12 @@ export class SocketIOConsumer implements IEventConsumer {
     const receivers = getReceivers(event);
 
     if (receivers.length === 0) return;
+
+    // KPI updates go on a dedicated channel
+    if (event.type === EventType.KPI_UPDATED) {
+      this.gateway.emitToUsers(receivers, 'kpi:updated', event.data);
+      return;
+    }
 
     const payload = {
       eventId: event.id,

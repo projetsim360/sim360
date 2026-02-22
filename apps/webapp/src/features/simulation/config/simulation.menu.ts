@@ -9,6 +9,7 @@ export const simulationMenuItems: MenuItem[] = [
     children: [
       { title: 'Nouvelle simulation', path: '/simulations/new' },
       { title: 'Mes simulations', path: '/simulations' },
+      { title: 'Mes projets', path: '/projects' },
     ],
   },
 ];

@@ -4,18 +4,15 @@ import {
   Post,
   Param,
   Body,
+  Query,
+  Res,
   UseGuards,
-  Sse,
 } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
-import { Observable } from 'rxjs';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { Response } from 'express';
 import { JwtAuthGuard, CurrentUser } from '@sim360/core';
 import { MeetingsService } from './meetings.service';
 import { SendMessageDto } from './dto';
-
-interface MessageEvent {
-  data: string;
-}
 
 @ApiTags('Meetings')
 @ApiBearerAuth()
@@ -26,11 +23,17 @@ export class MeetingsController {
 
   @Get('simulations/:simId/meetings')
   @ApiOperation({ summary: 'List meetings for a simulation' })
+  @ApiQuery({ name: 'type', required: false, description: 'Filter by meeting type (KICKOFF, STEERING, etc.)' })
+  @ApiQuery({ name: 'phaseOrder', required: false, type: Number, description: 'Filter by phase order' })
+  @ApiQuery({ name: 'status', required: false, description: 'Filter by status (SCHEDULED, IN_PROGRESS, COMPLETED)' })
   findAllBySimulation(
     @Param('simId') simId: string,
     @CurrentUser() user: any,
+    @Query('type') type?: string,
+    @Query('phaseOrder') phaseOrder?: number,
+    @Query('status') status?: string,
   ) {
-    return this.meetingsService.findAllBySimulation(simId, user.id);
+    return this.meetingsService.findAllBySimulation(simId, user.id, { type, phaseOrder, status });
   }
 
   @Get('meetings/:id')
@@ -45,14 +48,32 @@ export class MeetingsController {
     return this.meetingsService.start(id, user.id);
   }
 
-  @Sse('meetings/:id/messages')
-  @ApiOperation({ summary: 'Send message and receive AI response (SSE)' })
+  @Post('meetings/:id/messages')
+  @ApiOperation({ summary: 'Send message and receive AI response (SSE stream)' })
   sendMessage(
     @Param('id') id: string,
     @Body() dto: SendMessageDto,
     @CurrentUser() user: any,
-  ): Observable<MessageEvent> {
-    return this.meetingsService.sendMessage(id, user.id, dto);
+    @Res() res: Response,
+  ) {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders();
+
+    const stream$ = this.meetingsService.sendMessage(id, user.id, dto);
+    stream$.subscribe({
+      next: (event) => {
+        res.write(`data: ${event.data}\n\n`);
+      },
+      error: (err) => {
+        res.write(`data: ${JSON.stringify({ error: err.message })}\n\n`);
+        res.end();
+      },
+      complete: () => {
+        res.end();
+      },
+    });
   }
 
   @Post('meetings/:id/complete')

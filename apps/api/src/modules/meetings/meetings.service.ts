@@ -33,7 +33,11 @@ export class MeetingsService {
     private orchestrator: AiOrchestratorService,
   ) {}
 
-  async findAllBySimulation(simulationId: string, userId: string) {
+  async findAllBySimulation(
+    simulationId: string,
+    userId: string,
+    filters?: { type?: string; phaseOrder?: number; status?: string },
+  ) {
     // Verify ownership
     const simulation = await this.prisma.simulation.findUnique({
       where: { id: simulationId },
@@ -42,9 +46,16 @@ export class MeetingsService {
     if (!simulation) throw new NotFoundException('Simulation introuvable');
     if (simulation.userId !== userId) throw new ForbiddenException('Acces refuse');
 
+    const where: Record<string, unknown> = { simulationId };
+    if (filters?.type) where.type = filters.type;
+    if (filters?.phaseOrder !== undefined && filters?.phaseOrder !== null) {
+      where.phaseOrder = Number(filters.phaseOrder);
+    }
+    if (filters?.status) where.status = filters.status;
+
     return this.prisma.meeting.findMany({
-      where: { simulationId },
-      orderBy: { createdAt: 'asc' },
+      where,
+      orderBy: [{ phaseOrder: 'asc' }, { createdAt: 'asc' }],
       include: {
         participants: true,
         summary: true,
@@ -106,6 +117,14 @@ export class MeetingsService {
 
           if (meeting.status !== 'IN_PROGRESS') {
             subscriber.next({ data: JSON.stringify({ error: 'La reunion n\'est pas en cours' }) });
+            subscriber.complete();
+            return;
+          }
+
+          // Enforce 100 messages limit
+          const messageCount = await this.prisma.meetingMessage.count({ where: { meetingId: id } });
+          if (messageCount >= 100) {
+            subscriber.next({ data: JSON.stringify({ error: 'Limite de 100 messages atteinte. Veuillez cloturer la reunion.' }) });
             subscriber.complete();
             return;
           }
@@ -252,21 +271,62 @@ export class MeetingsService {
       content: m.content,
     }));
 
-    const summaryText = await this.orchestrator.meeting.generateSummary(
+    const participantNames = meeting.participants.map((p) => p.name);
+
+    const structuredSummary = await this.orchestrator.meeting.generateStructuredSummary(
       meeting.title,
       history,
       kpiValues,
+      participantNames,
     );
 
-    // Persist summary and update status
+    // Persist summary, apply KPI impact, and update status
     const updated = await this.prisma.$transaction(async (tx) => {
       await tx.meetingSummary.create({
         data: {
           meetingId: id,
-          summary: summaryText,
-          keyDecisions: [],
+          summary: structuredSummary.summary,
+          keyDecisions: structuredSummary.keyDecisions,
+          actionItems: structuredSummary.actionItems as any,
+          kpiImpact: structuredSummary.kpiImpact as any,
         },
       });
+
+      // Apply KPI impact if any
+      const impact = structuredSummary.kpiImpact;
+      if (impact && Object.keys(impact).length > 0) {
+        const clamp = (v: number) => Math.max(0, Math.min(100, v));
+        await tx.simulationKpi.update({
+          where: { simulationId: meeting.simulationId },
+          data: {
+            budget: clamp(kpiValues.budget + (impact.budget ?? 0)),
+            schedule: clamp(kpiValues.schedule + (impact.schedule ?? 0)),
+            quality: clamp(kpiValues.quality + (impact.quality ?? 0)),
+            teamMorale: clamp(kpiValues.teamMorale + (impact.teamMorale ?? 0)),
+            riskLevel: clamp(kpiValues.riskLevel + (impact.riskLevel ?? 0)),
+          },
+        });
+      }
+
+      // Record KPI snapshot after meeting impact
+      if (impact && Object.keys(impact).length > 0) {
+        const updatedKpis = await tx.simulationKpi.findUnique({ where: { simulationId: meeting.simulationId } });
+        if (updatedKpis) {
+          await tx.simulationKpiSnapshot.create({
+            data: {
+              simulationId: meeting.simulationId,
+              phaseOrder: meeting.phaseOrder,
+              trigger: 'meeting',
+              triggerId: id,
+              budget: updatedKpis.budget,
+              schedule: updatedKpis.schedule,
+              quality: updatedKpis.quality,
+              teamMorale: updatedKpis.teamMorale,
+              riskLevel: updatedKpis.riskLevel,
+            },
+          });
+        }
+      }
 
       return tx.meeting.update({
         where: { id },

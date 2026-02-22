@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/layout-6/components/toolbar';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { KeenIcon } from '@/components/keenicons';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { meetingApi } from '../api/meeting.api';
 import type { Meeting } from '../types/meeting.types';
 
@@ -12,11 +16,11 @@ const STATUS_LABELS: Record<string, string> = {
   CANCELLED: 'Annulee',
 };
 
-const STATUS_COLORS: Record<string, string> = {
-  SCHEDULED: 'bg-gray-100 text-gray-700',
-  IN_PROGRESS: 'bg-blue-100 text-blue-700',
-  COMPLETED: 'bg-green-100 text-green-700',
-  CANCELLED: 'bg-red-100 text-red-700',
+const STATUS_VARIANT: Record<string, 'secondary' | 'primary' | 'success' | 'destructive'> = {
+  SCHEDULED: 'secondary',
+  IN_PROGRESS: 'primary',
+  COMPLETED: 'success',
+  CANCELLED: 'destructive',
 };
 
 const TYPE_LABELS: Record<string, string> = {
@@ -34,6 +38,8 @@ export default function MeetingsListPage() {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [filterType, setFilterType] = useState<string>('');
+  const [filterStatus, setFilterStatus] = useState<string>('');
 
   useEffect(() => {
     if (!simId) {
@@ -47,6 +53,12 @@ export default function MeetingsListPage() {
       .finally(() => setLoading(false));
   }, [simId]);
 
+  const filteredMeetings = meetings.filter((m) => {
+    if (filterType && m.type !== filterType) return false;
+    if (filterStatus && m.status !== filterStatus) return false;
+    return true;
+  });
+
   if (!simId) {
     return (
       <div className="container">
@@ -58,9 +70,9 @@ export default function MeetingsListPage() {
             <p className="text-muted-foreground text-sm">
               Selectionnez une simulation pour voir ses reunions.
             </p>
-            <Link to="/simulations" className="text-sm text-primary hover:underline">
-              Voir les simulations
-            </Link>
+            <Button variant="link" asChild>
+              <Link to="/simulations">Voir les simulations</Link>
+            </Button>
           </CardContent>
         </Card>
       </div>
@@ -72,14 +84,48 @@ export default function MeetingsListPage() {
       <Toolbar>
         <ToolbarHeading title="Reunions" />
         <ToolbarActions>
-          <Link
-            to={`/simulations/${simId}`}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium hover:bg-muted transition-colors"
-          >
-            Retour a la simulation
-          </Link>
+          <Button variant="outline" asChild>
+            <Link to={`/simulations/${simId}`}>Retour a la simulation</Link>
+          </Button>
         </ToolbarActions>
       </Toolbar>
+
+      {/* Filters */}
+      {meetings.length > 0 && (
+        <div className="flex items-center gap-3 mb-4">
+          <Select value={filterType} onValueChange={setFilterType}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Tous les types" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">Tous les types</SelectItem>
+              {Object.entries(TYPE_LABELS).map(([key, label]) => (
+                <SelectItem key={key} value={key}>{label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={filterStatus} onValueChange={setFilterStatus}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Tous les statuts" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">Tous les statuts</SelectItem>
+              {Object.entries(STATUS_LABELS).map(([key, label]) => (
+                <SelectItem key={key} value={key}>{label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {(filterType || filterStatus) && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => { setFilterType(''); setFilterStatus(''); }}
+            >
+              Reinitialiser
+            </Button>
+          )}
+        </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center py-16">
@@ -88,7 +134,7 @@ export default function MeetingsListPage() {
       ) : error ? (
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-red-600 text-sm">{error}</p>
+            <p className="text-destructive text-sm">{error}</p>
           </CardContent>
         </Card>
       ) : meetings.length === 0 ? (
@@ -101,7 +147,7 @@ export default function MeetingsListPage() {
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {meetings.map((meeting) => (
+          {filteredMeetings.map((meeting) => (
             <Link
               key={meeting.id}
               to={`/meetings/${meeting.id}`}
@@ -112,14 +158,12 @@ export default function MeetingsListPage() {
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <h3 className="font-semibold text-sm">{meeting.title}</h3>
                     <div className="flex items-center gap-2 shrink-0">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-purple-100 text-purple-700">
+                      <Badge variant="primary" appearance="light" size="sm">
                         {TYPE_LABELS[meeting.type] ?? meeting.type}
-                      </span>
-                      <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-medium ${STATUS_COLORS[meeting.status]}`}
-                      >
+                      </Badge>
+                      <Badge variant={STATUS_VARIANT[meeting.status]} appearance="light" size="sm">
                         {STATUS_LABELS[meeting.status]}
-                      </span>
+                      </Badge>
                     </div>
                   </div>
 
@@ -137,14 +181,17 @@ export default function MeetingsListPage() {
                       )}
                       <span>{meeting.durationMinutes} min</span>
                     </div>
-                    <span className="text-primary font-medium">
+                    <span className="text-primary font-medium inline-flex items-center gap-1">
                       {meeting.status === 'SCHEDULED'
-                        ? 'Demarrer →'
+                        ? 'Demarrer'
                         : meeting.status === 'IN_PROGRESS'
-                          ? 'Reprendre →'
+                          ? 'Reprendre'
                           : meeting.status === 'COMPLETED'
-                            ? 'Voir resume →'
+                            ? 'Voir resume'
                             : ''}
+                      {meeting.status !== 'CANCELLED' && (
+                        <KeenIcon icon="arrow-right" style="outline" className="size-3" />
+                      )}
                     </span>
                   </div>
                 </CardContent>

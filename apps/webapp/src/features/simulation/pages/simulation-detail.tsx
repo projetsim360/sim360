@@ -2,8 +2,12 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link, useParams, useNavigate } from 'react-router';
 import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/layout-6/components/toolbar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { KeenIcon } from '@/components/keenicons';
 import { simulationApi } from '../api/simulation.api';
-import type { Simulation, TimelineEntry } from '../types/simulation.types';
+import { useKpiSocket } from '../hooks/use-kpi-socket';
+import type { Simulation, TimelineEntry, KpiValues } from '../types/simulation.types';
 
 const STATUS_LABELS: Record<string, string> = {
   DRAFT: 'Brouillon',
@@ -13,46 +17,51 @@ const STATUS_LABELS: Record<string, string> = {
   ABANDONED: 'Abandonnee',
 };
 
-const STATUS_COLORS: Record<string, string> = {
-  DRAFT: 'bg-gray-100 text-gray-700',
-  IN_PROGRESS: 'bg-blue-100 text-blue-700',
-  PAUSED: 'bg-yellow-100 text-yellow-700',
-  COMPLETED: 'bg-green-100 text-green-700',
-  ABANDONED: 'bg-red-100 text-red-700',
+const STATUS_VARIANT: Record<string, 'secondary' | 'primary' | 'warning' | 'success' | 'destructive'> = {
+  DRAFT: 'secondary',
+  IN_PROGRESS: 'primary',
+  PAUSED: 'warning',
+  COMPLETED: 'success',
+  ABANDONED: 'destructive',
 };
 
-const SEVERITY_COLORS: Record<string, string> = {
-  LOW: 'bg-blue-100 text-blue-700',
-  MEDIUM: 'bg-yellow-100 text-yellow-700',
-  HIGH: 'bg-orange-100 text-orange-700',
-  CRITICAL: 'bg-red-100 text-red-700',
+const SEVERITY_VARIANT: Record<string, 'info' | 'warning' | 'destructive'> = {
+  LOW: 'info',
+  MEDIUM: 'warning',
+  HIGH: 'warning',
+  CRITICAL: 'destructive',
 };
 
-function kpiColor(value: number): string {
-  if (value > 70) return 'bg-green-500';
-  if (value >= 40) return 'bg-yellow-500';
-  return 'bg-red-500';
-}
+const KPI_THEME: Record<string, { bg: string; text: string; bar: string }> = {
+  budget: { bg: 'bg-primary/10', text: 'text-primary', bar: 'bg-primary' },
+  schedule: { bg: 'bg-info/10', text: 'text-info', bar: 'bg-info' },
+  quality: { bg: 'bg-success/10', text: 'text-success', bar: 'bg-success' },
+  teamMorale: { bg: 'bg-warning/10', text: 'text-warning', bar: 'bg-warning' },
+  riskLevel: { bg: 'bg-destructive/10', text: 'text-destructive', bar: 'bg-destructive' },
+};
 
-function kpiTextColor(value: number): string {
-  if (value > 70) return 'text-green-600';
-  if (value >= 40) return 'text-yellow-600';
-  return 'text-red-600';
-}
+function KpiBadge({ kpiKey, label, icon, value }: { kpiKey: string; label: string; icon: string; value: number }) {
+  const theme = KPI_THEME[kpiKey] ?? KPI_THEME.budget;
+  const clamped = Math.min(100, Math.max(0, value));
 
-function KpiGauge({ label, emoji, value }: { label: string; emoji: string; value: number }) {
   return (
-    <div className="flex flex-col items-center gap-1.5 p-3 bg-white rounded-lg border border-border">
-      <span className="text-lg">{emoji}</span>
-      <span className="text-xs text-muted-foreground">{label}</span>
-      <div className="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
-        <div
-          className={`h-full rounded-full transition-all ${kpiColor(value)}`}
-          style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
-        />
-      </div>
-      <span className={`text-sm font-bold ${kpiTextColor(value)}`}>{value}%</span>
-    </div>
+    <Card className="overflow-hidden">
+      <CardContent className="flex items-center gap-3.5 p-4">
+        <div className={`flex items-center justify-center size-12 shrink-0 rounded-lg ${theme.bg}`}>
+          <KeenIcon icon={icon} style="duotone" className={`text-xl ${theme.text}`} />
+        </div>
+        <div className="flex flex-col gap-1.5 min-w-0 flex-1">
+          <span className="text-2xs text-muted-foreground font-medium">{label}</span>
+          <span className={`text-lg font-semibold leading-none ${theme.text}`}>{clamped}%</span>
+          <div className="h-1 rounded-full bg-muted w-full">
+            <div
+              className={`h-1 rounded-full transition-all duration-500 ${theme.bar}`}
+              style={{ width: `${clamped}%` }}
+            />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -84,6 +93,15 @@ export default function SimulationDetailPage() {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  // Real-time KPI updates via socket (must be before any early return)
+  const handleKpiUpdate = useCallback((kpis: KpiValues) => {
+    setSim((prev) => {
+      if (!prev) return prev;
+      return { ...prev, kpis: { ...prev.kpis!, ...kpis } };
+    });
+  }, []);
+  useKpiSocket(id ?? '', handleKpiUpdate);
 
   async function handlePauseResume() {
     if (!sim || !id) return;
@@ -133,12 +151,12 @@ export default function SimulationDetailPage() {
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-red-600 text-sm">
+            <p className="text-destructive text-sm">
               {error || 'Simulation introuvable.'}
             </p>
-            <Link to="/simulations" className="mt-3 inline-block text-sm text-primary hover:underline">
-              Retour aux simulations
-            </Link>
+            <Button variant="link" asChild>
+              <Link to="/simulations">Retour aux simulations</Link>
+            </Button>
           </CardContent>
         </Card>
       </div>
@@ -150,17 +168,24 @@ export default function SimulationDetailPage() {
   const isActive = sim.status === 'IN_PROGRESS' || sim.status === 'PAUSED';
   const recentTimeline = timeline.slice(0, 5);
 
+  // KPI alert check
+  const criticalKpis = sim.kpis
+    ? [
+        sim.kpis.budget < 30 && 'Budget',
+        sim.kpis.schedule < 30 && 'Delai',
+        sim.kpis.quality < 30 && 'Qualite',
+        sim.kpis.teamMorale < 30 && 'Moral equipe',
+      ].filter(Boolean) as string[]
+    : [];
+
   return (
     <div className="container">
       <Toolbar>
         <ToolbarHeading title={sim.project?.name || 'Simulation'} />
         <ToolbarActions>
-          <Link
-            to="/simulations"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium hover:bg-muted transition-colors"
-          >
-            Retour
-          </Link>
+          <Button variant="outline" asChild>
+            <Link to="/simulations">Retour</Link>
+          </Button>
         </ToolbarActions>
       </Toolbar>
 
@@ -171,11 +196,9 @@ export default function SimulationDetailPage() {
             <div className="space-y-1">
               <div className="flex items-center gap-3">
                 <h2 className="font-semibold text-lg">{sim.project?.name}</h2>
-                <span
-                  className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[sim.status]}`}
-                >
+                <Badge variant={STATUS_VARIANT[sim.status]} appearance="light" size="sm">
                   {STATUS_LABELS[sim.status]}
-                </span>
+                </Badge>
               </div>
               {sim.project?.client && (
                 <p className="text-sm text-muted-foreground">
@@ -183,12 +206,12 @@ export default function SimulationDetailPage() {
                 </p>
               )}
               <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
-                <span>📋 {sim.scenario?.title}</span>
-                <span>📁 {sim.scenario?.sector}</span>
-                <span>🎯 {sim.scenario?.difficulty}</span>
+                <span className="flex items-center gap-1"><KeenIcon icon="clipboard" style="outline" className="text-sm" /> {sim.scenario?.title}</span>
+                <span className="flex items-center gap-1"><KeenIcon icon="folder" style="outline" className="text-sm" /> {sim.scenario?.sector}</span>
+                <span className="flex items-center gap-1"><KeenIcon icon="target" style="outline" className="text-sm" /> {sim.scenario?.difficulty}</span>
                 {sim.project?.initialBudget && (
-                  <span>
-                    💰 Budget : {sim.project.currentBudget.toLocaleString('fr-FR')} /{' '}
+                  <span className="flex items-center gap-1">
+                    <KeenIcon icon="dollar" style="outline" className="text-sm" /> Budget : {sim.project.currentBudget.toLocaleString('fr-FR')} /{' '}
                     {sim.project.initialBudget.toLocaleString('fr-FR')} EUR
                   </span>
                 )}
@@ -198,25 +221,15 @@ export default function SimulationDetailPage() {
             {/* Action buttons */}
             {isActive && (
               <div className="flex items-center gap-2">
-                <button
-                  onClick={handlePauseResume}
-                  disabled={actionLoading}
-                  className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 ${
-                    sim.status === 'IN_PROGRESS'
-                      ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
-                      : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
-                  }`}
-                >
-                  {sim.status === 'IN_PROGRESS' ? '⏸ Pause' : '▶ Reprendre'}
-                </button>
+                <Button variant="outline" size="sm" onClick={handlePauseResume} disabled={actionLoading}>
+                  <KeenIcon icon={sim.status === 'IN_PROGRESS' ? 'pause' : 'play'} style="filled" className="size-4" />
+                  {sim.status === 'IN_PROGRESS' ? 'Pause' : 'Reprendre'}
+                </Button>
                 {sim.status === 'IN_PROGRESS' && (
-                  <button
-                    onClick={handleAdvancePhase}
-                    disabled={actionLoading}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
-                  >
-                    ⏭ Phase suivante
-                  </button>
+                  <Button onClick={handleAdvancePhase} disabled={actionLoading}>
+                    <KeenIcon icon="right" style="filled" className="size-4" />
+                    Phase suivante
+                  </Button>
                 )}
               </div>
             )}
@@ -224,14 +237,31 @@ export default function SimulationDetailPage() {
         </CardContent>
       </Card>
 
-      {/* KPI Gauges */}
+      {/* KPI Alert */}
+      {criticalKpis.length > 0 && (
+        <div className="mb-5 p-3 rounded-lg bg-destructive/10 border border-destructive/30">
+          <p className="text-sm text-destructive font-medium">
+            Alerte : KPI(s) critique(s) en dessous de 30% — {criticalKpis.join(', ')}
+          </p>
+        </div>
+      )}
+
+      {/* KPI Radial Gauges */}
       {sim.kpis && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-5">
-          <KpiGauge label="Budget" emoji="💰" value={sim.kpis.budget} />
-          <KpiGauge label="Delai" emoji="📅" value={sim.kpis.schedule} />
-          <KpiGauge label="Qualite" emoji="⭐" value={sim.kpis.quality} />
-          <KpiGauge label="Moral equipe" emoji="😊" value={sim.kpis.teamMorale} />
-          <KpiGauge label="Niveau risque" emoji="⚠️" value={sim.kpis.riskLevel} />
+        <div className="mb-5">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-sm font-medium text-foreground">Indicateurs de performance</h3>
+            <Button variant="link" size="sm" asChild>
+              <Link to={`/simulations/${sim.id}/kpis`}>Historique KPIs</Link>
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            <KpiBadge kpiKey="budget" label="Budget" icon="dollar" value={sim.kpis.budget} />
+            <KpiBadge kpiKey="schedule" label="Delai" icon="calendar" value={sim.kpis.schedule} />
+            <KpiBadge kpiKey="quality" label="Qualite" icon="medal-star" value={sim.kpis.quality} />
+            <KpiBadge kpiKey="teamMorale" label="Moral equipe" icon="people" value={sim.kpis.teamMorale} />
+            <KpiBadge kpiKey="riskLevel" label="Niveau risque" icon="shield-cross" value={sim.kpis.riskLevel} />
+          </div>
         </div>
       )}
 
@@ -250,16 +280,16 @@ export default function SimulationDetailPage() {
                     <div
                       className={`h-3 rounded-full ${
                         phase.status === 'COMPLETED'
-                          ? 'bg-green-500'
+                          ? 'bg-success'
                           : phase.status === 'ACTIVE'
-                            ? 'bg-blue-500 animate-pulse'
-                            : 'bg-gray-200'
+                            ? 'bg-primary animate-pulse'
+                            : 'bg-muted'
                       }`}
                     />
                     <p
                       className={`text-[10px] mt-1 truncate text-center ${
                         phase.status === 'ACTIVE'
-                          ? 'font-semibold text-blue-600'
+                          ? 'font-semibold text-primary'
                           : 'text-muted-foreground'
                       }`}
                     >
@@ -277,11 +307,11 @@ export default function SimulationDetailPage() {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm flex items-center gap-2">
-              🤔 Decisions en attente
+              <KeenIcon icon="question-2" style="filled" className="size-4" /> Decisions en attente
               {pendingDecisions.length > 0 && (
-                <span className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full">
+                <Badge variant="primary" appearance="light" size="sm">
                   {pendingDecisions.length}
-                </span>
+                </Badge>
               )}
             </CardTitle>
           </CardHeader>
@@ -310,8 +340,8 @@ export default function SimulationDetailPage() {
                       </span>
                     </div>
                     {dec.timeLimitSeconds && (
-                      <p className="text-[10px] text-orange-600 mt-1">
-                        ⏰ Limite : {Math.round(dec.timeLimitSeconds / 60)} min
+                      <p className="text-[10px] text-warning mt-1">
+                        <KeenIcon icon="time" style="outline" className="size-3" /> Limite : {Math.round(dec.timeLimitSeconds / 60)} min
                       </p>
                     )}
                   </Link>
@@ -325,11 +355,11 @@ export default function SimulationDetailPage() {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm flex items-center gap-2">
-              ⚡ Evenements aleatoires
+              <KeenIcon icon="flash" style="filled" className="size-4" /> Evenements aleatoires
               {pendingEvents.length > 0 && (
-                <span className="bg-orange-100 text-orange-700 text-xs px-2 py-0.5 rounded-full">
+                <Badge variant="warning" appearance="light" size="sm">
                   {pendingEvents.length}
-                </span>
+                </Badge>
               )}
             </CardTitle>
           </CardHeader>
@@ -341,53 +371,28 @@ export default function SimulationDetailPage() {
             ) : (
               <div className="space-y-2">
                 {pendingEvents.map((evt) => (
-                  <div
+                  <Link
                     key={evt.id}
-                    className="p-3 rounded-lg border border-border"
+                    to={`/simulations/${sim.id}/events/${evt.id}`}
+                    className="block p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         <div className="flex items-center gap-2 mb-1">
                           <h4 className="text-sm font-medium">{evt.title}</h4>
-                          <span
-                            className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${SEVERITY_COLORS[evt.severity]}`}
-                          >
+                          <Badge variant={SEVERITY_VARIANT[evt.severity]} appearance="light" size="sm">
                             {evt.severity}
-                          </span>
+                          </Badge>
                         </div>
                         <p className="text-xs text-muted-foreground line-clamp-2">
                           {evt.description}
                         </p>
                       </div>
+                      <span className="text-xs text-primary shrink-0">
+                        {evt.options.length} options →
+                      </span>
                     </div>
-                    {evt.options.length > 0 && (
-                      <div className="mt-2 space-y-1">
-                        {evt.options.map((opt, i) => (
-                          <button
-                            key={i}
-                            onClick={async () => {
-                              setActionLoading(true);
-                              try {
-                                await simulationApi.respondToEvent(sim.id, evt.id, i);
-                                await loadData();
-                              } catch (err: any) {
-                                setError(err.message);
-                              } finally {
-                                setActionLoading(false);
-                              }
-                            }}
-                            disabled={actionLoading}
-                            className="w-full text-left p-2 rounded border border-border hover:bg-muted/50 text-xs transition-colors disabled:opacity-50"
-                          >
-                            <span className="font-medium">{opt.label}</span>
-                            {opt.description && (
-                              <span className="text-muted-foreground"> - {opt.description}</span>
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}
@@ -401,19 +406,16 @@ export default function SimulationDetailPage() {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm flex items-center gap-2">
-                🗣 Reunions
+                <KeenIcon icon="people" style="filled" className="size-4" /> Reunions
                 {sim.meetings.filter((m) => m.status === 'SCHEDULED' || m.status === 'IN_PROGRESS').length > 0 && (
-                  <span className="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full">
+                  <Badge variant="primary" appearance="light" size="sm">
                     {sim.meetings.filter((m) => m.status === 'SCHEDULED' || m.status === 'IN_PROGRESS').length}
-                  </span>
+                  </Badge>
                 )}
               </CardTitle>
-              <Link
-                to={`/meetings?simId=${sim.id}`}
-                className="text-xs text-primary hover:underline"
-              >
-                Voir tout →
-              </Link>
+              <Button variant="link" size="sm" asChild>
+                <Link to={`/meetings?simId=${sim.id}`}>Voir tout</Link>
+              </Button>
             </div>
           </CardHeader>
           <CardContent>
@@ -427,8 +429,8 @@ export default function SimulationDetailPage() {
                     className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-xs font-bold">
-                        🗣
+                      <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
+                        <KeenIcon icon="message-text" style="filled" className="size-4" />
                       </div>
                       <div>
                         <h4 className="text-sm font-medium">{meeting.title}</h4>
@@ -438,17 +440,7 @@ export default function SimulationDetailPage() {
                         </p>
                       </div>
                     </div>
-                    <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-medium ${
-                        meeting.status === 'SCHEDULED'
-                          ? 'bg-gray-100 text-gray-700'
-                          : meeting.status === 'IN_PROGRESS'
-                            ? 'bg-blue-100 text-blue-700'
-                            : meeting.status === 'COMPLETED'
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-red-100 text-red-700'
-                      }`}
-                    >
+                    <Badge variant={STATUS_VARIANT[meeting.status]} appearance="light" size="sm">
                       {meeting.status === 'SCHEDULED'
                         ? 'Demarrer →'
                         : meeting.status === 'IN_PROGRESS'
@@ -456,7 +448,7 @@ export default function SimulationDetailPage() {
                           : meeting.status === 'COMPLETED'
                             ? 'Terminee'
                             : 'Annulee'}
-                    </span>
+                    </Badge>
                   </Link>
                 ))}
               {sim.meetings.filter((m) => m.phaseOrder === sim.currentPhaseOrder).length === 0 && (
@@ -473,7 +465,7 @@ export default function SimulationDetailPage() {
       {sim.project?.teamMembers && sim.project.teamMembers.length > 0 && (
         <Card className="mb-5">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm">👥 Equipe projet</CardTitle>
+            <CardTitle className="text-sm"><KeenIcon icon="people" style="filled" className="size-4" /> Equipe projet</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
@@ -507,14 +499,11 @@ export default function SimulationDetailPage() {
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-sm">📜 Historique recent</CardTitle>
+            <CardTitle className="text-sm"><KeenIcon icon="document-2" style="filled" className="size-4" /> Historique recent</CardTitle>
             {timeline.length > 5 && (
-              <Link
-                to={`/simulations/${sim.id}/timeline`}
-                className="text-xs text-primary hover:underline"
-              >
-                Voir tout →
-              </Link>
+              <Button variant="link" size="sm" asChild>
+                <Link to={`/simulations/${sim.id}/timeline`}>Voir tout</Link>
+              </Button>
             )}
           </div>
         </CardHeader>
@@ -529,12 +518,12 @@ export default function SimulationDetailPage() {
                 <div key={i} className="flex items-start gap-3">
                   <span className="text-sm mt-0.5">
                     {entry.type === 'PHASE_START' || entry.type === 'PHASE_COMPLETE'
-                      ? '📋'
+                      ? <KeenIcon icon="clipboard" style="filled" className="size-4" />
                       : entry.type === 'DECISION'
-                        ? '🤔'
+                        ? <KeenIcon icon="question-2" style="filled" className="size-4" />
                         : entry.type === 'RANDOM_EVENT'
-                          ? '⚡'
-                          : '📌'}
+                          ? <KeenIcon icon="flash" style="filled" className="size-4" />
+                          : <KeenIcon icon="geolocation" style="filled" className="size-4" />}
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="text-xs font-medium">{entry.title}</p>

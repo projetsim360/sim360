@@ -503,6 +503,7 @@ model Simulation {
   totalDurationMinutes Int?
 
   kpis         SimulationKpi?
+  kpiSnapshots SimulationKpiSnapshot[]
   phases       SimulationPhase[]
   decisions    Decision[]
   randomEvents RandomEvent[]
@@ -515,6 +516,24 @@ model Simulation {
   @@index([userId])
   @@index([status])
   @@map("simulations")
+}
+
+model SimulationKpiSnapshot {
+  id           String     @id @default(cuid())
+  simulationId String
+  simulation   Simulation @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+  phaseOrder   Int
+  trigger      String     // "simulation_start" | "decision" | "event" | "meeting" | "phase_advance"
+  triggerId    String?
+  budget       Float
+  schedule     Float
+  quality      Float
+  teamMorale   Float
+  riskLevel    Float
+  takenAt      DateTime   @default(now())
+
+  @@index([simulationId])
+  @@map("simulation_kpi_snapshots")
 }
 
 model SimulationKpi {

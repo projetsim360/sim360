@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
-import { PrismaService, EventPublisherService, EventType, AggregateType } from '@sim360/core';
+import { PrismaService, EventPublisherService, EventType, AggregateType, CacheEvict } from '@sim360/core';
 import { SimulationStatus, TenantPlan } from '@prisma/client';
 import { CreateSimulationDto } from '../dto/create-simulation.dto';
 import { MakeDecisionDto } from '../dto/make-decision.dto';
@@ -42,6 +42,30 @@ export class SimulationsService {
     private eventPublisher: EventPublisherService,
     private kpiEngine: KpiEngineService,
   ) {}
+
+  private async recordKpiSnapshot(
+    tx: any,
+    simulationId: string,
+    phaseOrder: number,
+    trigger: string,
+    triggerId?: string,
+  ) {
+    const kpis = await tx.simulationKpi.findUnique({ where: { simulationId } });
+    if (!kpis) return;
+    await tx.simulationKpiSnapshot.create({
+      data: {
+        simulationId,
+        phaseOrder,
+        trigger,
+        triggerId,
+        budget: kpis.budget,
+        schedule: kpis.schedule,
+        quality: kpis.quality,
+        teamMorale: kpis.teamMorale,
+        riskLevel: kpis.riskLevel,
+      },
+    });
+  }
 
   async create(userId: string, tenantId: string, dto: CreateSimulationDto) {
     // 1. Check plan limits
@@ -191,6 +215,9 @@ export class SimulationsService {
         }
       }
 
+      // Record initial KPI snapshot
+      await this.recordKpiSnapshot(tx, simulation.id, 0, 'simulation_start');
+
       // Update project status
       await tx.project.update({
         where: { id: project.id },
@@ -285,6 +312,7 @@ export class SimulationsService {
     return updated;
   }
 
+  @CacheEvict({ pattern: 'dashboard:global:*' })
   async advancePhase(id: string, userId: string) {
     const simulation = await this.findOne(id, userId);
     if (simulation.status !== 'IN_PROGRESS') {
@@ -310,6 +338,27 @@ export class SimulationsService {
       throw new BadRequestException(`${pendingEvents.length} evenement(s) non resolu(s) dans cette phase`);
     }
 
+    // Check all meetings in current phase are completed
+    const pendingMeetings = simulation.meetings.filter(
+      (m) => m.phaseOrder === simulation.currentPhaseOrder && m.status !== 'COMPLETED' && m.status !== 'CANCELLED',
+    );
+    if (pendingMeetings.length > 0) {
+      throw new BadRequestException(`${pendingMeetings.length} reunion(s) non terminee(s) dans cette phase`);
+    }
+
+    // Check KPI thresholds — block if any critical KPI is at 0
+    const kpis = simulation.kpis;
+    if (kpis) {
+      const criticalKpis: string[] = [];
+      if (kpis.budget <= 0) criticalKpis.push('Budget');
+      if (kpis.schedule <= 0) criticalKpis.push('Delai');
+      if (kpis.quality <= 0) criticalKpis.push('Qualite');
+      if (kpis.teamMorale <= 0) criticalKpis.push('Moral equipe');
+      if (criticalKpis.length > 0) {
+        throw new BadRequestException(`KPI(s) critique(s) a zero : ${criticalKpis.join(', ')}. Impossible d'avancer.`);
+      }
+    }
+
     const nextPhaseOrder = simulation.currentPhaseOrder + 1;
     const nextPhase = simulation.phases.find((p) => p.order === nextPhaseOrder);
 
@@ -326,6 +375,9 @@ export class SimulationsService {
         where: { simulationId: id, order: simulation.currentPhaseOrder },
         data: { status: 'COMPLETED', completedAt: new Date() },
       });
+
+      // Record KPI snapshot for phase advance
+      await this.recordKpiSnapshot(tx, id, nextPhaseOrder, 'phase_advance');
 
       if (!nextPhase) {
         // Simulation complete — no more phases
@@ -454,6 +506,7 @@ export class SimulationsService {
     return result;
   }
 
+  @CacheEvict({ pattern: 'dashboard:global:*' })
   async makeDecision(simulationId: string, decisionId: string, userId: string, dto: MakeDecisionDto) {
     const simulation = await this.findOne(simulationId, userId);
     if (simulation.status !== 'IN_PROGRESS') {
@@ -488,20 +541,24 @@ export class SimulationsService {
       selectedImpact,
     );
 
-    const [updatedDecision] = await Promise.all([
-      this.prisma.decision.update({
-        where: { id: decisionId },
-        data: {
-          selectedOption: dto.selectedOption,
-          decidedAt: new Date(),
-          kpiImpact: selectedImpact as any,
-        },
-      }),
-      this.prisma.simulationKpi.update({
-        where: { simulationId },
-        data: newKpis,
-      }),
-    ]);
+    const updatedDecision = await this.prisma.$transaction(async (tx) => {
+      const [dec] = await Promise.all([
+        tx.decision.update({
+          where: { id: decisionId },
+          data: {
+            selectedOption: dto.selectedOption,
+            decidedAt: new Date(),
+            kpiImpact: selectedImpact as any,
+          },
+        }),
+        tx.simulationKpi.update({
+          where: { simulationId },
+          data: newKpis,
+        }),
+      ]);
+      await this.recordKpiSnapshot(tx, simulationId, simulation.currentPhaseOrder, 'decision', decisionId);
+      return dec;
+    });
 
     await this.eventPublisher.publish(
       EventType.DECISION_MADE,
@@ -516,9 +573,19 @@ export class SimulationsService {
       { actorId: userId, actorType: 'user', tenantId: simulation.tenantId, channels: ['socket'], priority: 1 },
     );
 
+    // Publish KPI update for real-time
+    await this.eventPublisher.publish(
+      EventType.KPI_UPDATED,
+      AggregateType.SIMULATION,
+      simulationId,
+      { simulationId, kpis: newKpis },
+      { actorId: userId, actorType: 'user', tenantId: simulation.tenantId, channels: ['socket'], priority: 1 },
+    );
+
     return updatedDecision;
   }
 
+  @CacheEvict({ pattern: 'dashboard:global:*' })
   async respondToEvent(simulationId: string, eventId: string, userId: string, dto: RespondEventDto) {
     const simulation = await this.findOne(simulationId, userId);
     if (simulation.status !== 'IN_PROGRESS') {
@@ -552,20 +619,24 @@ export class SimulationsService {
       selectedImpact,
     );
 
-    const [updatedEvent] = await Promise.all([
-      this.prisma.randomEvent.update({
-        where: { id: eventId },
-        data: {
-          selectedOption: dto.selectedOption,
-          resolvedAt: new Date(),
-          kpiImpact: selectedImpact as any,
-        },
-      }),
-      this.prisma.simulationKpi.update({
-        where: { simulationId },
-        data: newKpis,
-      }),
-    ]);
+    const updatedEvent = await this.prisma.$transaction(async (tx) => {
+      const [evt] = await Promise.all([
+        tx.randomEvent.update({
+          where: { id: eventId },
+          data: {
+            selectedOption: dto.selectedOption,
+            resolvedAt: new Date(),
+            kpiImpact: selectedImpact as any,
+          },
+        }),
+        tx.simulationKpi.update({
+          where: { simulationId },
+          data: newKpis,
+        }),
+      ]);
+      await this.recordKpiSnapshot(tx, simulationId, simulation.currentPhaseOrder, 'event', eventId);
+      return evt;
+    });
 
     await this.eventPublisher.publish(
       EventType.RANDOM_EVENT_RESOLVED,
@@ -579,7 +650,30 @@ export class SimulationsService {
       { actorId: userId, actorType: 'user', tenantId: simulation.tenantId, channels: ['socket'], priority: 1 },
     );
 
+    // Publish KPI update for real-time
+    await this.eventPublisher.publish(
+      EventType.KPI_UPDATED,
+      AggregateType.SIMULATION,
+      simulationId,
+      { simulationId, kpis: newKpis },
+      { actorId: userId, actorType: 'user', tenantId: simulation.tenantId, channels: ['socket'], priority: 1 },
+    );
+
     return updatedEvent;
+  }
+
+  async getKpiHistory(id: string, userId: string) {
+    const simulation = await this.prisma.simulation.findUnique({
+      where: { id },
+      select: { userId: true },
+    });
+    if (!simulation) throw new NotFoundException('Simulation introuvable');
+    if (simulation.userId !== userId) throw new ForbiddenException('Acces refuse');
+
+    return this.prisma.simulationKpiSnapshot.findMany({
+      where: { simulationId: id },
+      orderBy: { takenAt: 'asc' },
+    });
   }
 
   async getKpis(id: string, userId: string) {

@@ -15,6 +15,7 @@ import { aiConfig } from './config/ai.config';
 import { AiModule } from './modules/ai/ai.module';
 import { SimulationsModule } from './modules/simulations/simulations.module';
 import { MeetingsModule } from './modules/meetings/meetings.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { MeetingsModule } from './modules/meetings/meetings.module';
     AiModule,
     SimulationsModule,
     MeetingsModule,
+    DashboardModule,
   ],
   providers: [
     {

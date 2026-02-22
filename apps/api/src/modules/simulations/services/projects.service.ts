@@ -1,5 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '@sim360/core';
+import { UpdateDeliverableDto } from '../dto/update-deliverable.dto';
 
 @Injectable()
 export class ProjectsService {
@@ -55,6 +56,25 @@ export class ProjectsService {
     return this.prisma.deliverable.findMany({
       where: { projectId },
       orderBy: { phaseOrder: 'asc' },
+    });
+  }
+
+  async updateDeliverable(projectId: string, deliverableId: string, userId: string, dto: UpdateDeliverableDto) {
+    const project = await this.prisma.project.findUnique({ where: { id: projectId } });
+    if (!project) throw new NotFoundException('Projet introuvable');
+    if (project.userId !== userId) throw new ForbiddenException('Acces refuse');
+
+    const deliverable = await this.prisma.deliverable.findUnique({ where: { id: deliverableId } });
+    if (!deliverable || deliverable.projectId !== projectId) {
+      throw new NotFoundException('Livrable introuvable');
+    }
+
+    return this.prisma.deliverable.update({
+      where: { id: deliverableId },
+      data: {
+        ...(dto.status !== undefined && { status: dto.status }),
+        ...(dto.progress !== undefined && { progress: dto.progress }),
+      },
     });
   }
 }

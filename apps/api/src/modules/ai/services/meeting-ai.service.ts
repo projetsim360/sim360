@@ -26,6 +26,8 @@ export class MeetingAiService {
   constructor(private aiService: AiService) {}
 
   buildParticipantSystemPrompt(participant: ParticipantContext, context: MeetingContext): string {
+    const cooperationInstructions = this.buildCooperationInstructions(participant);
+
     return [
       `Tu es ${participant.name}, ${participant.role} dans un projet de gestion.`,
       `Personnalite: ${participant.personality}. Expertise: ${participant.expertise}. Moral actuel: ${participant.morale}/100.`,
@@ -45,9 +47,44 @@ export class MeetingAiService {
       `- Reste concis (2-4 phrases max).`,
       `- Prends en compte les KPIs pour orienter tes preoccupations.`,
       `- Ne sors jamais du role.`,
+      cooperationInstructions,
     ]
       .filter(Boolean)
       .join('\n');
+  }
+
+  private buildCooperationInstructions(participant: ParticipantContext): string {
+    const morale = participant.morale;
+    const personality = participant.personality.toUpperCase();
+
+    if (personality === 'RESISTANT' || morale < 40) {
+      return [
+        ``,
+        `Comportement conflictuel:`,
+        `- Tu es frustre et sceptique. Exprime des doutes sur les decisions prises.`,
+        `- Conteste les propositions du chef de projet si elles te semblent risquees.`,
+        `- Signale les problemes sans proposer de solutions. Sois direct et parfois sec.`,
+        `- Si le moral est bas (${morale}/100), montre ton mecontentement ouvertement.`,
+      ].join('\n');
+    }
+
+    if (personality === 'NEUTRAL' || (morale >= 40 && morale < 60)) {
+      return [
+        ``,
+        `Comportement neutre:`,
+        `- Tu es pragmatique. Tu donnes ton avis factuel sans t'engager emotionnellement.`,
+        `- Tu peux exprimer des reserves ou des desaccords si les KPIs sont mauvais.`,
+        `- Tu poses des questions difficiles mais restes professionnel.`,
+      ].join('\n');
+    }
+
+    // COOPERATIVE or high morale
+    return [
+      ``,
+      `Comportement cooperatif:`,
+      `- Tu es constructif et propose des solutions. Tu soutiens les bonnes decisions.`,
+      `- Si un KPI est critique (<30), exprime de l'inquietude de maniere constructive.`,
+    ].join('\n');
   }
 
   async generateResponse(
@@ -123,5 +160,70 @@ export class MeetingAiService {
     });
 
     return result.content;
+  }
+
+  async generateStructuredSummary(
+    meetingTitle: string,
+    history: Array<{ role: 'user' | 'assistant'; content: string }>,
+    kpis: Record<string, number>,
+    participantNames: string[],
+  ): Promise<{
+    summary: string;
+    keyDecisions: string[];
+    actionItems: Array<{ task: string; assignee: string; deadline?: string }>;
+    kpiImpact: Record<string, number>;
+  }> {
+    const conversationText = history
+      .map((m) => `${m.role === 'user' ? 'Chef de projet' : 'Participant'}: ${m.content}`)
+      .join('\n');
+
+    const result = await this.aiService.complete({
+      prompt: [
+        `Analyse cette reunion "${meetingTitle}" et produis un compte-rendu structure.`,
+        ``,
+        `Participants: ${participantNames.join(', ')}`,
+        ``,
+        `Conversation:`,
+        conversationText,
+        ``,
+        `KPIs actuels: Budget ${kpis.budget}/100, Delai ${kpis.schedule}/100, Qualite ${kpis.quality}/100, Moral ${kpis.teamMorale}/100, Risque ${kpis.riskLevel}/100.`,
+        ``,
+        `Reponds UNIQUEMENT avec un objet JSON valide (sans markdown, sans backticks) avec cette structure exacte:`,
+        `{`,
+        `  "summary": "Resume en 3-5 phrases de la reunion",`,
+        `  "keyDecisions": ["Decision 1", "Decision 2"],`,
+        `  "actionItems": [{"task": "Description de la tache", "assignee": "Nom du responsable", "deadline": "Echeance estimee"}],`,
+        `  "kpiImpact": {"budget": 0, "schedule": 0, "quality": 0, "teamMorale": 0, "riskLevel": 0}`,
+        `}`,
+        ``,
+        `Pour kpiImpact, estime l'impact de cette reunion sur chaque KPI (valeur entre -10 et +10).`,
+        `Pour actionItems, identifie 2-4 actions concretes issues de la conversation avec un responsable parmi les participants.`,
+        `Pour keyDecisions, identifie 1-3 decisions prises pendant la reunion.`,
+      ].join('\n'),
+      maxTokens: 800,
+      temperature: 0.2,
+    });
+
+    try {
+      const cleaned = result.content
+        .replace(/```json\s*/g, '')
+        .replace(/```\s*/g, '')
+        .trim();
+      const parsed = JSON.parse(cleaned);
+      return {
+        summary: parsed.summary ?? result.content,
+        keyDecisions: Array.isArray(parsed.keyDecisions) ? parsed.keyDecisions : [],
+        actionItems: Array.isArray(parsed.actionItems) ? parsed.actionItems : [],
+        kpiImpact: parsed.kpiImpact ?? {},
+      };
+    } catch {
+      // Fallback if JSON parsing fails
+      return {
+        summary: result.content,
+        keyDecisions: [],
+        actionItems: [],
+        kpiImpact: {},
+      };
+    }
   }
 }
