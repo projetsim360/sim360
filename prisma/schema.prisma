@@ -30,6 +30,8 @@ model Tenant {
   notifications Notification[]
   storageFiles  StorageFile[]
   auditLogs     AuditLog[]
+  projects      Project[]
+  simulations   Simulation[]
 
   @@map("tenants")
 }
@@ -115,10 +117,13 @@ model User {
   tenantId String
   tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
-  refreshTokens RefreshToken[]
-  notifications Notification[]
-  storageFiles  StorageFile[]
-  auditLogs     AuditLog[]
+  refreshTokens    RefreshToken[]
+  notifications    Notification[]
+  storageFiles     StorageFile[]
+  auditLogs        AuditLog[]
+  projects         Project[]          @relation("UserProjects")
+  simulations      Simulation[]       @relation("UserSimulations")
+  scenariosCreated Scenario[]         @relation("ScenariosCreated")
 
   @@index([tenantId])
   @@index([email])
@@ -257,4 +262,323 @@ model StorageFile {
   @@index([tenantId])
   @@index([userId])
   @@map("storage_files")
+}
+
+// ─── Scenarios & Simulations ─────────────────────────────
+
+enum ProjectStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  ON_HOLD
+  COMPLETED
+  FAILED
+}
+
+enum SimulationStatus {
+  DRAFT
+  IN_PROGRESS
+  PAUSED
+  COMPLETED
+  ABANDONED
+}
+
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum Sector {
+  IT
+  CONSTRUCTION
+  MARKETING
+  HEALTHCARE
+  FINANCE
+  CUSTOM
+}
+
+enum PhaseType {
+  INITIATION
+  PLANNING
+  EXECUTION
+  MONITORING
+  CLOSURE
+}
+
+enum DeliverableStatus {
+  PENDING
+  IN_PROGRESS
+  DELIVERED
+  ACCEPTED
+  REJECTED
+}
+
+enum RandomEventType {
+  RISK
+  OPPORTUNITY
+  CONSTRAINT
+  STAKEHOLDER
+}
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+// ─── Templates (Scenarios) ──────────────────────────────
+
+model Scenario {
+  id                     String     @id @default(cuid())
+  title                  String
+  description            String?    @db.Text
+  objectives             String[]
+  sector                 Sector     @default(IT)
+  difficulty             Difficulty @default(BEGINNER)
+  estimatedDurationHours Int        @default(4)
+  requiredPlan           TenantPlan @default(FREE)
+  competencies           String[]
+  projectTemplate        Json       // { name, client, sector, description, teamSize, initialBudget, deadlineDays, deliverables[] }
+  initialKpis            Json       // { budget: 100, schedule: 100, quality: 80, teamMorale: 75, riskLevel: 20 }
+  isPublished            Boolean    @default(false)
+  isArchived             Boolean    @default(false)
+
+  createdById String
+  createdBy   User   @relation("ScenariosCreated", fields: [createdById], references: [id])
+
+  phases      ScenarioPhase[]
+  simulations Simulation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sector, difficulty])
+  @@index([isPublished])
+  @@map("scenarios")
+}
+
+model ScenarioPhase {
+  id                 String    @id @default(cuid())
+  scenarioId         String
+  scenario           Scenario  @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+  order              Int
+  name               String
+  description        String?   @db.Text
+  type               PhaseType
+  durationDays       Int       @default(5)
+  completionCriteria Json?     // { requiredMeetings: 1, requiredDecisions: 1 }
+
+  meetingTemplates     MeetingTemplate[]
+  decisionTemplates    DecisionTemplate[]
+  randomEventTemplates RandomEventTemplate[]
+
+  @@unique([scenarioId, order])
+  @@index([scenarioId])
+  @@map("scenario_phases")
+}
+
+model MeetingTemplate {
+  id              String        @id @default(cuid())
+  phaseId         String
+  phase           ScenarioPhase @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+  title           String
+  description     String?       @db.Text
+  type            String        @default("STEERING") // KICKOFF | STANDUP | STEERING | RETROSPECTIVE | CRISIS | CUSTOM
+  objectives      String[]
+  durationMinutes Int           @default(30)
+  participants    Json          // [{ name, role, personality, cooperationLevel }]
+
+  @@index([phaseId])
+  @@map("meeting_templates")
+}
+
+model DecisionTemplate {
+  id               String        @id @default(cuid())
+  phaseId          String
+  phase            ScenarioPhase @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+  title            String
+  context          String        @db.Text
+  options          Json          // [{ label, description, kpiImpact: { budget, schedule, quality, teamMorale, riskLevel } }]
+  optimalOption    Int?
+  timeLimitSeconds Int?
+
+  @@index([phaseId])
+  @@map("decision_templates")
+}
+
+model RandomEventTemplate {
+  id                String          @id @default(cuid())
+  phaseId           String
+  phase             ScenarioPhase   @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+  type              RandomEventType
+  title             String
+  description       String          @db.Text
+  severity          Severity        @default(MEDIUM)
+  probability       Float           @default(0.3)
+  options           Json            // [{ label, description, kpiImpact }]
+  triggerConditions Json?           // { minBudget?, maxQuality?, ... }
+
+  @@index([phaseId])
+  @@map("random_event_templates")
+}
+
+// ─── Instances (Projects & Simulations) ──────────────────
+
+model Project {
+  id            String        @id @default(cuid())
+  tenantId      String
+  tenant        Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User          @relation("UserProjects", fields: [userId], references: [id], onDelete: Cascade)
+  name          String
+  client        String?
+  sector        Sector        @default(IT)
+  description   String?       @db.Text
+  initialBudget Float
+  currentBudget Float
+  startDate     DateTime      @default(now())
+  deadline      DateTime
+  status        ProjectStatus @default(NOT_STARTED)
+
+  teamMembers  ProjectTeamMember[]
+  deliverables Deliverable[]
+  simulation   Simulation?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tenantId])
+  @@index([userId])
+  @@map("projects")
+}
+
+model ProjectTeamMember {
+  id           String  @id @default(cuid())
+  projectId    String
+  project      Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name         String
+  role         String
+  expertise    String  @default("INTERMEDIATE") // JUNIOR | INTERMEDIATE | SENIOR
+  personality  String  @default("COOPERATIVE") // COOPERATIVE | NEUTRAL | RESISTANT
+  availability Float   @default(1.0)
+  morale       Float   @default(75)
+  avatar       String?
+
+  @@index([projectId])
+  @@map("project_team_members")
+}
+
+model Deliverable {
+  id           String           @id @default(cuid())
+  projectId    String
+  project      Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  phaseOrder   Int?
+  name         String
+  description  String?          @db.Text
+  status       DeliverableStatus @default(PENDING)
+  qualityScore Float?
+  dueDate      DateTime?
+  deliveredAt  DateTime?
+  dependencies String[]
+
+  @@index([projectId])
+  @@map("deliverables")
+}
+
+model Simulation {
+  id                   String           @id @default(cuid())
+  projectId            String           @unique
+  project              Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  scenarioId           String
+  scenario             Scenario         @relation(fields: [scenarioId], references: [id])
+  userId               String
+  user                 User             @relation("UserSimulations", fields: [userId], references: [id], onDelete: Cascade)
+  tenantId             String
+  tenant               Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  status               SimulationStatus @default(DRAFT)
+  currentPhaseOrder    Int              @default(0)
+  startedAt            DateTime?
+  completedAt          DateTime?
+  totalDurationMinutes Int?
+
+  kpis         SimulationKpi?
+  phases       SimulationPhase[]
+  decisions    Decision[]
+  randomEvents RandomEvent[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tenantId])
+  @@index([userId])
+  @@index([status])
+  @@map("simulations")
+}
+
+model SimulationKpi {
+  id           String     @id @default(cuid())
+  simulationId String     @unique
+  simulation   Simulation @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+  budget       Float      @default(100)
+  schedule     Float      @default(100)
+  quality      Float      @default(80)
+  teamMorale   Float      @default(75)
+  riskLevel    Float      @default(20)
+  updatedAt    DateTime   @updatedAt
+
+  @@map("simulation_kpis")
+}
+
+model SimulationPhase {
+  id           String     @id @default(cuid())
+  simulationId String
+  simulation   Simulation @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+  order        Int
+  name         String
+  type         PhaseType
+  status       String     @default("LOCKED") // LOCKED | ACTIVE | COMPLETED
+  startedAt    DateTime?
+  completedAt  DateTime?
+
+  @@unique([simulationId, order])
+  @@index([simulationId])
+  @@map("simulation_phases")
+}
+
+model Decision {
+  id               String     @id @default(cuid())
+  simulationId     String
+  simulation       Simulation @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+  phaseOrder       Int
+  templateId       String?
+  title            String
+  context          String     @db.Text
+  options          Json       // [{ label, description, kpiImpact }]
+  selectedOption   Int?
+  decidedAt        DateTime?
+  kpiImpact        Json?
+  timeLimitSeconds Int?
+
+  @@index([simulationId])
+  @@map("decisions")
+}
+
+model RandomEvent {
+  id             String          @id @default(cuid())
+  simulationId   String
+  simulation     Simulation      @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+  phaseOrder     Int
+  templateId     String?
+  type           RandomEventType
+  title          String
+  description    String          @db.Text
+  severity       Severity
+  options        Json
+  selectedOption Int?
+  resolvedAt     DateTime?
+  kpiImpact      Json?
+
+  @@index([simulationId])
+  @@map("random_events")
 }

@@ -1,6 +1,5 @@
 import { Route, Routes, Navigate } from 'react-router';
 import { DynamicLayout } from '@/components/layouts/dynamic-layout';
-import { Layout6Page } from '@/pages/layout-6/page';
 import { AuthLayout } from '@/components/auth/auth-layout';
 import { ProtectedRoute } from '@/components/auth/protected-route';
 import { SignUpPage } from '@/pages/auth/sign-up';
@@ -17,6 +16,12 @@ import { ConfirmEmailChangePage } from '@/pages/auth/confirm-email-change';
 import { ProfileWizardPage } from '@/pages/profile/wizard';
 import { EditProfilePage } from '@/pages/profile/edit-profile';
 import { SettingsPage } from '@/pages/settings';
+import {
+  dashboardRoutes,
+  simulationRoutes,
+  meetingRoutes,
+  reportRoutes,
+} from '@/features';
 
 export function AppRoutingSetup() {
   return (
@@ -44,11 +49,16 @@ export function AppRoutingSetup() {
       {/* Protected routes with dynamic layout */}
       <Route element={<ProtectedRoute />}>
         <Route element={<DynamicLayout />}>
-          <Route path="/" element={<Layout6Page />} />
-          <Route path="/dashboard" element={<Layout6Page />} />
+          {/* SaaS core routes */}
           <Route path="/profile/edit" element={<EditProfilePage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/settings/layout" element={<SettingsPage />} />
+
+          {/* Feature routes (Sim360 domaine) */}
+          {dashboardRoutes}
+          {simulationRoutes}
+          {meetingRoutes}
+          {reportRoutes}
         </Route>
       </Route>
 

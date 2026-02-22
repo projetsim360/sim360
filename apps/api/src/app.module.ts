@@ -13,6 +13,7 @@ import {
 } from '@sim360/core';
 import { aiConfig } from './config/ai.config';
 import { AiModule } from './modules/ai/ai.module';
+import { SimulationsModule } from './modules/simulations/simulations.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { AiModule } from './modules/ai/ai.module';
     ]),
     CoreModule,
     AiModule,
+    SimulationsModule,
   ],
   providers: [
     {

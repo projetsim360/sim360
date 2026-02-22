@@ -10,6 +10,9 @@ import {
   UserCircle,
 } from '@/components/keenicons/icons';
 import { type MenuConfig } from './types';
+import { simulationMenuItems } from '@/features/simulation/config/simulation.menu';
+import { meetingMenuItems } from '@/features/meeting/config/meeting.menu';
+import { reportMenuItems } from '@/features/report/config/report.menu';
 
 // ---------------------------------------------------------------------------
 // Source de vérité unique pour tous les menus de l'application Sim360.
@@ -24,25 +27,9 @@ export const APP_SIDEBAR_MENU: MenuConfig = [
     path: '/dashboard',
   },
   { heading: 'Application' },
-  {
-    title: 'Simulations',
-    icon: Play,
-    path: '#',
-    children: [
-      { title: 'Nouvelle simulation', path: '#' },
-      { title: 'Mes simulations', path: '#' },
-      { title: 'Modèles', path: '#' },
-    ],
-  },
-  {
-    title: 'Rapports',
-    icon: FileBarChart,
-    path: '#',
-    children: [
-      { title: "Vue d'ensemble", path: '#' },
-      { title: 'Historique', path: '#' },
-    ],
-  },
+  ...simulationMenuItems,
+  ...meetingMenuItems,
+  ...reportMenuItems,
   { heading: 'Compte' },
   {
     title: 'Mon Profil',
@@ -74,8 +61,9 @@ export const APP_SIDEBAR_MENU: MenuConfig = [
 /** Header horizontal — layouts 2,11,18,19,22,23,25,26,32,34 */
 export const APP_HEADER_MENU: MenuConfig = [
   { title: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-  { title: 'Simulations', path: '#', icon: Play },
-  { title: 'Rapports', path: '#', icon: FileBarChart },
+  { title: 'Simulations', path: '/simulations', icon: Play },
+  { title: 'Réunions', path: '/meetings', icon: UserCircle },
+  { title: 'Rapports', path: '/reports', icon: FileBarChart },
   { title: 'Mon Profil', path: '/profile/edit', icon: UserCircle },
   { title: 'Paramètres', path: '/settings', icon: Settings },
 ];
@@ -91,13 +79,13 @@ export const APP_ICON_RAIL_MENU: MenuConfig = [
   {
     title: 'Simulations',
     icon: Play,
-    path: '#',
+    path: '/simulations',
     rootPath: '/simulations',
   },
   {
     title: 'Rapports',
     icon: FileBarChart,
-    path: '#',
+    path: '/reports',
     rootPath: '/reports',
   },
   { separator: true },
@@ -126,9 +114,8 @@ export const APP_MEGA_MENU: MenuConfig = [
         children: [
           {
             children: [
-              { title: 'Nouvelle simulation', icon: Play, path: '#' },
-              { title: 'Mes simulations', icon: Play, path: '#' },
-              { title: 'Modèles', icon: Play, path: '#' },
+              { title: 'Nouvelle simulation', icon: Play, path: '/simulations/new' },
+              { title: 'Mes simulations', icon: Play, path: '/simulations' },
             ],
           },
         ],
@@ -138,8 +125,7 @@ export const APP_MEGA_MENU: MenuConfig = [
         children: [
           {
             children: [
-              { title: "Vue d'ensemble", icon: FileBarChart, path: '#' },
-              { title: 'Historique', icon: FileBarChart, path: '#' },
+              { title: "Vue d'ensemble", icon: FileBarChart, path: '/reports' },
             ],
           },
         ],
@@ -186,16 +172,14 @@ export const APP_MEGA_MENU_MOBILE: MenuConfig = [
       {
         title: 'Simulations',
         children: [
-          { title: 'Nouvelle simulation', icon: Play, path: '#' },
-          { title: 'Mes simulations', icon: Play, path: '#' },
-          { title: 'Modèles', icon: Play, path: '#' },
+          { title: 'Nouvelle simulation', icon: Play, path: '/simulations/new' },
+          { title: 'Mes simulations', icon: Play, path: '/simulations' },
         ],
       },
       {
         title: 'Rapports',
         children: [
-          { title: "Vue d'ensemble", icon: FileBarChart, path: '#' },
-          { title: 'Historique', icon: FileBarChart, path: '#' },
+          { title: "Vue d'ensemble", icon: FileBarChart, path: '/reports' },
         ],
       },
     ],
@@ -252,8 +236,8 @@ export const APP_TOOLBAR_MENU: MenuConfig = [
 /** Navbars secondaires — layouts 18,22 */
 export const APP_NAVBAR_MENU: MenuConfig = [
   { title: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-  { title: 'Simulations', path: '#', icon: Play },
-  { title: 'Rapports', path: '#', icon: FileBarChart },
+  { title: 'Simulations', path: '/simulations', icon: Play },
+  { title: 'Rapports', path: '/reports', icon: FileBarChart },
 ];
 
 // ---------------------------------------------------------------------------

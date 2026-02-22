@@ -13,6 +13,31 @@ export enum EventType {
   TENANT_UPDATED = 'tenant.updated',
   NOTIFICATION_SENT = 'notification.sent',
   NOTIFICATION_READ = 'notification.read',
+
+  // Project
+  PROJECT_CREATED = 'project.created',
+  PROJECT_UPDATED = 'project.updated',
+
+  // Scenario
+  SCENARIO_CREATED = 'scenario.created',
+  SCENARIO_UPDATED = 'scenario.updated',
+
+  // Simulation
+  SIMULATION_CREATED = 'simulation.created',
+  SIMULATION_STARTED = 'simulation.started',
+  SIMULATION_PAUSED = 'simulation.paused',
+  SIMULATION_RESUMED = 'simulation.resumed',
+  SIMULATION_PHASE_ADVANCED = 'simulation.phase_advanced',
+  SIMULATION_COMPLETED = 'simulation.completed',
+  SIMULATION_ABANDONED = 'simulation.abandoned',
+
+  // Decision
+  DECISION_PRESENTED = 'decision.presented',
+  DECISION_MADE = 'decision.made',
+
+  // Random Event
+  RANDOM_EVENT_TRIGGERED = 'event.triggered',
+  RANDOM_EVENT_RESOLVED = 'event.resolved',
 }
 
 export enum AggregateType {
@@ -21,6 +46,11 @@ export enum AggregateType {
   NOTIFICATION = 'Notification',
   AUTH = 'Auth',
   SYSTEM = 'System',
+  PROJECT = 'Project',
+  SCENARIO = 'Scenario',
+  SIMULATION = 'Simulation',
+  DECISION = 'Decision',
+  RANDOM_EVENT = 'RandomEvent',
 }
 
 export type ChannelType = 'socket' | 'email';
@@ -161,6 +191,70 @@ export const EVENT_NOTIFICATION_CONFIG: Partial<Record<EventType, EventNotificat
     titleTemplate: '',
     bodyTemplate: '',
     defaultChannels: [],
+    defaultPriority: 1,
+  },
+  [EventType.SIMULATION_CREATED]: {
+    notificationType: 'simulation',
+    category: 'simulation',
+    titleTemplate: 'Simulation creee',
+    bodyTemplate: 'Votre simulation a ete creee avec succes.',
+    defaultChannels: ['socket'],
+    defaultPriority: 1,
+  },
+  [EventType.SIMULATION_STARTED]: {
+    notificationType: 'simulation',
+    category: 'simulation',
+    titleTemplate: 'Simulation demarree',
+    bodyTemplate: 'Votre simulation est maintenant en cours.',
+    defaultChannels: ['socket'],
+    defaultPriority: 1,
+  },
+  [EventType.SIMULATION_PHASE_ADVANCED]: {
+    notificationType: 'simulation',
+    category: 'simulation',
+    titleTemplate: 'Nouvelle phase',
+    bodyTemplate: 'Vous avez avance a la phase suivante.',
+    defaultChannels: ['socket'],
+    defaultPriority: 2,
+  },
+  [EventType.SIMULATION_COMPLETED]: {
+    notificationType: 'simulation',
+    category: 'simulation',
+    titleTemplate: 'Simulation terminee',
+    bodyTemplate: 'Votre simulation est terminee. Consultez votre rapport.',
+    defaultChannels: ['socket', 'email'],
+    defaultPriority: 2,
+  },
+  [EventType.DECISION_PRESENTED]: {
+    notificationType: 'decision',
+    category: 'simulation',
+    titleTemplate: 'Decision en attente',
+    bodyTemplate: 'Une decision attend votre choix.',
+    defaultChannels: ['socket'],
+    defaultPriority: 2,
+  },
+  [EventType.DECISION_MADE]: {
+    notificationType: 'decision',
+    category: 'simulation',
+    titleTemplate: 'Decision prise',
+    bodyTemplate: 'Votre decision a ete enregistree.',
+    defaultChannels: ['socket'],
+    defaultPriority: 1,
+  },
+  [EventType.RANDOM_EVENT_TRIGGERED]: {
+    notificationType: 'event',
+    category: 'simulation',
+    titleTemplate: 'Alerte projet',
+    bodyTemplate: 'Un evenement imprevu requiert votre attention.',
+    defaultChannels: ['socket'],
+    defaultPriority: 3,
+  },
+  [EventType.RANDOM_EVENT_RESOLVED]: {
+    notificationType: 'event',
+    category: 'simulation',
+    titleTemplate: 'Evenement resolu',
+    bodyTemplate: 'L\'evenement a ete traite.',
+    defaultChannels: ['socket'],
     defaultPriority: 1,
   },
 };
