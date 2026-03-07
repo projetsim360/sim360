@@ -84,6 +84,7 @@ export class AuditInterceptor implements NestInterceptor {
       'auth.reset-password': EventType.PASSWORD_CHANGED,
       'auth.enable-2fa': EventType.TWO_FACTOR_ENABLED,
       'auth.disable-2fa': EventType.TWO_FACTOR_DISABLED,
+      'auth.link-google': EventType.GOOGLE_LINKED,
       'auth.unlink-google': EventType.GOOGLE_UNLINKED,
       'user.update-profile': EventType.USER_UPDATED,
       'user.change-password': EventType.PASSWORD_CHANGED,

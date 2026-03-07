@@ -94,15 +94,22 @@ export class AiController {
       AggregateType.SIMULATION,
       dto.simulationId,
       { participant: participant.name, message: dto.userMessage },
-      { actorId: user.id, actorType: 'user', tenantId: user.tenantId, channels: ['socket'] },
+      { actorId: user.id, actorType: 'user', tenantId: user.tenantId, receiverIds: [user.id], channels: ['socket'] },
     );
 
-    // Track tokens for meeting response (non-streaming tracked separately)
+    const trackingCtx = {
+      tenantId: user.tenantId,
+      userId: user.id,
+      simulationId: dto.simulationId,
+      operation: 'meeting_respond',
+      metadata: { participantName: participant.name, participantRole: participant.role },
+    };
     return this.orchestrator.meeting.streamResponse(
       participantCtx,
       context,
       dto.history ?? [],
       dto.userMessage,
+      trackingCtx,
     );
   }
 
@@ -115,6 +122,12 @@ export class AiController {
     const simulation = await this.simulationsService.findOne(dto.simulationId, user.id);
     const kpis = simulation.kpis!;
 
+    const trackingCtx = {
+      tenantId: user.tenantId,
+      userId: user.id,
+      simulationId: dto.simulationId,
+      operation: 'meeting_summary',
+    };
     const summary = await this.orchestrator.meeting.generateSummary(
       dto.meetingTitle,
       dto.history,
@@ -125,6 +138,7 @@ export class AiController {
         teamMorale: kpis.teamMorale,
         riskLevel: kpis.riskLevel,
       },
+      trackingCtx,
     );
 
     return { summary };
@@ -191,7 +205,7 @@ export class AiController {
       AggregateType.DECISION,
       dto.decisionId,
       { simulationId: dto.simulationId, selectedOption: dto.selectedOption },
-      { actorId: user.id, actorType: 'user', tenantId: user.tenantId, channels: ['socket'] },
+      { actorId: user.id, actorType: 'user', tenantId: user.tenantId, receiverIds: [user.id], channels: ['socket'] },
     );
 
     return result;
@@ -276,7 +290,7 @@ export class AiController {
       AggregateType.SIMULATION,
       dto.simulationId,
       { type: dto.type, phaseOrder: dto.phaseOrder },
-      { actorId: user.id, actorType: 'user', tenantId: user.tenantId, channels: ['socket'] },
+      { actorId: user.id, actorType: 'user', tenantId: user.tenantId, receiverIds: [user.id], channels: ['socket'] },
     );
 
     return { report };
@@ -286,6 +300,18 @@ export class AiController {
   @ApiOperation({ summary: 'Get current month AI token usage' })
   getUsage(@CurrentUser() user: any) {
     return this.tokenTracker.getUsage(user.tenantId);
+  }
+
+  @Get('usage/by-simulation')
+  @ApiOperation({ summary: 'Get AI token usage grouped by simulation/project' })
+  getUsageBySimulation(@CurrentUser() user: any) {
+    return this.tokenTracker.getUsageBySimulation(user.tenantId);
+  }
+
+  @Get('usage/billing')
+  @ApiOperation({ summary: 'Get AI billing breakdown with costs per model, operation and simulation' })
+  getBilling(@CurrentUser() user: any) {
+    return this.tokenTracker.getBilling(user.tenantId);
   }
 
   @Get('usage/quota')

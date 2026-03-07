@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router';
+import { useState, useEffect, useMemo } from 'react';
+import { Link, useSearchParams, useParams } from 'react-router';
 import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/layout-6/components/toolbar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -34,12 +34,14 @@ const TYPE_LABELS: Record<string, string> = {
 
 export default function MeetingsListPage() {
   const [searchParams] = useSearchParams();
-  const simId = searchParams.get('simId');
+  const params = useParams<{ simId?: string }>();
+  const simId = params.simId || searchParams.get('simId');
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<string>('');
   const [filterStatus, setFilterStatus] = useState<string>('');
+  const [filterPhase, setFilterPhase] = useState<string>('');
 
   useEffect(() => {
     if (!simId) {
@@ -53,9 +55,15 @@ export default function MeetingsListPage() {
       .finally(() => setLoading(false));
   }, [simId]);
 
+  const availablePhases = useMemo(() => {
+    const phases = [...new Set(meetings.map((m) => m.phaseOrder))].sort((a, b) => a - b);
+    return phases;
+  }, [meetings]);
+
   const filteredMeetings = meetings.filter((m) => {
     if (filterType && m.type !== filterType) return false;
     if (filterStatus && m.status !== filterStatus) return false;
+    if (filterPhase && m.phaseOrder !== Number(filterPhase)) return false;
     return true;
   });
 
@@ -93,33 +101,46 @@ export default function MeetingsListPage() {
       {/* Filters */}
       {meetings.length > 0 && (
         <div className="flex items-center gap-3 mb-4">
-          <Select value={filterType} onValueChange={setFilterType}>
+          <Select value={filterType || 'ALL'} onValueChange={(v) => setFilterType(v === 'ALL' ? '' : v)}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Tous les types" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Tous les types</SelectItem>
+              <SelectItem value="ALL">Tous les types</SelectItem>
               {Object.entries(TYPE_LABELS).map(([key, label]) => (
                 <SelectItem key={key} value={key}>{label}</SelectItem>
               ))}
             </SelectContent>
           </Select>
-          <Select value={filterStatus} onValueChange={setFilterStatus}>
+          <Select value={filterStatus || 'ALL'} onValueChange={(v) => setFilterStatus(v === 'ALL' ? '' : v)}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Tous les statuts" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Tous les statuts</SelectItem>
+              <SelectItem value="ALL">Tous les statuts</SelectItem>
               {Object.entries(STATUS_LABELS).map(([key, label]) => (
                 <SelectItem key={key} value={key}>{label}</SelectItem>
               ))}
             </SelectContent>
           </Select>
-          {(filterType || filterStatus) && (
+          {availablePhases.length > 1 && (
+            <Select value={filterPhase || 'ALL'} onValueChange={(v) => setFilterPhase(v === 'ALL' ? '' : v)}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Toutes les phases" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">Toutes les phases</SelectItem>
+                {availablePhases.map((phase) => (
+                  <SelectItem key={phase} value={String(phase)}>Phase {phase}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+          {(filterType || filterStatus || filterPhase) && (
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => { setFilterType(''); setFilterStatus(''); }}
+              onClick={() => { setFilterType(''); setFilterStatus(''); setFilterPhase(''); }}
             >
               Reinitialiser
             </Button>

@@ -16,6 +16,7 @@ import { AiModule } from './modules/ai/ai.module';
 import { SimulationsModule } from './modules/simulations/simulations.module';
 import { MeetingsModule } from './modules/meetings/meetings.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { AdminReferenceModule } from './modules/admin-reference/admin-reference.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     SimulationsModule,
     MeetingsModule,
     DashboardModule,
+    AdminReferenceModule,
   ],
   providers: [
     {

@@ -4,6 +4,7 @@ import { Route } from 'react-router';
 const SimulationsListPage = lazy(() => import('../pages/simulations-list'));
 const CreateSimulationPage = lazy(() => import('../pages/create-simulation'));
 const SimulationDetailPage = lazy(() => import('../pages/simulation-detail'));
+const SimulationDashboardPage = lazy(() => import('../pages/simulation-dashboard'));
 const DecisionPage = lazy(() => import('../pages/decision-page'));
 const TimelinePage = lazy(() => import('../pages/timeline-page'));
 const RandomEventPage = lazy(() => import('../pages/random-event-page'));
@@ -18,6 +19,7 @@ export const simulationRoutes = (
     <Route path="/simulations" element={<Suspense><SimulationsListPage /></Suspense>} />
     <Route path="/simulations/new" element={<Suspense><CreateSimulationPage /></Suspense>} />
     <Route path="/simulations/:id" element={<Suspense><SimulationDetailPage /></Suspense>} />
+    <Route path="/simulations/:id/dashboard" element={<Suspense><SimulationDashboardPage /></Suspense>} />
     <Route path="/simulations/:id/decisions/:decId" element={<Suspense><DecisionPage /></Suspense>} />
     <Route path="/simulations/:id/events/:evtId" element={<Suspense><RandomEventPage /></Suspense>} />
     <Route path="/simulations/:id/kpis" element={<Suspense><KpiHistoryPage /></Suspense>} />

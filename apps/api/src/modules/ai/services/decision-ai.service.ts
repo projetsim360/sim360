@@ -24,7 +24,7 @@ export interface PatternAnalysis {
 export class DecisionAiService {
   constructor(private aiService: AiService) {}
 
-  async evaluateDecision(decision: DecisionContext, trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string }): Promise<{
+  async evaluateDecision(decision: DecisionContext, trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string; metadata?: Record<string, unknown> }): Promise<{
     score: number;
     scoreJustification: string;
     coaching: string;
@@ -173,7 +173,7 @@ export class DecisionAiService {
   private async getCoaching(
     decision: DecisionContext,
     selectedOpt: { label: string; description: string; kpiImpact?: Record<string, number> },
-    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string },
+    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string; metadata?: Record<string, unknown> },
   ): Promise<string> {
     const result = await this.aiService.complete({
       prompt: [
@@ -203,7 +203,7 @@ export class DecisionAiService {
     decision: DecisionContext,
     selectedOpt: { label: string; description: string },
     optimalOpt: { label: string; description: string },
-    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string },
+    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string; metadata?: Record<string, unknown> },
   ): Promise<string> {
     const result = await this.aiService.complete({
       prompt: [

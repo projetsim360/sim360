@@ -21,6 +21,7 @@ import {
   simulationRoutes,
   meetingRoutes,
   reportRoutes,
+  adminReferenceRoutes,
 } from '@/features';
 
 export function AppRoutingSetup() {
@@ -59,6 +60,7 @@ export function AppRoutingSetup() {
           {simulationRoutes}
           {meetingRoutes}
           {reportRoutes}
+          {adminReferenceRoutes}
         </Route>
       </Route>
 

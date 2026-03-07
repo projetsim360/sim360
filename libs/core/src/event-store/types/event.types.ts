@@ -17,6 +17,8 @@ export enum EventType {
   // Project
   PROJECT_CREATED = 'project.created',
   PROJECT_UPDATED = 'project.updated',
+  PROJECT_TEAM_UPDATED = 'project.team_updated',
+  PROJECT_DELIVERABLE_UPDATED = 'project.deliverable_updated',
 
   // Scenario
   SCENARIO_CREATED = 'scenario.created',
@@ -28,6 +30,7 @@ export enum EventType {
   SIMULATION_PAUSED = 'simulation.paused',
   SIMULATION_RESUMED = 'simulation.resumed',
   SIMULATION_PHASE_ADVANCED = 'simulation.phase_advanced',
+  SIMULATION_PHASE_COMPLETED = 'simulation.phase_completed',
   SIMULATION_COMPLETED = 'simulation.completed',
   SIMULATION_ABANDONED = 'simulation.abandoned',
 
@@ -46,6 +49,14 @@ export enum EventType {
 
   // KPI
   KPI_UPDATED = 'kpi.updated',
+  KPI_CRITICAL = 'kpi.critical',
+
+  // Reference (EPIC 1)
+  DELIVERABLE_TEMPLATE_CREATED = 'reference.deliverable_template_created',
+  DELIVERABLE_TEMPLATE_UPDATED = 'reference.deliverable_template_updated',
+  DELIVERABLE_TEMPLATE_TOGGLED = 'reference.deliverable_template_toggled',
+  REFERENCE_DOCUMENT_CREATED = 'reference.document_created',
+  REFERENCE_DOCUMENT_UPDATED = 'reference.document_updated',
 
   // AI
   AI_MEETING_RESPONSE = 'ai.meeting_response',
@@ -65,6 +76,8 @@ export enum AggregateType {
   DECISION = 'Decision',
   RANDOM_EVENT = 'RandomEvent',
   MEETING = 'Meeting',
+  DELIVERABLE_TEMPLATE = 'DeliverableTemplate',
+  REFERENCE_DOCUMENT = 'ReferenceDocument',
 }
 
 export type ChannelType = 'socket' | 'email';
@@ -294,6 +307,102 @@ export const EVENT_NOTIFICATION_CONFIG: Partial<Record<EventType, EventNotificat
     bodyTemplate: 'La reunion "{{data.title}}" est terminee. Consultez le compte-rendu.',
     defaultChannels: ['socket'],
     defaultPriority: 2,
+  },
+  [EventType.MEETING_MESSAGE_SENT]: {
+    notificationType: 'meeting',
+    category: 'simulation',
+    titleTemplate: 'Nouveau message en reunion',
+    bodyTemplate: '{{data.participant}} a repondu dans la reunion.',
+    defaultChannels: ['socket'],
+    defaultPriority: 1,
+  },
+  [EventType.SIMULATION_PAUSED]: {
+    notificationType: 'simulation',
+    category: 'simulation',
+    titleTemplate: 'Simulation en pause',
+    bodyTemplate: 'Votre simulation a ete mise en pause.',
+    defaultChannels: ['socket'],
+    defaultPriority: 1,
+  },
+  [EventType.SIMULATION_RESUMED]: {
+    notificationType: 'simulation',
+    category: 'simulation',
+    titleTemplate: 'Simulation reprise',
+    bodyTemplate: 'Votre simulation a ete reprise.',
+    defaultChannels: ['socket'],
+    defaultPriority: 1,
+  },
+  [EventType.SIMULATION_ABANDONED]: {
+    notificationType: 'simulation',
+    category: 'simulation',
+    titleTemplate: 'Simulation abandonnee',
+    bodyTemplate: 'La simulation a ete abandonnee.',
+    defaultChannels: ['socket'],
+    defaultPriority: 2,
+  },
+  [EventType.SCENARIO_CREATED]: {
+    notificationType: 'scenario',
+    category: 'simulation',
+    titleTemplate: 'Scenario cree',
+    bodyTemplate: 'Le scenario "{{data.title}}" a ete cree.',
+    defaultChannels: ['socket'],
+    defaultPriority: 1,
+  },
+  [EventType.AI_MEETING_RESPONSE]: {
+    notificationType: 'ai',
+    category: 'simulation',
+    titleTemplate: 'Reponse IA en reunion',
+    bodyTemplate: '{{data.participantName}} a repondu dans la reunion.',
+    defaultChannels: ['socket'],
+    defaultPriority: 1,
+  },
+  [EventType.AI_DECISION_EVALUATED]: {
+    notificationType: 'ai',
+    category: 'simulation',
+    titleTemplate: 'Analyse IA disponible',
+    bodyTemplate: 'L\'analyse IA de votre decision est disponible.',
+    defaultChannels: ['socket'],
+    defaultPriority: 1,
+  },
+  [EventType.AI_REPORT_GENERATED]: {
+    notificationType: 'ai',
+    category: 'simulation',
+    titleTemplate: 'Rapport IA genere',
+    bodyTemplate: 'Un rapport IA a ete genere pour votre simulation.',
+    defaultChannels: ['socket'],
+    defaultPriority: 2,
+  },
+  [EventType.PROJECT_TEAM_UPDATED]: {
+    notificationType: 'project',
+    category: 'simulation',
+    titleTemplate: 'Equipe projet mise a jour',
+    bodyTemplate: 'L\'equipe du projet a ete modifiee.',
+    defaultChannels: ['socket'],
+    defaultPriority: 1,
+  },
+  [EventType.PROJECT_DELIVERABLE_UPDATED]: {
+    notificationType: 'project',
+    category: 'simulation',
+    titleTemplate: 'Livrable mis a jour',
+    bodyTemplate: 'Un livrable du projet a ete mis a jour.',
+    defaultChannels: ['socket'],
+    defaultPriority: 1,
+  },
+  [EventType.SIMULATION_PHASE_COMPLETED]: {
+    notificationType: 'simulation',
+    category: 'simulation',
+    titleTemplate: 'Phase terminee',
+    bodyTemplate: 'La phase "{{data.phaseName}}" est terminee. Consultez votre bilan.',
+    defaultChannels: ['socket', 'email'],
+    defaultPriority: 2,
+  },
+  [EventType.KPI_CRITICAL]: {
+    notificationType: 'kpi',
+    category: 'simulation',
+    titleTemplate: 'KPI critique',
+    bodyTemplate: 'Attention : {{data.kpiName}} est passe sous le seuil critique ({{data.value}}%).',
+    defaultChannels: ['socket'],
+    defaultPriority: 3,
   },
 };
 

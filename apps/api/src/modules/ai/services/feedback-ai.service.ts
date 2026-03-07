@@ -10,7 +10,7 @@ export class FeedbackAiService {
     decisions: Array<{ title: string; selectedOption: number; options: any[]; kpiImpact: any }>,
     kpisBefore: Record<string, number>,
     kpisAfter: Record<string, number>,
-    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string },
+    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string; metadata?: Record<string, unknown> },
   ): Promise<string> {
     const decisionsText = decisions
       .map((d) => {
@@ -47,7 +47,7 @@ export class FeedbackAiService {
     finalScore: number,
     decisions: Array<{ title: string; selectedOption: number; options: any[]; kpiImpact: any; phaseOrder: number }>,
     phases: Array<{ name: string; order: number }>,
-    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string },
+    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string; metadata?: Record<string, unknown> },
   ): Promise<string> {
     const phaseSummaries = phases
       .map((p) => {

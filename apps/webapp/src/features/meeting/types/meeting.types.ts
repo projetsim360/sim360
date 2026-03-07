@@ -58,3 +58,37 @@ export interface MeetingMessage {
 export interface MeetingDetail extends Meeting {
   messages: MeetingMessage[];
 }
+
+// Conference types
+export type ConferenceMode = 'all' | 'single';
+export type ViewMode = 'grid' | 'speaker';
+export type ParticipantConnectionStatus = 'idle' | 'connecting' | 'connected' | 'error' | 'closed';
+
+export interface ParticipantSession {
+  participantId: string;
+  participantName: string;
+  clientSecret: string;
+  expiresAt: number;
+  sessionId: string;
+  voice: string;
+}
+
+export interface ConferenceTranscription {
+  id: string;
+  participantId: string | null;
+  participantName: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+}
+
+export interface ParticipantConnection {
+  participantId: string;
+  participantName: string;
+  voice: string;
+  status: ParticipantConnectionStatus;
+  isSpeaking: boolean;
+  pc: RTCPeerConnection | null;
+  dc: RTCDataChannel | null;
+  audioElement: HTMLAudioElement | null;
+}

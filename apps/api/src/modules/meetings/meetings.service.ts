@@ -8,7 +8,7 @@ import {
 import { Observable } from 'rxjs';
 import { PrismaService, EventPublisherService, EventType, AggregateType } from '@sim360/core';
 import { ConfigService } from '@nestjs/config';
-import { AiOrchestratorService } from '../ai/services';
+import { AiOrchestratorService, TokenTrackerService } from '../ai/services';
 import { SendMessageDto } from './dto';
 
 interface MessageEvent {
@@ -33,6 +33,7 @@ export class MeetingsService {
     private eventPublisher: EventPublisherService,
     private orchestrator: AiOrchestratorService,
     private config: ConfigService,
+    private tokenTracker: TokenTrackerService,
   ) {}
 
   async findAllBySimulation(
@@ -51,7 +52,8 @@ export class MeetingsService {
     const where: Record<string, unknown> = { simulationId };
     if (filters?.type) where.type = filters.type;
     if (filters?.phaseOrder !== undefined && filters?.phaseOrder !== null) {
-      where.phaseOrder = Number(filters.phaseOrder);
+      const parsed = Number(filters.phaseOrder);
+      if (!isNaN(parsed)) where.phaseOrder = parsed;
     }
     if (filters?.status) where.status = filters.status;
 
@@ -103,6 +105,7 @@ export class MeetingsService {
         actorId: userId,
         actorType: 'user',
         tenantId: meeting.simulation.tenantId,
+        receiverIds: [userId],
         channels: ['socket'],
         priority: 1,
       },
@@ -189,6 +192,13 @@ export class MeetingsService {
             context,
             history,
             dto.content,
+            {
+              tenantId: meeting.simulation.tenantId,
+              userId,
+              simulationId: meeting.simulationId,
+              operation: 'meeting_stream',
+              metadata: { participantName: participant.name, participantRole: participant.role },
+            },
           );
 
           await new Promise<void>((resolve, reject) => {
@@ -235,6 +245,7 @@ export class MeetingsService {
               actorId: userId,
               actorType: 'user',
               tenantId: meeting.simulation.tenantId,
+              receiverIds: [userId],
               channels: ['socket'],
             },
           );
@@ -280,6 +291,12 @@ export class MeetingsService {
       history,
       kpiValues,
       participantNames,
+      {
+        tenantId: meeting.simulation.tenantId,
+        userId,
+        simulationId: meeting.simulationId,
+        operation: 'meeting_structured_summary',
+      },
     );
 
     // Persist summary, apply KPI impact, and update status
@@ -346,6 +363,7 @@ export class MeetingsService {
         actorId: userId,
         actorType: 'user',
         tenantId: meeting.simulation.tenantId,
+        receiverIds: [userId],
         channels: ['socket'],
         priority: 2,
       },
@@ -365,7 +383,7 @@ export class MeetingsService {
     return summary;
   }
 
-  async createRealtimeSession(id: string, userId: string) {
+  async createRealtimeSession(id: string, userId: string, participantId?: string) {
     const meeting = await this.findOne(id, userId);
 
     if (meeting.status !== 'IN_PROGRESS') {
@@ -377,11 +395,18 @@ export class MeetingsService {
       throw new BadRequestException('OpenAI API key non configuree');
     }
 
-    // Determine voice based on first participant personality
-    const participant = meeting.participants[0];
-    const voice = this.mapPersonalityToVoice(participant?.personality);
+    // Determine target participant
+    let participant = meeting.participants[0];
+    if (participantId) {
+      const found = meeting.participants.find((p) => p.id === participantId);
+      if (found) participant = found;
+      else throw new NotFoundException(`Participant ${participantId} introuvable`);
+    }
 
-    // Build system instructions (same as text mode)
+    const participantIndex = meeting.participants.indexOf(participant);
+    const voice = this.mapPersonalityToVoice(participant?.personality, participantIndex);
+
+    // Build system instructions
     const kpis = meeting.simulation.kpis;
     const instructions = participant
       ? [
@@ -416,12 +441,78 @@ export class MeetingsService {
 
     const data = await response.json();
 
+    // Track session creation tokens (estimate: ~4 tokens per word in instructions)
+    const estimatedInputTokens = Math.ceil(instructions.length / 4);
+    this.tokenTracker
+      .track(
+        {
+          tenantId: meeting.simulation.tenantId,
+          userId,
+          simulationId: meeting.simulationId,
+          operation: 'realtime_session_create',
+          metadata: {
+            participantName: participant?.name,
+            participantId: participant?.id,
+            voice,
+            sessionId: data.id,
+          },
+        },
+        'openai',
+        'gpt-4o-realtime-preview-2025-06-03',
+        estimatedInputTokens,
+        0,
+      )
+      .catch((err) => this.logger.warn(`Token tracking (session create) failed: ${err.message}`));
+
     return {
+      participantId: participant?.id ?? null,
+      participantName: participant?.name ?? 'IA',
       clientSecret: data.client_secret?.value,
       expiresAt: data.client_secret?.expires_at,
       sessionId: data.id,
       voice,
     };
+  }
+
+  async createRealtimeSessions(id: string, userId: string, participantIds?: string[]) {
+    const meeting = await this.findOne(id, userId);
+
+    if (meeting.status !== 'IN_PROGRESS') {
+      throw new BadRequestException('La reunion doit etre en cours pour demarrer les sessions audio');
+    }
+
+    // Filter participants if specific IDs provided, otherwise use all
+    let targetParticipants = meeting.participants;
+    if (participantIds && participantIds.length > 0) {
+      targetParticipants = meeting.participants.filter((p) => participantIds.includes(p.id));
+      if (targetParticipants.length === 0) {
+        throw new BadRequestException('Aucun participant valide trouve');
+      }
+    }
+
+    // Create sessions in parallel
+    const results = await Promise.allSettled(
+      targetParticipants.map((participant, index) =>
+        this.createRealtimeSession(id, userId, participant.id),
+      ),
+    );
+
+    const sessions = results
+      .filter((r): r is PromiseFulfilledResult<any> => r.status === 'fulfilled')
+      .map((r) => r.value);
+
+    const errors = results
+      .filter((r): r is PromiseRejectedResult => r.status === 'rejected')
+      .map((r, i) => ({
+        participantId: targetParticipants[i]?.id,
+        error: r.reason?.message ?? 'Erreur inconnue',
+      }));
+
+    if (errors.length > 0) {
+      this.logger.warn(`Failed to create ${errors.length} realtime sessions: ${JSON.stringify(errors)}`);
+    }
+
+    return { sessions, errors };
   }
 
   async saveTranscriptions(
@@ -440,15 +531,55 @@ export class MeetingsService {
 
     await this.prisma.meetingMessage.createMany({ data });
 
+    // Track realtime audio tokens from transcriptions
+    // OpenAI Realtime: audio tokens ~ 1 token per character / 4 (rough estimate)
+    // We separate user input tokens from assistant output tokens
+    const userText = transcriptions
+      .filter((t) => t.role === 'user')
+      .reduce((acc, t) => acc + t.content.length, 0);
+    const assistantText = transcriptions
+      .filter((t) => t.role === 'assistant')
+      .reduce((acc, t) => acc + t.content.length, 0);
+
+    const estimatedInputTokens = Math.ceil(userText / 4);
+    const estimatedOutputTokens = Math.ceil(assistantText / 4);
+
+    if (estimatedInputTokens > 0 || estimatedOutputTokens > 0) {
+      this.tokenTracker
+        .track(
+          {
+            tenantId: meeting.simulation.tenantId,
+            userId,
+            simulationId: meeting.simulationId,
+            operation: 'realtime_audio_conversation',
+            metadata: {
+              meetingId: id,
+              meetingTitle: meeting.title,
+              messageCount: transcriptions.length,
+              userMessages: transcriptions.filter((t) => t.role === 'user').length,
+              assistantMessages: transcriptions.filter((t) => t.role === 'assistant').length,
+            },
+          },
+          'openai',
+          'gpt-4o-realtime-preview-2025-06-03',
+          estimatedInputTokens,
+          estimatedOutputTokens,
+        )
+        .catch((err) => this.logger.warn(`Token tracking (realtime audio) failed: ${err.message}`));
+    }
+
     return { saved: data.length };
   }
 
-  private mapPersonalityToVoice(personality?: string | null): string {
+  private mapPersonalityToVoice(personality?: string | null, index = 0): string {
     switch (personality?.toUpperCase()) {
       case 'RESISTANT': return 'echo';
       case 'NEUTRAL': return 'sage';
       case 'COOPERATIVE': return 'coral';
-      default: return 'alloy';
+      case 'AGGRESSIVE': return 'ash';
+      case 'DIPLOMATIC': return 'shimmer';
     }
+    const voices = ['alloy', 'ash', 'ballad', 'coral', 'echo', 'sage', 'shimmer', 'verse'];
+    return voices[index % voices.length];
   }
 }

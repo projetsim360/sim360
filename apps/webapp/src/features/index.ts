@@ -6,3 +6,5 @@ export { meetingRoutes } from './meeting/config/meeting.routes';
 export { meetingMenuItems } from './meeting/config/meeting.menu';
 export { reportRoutes } from './report/config/report.routes';
 export { reportMenuItems } from './report/config/report.menu';
+export { adminReferenceRoutes } from './admin-reference/config/admin-reference.routes';
+export { adminReferenceMenuItems } from './admin-reference/config/admin-reference.menu';

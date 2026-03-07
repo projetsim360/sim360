@@ -87,6 +87,12 @@ export class SimulationsController {
     return this.simulationsService.respondToEvent(simId, evtId, userId, dto);
   }
 
+  @Get(':id/dashboard')
+  @ApiOperation({ summary: 'Dashboard detaille d\'une simulation (KPIs, phase, actions en attente)' })
+  getSimulationDashboard(@Param('id') id: string, @CurrentUser('id') userId: string) {
+    return this.simulationsService.getSimulationDashboard(id, userId);
+  }
+
   @Get(':id/kpis')
   @ApiOperation({ summary: 'KPIs actuels de la simulation' })
   getKpis(@Param('id') id: string, @CurrentUser('id') userId: string) {

@@ -31,8 +31,19 @@ export const meetingApi = {
     api.get<MeetingSummaryRecord>(`/meetings/${id}/summary`),
 
   createRealtimeSession: (id: string) =>
-    api.post<{ clientSecret: string; expiresAt: number; sessionId: string; voice: string }>(
+    api.post<{ clientSecret: string; expiresAt: number; sessionId: string; voice: string; participantId: string; participantName: string }>(
       `/meetings/${id}/realtime-session`,
+    ),
+
+  createRealtimeSessions: (id: string, participantIds?: string[]) =>
+    api.post<{
+      sessions: Array<{ participantId: string; participantName: string; clientSecret: string; expiresAt: number; sessionId: string; voice: string }>;
+      errors: Array<{ participantId: string; error: string }>;
+    }>(`/meetings/${id}/realtime-sessions`, { participantIds }),
+
+  createRealtimeSessionForParticipant: (id: string, participantId: string) =>
+    api.post<{ participantId: string; participantName: string; clientSecret: string; expiresAt: number; sessionId: string; voice: string }>(
+      `/meetings/${id}/realtime-session/${participantId}`,
     ),
 
   saveTranscriptions: (

@@ -92,7 +92,7 @@ export class MeetingAiService {
     context: MeetingContext,
     history: Array<{ role: 'user' | 'assistant'; content: string }>,
     userMessage: string,
-    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string },
+    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string; metadata?: Record<string, unknown> },
   ): Promise<string> {
     const systemPrompt = this.buildParticipantSystemPrompt(participant, context);
 
@@ -119,6 +119,7 @@ export class MeetingAiService {
     context: MeetingContext,
     history: Array<{ role: 'user' | 'assistant'; content: string }>,
     userMessage: string,
+    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string; metadata?: Record<string, unknown> },
   ): Observable<MessageEvent> {
     const systemPrompt = this.buildParticipantSystemPrompt(participant, context);
 
@@ -134,6 +135,7 @@ export class MeetingAiService {
       messages,
       maxTokens: 200,
       temperature: 0.8,
+      trackingContext,
     });
   }
 
@@ -141,7 +143,7 @@ export class MeetingAiService {
     meetingTitle: string,
     history: Array<{ role: 'user' | 'assistant'; content: string }>,
     kpis: Record<string, number>,
-    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string },
+    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string; metadata?: Record<string, unknown> },
   ): Promise<string> {
     const conversationText = history
       .map((m) => `${m.role === 'user' ? 'Utilisateur' : 'Participant'}: ${m.content}`)
@@ -171,7 +173,7 @@ export class MeetingAiService {
     history: Array<{ role: 'user' | 'assistant'; content: string }>,
     kpis: Record<string, number>,
     participantNames: string[],
-    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string },
+    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string; metadata?: Record<string, unknown> },
   ): Promise<{
     summary: string;
     keyDecisions: string[];

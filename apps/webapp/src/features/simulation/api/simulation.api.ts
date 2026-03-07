@@ -29,6 +29,7 @@ export const simulationApi = {
     api.post<any>(`/simulations/${simId}/decisions/${decId}/choose`, { selectedOption }),
   respondToEvent: (simId: string, evtId: string, selectedOption: number) =>
     api.post<any>(`/simulations/${simId}/events/${evtId}/respond`, { selectedOption }),
+  getSimulationDashboard: (id: string) => api.get<any>(`/simulations/${id}/dashboard`),
   getKpis: (id: string) => api.get<any>(`/simulations/${id}/kpis`),
   getKpiHistory: (id: string) => api.get<any[]>(`/simulations/${id}/kpis/history`),
   getTimeline: (id: string) => api.get<any[]>(`/simulations/${id}/timeline`),

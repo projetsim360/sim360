@@ -163,14 +163,19 @@ export default function RandomEventPage() {
               >
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">
+                    {/* Radio circle */}
                     <div
-                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
-                        isSelected || isChosen
-                          ? 'border-primary bg-primary text-white'
-                          : 'border-border'
+                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${
+                        isChosen
+                          ? 'border-success bg-success'
+                          : isSelected
+                            ? 'border-primary bg-primary'
+                            : 'border-muted-foreground/30'
                       }`}
                     >
-                      {(isSelected || isChosen) && <KeenIcon icon="check" style="solid" className="size-3" />}
+                      {(isSelected || isChosen) && (
+                        <div className="w-2 h-2 rounded-full bg-white" />
+                      )}
                     </div>
                     <div className="flex-1">
                       <h4 className="text-sm font-medium">{option.label}</h4>

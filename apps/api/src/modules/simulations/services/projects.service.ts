@@ -1,10 +1,13 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
-import { PrismaService } from '@sim360/core';
+import { PrismaService, EventPublisherService, EventType, AggregateType } from '@sim360/core';
 import { UpdateDeliverableDto } from '../dto/update-deliverable.dto';
 
 @Injectable()
 export class ProjectsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private eventPublisher: EventPublisherService,
+  ) {}
 
   async findAll(userId: string, tenantId: string) {
     return this.prisma.project.findMany({
@@ -69,12 +72,22 @@ export class ProjectsService {
       throw new NotFoundException('Livrable introuvable');
     }
 
-    return this.prisma.deliverable.update({
+    const updated = await this.prisma.deliverable.update({
       where: { id: deliverableId },
       data: {
         ...(dto.status !== undefined && { status: dto.status }),
         ...(dto.progress !== undefined && { progress: dto.progress }),
       },
     });
+
+    this.eventPublisher.publish(
+      EventType.PROJECT_DELIVERABLE_UPDATED,
+      AggregateType.PROJECT,
+      projectId,
+      { deliverableId, title: deliverable.name, status: updated.status },
+      { actorId: userId, actorType: 'user', tenantId: project.tenantId, receiverIds: [userId], channels: ['socket'] },
+    ).catch(() => {});
+
+    return updated;
   }
 }

@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { KeenIcon } from '@/components/keenicons';
 import { streamAiResponse } from '@/lib/sse-client';
 import { meetingApi } from '../api/meeting.api';
-import { AudioMeeting } from '../components/audio-meeting';
+import { MeetingConference } from '../components/meeting-conference';
 import type { ChatMessage, MeetingDetail, MeetingParticipant } from '../types/meeting.types';
 
 const STATUS_LABELS: Record<string, string> = {
@@ -414,24 +414,14 @@ export default function MeetingRoomPage() {
 
       {meetingMode === 'AUDIO' ? (
         <>
-          {/* Audio mode */}
-          <div className="mb-4">
-            <AudioMeeting
-              meetingId={meetingId!}
-              participants={meeting.participants}
-            />
-          </div>
-
-          {/* Complete button */}
-          <div className="flex justify-center mb-4">
-            <Button
-              variant="outline"
-              onClick={handleComplete}
-              disabled={actionLoading}
-            >
-              {actionLoading ? 'Cloture en cours...' : 'Cloturer la reunion'}
-            </Button>
-          </div>
+          {/* Audio conference mode */}
+          <MeetingConference
+            meetingId={meetingId!}
+            participants={meeting.participants}
+            meetingTitle={meeting.title}
+            startedAt={meeting.startedAt}
+            onEnd={handleComplete}
+          />
         </>
       ) : (
         <>

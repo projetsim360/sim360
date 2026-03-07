@@ -188,6 +188,17 @@ export class SimulationsService {
             timeLimitSeconds: tpl.timeLimitSeconds,
           })),
         });
+
+        // Notify user about pending decisions
+        for (const tpl of firstPhase.decisionTemplates) {
+          this.eventPublisher.publish(
+            EventType.DECISION_PRESENTED,
+            AggregateType.DECISION,
+            simulation.id,
+            { title: tpl.title, simulationId: simulation.id, phaseOrder: 0 },
+            { actorId: userId, actorType: 'system', tenantId, receiverIds: [userId], channels: ['socket'], priority: 2 },
+          ).catch(() => {});
+        }
       }
 
       // Instantiate meetings for phase 0
@@ -400,7 +411,7 @@ export class SimulationsService {
           data: { status: 'COMPLETED' },
         });
 
-        return finalSim;
+        return { sim: finalSim, createdDecisionTitles: [] as string[], triggeredEventTitles: [] as Array<{ title: string; severity: string }> };
       }
 
       // Activate next phase
@@ -411,6 +422,7 @@ export class SimulationsService {
 
       // Instantiate decisions for next phase
       const nextScenarioPhase = scenarioPhases.find((p) => p.order === nextPhaseOrder);
+      const createdDecisionTitles: string[] = [];
       if (nextScenarioPhase?.decisionTemplates.length) {
         await tx.decision.createMany({
           data: nextScenarioPhase.decisionTemplates.map((tpl) => ({
@@ -423,10 +435,12 @@ export class SimulationsService {
             timeLimitSeconds: tpl.timeLimitSeconds,
           })),
         });
+        createdDecisionTitles.push(...nextScenarioPhase.decisionTemplates.map((t) => t.title));
       }
 
       // Evaluate and potentially trigger random events
       const kpis = simulation.kpis;
+      const triggeredEventTitles: Array<{ title: string; severity: string }> = [];
       if (kpis && nextScenarioPhase?.randomEventTemplates.length) {
         const kpiValues = {
           budget: kpis.budget,
@@ -453,6 +467,7 @@ export class SimulationsService {
               options: tpl.options as any,
             })),
           });
+          triggeredEventTitles.push(...eventsToCreate.map((t) => ({ title: t.title, severity: t.severity })));
         }
       }
 
@@ -483,14 +498,28 @@ export class SimulationsService {
         }
       }
 
-      return tx.simulation.update({
+      const sim = await tx.simulation.update({
         where: { id },
         data: { currentPhaseOrder: nextPhaseOrder },
         include: SIMULATION_INCLUDE,
       });
+
+      return { sim, createdDecisionTitles, triggeredEventTitles };
     });
 
-    const eventType = result.status === 'COMPLETED'
+    // Notify current phase completed
+    const completedPhase = simulation.phases.find((p) => p.order === simulation.currentPhaseOrder);
+    if (completedPhase) {
+      this.eventPublisher.publish(
+        EventType.SIMULATION_PHASE_COMPLETED,
+        AggregateType.SIMULATION,
+        id,
+        { phaseName: completedPhase.name, phaseOrder: completedPhase.order, simulationId: id },
+        { actorId: userId, actorType: 'user', tenantId: simulation.tenantId, receiverIds: [userId], channels: ['socket', 'email'], priority: 2 },
+      ).catch(() => {});
+    }
+
+    const eventType = result.sim.status === 'COMPLETED'
       ? EventType.SIMULATION_COMPLETED
       : EventType.SIMULATION_PHASE_ADVANCED;
 
@@ -499,14 +528,36 @@ export class SimulationsService {
       AggregateType.SIMULATION,
       id,
       {
-        status: result.status,
-        phaseOrder: result.currentPhaseOrder,
+        status: result.sim.status,
+        phaseOrder: result.sim.currentPhaseOrder,
         phaseName: nextPhase?.name ?? 'Terminee',
       },
-      { actorId: userId, actorType: 'user', tenantId: simulation.tenantId, channels: ['socket'], priority: 2 },
+      { actorId: userId, actorType: 'user', tenantId: simulation.tenantId, receiverIds: [userId], channels: ['socket'], priority: 2 },
     );
 
-    return result;
+    // Notify about new decisions
+    for (const title of result.createdDecisionTitles) {
+      this.eventPublisher.publish(
+        EventType.DECISION_PRESENTED,
+        AggregateType.DECISION,
+        id,
+        { title, simulationId: id, phaseOrder: nextPhaseOrder },
+        { actorId: userId, actorType: 'system', tenantId: simulation.tenantId, receiverIds: [userId], channels: ['socket'], priority: 2 },
+      ).catch(() => {});
+    }
+
+    // Notify about triggered random events
+    for (const evt of result.triggeredEventTitles) {
+      this.eventPublisher.publish(
+        EventType.RANDOM_EVENT_TRIGGERED,
+        AggregateType.RANDOM_EVENT,
+        id,
+        { title: evt.title, severity: evt.severity, simulationId: id, phaseOrder: nextPhaseOrder },
+        { actorId: userId, actorType: 'system', tenantId: simulation.tenantId, receiverIds: [userId], channels: ['socket'], priority: 3 },
+      ).catch(() => {});
+    }
+
+    return result.sim;
   }
 
   @CacheEvict({ pattern: 'dashboard:global:*' })
@@ -582,8 +633,11 @@ export class SimulationsService {
       AggregateType.SIMULATION,
       simulationId,
       { simulationId, kpis: newKpis },
-      { actorId: userId, actorType: 'user', tenantId: simulation.tenantId, channels: ['socket'], priority: 1 },
+      { actorId: userId, actorType: 'user', tenantId: simulation.tenantId, receiverIds: [userId], channels: ['socket'], priority: 1 },
     );
+
+    // Check for critical KPIs and notify
+    this.publishCriticalKpiAlerts(simulationId, newKpis, userId, simulation.tenantId);
 
     return updatedDecision;
   }
@@ -659,8 +713,11 @@ export class SimulationsService {
       AggregateType.SIMULATION,
       simulationId,
       { simulationId, kpis: newKpis },
-      { actorId: userId, actorType: 'user', tenantId: simulation.tenantId, channels: ['socket'], priority: 1 },
+      { actorId: userId, actorType: 'user', tenantId: simulation.tenantId, receiverIds: [userId], channels: ['socket'], priority: 1 },
     );
+
+    // Check for critical KPIs and notify
+    this.publishCriticalKpiAlerts(simulationId, newKpis, userId, simulation.tenantId);
 
     return updatedEvent;
   }
@@ -673,10 +730,120 @@ export class SimulationsService {
     if (!simulation) throw new NotFoundException('Simulation introuvable');
     if (simulation.userId !== userId) throw new ForbiddenException('Acces refuse');
 
-    return this.prisma.simulationKpiSnapshot.findMany({
+    const snapshots = await this.prisma.simulationKpiSnapshot.findMany({
       where: { simulationId: id },
       orderBy: { takenAt: 'asc' },
     });
+
+    // Enrich snapshots with inflection point data (link to decision/event that triggered the change)
+    const enriched = await Promise.all(
+      snapshots.map(async (snap) => {
+        let triggerInfo: { type: string; title: string; id: string } | null = null;
+
+        if (snap.trigger === 'decision' && snap.triggerId) {
+          const decision = await this.prisma.decision.findUnique({
+            where: { id: snap.triggerId },
+            select: { id: true, title: true },
+          });
+          if (decision) triggerInfo = { type: 'decision', title: decision.title, id: decision.id };
+        } else if (snap.trigger === 'event' && snap.triggerId) {
+          const evt = await this.prisma.randomEvent.findUnique({
+            where: { id: snap.triggerId },
+            select: { id: true, title: true },
+          });
+          if (evt) triggerInfo = { type: 'event', title: evt.title, id: evt.id };
+        } else if (snap.trigger === 'meeting' && snap.triggerId) {
+          const meeting = await this.prisma.meeting.findUnique({
+            where: { id: snap.triggerId },
+            select: { id: true, title: true },
+          });
+          if (meeting) triggerInfo = { type: 'meeting', title: meeting.title, id: meeting.id };
+        }
+
+        return { ...snap, triggerInfo };
+      }),
+    );
+
+    return enriched;
+  }
+
+  async getSimulationDashboard(id: string, userId: string) {
+    const simulation = await this.findOne(id, userId);
+    const kpis = simulation.kpis;
+    const currentPhase = simulation.phases.find((p) => p.order === simulation.currentPhaseOrder);
+    const totalPhases = simulation.phases.length;
+
+    // KPI gauges with thresholds
+    const kpiGauges = kpis
+      ? {
+          budget: { value: kpis.budget, critical: kpis.budget < 30 },
+          schedule: { value: kpis.schedule, critical: kpis.schedule < 30 },
+          quality: { value: kpis.quality, critical: kpis.quality < 30 },
+          teamMorale: { value: kpis.teamMorale, critical: kpis.teamMorale < 30 },
+          riskLevel: { value: kpis.riskLevel, warning: kpis.riskLevel > 70 },
+        }
+      : null;
+
+    // Global score
+    const globalScore = kpis
+      ? Math.round(
+          (kpis.budget * 0.25 +
+            kpis.schedule * 0.25 +
+            kpis.quality * 0.25 +
+            kpis.teamMorale * 0.15 +
+            (100 - kpis.riskLevel) * 0.1) *
+            10,
+        ) / 10
+      : 0;
+
+    // Pending actions
+    const pendingDecisions = simulation.decisions.filter((d) => d.selectedOption === null);
+    const pendingEvents = simulation.randomEvents.filter((e) => !e.resolvedAt);
+    const scheduledMeetings = simulation.meetings.filter(
+      (m) => m.status === 'SCHEDULED' || m.status === 'IN_PROGRESS',
+    );
+
+    // Recent activity (last 5 events from timeline)
+    const recentTimeline = await this.getTimeline(id, userId);
+
+    // Phase progression
+    const phaseProgression = simulation.phases.map((p) => ({
+      order: p.order,
+      name: p.name,
+      status: p.status,
+      type: p.type,
+    }));
+
+    // Critical alerts
+    const criticalAlerts: string[] = [];
+    if (kpis) {
+      if (kpis.budget < 30) criticalAlerts.push(`Budget critique (${Math.round(kpis.budget)}%)`);
+      if (kpis.schedule < 30) criticalAlerts.push(`Delai critique (${Math.round(kpis.schedule)}%)`);
+      if (kpis.quality < 30) criticalAlerts.push(`Qualite critique (${Math.round(kpis.quality)}%)`);
+      if (kpis.teamMorale < 30) criticalAlerts.push(`Moral equipe critique (${Math.round(kpis.teamMorale)}%)`);
+      if (kpis.riskLevel > 70) criticalAlerts.push(`Niveau de risque eleve (${Math.round(kpis.riskLevel)}%)`);
+    }
+
+    return {
+      simulationId: id,
+      status: simulation.status,
+      scenarioTitle: simulation.scenario.title,
+      projectName: simulation.project.name,
+      globalScore,
+      kpiGauges,
+      currentPhase: currentPhase
+        ? { order: currentPhase.order, name: currentPhase.name, type: currentPhase.type }
+        : null,
+      phaseProgression,
+      totalPhases,
+      pendingActions: {
+        decisions: pendingDecisions.map((d) => ({ id: d.id, title: d.title, timeLimitSeconds: d.timeLimitSeconds })),
+        events: pendingEvents.map((e) => ({ id: e.id, title: e.title, severity: e.severity })),
+        meetings: scheduledMeetings.map((m) => ({ id: m.id, title: m.title, status: m.status })),
+      },
+      criticalAlerts,
+      recentTimeline: recentTimeline.slice(0, 5),
+    };
   }
 
   async getKpis(id: string, userId: string) {
@@ -735,5 +902,32 @@ export class SimulationsService {
     timeline.sort((a, b) => b.date.getTime() - a.date.getTime());
 
     return timeline;
+  }
+
+  private publishCriticalKpiAlerts(
+    simulationId: string,
+    kpis: { budget: number; schedule: number; quality: number; teamMorale: number; riskLevel: number },
+    userId: string,
+    tenantId: string,
+  ) {
+    const checks: Array<{ kpiName: string; value: number; critical: boolean }> = [
+      { kpiName: 'Budget', value: kpis.budget, critical: kpis.budget < 30 },
+      { kpiName: 'Delai', value: kpis.schedule, critical: kpis.schedule < 30 },
+      { kpiName: 'Qualite', value: kpis.quality, critical: kpis.quality < 30 },
+      { kpiName: 'Moral equipe', value: kpis.teamMorale, critical: kpis.teamMorale < 30 },
+      { kpiName: 'Risque', value: kpis.riskLevel, critical: kpis.riskLevel > 70 },
+    ];
+
+    for (const check of checks) {
+      if (check.critical) {
+        this.eventPublisher.publish(
+          EventType.KPI_CRITICAL,
+          AggregateType.SIMULATION,
+          simulationId,
+          { simulationId, kpiName: check.kpiName, value: Math.round(check.value) },
+          { actorId: 'system', actorType: 'system', tenantId, receiverIds: [userId], channels: ['socket'], priority: 3 },
+        ).catch(() => {});
+      }
+    }
   }
 }

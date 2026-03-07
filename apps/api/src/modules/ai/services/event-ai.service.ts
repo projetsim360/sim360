@@ -9,7 +9,7 @@ export class EventAiService {
     event: { title: string; type: string; severity: string },
     kpis: Record<string, number>,
     phaseName: string,
-    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string },
+    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string; metadata?: Record<string, unknown> },
   ): Promise<string> {
     const result = await this.aiService.complete({
       prompt: [

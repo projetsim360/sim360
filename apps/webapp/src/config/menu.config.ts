@@ -1,6 +1,7 @@
 import {
   BookOpen,
   Briefcase,
+  Cpu,
   FileBarChart,
   HelpCircle,
   LayoutDashboard,
@@ -13,6 +14,7 @@ import { type MenuConfig } from './types';
 import { simulationMenuItems } from '@/features/simulation/config/simulation.menu';
 import { meetingMenuItems } from '@/features/meeting/config/meeting.menu';
 import { reportMenuItems } from '@/features/report/config/report.menu';
+import { adminReferenceMenuItems } from '@/features/admin-reference/config/admin-reference.menu';
 
 // ---------------------------------------------------------------------------
 // Source de vérité unique pour tous les menus de l'application Sim360.
@@ -26,10 +28,17 @@ export const APP_SIDEBAR_MENU: MenuConfig = [
     icon: LayoutDashboard,
     path: '/dashboard',
   },
+  {
+    title: 'Utilisation IA',
+    icon: Cpu,
+    path: '/ai/usage',
+  },
   { heading: 'Application' },
   ...simulationMenuItems,
   ...meetingMenuItems,
   ...reportMenuItems,
+  { heading: 'Administration' },
+  ...adminReferenceMenuItems,
   { heading: 'Compte' },
   {
     title: 'Mon Profil',

@@ -9,6 +9,7 @@ const MeetingSummaryPage = lazy(() => import('../pages/meeting-summary'));
 export const meetingRoutes = (
   <>
     <Route path="/meetings" element={<Suspense><MeetingsListPage /></Suspense>} />
+    <Route path="/simulations/:simId/meetings" element={<Suspense><MeetingsListPage /></Suspense>} />
     <Route path="/meetings/:meetingId" element={<Suspense><MeetingRoomPage /></Suspense>} />
     <Route path="/meetings/:meetingId/live" element={<Suspense><MeetingLivePage /></Suspense>} />
     <Route path="/meetings/:meetingId/summary" element={<Suspense><MeetingSummaryPage /></Suspense>} />

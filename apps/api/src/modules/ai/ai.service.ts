@@ -26,6 +26,7 @@ export interface AiCompletionOptions {
     userId: string;
     simulationId?: string;
     operation: string;
+    metadata?: Record<string, unknown>;
   };
 }
 
@@ -92,50 +93,149 @@ export class AiService {
   }
 
   streamWithAnthropic(dto: AiCompletionOptions): Observable<MessageEvent> {
+    return this.stream(dto);
+  }
+
+  stream(dto: AiCompletionOptions): Observable<MessageEvent> {
+    const provider = dto.provider || this.config.get<string>('ai.defaultProvider', 'anthropic');
     return new Observable<MessageEvent>((subscriber) => {
       (async () => {
-        if (!this.anthropic) {
-          subscriber.next({ data: JSON.stringify({ error: 'Anthropic non configure' }) });
-          subscriber.complete();
-          return;
+        // Check quota before streaming
+        if (dto.trackingContext && this.tokenTracker) {
+          try {
+            await this.tokenTracker.checkQuota(dto.trackingContext.tenantId);
+          } catch (err: any) {
+            subscriber.next({ data: JSON.stringify({ error: err.message }) });
+            subscriber.complete();
+            return;
+          }
         }
 
+        const systemPrompt = await this.resolveSystemPrompt(dto.systemPrompt, dto.systemPromptCacheKey);
+        const dtoResolved = { ...dto, systemPrompt: systemPrompt ?? dto.systemPrompt };
+
+        // Try primary provider, fallback to other
+        const primary = provider === 'anthropic' ? 'anthropic' : 'openai';
+        const fallback = primary === 'anthropic' ? 'openai' : 'anthropic';
+
         try {
-          const systemPrompt = await this.resolveSystemPrompt(dto.systemPrompt, dto.systemPromptCacheKey);
-          const messages = this.buildAnthropicMessages(dto);
-
-          const stream = this.anthropic.messages.stream({
-            model: 'claude-sonnet-4-20250514',
-            max_tokens: dto.maxTokens ?? 200,
-            temperature: dto.temperature ?? 0.7,
-            system: systemPrompt || undefined,
-            messages,
-          });
-
-          for await (const event of stream) {
-            if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
-              subscriber.next({ data: JSON.stringify({ token: event.delta.text }) });
-            }
+          await this.streamWithProvider(primary, dtoResolved, subscriber);
+        } catch (primaryError: any) {
+          this.logger.warn(`Primary streaming (${primary}) failed: ${primaryError.message}, trying ${fallback}...`);
+          try {
+            await this.streamWithProvider(fallback, dtoResolved, subscriber);
+          } catch (fallbackError: any) {
+            this.logger.error(`Fallback streaming (${fallback}) also failed: ${fallbackError.message}`);
+            subscriber.next({ data: JSON.stringify({ error: primaryError.message }) });
+            subscriber.complete();
           }
-
-          const finalMessage = await stream.finalMessage();
-          subscriber.next({
-            data: JSON.stringify({
-              done: true,
-              usage: {
-                inputTokens: finalMessage.usage.input_tokens,
-                outputTokens: finalMessage.usage.output_tokens,
-              },
-            }),
-          });
-          subscriber.complete();
-        } catch (error: any) {
-          this.logger.error(`Anthropic streaming error: ${error.message}`);
-          subscriber.next({ data: JSON.stringify({ error: error.message }) });
-          subscriber.complete();
         }
       })();
     });
+  }
+
+  private async streamWithProvider(
+    provider: 'anthropic' | 'openai',
+    dto: AiCompletionOptions,
+    subscriber: { next: (v: MessageEvent) => void; complete: () => void },
+  ): Promise<void> {
+    if (provider === 'anthropic') {
+      await this.streamAnthropicInternal(dto, subscriber);
+    } else {
+      await this.streamOpenAIInternal(dto, subscriber);
+    }
+  }
+
+  private async streamAnthropicInternal(
+    dto: AiCompletionOptions,
+    subscriber: { next: (v: MessageEvent) => void; complete: () => void },
+  ): Promise<void> {
+    if (!this.anthropic) {
+      throw new Error('Anthropic API key non configuree');
+    }
+
+    const messages = this.buildAnthropicMessages(dto);
+    const stream = this.anthropic.messages.stream({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: dto.maxTokens ?? 200,
+      temperature: dto.temperature ?? 0.7,
+      system: dto.systemPrompt || undefined,
+      messages,
+    });
+
+    for await (const event of stream) {
+      if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+        subscriber.next({ data: JSON.stringify({ token: event.delta.text }) });
+      }
+    }
+
+    const finalMessage = await stream.finalMessage();
+    const inputTokens = finalMessage.usage.input_tokens;
+    const outputTokens = finalMessage.usage.output_tokens;
+
+    subscriber.next({
+      data: JSON.stringify({ done: true, usage: { inputTokens, outputTokens } }),
+    });
+
+    if (dto.trackingContext && this.tokenTracker) {
+      this.tokenTracker.track(
+        dto.trackingContext,
+        'anthropic',
+        finalMessage.model,
+        inputTokens,
+        outputTokens,
+      ).catch((err) => this.logger.warn(`Stream token tracking failed: ${err.message}`));
+    }
+
+    subscriber.complete();
+  }
+
+  private async streamOpenAIInternal(
+    dto: AiCompletionOptions,
+    subscriber: { next: (v: MessageEvent) => void; complete: () => void },
+  ): Promise<void> {
+    if (!this.openai) {
+      throw new Error('OpenAI API key non configuree');
+    }
+
+    const messages = this.buildOpenAIMessages(dto, dto.systemPrompt);
+    const stream = await this.openai.chat.completions.create({
+      model: 'gpt-4o',
+      max_tokens: dto.maxTokens ?? 200,
+      temperature: dto.temperature ?? 0.7,
+      messages,
+      stream: true,
+    });
+
+    let inputTokens = 0;
+    let outputTokens = 0;
+
+    for await (const chunk of stream) {
+      const delta = chunk.choices[0]?.delta?.content;
+      if (delta) {
+        subscriber.next({ data: JSON.stringify({ token: delta }) });
+      }
+      if (chunk.usage) {
+        inputTokens = chunk.usage.prompt_tokens ?? 0;
+        outputTokens = chunk.usage.completion_tokens ?? 0;
+      }
+    }
+
+    subscriber.next({
+      data: JSON.stringify({ done: true, usage: { inputTokens, outputTokens } }),
+    });
+
+    if (dto.trackingContext && this.tokenTracker) {
+      this.tokenTracker.track(
+        dto.trackingContext,
+        'openai',
+        'gpt-4o',
+        inputTokens,
+        outputTokens,
+      ).catch((err) => this.logger.warn(`Stream token tracking failed: ${err.message}`));
+    }
+
+    subscriber.complete();
   }
 
   async cacheSystemPrompt(cacheKey: string, prompt: string, ttlSeconds = 3600): Promise<void> {

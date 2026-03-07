@@ -684,6 +684,113 @@ model MeetingSummary {
   @@map("meeting_summaries")
 }
 
+// ─── Deliverable Templates (EPIC 1) ─────────────────────
+
+enum DeliverableTemplateDifficulty {
+  DISCOVERY
+  STANDARD
+  ADVANCED
+}
+
+model DeliverableTemplate {
+  id                 String                       @id @default(cuid())
+  tenantId           String
+  title              String
+  type               String                       // charter, wbs, risk-register, schedule, etc.
+  phase              PhaseType
+  description        String?                      @db.Text
+  content            String                       @db.Text  // Markdown template
+  evaluationCriteria Json                          // JSON structured criteria
+  pmiProcess         String?                       // e.g. "4.1"
+  difficulty         DeliverableTemplateDifficulty @default(STANDARD)
+  referenceExample   String?                      @db.Text  // "perfect deliverable" Markdown
+  version            Int                          @default(1)
+  isActive           Boolean                      @default(true)
+  createdById        String
+  createdAt          DateTime                     @default(now())
+  updatedAt          DateTime                     @updatedAt
+
+  versions DeliverableTemplateVersion[]
+
+  @@index([tenantId])
+  @@index([phase, type, difficulty])
+  @@index([isActive])
+  @@map("deliverable_templates")
+}
+
+model DeliverableTemplateVersion {
+  id                 String                       @id @default(cuid())
+  templateId         String
+  template           DeliverableTemplate          @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  version            Int
+  title              String
+  type               String
+  phase              PhaseType
+  description        String?                      @db.Text
+  content            String                       @db.Text
+  evaluationCriteria Json
+  pmiProcess         String?
+  difficulty         DeliverableTemplateDifficulty
+  referenceExample   String?                      @db.Text
+  createdAt          DateTime                     @default(now())
+
+  @@unique([templateId, version])
+  @@index([templateId])
+  @@map("deliverable_template_versions")
+}
+
+// ─── Reference Documents (EPIC 1) ───────────────────────
+
+enum ReferenceDocumentCategory {
+  TEMPLATE
+  STANDARD
+  BEST_PRACTICE
+  GLOSSARY
+}
+
+model ReferenceDocument {
+  id          String                    @id @default(cuid())
+  tenantId    String
+  title       String
+  category    ReferenceDocumentCategory
+  phase       PhaseType?                // null = all phases
+  pmiProcess  String?                   // e.g. "5.19"
+  content     String                    @db.Text  // Markdown
+  term        String?                   // Glossary: the PMI term
+  example     String?                   @db.Text  // Glossary: concrete example
+  version     Int                       @default(1)
+  isActive    Boolean                   @default(true)
+  createdById String
+  createdAt   DateTime                  @default(now())
+  updatedAt   DateTime                  @updatedAt
+
+  versions ReferenceDocumentVersion[]
+
+  @@index([tenantId])
+  @@index([category, phase])
+  @@index([isActive])
+  @@map("reference_documents")
+}
+
+model ReferenceDocumentVersion {
+  id         String                    @id @default(cuid())
+  documentId String
+  document   ReferenceDocument         @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  version    Int
+  title      String
+  category   ReferenceDocumentCategory
+  phase      PhaseType?
+  pmiProcess String?
+  content    String                    @db.Text
+  term       String?
+  example    String?                   @db.Text
+  createdAt  DateTime                  @default(now())
+
+  @@unique([documentId, version])
+  @@index([documentId])
+  @@map("reference_document_versions")
+}
+
 // ─── AI Token Tracking ──────────────────────────────────
 
 model AiTokenUsage {

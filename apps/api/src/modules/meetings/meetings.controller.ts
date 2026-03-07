@@ -12,7 +12,7 @@ import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger'
 import { Response } from 'express';
 import { JwtAuthGuard, CurrentUser } from '@sim360/core';
 import { MeetingsService } from './meetings.service';
-import { SendMessageDto } from './dto';
+import { SendMessageDto, CreateRealtimeSessionsDto } from './dto';
 
 @ApiTags('Meetings')
 @ApiBearerAuth()
@@ -89,9 +89,29 @@ export class MeetingsController {
   }
 
   @Post('meetings/:id/realtime-session')
-  @ApiOperation({ summary: 'Create ephemeral token for OpenAI Realtime audio' })
+  @ApiOperation({ summary: 'Create ephemeral token for OpenAI Realtime audio (single participant)' })
   createRealtimeSession(@Param('id') id: string, @CurrentUser() user: any) {
     return this.meetingsService.createRealtimeSession(id, user.id);
+  }
+
+  @Post('meetings/:id/realtime-sessions')
+  @ApiOperation({ summary: 'Create realtime sessions for all or selected participants' })
+  createRealtimeSessions(
+    @Param('id') id: string,
+    @Body() dto: CreateRealtimeSessionsDto,
+    @CurrentUser() user: any,
+  ) {
+    return this.meetingsService.createRealtimeSessions(id, user.id, dto.participantIds);
+  }
+
+  @Post('meetings/:id/realtime-session/:pid')
+  @ApiOperation({ summary: 'Create realtime session for a specific participant' })
+  createRealtimeSessionForParticipant(
+    @Param('id') id: string,
+    @Param('pid') pid: string,
+    @CurrentUser() user: any,
+  ) {
+    return this.meetingsService.createRealtimeSession(id, user.id, pid);
   }
 
   @Post('meetings/:id/transcriptions')
