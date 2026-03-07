@@ -58,6 +58,18 @@ export enum EventType {
   REFERENCE_DOCUMENT_CREATED = 'reference.document_created',
   REFERENCE_DOCUMENT_UPDATED = 'reference.document_updated',
 
+  // PMO (EPIC 3)
+  PMO_MESSAGE_SENT = 'pmo.message_sent',
+  PMO_TEMPLATE_REQUESTED = 'pmo.template_requested',
+
+  // User Deliverables (EPIC 4)
+  DELIVERABLE_CREATED = 'deliverable.created',
+  DELIVERABLE_SAVED = 'deliverable.saved',
+  DELIVERABLE_SUBMITTED = 'deliverable.submitted',
+  DELIVERABLE_EVALUATED = 'deliverable.evaluated',
+  DELIVERABLE_REVISED = 'deliverable.revised',
+  DELIVERABLE_VALIDATED = 'deliverable.validated',
+
   // AI
   AI_MEETING_RESPONSE = 'ai.meeting_response',
   AI_DECISION_EVALUATED = 'ai.decision_evaluated',
@@ -78,6 +90,8 @@ export enum AggregateType {
   MEETING = 'Meeting',
   DELIVERABLE_TEMPLATE = 'DeliverableTemplate',
   REFERENCE_DOCUMENT = 'ReferenceDocument',
+  PMO_CONVERSATION = 'PmoConversation',
+  USER_DELIVERABLE = 'UserDeliverable',
 }
 
 export type ChannelType = 'socket' | 'email';
@@ -369,6 +383,70 @@ export const EVENT_NOTIFICATION_CONFIG: Partial<Record<EventType, EventNotificat
     category: 'simulation',
     titleTemplate: 'Rapport IA genere',
     bodyTemplate: 'Un rapport IA a ete genere pour votre simulation.',
+    defaultChannels: ['socket'],
+    defaultPriority: 2,
+  },
+  [EventType.PMO_MESSAGE_SENT]: {
+    notificationType: 'pmo',
+    category: 'simulation',
+    titleTemplate: 'Message PMO',
+    bodyTemplate: 'Nouveau message dans la conversation PMO.',
+    defaultChannels: ['socket'],
+    defaultPriority: 1,
+  },
+  [EventType.PMO_TEMPLATE_REQUESTED]: {
+    notificationType: 'pmo',
+    category: 'simulation',
+    titleTemplate: 'Template demande',
+    bodyTemplate: 'Un template de livrable a ete demande au PMO.',
+    defaultChannels: ['socket'],
+    defaultPriority: 1,
+  },
+  [EventType.DELIVERABLE_CREATED]: {
+    notificationType: 'deliverable',
+    category: 'simulation',
+    titleTemplate: 'Livrable cree',
+    bodyTemplate: 'Le livrable "{{data.title}}" a ete cree.',
+    defaultChannels: ['socket'],
+    defaultPriority: 1,
+  },
+  [EventType.DELIVERABLE_SAVED]: {
+    notificationType: 'deliverable',
+    category: 'simulation',
+    titleTemplate: 'Livrable sauvegarde',
+    bodyTemplate: 'Le livrable "{{data.title}}" a ete sauvegarde.',
+    defaultChannels: [],
+    defaultPriority: 1,
+  },
+  [EventType.DELIVERABLE_SUBMITTED]: {
+    notificationType: 'deliverable',
+    category: 'simulation',
+    titleTemplate: 'Livrable soumis',
+    bodyTemplate: 'Le livrable "{{data.title}}" a ete soumis pour evaluation.',
+    defaultChannels: ['socket'],
+    defaultPriority: 2,
+  },
+  [EventType.DELIVERABLE_EVALUATED]: {
+    notificationType: 'deliverable',
+    category: 'simulation',
+    titleTemplate: 'Livrable evalue',
+    bodyTemplate: 'Le livrable "{{data.title}}" a ete evalue : {{data.grade}} ({{data.score}}/100).',
+    defaultChannels: ['socket'],
+    defaultPriority: 2,
+  },
+  [EventType.DELIVERABLE_REVISED]: {
+    notificationType: 'deliverable',
+    category: 'simulation',
+    titleTemplate: 'Livrable en revision',
+    bodyTemplate: 'Le livrable "{{data.title}}" est de nouveau en mode edition (revision {{data.revisionNumber}}).',
+    defaultChannels: ['socket'],
+    defaultPriority: 1,
+  },
+  [EventType.DELIVERABLE_VALIDATED]: {
+    notificationType: 'deliverable',
+    category: 'simulation',
+    titleTemplate: 'Livrable valide',
+    bodyTemplate: 'Le livrable "{{data.title}}" a ete valide.',
     defaultChannels: ['socket'],
     defaultPriority: 2,
   },

@@ -8,3 +8,6 @@ export { reportRoutes } from './report/config/report.routes';
 export { reportMenuItems } from './report/config/report.menu';
 export { adminReferenceRoutes } from './admin-reference/config/admin-reference.routes';
 export { adminReferenceMenuItems } from './admin-reference/config/admin-reference.menu';
+export { pmoRoutes } from './pmo/config/pmo.routes';
+export { deliverableRoutes } from './deliverables/config/deliverables.routes';
+export { deliverableMenuItems } from './deliverables/config/deliverables.menu';

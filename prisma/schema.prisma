@@ -503,12 +503,14 @@ model Simulation {
   completedAt          DateTime?
   totalDurationMinutes Int?
 
-  kpis         SimulationKpi?
-  kpiSnapshots SimulationKpiSnapshot[]
-  phases       SimulationPhase[]
-  decisions    Decision[]
-  randomEvents RandomEvent[]
-  meetings     Meeting[]
+  kpis             SimulationKpi?
+  kpiSnapshots     SimulationKpiSnapshot[]
+  phases           SimulationPhase[]
+  decisions        Decision[]
+  randomEvents     RandomEvent[]
+  meetings         Meeting[]
+  pmoConversation  PmoConversation?
+  userDeliverables UserDeliverable[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -682,6 +684,95 @@ model MeetingSummary {
   createdAt    DateTime @default(now())
 
   @@map("meeting_summaries")
+}
+
+// ─── PMO Conversations (EPIC 3) ─────────────────────────
+
+model PmoConversation {
+  id           String     @id @default(cuid())
+  simulationId String     @unique
+  simulation   Simulation @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  messages PmoMessage[]
+
+  @@index([simulationId])
+  @@map("pmo_conversations")
+}
+
+model PmoMessage {
+  id             String          @id @default(cuid())
+  conversationId String
+  conversation   PmoConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String          @default("user") // "user" | "assistant" | "system"
+  content        String          @db.Text
+  metadata       Json?           // { intent?, templateId?, deliverableId? }
+  createdAt      DateTime        @default(now())
+
+  @@index([conversationId, createdAt])
+  @@map("pmo_messages")
+}
+
+// ─── User Deliverables (EPIC 4) ─────────────────────────
+
+enum UserDeliverableStatus {
+  DRAFT
+  SUBMITTED
+  EVALUATED
+  REVISED
+  VALIDATED
+  REJECTED
+}
+
+model UserDeliverable {
+  id             String                @id @default(cuid())
+  simulationId   String
+  simulation     Simulation            @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+  templateId     String?
+  phaseOrder     Int
+  title          String
+  type           String                // charter, wbs, risk-register, etc.
+  content        String?               @db.Text  // Markdown content written by learner
+  status         UserDeliverableStatus @default(DRAFT)
+  revisionNumber Int                   @default(0)
+  maxRevisions   Int                   @default(3)
+  dueDate        DateTime?
+  submittedAt    DateTime?
+  lastSavedAt    DateTime?
+  meetingId      String?               // For meeting-minutes: linked meeting
+
+  evaluations DeliverableEvaluation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([simulationId])
+  @@index([simulationId, phaseOrder])
+  @@index([status])
+  @@map("user_deliverables")
+}
+
+model DeliverableEvaluation {
+  id               String          @id @default(cuid())
+  deliverableId    String
+  deliverable      UserDeliverable @relation(fields: [deliverableId], references: [id], onDelete: Cascade)
+  revisionNumber   Int
+  score            Float           // 0-100
+  grade            String          // A, B, C, D, F
+  positives        String[]        // Points positifs
+  improvements     String[]        // Points a ameliorer
+  missingElements  String[]        // Elements manquants
+  incorrectElements String[]       // Elements incorrects
+  recommendations  String[]        // Recommandations
+  pmiOutputsCovered String[]       // PMI outputs couverts
+  pmiOutputsMissing String[]       // PMI outputs manquants
+  aiGeneratedCR    String?         @db.Text  // For meeting-minutes: AI-generated version
+  metadata         Json?           // Extra evaluation data
+  createdAt        DateTime        @default(now())
+
+  @@index([deliverableId])
+  @@map("deliverable_evaluations")
 }
 
 // ─── Deliverable Templates (EPIC 1) ─────────────────────

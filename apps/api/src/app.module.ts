@@ -17,6 +17,8 @@ import { SimulationsModule } from './modules/simulations/simulations.module';
 import { MeetingsModule } from './modules/meetings/meetings.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { AdminReferenceModule } from './modules/admin-reference/admin-reference.module';
+import { PmoModule } from './modules/pmo/pmo.module';
+import { DeliverablesModule } from './modules/deliverables/deliverables.module';
 
 @Module({
   imports: [
@@ -47,6 +49,8 @@ import { AdminReferenceModule } from './modules/admin-reference/admin-reference.
     MeetingsModule,
     DashboardModule,
     AdminReferenceModule,
+    PmoModule,
+    DeliverablesModule,
   ],
   providers: [
     {
