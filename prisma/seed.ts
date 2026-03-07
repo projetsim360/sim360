@@ -1,4 +1,4 @@
-import { PrismaClient, UserRole, TenantPlan, Difficulty, Sector, PhaseType, RandomEventType, Severity } from '@prisma/client';
+import { PrismaClient, UserRole, TenantPlan, Difficulty, Sector, PhaseType, RandomEventType, Severity, ReferenceDocumentCategory } from '@prisma/client';
 import bcryptjs from 'bcryptjs';
 const { hashSync } = bcryptjs;
 
@@ -888,7 +888,142 @@ async function main() {
 
   console.log(`Seeded: ${scenario1.title}`);
   console.log(`Seeded: ${scenario2.title}`);
-  console.log('Seeding complete!');
+
+  // ─── Manager / Recruiter user ─────────────────────────────
+
+  const recruiter = await prisma.user.upsert({
+    where: { email: 'recruiter@sim360.dev' },
+    update: {
+      passwordHash: hashPassword('Recruiter123!'),
+      emailVerifiedAt: new Date(),
+      profileCompleted: true,
+    },
+    create: {
+      email: 'recruiter@sim360.dev',
+      passwordHash: hashPassword('Recruiter123!'),
+      firstName: 'Sophie',
+      lastName: 'Recruteur',
+      role: UserRole.MANAGER,
+      tenantId: tenant.id,
+      isActive: true,
+      emailVerifiedAt: new Date(),
+      profileCompleted: true,
+    },
+  });
+
+  console.log(`Recruiter user created: ${recruiter.email}`);
+
+  // ─── Deliverable Templates (EPIC 1) ───────────────────────
+
+  const templateData = [
+    { title: 'Charte de projet', type: 'charter', phase: PhaseType.INITIATION, description: 'Document fondateur definissant le perimetre, les objectifs et les parties prenantes.' },
+    { title: 'Plan de management de projet', type: 'project-plan', phase: PhaseType.PLANNING, description: 'Document central decrivant la strategie de gestion du projet.' },
+    { title: 'Registre des risques', type: 'risk-register', phase: PhaseType.PLANNING, description: 'Liste des risques identifies avec probabilite, impact et plan de reponse.' },
+    { title: 'Rapport d\'avancement', type: 'status-report', phase: PhaseType.EXECUTION, description: 'Point regulier sur l\'avancement, les KPIs et les alertes.' },
+    { title: 'Registre des changements', type: 'change-log', phase: PhaseType.MONITORING, description: 'Suivi de toutes les demandes de changement et leur statut.' },
+    { title: 'Rapport de cloture', type: 'closure-report', phase: PhaseType.CLOSURE, description: 'Bilan final du projet avec lecons apprises et recommandations.' },
+  ];
+
+  for (const t of templateData) {
+    await prisma.deliverableTemplate.upsert({
+      where: { id: `seed-template-${t.type}` },
+      update: {},
+      create: {
+        id: `seed-template-${t.type}`,
+        tenantId: tenant.id,
+        createdById: admin.id,
+        title: t.title,
+        type: t.type,
+        phase: t.phase,
+        description: t.description,
+        content: `# ${t.title}\n\n## 1. Introduction\n\n[A completer]\n\n## 2. Contenu principal\n\n[A completer]\n\n## 3. Conclusion\n\n[A completer]`,
+        evaluationCriteria: { criteria: ['Completude', 'Clarte', 'Pertinence', 'Coherence'] },
+        isActive: true,
+        version: 1,
+      },
+    });
+  }
+
+  console.log(`Seeded: ${templateData.length} deliverable templates`);
+
+  // ─── Reference Documents (EPIC 1) ─────────────────────────
+
+  const refDocs = [
+    { id: 'seed-refdoc-pmbok', title: 'Guide PMBOK 7eme edition', category: ReferenceDocumentCategory.STANDARD, content: '# Guide PMBOK\n\nLe Project Management Body of Knowledge (PMBOK) est le standard de reference publie par le PMI pour la gestion de projet.\n\n## Principes cles\n\n1. Stewardship\n2. Team\n3. Stakeholders\n4. Value\n5. Systems Thinking\n6. Leadership\n7. Tailoring\n8. Quality\n9. Complexity\n10. Risk\n11. Adaptability and Resiliency\n12. Change' },
+    { id: 'seed-refdoc-glossary', title: 'Glossaire PMI', category: ReferenceDocumentCategory.GLOSSARY, content: '# Glossaire PMI\n\n**WBS** (Work Breakdown Structure) : Decomposition hierarchique du perimetre total du travail.\n\n**RACI** : Matrice d\'attribution des responsabilites (Responsible, Accountable, Consulted, Informed).\n\n**Chemin critique** : Sequence d\'activites determinant la duree minimale du projet.\n\n**Earned Value** : Methode de mesure de la performance du projet.' },
+    { id: 'seed-refdoc-bestpractice', title: 'Bonnes pratiques de gestion des risques', category: ReferenceDocumentCategory.BEST_PRACTICE, content: '# Gestion des risques\n\n## Processus\n\n1. Identification\n2. Analyse qualitative\n3. Analyse quantitative\n4. Planification des reponses\n5. Mise en oeuvre\n6. Surveillance' },
+  ];
+
+  for (const doc of refDocs) {
+    await prisma.referenceDocument.upsert({
+      where: { id: doc.id },
+      update: {},
+      create: {
+        id: doc.id,
+        tenantId: tenant.id,
+        createdById: admin.id,
+        title: doc.title,
+        category: doc.category,
+        content: doc.content,
+        isActive: true,
+        version: 1,
+      },
+    });
+  }
+
+  console.log(`Seeded: ${refDocs.length} reference documents`);
+
+  // ─── Recruitment Campaign (EPIC 8) ────────────────────────
+
+  await prisma.recruitmentCampaign.upsert({
+    where: { slug: 'chef-projet-digital-2026' },
+    update: {},
+    create: {
+      title: 'Chef de Projet Digital Senior',
+      slug: 'chef-projet-digital-2026',
+      status: 'DRAFT',
+      jobTitle: 'Chef de Projet Digital Senior',
+      jobDescription: 'Nous recherchons un chef de projet digital senior pour piloter des projets de transformation numerique. Vous serez responsable de la gestion de bout en bout de projets web et mobile avec des equipes de 5 a 10 personnes.',
+      requiredSkills: [
+        { skill: 'Planification', weight: 9 },
+        { skill: 'Communication', weight: 8 },
+        { skill: 'Gestion des risques', weight: 7 },
+        { skill: 'Leadership', weight: 8 },
+        { skill: 'Methodologies agiles', weight: 6 },
+      ],
+      experienceLevel: 'senior',
+      projectTypes: ['web', 'mobile', 'e-commerce'],
+      culture: 'AGILE',
+      cultureDescription: 'Environnement agile avec des sprints de 2 semaines, standups quotidiens et retrospectives regulieres.',
+      maxCandidates: 50,
+      recruiterId: recruiter.id,
+      tenantId: tenant.id,
+    },
+  });
+
+  console.log('Seeded: 1 recruitment campaign (draft)');
+
+  // ─── AI Token Quota ───────────────────────────────────────
+
+  await prisma.aiTokenQuota.upsert({
+    where: { tenantId: tenant.id },
+    update: {},
+    create: {
+      tenantId: tenant.id,
+      monthlyInputLimit: 2000000,
+      monthlyOutputLimit: 1000000,
+    },
+  });
+
+  console.log('Seeded: AI token quota');
+
+  console.log('\nSeeding complete!');
+  console.log('─────────────────────────────────────────');
+  console.log('Accounts:');
+  console.log('  Admin:     admin@sim360.dev / Admin123!');
+  console.log('  User:      user@sim360.dev / User123!');
+  console.log('  Recruiter: recruiter@sim360.dev / Recruiter123!');
+  console.log('─────────────────────────────────────────');
 }
 
 main()

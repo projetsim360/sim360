@@ -1,12 +1,14 @@
 import { cn } from '@/lib/utils';
 import { KeenIcon } from '@/components/keenicons';
+import { PmiGlossaryText } from '@/features/profile/components/pmi-glossary-tooltip';
 import type { PmoMessage } from '../types/pmo.types';
 
 interface PmoMessageBubbleProps {
   message: PmoMessage;
+  enableGlossaryTooltips?: boolean;
 }
 
-export function PmoMessageBubble({ message }: PmoMessageBubbleProps) {
+export function PmoMessageBubble({ message, enableGlossaryTooltips = false }: PmoMessageBubbleProps) {
   const isUser = message.role === 'user';
   const isSystem = message.role === 'system';
 
@@ -50,7 +52,13 @@ export function PmoMessageBubble({ message }: PmoMessageBubbleProps) {
             : 'bg-gray-100 dark:bg-gray-800 text-foreground rounded-bl-sm',
         )}
       >
-        <p className="whitespace-pre-wrap break-words">{message.content}</p>
+        <p className="whitespace-pre-wrap break-words">
+          {!isUser && enableGlossaryTooltips ? (
+            <PmiGlossaryText text={message.content} enabled />
+          ) : (
+            message.content
+          )}
+        </p>
         <p
           className={cn(
             'text-[10px] mt-1',

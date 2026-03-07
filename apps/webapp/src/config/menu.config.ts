@@ -15,6 +15,9 @@ import { simulationMenuItems } from '@/features/simulation/config/simulation.men
 import { meetingMenuItems } from '@/features/meeting/config/meeting.menu';
 import { reportMenuItems } from '@/features/report/config/report.menu';
 import { adminReferenceMenuItems } from '@/features/admin-reference/config/admin-reference.menu';
+import { simulatedEmailMenuItems } from '@/features/simulated-emails/config/simulated-emails.menu';
+import { valorizationMenuItems } from '@/features/valorization/config/valorization.menu';
+import { recruitmentMenuItems } from '@/features/recruitment/config/recruitment.menu';
 
 // ---------------------------------------------------------------------------
 // Source de vérité unique pour tous les menus de l'application Sim360.
@@ -36,7 +39,10 @@ export const APP_SIDEBAR_MENU: MenuConfig = [
   { heading: 'Application' },
   ...simulationMenuItems,
   ...meetingMenuItems,
+  ...simulatedEmailMenuItems,
   ...reportMenuItems,
+  ...valorizationMenuItems,
+  ...recruitmentMenuItems,
   { heading: 'Administration' },
   ...adminReferenceMenuItems,
   { heading: 'Compte' },
@@ -44,6 +50,10 @@ export const APP_SIDEBAR_MENU: MenuConfig = [
     title: 'Mon Profil',
     icon: UserCircle,
     path: '/profile/edit',
+    children: [
+      { title: 'Editer le profil', path: '/profile/edit' },
+      { title: 'Onboarding', path: '/onboarding' },
+    ],
   },
   {
     title: 'Paramètres',
@@ -73,6 +83,7 @@ export const APP_HEADER_MENU: MenuConfig = [
   { title: 'Simulations', path: '/simulations', icon: Play },
   { title: 'Réunions', path: '/meetings', icon: UserCircle },
   { title: 'Rapports', path: '/reports', icon: FileBarChart },
+  { title: 'Recrutement', path: '/recruitment/campaigns', icon: Briefcase },
   { title: 'Mon Profil', path: '/profile/edit', icon: UserCircle },
   { title: 'Paramètres', path: '/settings', icon: Settings },
 ];
@@ -96,6 +107,12 @@ export const APP_ICON_RAIL_MENU: MenuConfig = [
     icon: FileBarChart,
     path: '/reports',
     rootPath: '/reports',
+  },
+  {
+    title: 'Recrutement',
+    icon: Briefcase,
+    path: '/recruitment/campaigns',
+    rootPath: '/recruitment',
   },
   { separator: true },
   {

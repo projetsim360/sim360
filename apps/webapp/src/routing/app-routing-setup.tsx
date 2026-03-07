@@ -24,6 +24,12 @@ import {
   adminReferenceRoutes,
   pmoRoutes,
   deliverableRoutes,
+  simulatedEmailRoutes,
+  profileRoutes,
+  valorizationRoutes,
+  badgeVerifyRoute,
+  recruitmentRoutes,
+  recruitmentJoinRoute,
 } from '@/features';
 
 export function AppRoutingSetup() {
@@ -44,9 +50,10 @@ export function AppRoutingSetup() {
         <Route path="/auth/confirm-email-change" element={<ConfirmEmailChangePage />} />
       </Route>
 
-      {/* Profile wizard (protected, no layout) */}
+      {/* Profile wizard & onboarding (protected, no layout) */}
       <Route element={<ProtectedRoute />}>
         <Route path="/profile/wizard" element={<ProfileWizardPage />} />
+        {profileRoutes}
       </Route>
 
       {/* Protected routes with dynamic layout */}
@@ -65,8 +72,15 @@ export function AppRoutingSetup() {
           {adminReferenceRoutes}
           {pmoRoutes}
           {deliverableRoutes}
+          {simulatedEmailRoutes}
+          {valorizationRoutes}
+          {recruitmentRoutes}
         </Route>
       </Route>
+
+      {/* Public routes (no auth, no layout) */}
+      {badgeVerifyRoute}
+      {recruitmentJoinRoute}
 
       {/* Catch-all redirect */}
       <Route path="*" element={<Navigate to="/" replace />} />

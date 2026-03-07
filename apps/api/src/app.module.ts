@@ -19,6 +19,10 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { AdminReferenceModule } from './modules/admin-reference/admin-reference.module';
 import { PmoModule } from './modules/pmo/pmo.module';
 import { DeliverablesModule } from './modules/deliverables/deliverables.module';
+import { ProfileModule } from './modules/profile/profile.module';
+import { SimulatedEmailsModule } from './modules/simulated-emails/simulated-emails.module';
+import { ValorizationModule } from './modules/valorization/valorization.module';
+import { RecruitmentModule } from './modules/recruitment/recruitment.module';
 
 @Module({
   imports: [
@@ -51,6 +55,10 @@ import { DeliverablesModule } from './modules/deliverables/deliverables.module';
     AdminReferenceModule,
     PmoModule,
     DeliverablesModule,
+    ProfileModule,
+    SimulatedEmailsModule,
+    ValorizationModule,
+    RecruitmentModule,
   ],
   providers: [
     {

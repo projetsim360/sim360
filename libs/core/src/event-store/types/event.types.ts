@@ -70,6 +70,44 @@ export enum EventType {
   DELIVERABLE_REVISED = 'deliverable.revised',
   DELIVERABLE_VALIDATED = 'deliverable.validated',
 
+  // Profile (EPIC 2)
+  PROFILE_CV_UPLOADED = 'profile.cv_uploaded',
+  PROFILE_LINKEDIN_IMPORTED = 'profile.linkedin_imported',
+  PROFILE_QUESTIONNAIRE_COMPLETED = 'profile.questionnaire_completed',
+  PROFILE_APTITUDE_TEST_COMPLETED = 'profile.aptitude_test_completed',
+  PROFILE_DIAGNOSTIC_GENERATED = 'profile.diagnostic_generated',
+  PROFILE_SKILLS_CUSTOMIZED = 'profile.skills_customized',
+  PROFILE_SECTOR_SELECTED = 'profile.sector_selected',
+  PROFILE_ONBOARDING_COMPLETED = 'profile.onboarding_completed',
+
+  // Valorization (EPIC 7)
+  DEBRIEFING_GENERATED = 'valorization.debriefing_generated',
+  PORTFOLIO_EXPORTED = 'valorization.portfolio_exported',
+  BADGE_GENERATED = 'valorization.badge_generated',
+  BADGE_SHARED = 'valorization.badge_shared',
+  CV_SUGGESTIONS_GENERATED = 'valorization.cv_suggestions_generated',
+
+  // Simulated Emails (EPIC 5)
+  EMAIL_GENERATED = 'email.generated',
+  EMAIL_READ = 'email.read',
+  EMAIL_RESPONDED = 'email.responded',
+  EMAIL_BATCH_GENERATED = 'email.batch_generated',
+
+  // Recruitment (EPICs 8-10)
+  CAMPAIGN_CREATED = 'recruitment.campaign_created',
+  CAMPAIGN_PUBLISHED = 'recruitment.campaign_published',
+  CAMPAIGN_CLOSED = 'recruitment.campaign_closed',
+  CAMPAIGN_ARCHIVED = 'recruitment.campaign_archived',
+  CAMPAIGN_SCENARIO_GENERATED = 'recruitment.scenario_generated',
+  CANDIDATE_JOINED = 'recruitment.candidate_joined',
+  CANDIDATE_STARTED = 'recruitment.candidate_started',
+  CANDIDATE_COMPLETED = 'recruitment.candidate_completed',
+  CANDIDATE_ABANDONED = 'recruitment.candidate_abandoned',
+  CANDIDATE_REPORT_GENERATED = 'recruitment.report_generated',
+  SHORTLIST_GENERATED = 'recruitment.shortlist_generated',
+  INTERVIEW_GUIDE_GENERATED = 'recruitment.interview_guide_generated',
+  CANDIDATE_COMPARED = 'recruitment.candidate_compared',
+
   // AI
   AI_MEETING_RESPONSE = 'ai.meeting_response',
   AI_DECISION_EVALUATED = 'ai.decision_evaluated',
@@ -92,6 +130,11 @@ export enum AggregateType {
   REFERENCE_DOCUMENT = 'ReferenceDocument',
   PMO_CONVERSATION = 'PmoConversation',
   USER_DELIVERABLE = 'UserDeliverable',
+  USER_PROFILE = 'UserProfile',
+  SIMULATED_EMAIL = 'SimulatedEmail',
+  COMPETENCY_BADGE = 'CompetencyBadge',
+  RECRUITMENT_CAMPAIGN = 'RecruitmentCampaign',
+  CANDIDATE_RESULT = 'CandidateResult',
 }
 
 export type ChannelType = 'socket' | 'email';
@@ -481,6 +524,70 @@ export const EVENT_NOTIFICATION_CONFIG: Partial<Record<EventType, EventNotificat
     bodyTemplate: 'Attention : {{data.kpiName}} est passe sous le seuil critique ({{data.value}}%).',
     defaultChannels: ['socket'],
     defaultPriority: 3,
+  },
+  [EventType.CAMPAIGN_CREATED]: {
+    notificationType: 'recruitment',
+    category: 'recruitment',
+    titleTemplate: 'Campagne creee',
+    bodyTemplate: 'La campagne "{{data.title}}" a ete creee.',
+    defaultChannels: ['socket'],
+    defaultPriority: 1,
+  },
+  [EventType.CAMPAIGN_PUBLISHED]: {
+    notificationType: 'recruitment',
+    category: 'recruitment',
+    titleTemplate: 'Campagne publiee',
+    bodyTemplate: 'La campagne "{{data.title}}" est maintenant active.',
+    defaultChannels: ['socket', 'email'],
+    defaultPriority: 2,
+  },
+  [EventType.CAMPAIGN_CLOSED]: {
+    notificationType: 'recruitment',
+    category: 'recruitment',
+    titleTemplate: 'Campagne fermee',
+    bodyTemplate: 'La campagne "{{data.title}}" a ete fermee.',
+    defaultChannels: ['socket'],
+    defaultPriority: 2,
+  },
+  [EventType.CANDIDATE_JOINED]: {
+    notificationType: 'recruitment',
+    category: 'recruitment',
+    titleTemplate: 'Nouveau candidat',
+    bodyTemplate: '{{data.candidateName}} a rejoint la campagne "{{data.campaignTitle}}".',
+    defaultChannels: ['socket'],
+    defaultPriority: 2,
+  },
+  [EventType.CANDIDATE_COMPLETED]: {
+    notificationType: 'recruitment',
+    category: 'recruitment',
+    titleTemplate: 'Candidat termine',
+    bodyTemplate: '{{data.candidateName}} a termine la simulation (score: {{data.globalScore}}).',
+    defaultChannels: ['socket', 'email'],
+    defaultPriority: 2,
+  },
+  [EventType.CANDIDATE_ABANDONED]: {
+    notificationType: 'recruitment',
+    category: 'recruitment',
+    titleTemplate: 'Candidat abandonne',
+    bodyTemplate: '{{data.candidateName}} a abandonne a la phase {{data.phase}}.',
+    defaultChannels: ['socket'],
+    defaultPriority: 2,
+  },
+  [EventType.CANDIDATE_REPORT_GENERATED]: {
+    notificationType: 'recruitment',
+    category: 'recruitment',
+    titleTemplate: 'Rapport 360 genere',
+    bodyTemplate: 'Le rapport d\'aptitude de {{data.candidateName}} est disponible.',
+    defaultChannels: ['socket'],
+    defaultPriority: 2,
+  },
+  [EventType.SHORTLIST_GENERATED]: {
+    notificationType: 'recruitment',
+    category: 'recruitment',
+    titleTemplate: 'Short-list generee',
+    bodyTemplate: 'La short-list de la campagne "{{data.campaignTitle}}" est prete.',
+    defaultChannels: ['socket', 'email'],
+    defaultPriority: 2,
   },
 };
 

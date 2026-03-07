@@ -4,12 +4,15 @@ import { KeenIcon } from '@/components/keenicons';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { PmoContext } from '../types/pmo.types';
+import type { ProfileAdaptation } from '@/features/profile/types/profile.types';
+import { PMO_TONE_LABELS } from '@/features/profile/types/profile.types';
 
 interface PmoContextPanelProps {
   context: PmoContext | undefined;
   isLoading: boolean;
   collapsed: boolean;
   onToggle: () => void;
+  adaptation?: ProfileAdaptation;
 }
 
 const KPI_CONFIG: Record<
@@ -37,11 +40,19 @@ function kpiColor(key: string, value: number): string {
   return 'text-destructive';
 }
 
+const TONE_BADGE_VARIANT: Record<ProfileAdaptation['pmoTone'], 'info' | 'success' | 'primary' | 'warning'> = {
+  patient: 'info',
+  bienveillant: 'success',
+  professionnel: 'primary',
+  exigeant: 'warning',
+};
+
 export function PmoContextPanel({
   context,
   isLoading,
   collapsed,
   onToggle,
+  adaptation,
 }: PmoContextPanelProps) {
   if (collapsed) {
     return (
@@ -205,6 +216,36 @@ export function PmoContextPanel({
                     <span className="truncate">{d.title}</span>
                   </div>
                 ))}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Adaptation mode */}
+          {adaptation && (
+            <Card>
+              <CardHeader className="p-3 pb-1">
+                <CardTitle className="text-xs">Adaptation</CardTitle>
+              </CardHeader>
+              <CardContent className="p-3 pt-0 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-muted-foreground flex items-center gap-1.5">
+                    <KeenIcon icon="message-text" style="outline" className="size-3" />
+                    Ton PMO
+                  </span>
+                  <Badge
+                    variant={TONE_BADGE_VARIANT[adaptation.pmoTone]}
+                    appearance="light"
+                    size="xs"
+                  >
+                    {PMO_TONE_LABELS[adaptation.pmoTone]}
+                  </Badge>
+                </div>
+                {adaptation.showGlossaryTooltips && (
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <KeenIcon icon="book" style="outline" className="size-3" />
+                    Glossaire PMI actif
+                  </div>
+                )}
               </CardContent>
             </Card>
           )}

@@ -11,3 +11,11 @@ export { adminReferenceMenuItems } from './admin-reference/config/admin-referenc
 export { pmoRoutes } from './pmo/config/pmo.routes';
 export { deliverableRoutes } from './deliverables/config/deliverables.routes';
 export { deliverableMenuItems } from './deliverables/config/deliverables.menu';
+export { simulatedEmailRoutes } from './simulated-emails/config/simulated-emails.routes';
+export { simulatedEmailMenuItems } from './simulated-emails/config/simulated-emails.menu';
+export { profileRoutes } from './profile/config/profile.routes';
+export { profileMenuItems } from './profile/config/profile.menu';
+export { valorizationRoutes, badgeVerifyRoute } from './valorization/config/valorization.routes';
+export { valorizationMenuItems } from './valorization/config/valorization.menu';
+export { recruitmentRoutes, recruitmentJoinRoute } from './recruitment/config/recruitment.routes';
+export { recruitmentMenuItems } from './recruitment/config/recruitment.menu';

@@ -1,5 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '@sim360/core';
+import {
+  ProfileConfigService,
+  ProfileAdaptation,
+} from '@/modules/profile/services';
 
 export interface PmoContext {
   simulation: {
@@ -64,15 +68,23 @@ export interface PmoContext {
     category: string;
     phase: string | null;
   }>;
+  profileAdaptation: ProfileAdaptation;
 }
 
 @Injectable()
 export class PmoContextService {
   private readonly logger = new Logger(PmoContextService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly profileConfig: ProfileConfigService,
+  ) {}
 
-  async buildContext(simulationId: string): Promise<PmoContext> {
+  async buildContext(
+    simulationId: string,
+    userId?: string,
+    tenantId?: string,
+  ): Promise<PmoContext> {
     const simulation = await this.prisma.simulation.findUniqueOrThrow({
       where: { id: simulationId },
       include: {
@@ -127,6 +139,14 @@ export class PmoContextService {
         phase: true,
       },
     });
+
+    // Fetch profile adaptation for the simulation owner
+    const effectiveUserId = userId ?? simulation.userId;
+    const effectiveTenantId = tenantId ?? simulation.tenantId;
+    const profileAdaptation = await this.profileConfig.getAdaptationForUser(
+      effectiveUserId,
+      effectiveTenantId,
+    );
 
     const submitted = simulation.userDeliverables
       .filter((d) => d.status !== 'DRAFT')
@@ -203,6 +223,7 @@ export class PmoContextService {
         category: d.category,
         phase: d.phase,
       })),
+      profileAdaptation,
     };
   }
 
@@ -317,10 +338,86 @@ ${
     : '- Aucun document de reference'
 }
 
+## Adaptation au profil de l'apprenant
+${this.buildAdaptationDirectives(context.profileAdaptation)}
+
 ## Instructions speciales
 - Si l'apprenant demande un template, reponds avec le contenu du template en markdown en indiquant clairement qu'il s'agit d'un modele a adapter.
 - Si un KPI est critique (budget < 50%, qualite < 50%, moral < 40%, risque > 80%), alerte proactivement l'apprenant.
 - Rappelle les livrables en attente quand c'est pertinent dans la conversation.
 - Oriente l'apprenant vers les bonnes pratiques PMI quand l'occasion se presente.`;
+  }
+
+  /**
+   * Build adaptation directives for the system prompt based on profile.
+   */
+  private buildAdaptationDirectives(adaptation: ProfileAdaptation): string {
+    const toneMap: Record<ProfileAdaptation['pmoTone'], string> = {
+      patient:
+        'Adopte un ton tres patient et rassurant. Prends le temps d\'expliquer chaque concept. Ne presuppose aucune connaissance prealable.',
+      bienveillant:
+        'Adopte un ton bienveillant et encourageant. Felicite les progres tout en guidant vers l\'amelioration.',
+      professionnel:
+        'Adopte un ton professionnel et direct. Va droit au but, l\'apprenant a de l\'experience dans d\'autres domaines.',
+      exigeant:
+        'Adopte un ton exigeant et concis. L\'apprenant est experimente : sois rigoureux, evalue strictement, note severement.',
+    };
+
+    const explanationMap: Record<
+      ProfileAdaptation['pmoExplanationLevel'],
+      string
+    > = {
+      detailed:
+        'Fournis des explications detaillees avec des exemples concrets pour chaque concept PMI. Utilise des analogies simples.',
+      constructive:
+        'Fournis des explications constructives avec le contexte necessaire. Donne des pistes de reflexion plutot que des reponses directes.',
+      direct:
+        'Sois direct dans tes explications. L\'apprenant comprend vite, concentre-toi sur les specificites du domaine PM.',
+      minimal:
+        'Sois minimaliste dans tes explications. Reponds uniquement a ce qui est demande, sans developper inutilement.',
+    };
+
+    const interventionMap: Record<
+      ProfileAdaptation['pmoInterventionFrequency'],
+      string
+    > = {
+      every_step:
+        'Interviens proactivement a chaque etape. Propose de l\'aide, verifie la comprehension, rappelle les prochaines actions a chaque message.',
+      regular:
+        'Interviens regulierement pour guider l\'apprenant. Rappelle les livrables en attente et les bonnes pratiques de facon periodique.',
+      on_demand:
+        'N\'interviens que lorsque l\'apprenant te sollicite ou en cas de KPI critique. Laisse-le avancer de maniere autonome.',
+      silent:
+        'N\'interviens que lorsque l\'apprenant te pose une question directe. Ne fais pas de rappels proactifs sauf en cas de situation critique.',
+    };
+
+    const directives: string[] = [
+      `- **Ton** : ${toneMap[adaptation.pmoTone]}`,
+      `- **Niveau d'explication** : ${explanationMap[adaptation.pmoExplanationLevel]}`,
+      `- **Interventions proactives** : ${adaptation.pmoProactiveInterventions ? 'Oui' : 'Non'} — ${interventionMap[adaptation.pmoInterventionFrequency]}`,
+      `- **Revisions de livrables** : L'apprenant dispose de ${adaptation.maxRevisions} revision(s) maximum par livrable.`,
+      `- **Processus PMI actifs** : Entre ${adaptation.activePmiProcessCount.min} et ${adaptation.activePmiProcessCount.max} processus sont actives pour cet apprenant.`,
+      `- **Retours en arriere (rollbacks)** : L'apprenant peut revenir sur ${adaptation.maxRollbacks} decision(s) maximum.`,
+    ];
+
+    if (adaptation.pedagogicQuestions) {
+      directives.push(
+        '- **Questions pedagogiques** : Pose regulierement des questions pour verifier la comprehension de l\'apprenant. Explique POURQUOI avant de demander chaque livrable.',
+      );
+    }
+
+    if (adaptation.pmoTone === 'patient') {
+      directives.push(
+        '- **Directive speciale (debutant absolu)** : Avant de demander chaque livrable, explique d\'abord POURQUOI ce livrable est necessaire dans le contexte du projet et du processus PMI. Utilise des exemples concrets du monde reel.',
+      );
+    }
+
+    if (adaptation.pmoTone === 'exigeant') {
+      directives.push(
+        '- **Directive speciale (renforcement)** : Ne parle que lorsque l\'apprenant te sollicite. Evalue strictement la qualite des livrables. Attends un niveau de detail professionnel. Note severement.',
+      );
+    }
+
+    return directives.join('\n');
   }
 }

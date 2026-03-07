@@ -6,6 +6,7 @@ import { KeenIcon } from '@/components/keenicons';
 import { PmoChat } from '../components/pmo-chat';
 import { PmoContextPanel } from '../components/pmo-context-panel';
 import { usePmoHistory, usePmoContext } from '../api/pmo.api';
+import { useProfileAdaptation } from '@/features/profile/api/profile.api';
 
 export default function PmoChatPage() {
   const { id } = useParams<{ id: string }>();
@@ -20,6 +21,8 @@ export default function PmoChatPage() {
     data: context,
     isLoading: isLoadingContext,
   } = usePmoContext(id || '');
+
+  const { data: adaptation } = useProfileAdaptation();
 
   if (!id) {
     return (
@@ -64,6 +67,7 @@ export default function PmoChatPage() {
               simulationId={id}
               initialMessages={historyData?.data || []}
               isLoadingHistory={isLoadingHistory}
+              enableGlossaryTooltips={adaptation?.showGlossaryTooltips ?? false}
             />
           </div>
 
@@ -73,6 +77,7 @@ export default function PmoChatPage() {
             isLoading={isLoadingContext}
             collapsed={contextCollapsed}
             onToggle={() => setContextCollapsed(!contextCollapsed)}
+            adaptation={adaptation}
           />
         </div>
       </div>

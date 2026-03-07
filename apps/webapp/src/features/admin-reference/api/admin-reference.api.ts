@@ -70,6 +70,22 @@ export const deliverableTemplateApi = {
     api.get<DeliverableTemplate[]>(`/admin/deliverable-templates/${id}/versions`),
 };
 
+export const GLOSSARY_QUERY_KEYS = {
+  all: ['glossary'] as const,
+};
+
+export const glossaryApi = {
+  getGlossary: () =>
+    api.get<ReferenceDocument[]>('/reference-documents/glossary'),
+};
+
+export const useGlossary = () =>
+  useQuery({
+    queryKey: GLOSSARY_QUERY_KEYS.all,
+    queryFn: glossaryApi.getGlossary,
+    staleTime: 30 * 60 * 1000,
+  });
+
 export const referenceDocumentApi = {
   getDocuments: (params?: ReferenceDocumentFilters) =>
     api.get<PaginatedResponse<ReferenceDocument>>(`/admin/reference-documents${buildQueryString(params)}`).then((res) => res.data),

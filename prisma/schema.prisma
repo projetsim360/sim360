@@ -31,8 +31,9 @@ model Tenant {
   storageFiles  StorageFile[]
   auditLogs     AuditLog[]
   projects      Project[]
-  simulations   Simulation[]
-  aiTokenQuota  AiTokenQuota?
+  simulations            Simulation[]
+  aiTokenQuota           AiTokenQuota?
+  recruitmentCampaigns   RecruitmentCampaign[]
 
   @@map("tenants")
 }
@@ -125,11 +126,61 @@ model User {
   projects         Project[]          @relation("UserProjects")
   simulations      Simulation[]       @relation("UserSimulations")
   scenariosCreated Scenario[]         @relation("ScenariosCreated")
+  userProfile      UserProfile?
+  competencyBadges CompetencyBadge[]
+  campaignsCreated RecruitmentCampaign[] @relation("RecruiterCampaigns")
+  candidateResults CandidateResult[]     @relation("CandidateResults")
 
   @@index([tenantId])
   @@index([email])
   @@index([googleId])
   @@map("users")
+}
+
+// ─── User Profile (EPIC 2 — Profiling) ────────────────────
+
+enum ProfileType {
+  ZERO_EXPERIENCE
+  BEGINNER
+  RECONVERSION
+  REINFORCEMENT
+}
+
+model UserProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique @map("user_id")
+  tenantId  String   @map("tenant_id")
+
+  // Ingestion data
+  linkedinData      Json?     @map("linkedin_data")
+  cvData            Json?     @map("cv_data")
+  cvFileUrl         String?   @map("cv_file_url")
+  questionnaireData Json?     @map("questionnaire_data")
+  aptitudeTestData  Json?     @map("aptitude_test_data")
+
+  // Diagnosis
+  profileType       ProfileType?  @map("profile_type")
+  diagnosticData    Json?         @map("diagnostic_data")
+  skills            Json?         // Array of { name, currentLevel, targetLevel, gap }
+  suggestedSector   String?       @map("suggested_sector")
+  selectedSector    String?       @map("selected_sector")
+  suggestedDifficulty String?     @map("suggested_difficulty")
+
+  // Custom project
+  customProjectData Json?         @map("custom_project_data")
+
+  // Status
+  onboardingStep    String?       @default("not_started") @map("onboarding_step")
+  completedAt       DateTime?     @map("completed_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([userId])
+  @@map("user_profiles")
 }
 
 // ─── Auth ─────────────────────────────────────────────────
@@ -348,8 +399,9 @@ model Scenario {
   createdById String
   createdBy   User   @relation("ScenariosCreated", fields: [createdById], references: [id])
 
-  phases      ScenarioPhase[]
-  simulations Simulation[]
+  phases               ScenarioPhase[]
+  simulations          Simulation[]
+  recruitmentCampaign  RecruitmentCampaign? @relation("CampaignScenario")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -511,6 +563,9 @@ model Simulation {
   meetings         Meeting[]
   pmoConversation  PmoConversation?
   userDeliverables UserDeliverable[]
+  simulatedEmails  SimulatedEmail[]
+  competencyBadges CompetencyBadge[]
+  candidateResult  CandidateResult?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -519,6 +574,110 @@ model Simulation {
   @@index([userId])
   @@index([status])
   @@map("simulations")
+}
+
+// ─── Simulated Emails (EPIC 5 — Immersion Narrative) ──────
+
+enum EmailPriority {
+  URGENT
+  HIGH
+  NORMAL
+  LOW
+}
+
+enum EmailStatus {
+  UNREAD
+  READ
+  RESPONDED
+  ARCHIVED
+}
+
+model SimulatedEmail {
+  id           String     @id @default(cuid())
+  simulationId String     @map("simulation_id")
+  simulation   Simulation @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+  tenantId     String     @map("tenant_id")
+
+  // Sender info
+  senderName   String     @map("sender_name")
+  senderRole   String     @map("sender_role")   // DRH, Client, Fournisseur, Sponsor, DG, Membre equipe
+  senderEmail  String     @map("sender_email")  // fake email
+
+  // Email content
+  subject      String
+  body         String     @db.Text
+  priority     EmailPriority @default(NORMAL)
+  status       EmailStatus   @default(UNREAD)
+
+  // Context
+  phaseOrder   Int        @map("phase_order")
+  triggerType  String?    @map("trigger_type")   // welcome, phase_start, event_reaction, decision_followup, change_request
+  triggerId    String?    @map("trigger_id")
+
+  // Response
+  userResponse   String?    @db.Text @map("user_response")
+  responseScore  Int?       @map("response_score")  // 0-100
+  responseFeedback String?  @db.Text @map("response_feedback")
+  respondedAt    DateTime?  @map("responded_at")
+
+  // Timing
+  scheduledAt  DateTime   @map("scheduled_at")
+  readAt       DateTime?  @map("read_at")
+
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  @@index([simulationId])
+  @@index([tenantId])
+  @@index([simulationId, status])
+  @@index([simulationId, phaseOrder])
+  @@map("simulated_emails")
+}
+
+// ─── Competency Badges (EPIC 7 — Valorisation) ────────────
+
+model CompetencyBadge {
+  id           String     @id @default(cuid())
+  userId       String     @map("user_id")
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  simulationId String     @map("simulation_id")
+  simulation   Simulation @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+  tenantId     String     @map("tenant_id")
+
+  // Badge info
+  title        String
+  description  String     @db.Text
+  scenarioTitle String    @map("scenario_title")
+  sector       String
+  difficulty   String
+
+  // Scores
+  globalScore  Int        @map("global_score")          // 0-100
+  competencyScores Json   @map("competency_scores")     // { planification, communication, risques, leadership, rigueur, adaptabilite }
+
+  // Debriefing
+  strengths       String[] @default([])
+  improvements    String[] @default([])
+  recommendations String[] @default([])
+  debriefingSummary String? @db.Text @map("debriefing_summary")
+
+  // CV suggestions
+  cvSuggestions   Json?    @map("cv_suggestions")
+
+  // Sharing
+  shareToken      String?  @unique @map("share_token")
+  isPublic        Boolean  @default(false) @map("is_public")
+
+  // Duration
+  durationMinutes Int?     @map("duration_minutes")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([simulationId])
+  @@index([tenantId])
+  @@index([shareToken])
+  @@map("competency_badges")
 }
 
 model SimulationKpiSnapshot {
@@ -914,4 +1073,112 @@ model AiTokenQuota {
   updatedAt          DateTime @updatedAt
 
   @@map("ai_token_quotas")
+}
+
+// ─── Recruitment (EPICs 8-10) ─────────────────────────────
+
+enum CampaignStatus {
+  DRAFT
+  ACTIVE
+  CLOSED
+  ARCHIVED
+}
+
+enum CultureType {
+  STRICT
+  AGILE
+  COLLABORATIVE
+}
+
+enum CandidateStatus {
+  PENDING
+  PROFILING
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
+
+model RecruitmentCampaign {
+  id          String         @id @default(cuid())
+  tenantId    String         @map("tenant_id")
+  tenant      Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  recruiterId String         @map("recruiter_id")
+  recruiter   User           @relation("RecruiterCampaigns", fields: [recruiterId], references: [id], onDelete: Cascade)
+
+  // Campaign info
+  title           String
+  slug            String         @unique
+  status          CampaignStatus @default(DRAFT)
+  jobTitle        String         @map("job_title")
+  jobDescription  String         @map("job_description") @db.Text
+  requiredSkills  Json           @map("required_skills")  // Array of { skill: string, weight: number }
+  experienceLevel String         @map("experience_level") // junior, confirmed, senior
+  projectTypes    String[]       @map("project_types")
+
+  // Culture & customization
+  culture             CultureType @default(COLLABORATIVE)
+  cultureDescription  String?     @map("culture_description") @db.Text
+  internalDocuments   Json?       @map("internal_documents") // Array of { fileName, fileUrl, description }
+
+  // Deployment
+  maxCandidates   Int?       @map("max_candidates")
+  publishedAt     DateTime?  @map("published_at")
+  closedAt        DateTime?  @map("closed_at")
+
+  // Generated scenario
+  generatedScenarioId String?   @unique @map("generated_scenario_id")
+  generatedScenario   Scenario? @relation("CampaignScenario", fields: [generatedScenarioId], references: [id], onDelete: SetNull)
+
+  candidateResults CandidateResult[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt      @map("updated_at")
+
+  @@index([tenantId])
+  @@index([recruiterId])
+  @@index([status])
+  @@index([slug])
+  @@map("recruitment_campaigns")
+}
+
+model CandidateResult {
+  id           String              @id @default(cuid())
+  campaignId   String              @map("campaign_id")
+  campaign     RecruitmentCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  userId       String              @map("user_id")
+  user         User                @relation("CandidateResults", fields: [userId], references: [id], onDelete: Cascade)
+  simulationId String?             @unique @map("simulation_id")
+  simulation   Simulation?         @relation(fields: [simulationId], references: [id], onDelete: SetNull)
+
+  status          CandidateStatus @default(PENDING)
+  currentPhase    Int?            @map("current_phase")
+  abandonedPhase  Int?            @map("abandoned_phase")
+
+  // Scores (filled after simulation completes)
+  globalScore       Int?          @map("global_score")
+  hardSkillsScore   Int?          @map("hard_skills_score")
+  softSkillsScore   Int?          @map("soft_skills_score")
+  reliabilityScore  Int?          @map("reliability_score")
+  adaptabilityScore Int?          @map("adaptability_score")
+  leadershipScore   Int?          @map("leadership_score")
+  competencyScores  Json?         @map("competency_scores")
+
+  // AI Analysis (EPIC 10)
+  report360        Json?          @map("report_360")        // Full 360 report data
+  aiJustification  String?        @map("ai_justification") @db.Text
+  strengths        String[]       @default([])
+  weaknesses       String[]       @default([])
+  matchPercentage  Int?           @map("match_percentage")
+  interviewGuide   Json?          @map("interview_guide")   // Generated interview questions
+
+  startedAt   DateTime? @map("started_at")
+  completedAt DateTime? @map("completed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt      @map("updated_at")
+
+  @@unique([campaignId, userId])
+  @@index([campaignId])
+  @@index([userId])
+  @@index([status])
+  @@map("candidate_results")
 }

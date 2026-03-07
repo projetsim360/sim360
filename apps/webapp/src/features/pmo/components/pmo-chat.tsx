@@ -14,12 +14,14 @@ interface PmoChatProps {
   simulationId: string;
   initialMessages: PmoMessage[];
   isLoadingHistory: boolean;
+  enableGlossaryTooltips?: boolean;
 }
 
 export function PmoChat({
   simulationId,
   initialMessages,
   isLoadingHistory,
+  enableGlossaryTooltips = false,
 }: PmoChatProps) {
   const [messages, setMessages] = useState<PmoMessage[]>([]);
   const [input, setInput] = useState('');
@@ -137,7 +139,11 @@ export function PmoChat({
             </div>
           ) : (
             messages.map((msg) => (
-              <PmoMessageBubble key={msg.id} message={msg} />
+              <PmoMessageBubble
+                key={msg.id}
+                message={msg}
+                enableGlossaryTooltips={enableGlossaryTooltips}
+              />
             ))
           )}
 

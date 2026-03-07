@@ -2,11 +2,12 @@ import { Module } from '@nestjs/common';
 import { CoreModule } from '@sim360/core';
 import { AiModule } from '../ai/ai.module';
 import { AdminReferenceModule } from '../admin-reference/admin-reference.module';
+import { ProfileModule } from '../profile/profile.module';
 import { DeliverablesController } from './controllers';
 import { DeliverablesService, DeliverableEvaluationService } from './services';
 
 @Module({
-  imports: [CoreModule, AiModule, AdminReferenceModule],
+  imports: [CoreModule, AiModule, AdminReferenceModule, ProfileModule],
   controllers: [DeliverablesController],
   providers: [DeliverablesService, DeliverableEvaluationService],
   exports: [DeliverablesService, DeliverableEvaluationService],

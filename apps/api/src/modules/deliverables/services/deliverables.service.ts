@@ -14,6 +14,7 @@ import {
 import { UserDeliverableStatus } from '@prisma/client';
 import { CreateDeliverableDto, UpdateDeliverableContentDto } from '../dto';
 import { DeliverableEvaluationService } from './deliverable-evaluation.service';
+import { ProfileConfigService } from '@/modules/profile/services';
 
 @Injectable()
 export class DeliverablesService {
@@ -23,6 +24,7 @@ export class DeliverablesService {
     private readonly prisma: PrismaService,
     private readonly eventPublisher: EventPublisherService,
     private readonly evaluationService: DeliverableEvaluationService,
+    private readonly profileConfig: ProfileConfigService,
   ) {}
 
   /**
@@ -74,6 +76,12 @@ export class DeliverablesService {
   ) {
     await this.verifySimulationAccess(simulationId, userId, tenantId);
 
+    // Fetch profile adaptation to determine maxRevisions
+    const adaptation = await this.profileConfig.getAdaptationForUser(
+      userId,
+      tenantId,
+    );
+
     const deliverable = await this.prisma.userDeliverable.create({
       data: {
         simulationId,
@@ -82,6 +90,7 @@ export class DeliverablesService {
         type: dto.type,
         phaseOrder: dto.phaseOrder,
         status: UserDeliverableStatus.DRAFT,
+        maxRevisions: adaptation.maxRevisions,
         dueDate: dto.dueDate ? new Date(dto.dueDate) : undefined,
       },
     });

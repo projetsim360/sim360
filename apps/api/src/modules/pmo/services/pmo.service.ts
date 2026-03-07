@@ -99,7 +99,7 @@ export class PmoService {
           });
 
           // 4. Build enriched context and system prompt
-          const context = await this.pmoContext.buildContext(simulationId);
+          const context = await this.pmoContext.buildContext(simulationId, userId, tenantId);
           const systemPrompt = this.pmoContext.buildSystemPrompt(context);
 
           // 5. Load conversation history (last 30 messages for context window)
@@ -292,7 +292,7 @@ export class PmoService {
     tenantId: string,
   ) {
     await this.verifySimulationAccess(simulationId, userId, tenantId);
-    return this.pmoContext.buildContext(simulationId);
+    return this.pmoContext.buildContext(simulationId, userId, tenantId);
   }
 
   /**
@@ -325,7 +325,7 @@ export class PmoService {
       existing ?? (await this.prisma.pmoConversation.create({ data: { simulationId } }));
 
     // Build context for personalized welcome
-    const context = await this.pmoContext.buildContext(simulationId);
+    const context = await this.pmoContext.buildContext(simulationId, userId, tenantId);
     const projectInfo = context.scenario.projectTemplate as Record<
       string,
       unknown
