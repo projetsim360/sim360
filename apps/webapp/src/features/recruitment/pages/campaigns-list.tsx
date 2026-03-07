@@ -113,10 +113,18 @@ export default function CampaignsListPage() {
                           {campaign._count?.candidates ?? 0}
                         </TableCell>
                         <TableCell className="text-center text-sm">
-                          -
+                          {campaign.completedCount ?? 0}
                         </TableCell>
-                        <TableCell className="text-right text-sm text-muted-foreground">
-                          -
+                        <TableCell className="text-right text-sm">
+                          {campaign.averageScore !== undefined && campaign.averageScore !== null
+                            ? (
+                              <span className="font-medium">
+                                {Math.round(campaign.averageScore)}%
+                              </span>
+                            )
+                            : (
+                              <span className="text-muted-foreground">-</span>
+                            )}
                         </TableCell>
                         <TableCell className="text-right">
                           <Button variant="ghost" size="sm" asChild>

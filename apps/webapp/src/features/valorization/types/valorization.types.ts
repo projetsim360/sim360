@@ -11,6 +11,7 @@ export interface CvSuggestions {
   experienceLines: string[];
   skillsToHighlight: string[];
   cvDraft?: string;
+  firstCvDraft?: string;
 }
 
 export interface CompetencyBadge {
@@ -67,6 +68,7 @@ export interface DebriefingData {
   recommendations: string[];
   debriefingSummary: string;
   completedAt: string;
+  closureMeetingCompleted?: boolean;
 }
 
 export interface BadgeVerification {

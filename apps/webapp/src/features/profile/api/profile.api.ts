@@ -19,7 +19,8 @@ export const profileApi = {
 
   uploadCv: (formData: FormData) => api.upload<UserProfile>('/profile/upload-cv', formData),
 
-  importLinkedin: () => api.post<UserProfile>('/profile/import-linkedin'),
+  importLinkedin: (data: { linkedinUrl: string }) =>
+    api.post<UserProfile>('/profile/import-linkedin', data),
 
   submitQuestionnaire: (data: QuestionnaireData) =>
     api.post<UserProfile>('/profile/questionnaire', data),
@@ -67,7 +68,7 @@ export const useUploadCv = () => {
 export const useImportLinkedin = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: profileApi.importLinkedin,
+    mutationFn: (data: { linkedinUrl: string }) => profileApi.importLinkedin(data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.profile }),
   });
 };

@@ -87,6 +87,18 @@ export class SimulationsController {
     return this.simulationsService.respondToEvent(simId, evtId, userId, dto);
   }
 
+  @Post(':id/decisions/:decId/rollback')
+  @Auditable('decision.rollback', 'Decision')
+  @ApiOperation({ summary: 'Annuler une decision (retour en arriere, limite par profil)' })
+  rollbackDecision(
+    @Param('id') simId: string,
+    @Param('decId') decId: string,
+    @CurrentUser('id') userId: string,
+    @CurrentTenant() tenantId: string,
+  ) {
+    return this.simulationsService.rollbackDecision(simId, decId, userId, tenantId);
+  }
+
   @Get(':id/dashboard')
   @ApiOperation({ summary: 'Dashboard detaille d\'une simulation (KPIs, phase, actions en attente)' })
   getSimulationDashboard(@Param('id') id: string, @CurrentUser('id') userId: string) {

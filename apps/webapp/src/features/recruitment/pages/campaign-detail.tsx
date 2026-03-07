@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams, Link } from 'react-router';
+import { useParams, Link, useNavigate } from 'react-router';
 import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/layout-6/components/toolbar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Progress } from '@/components/ui/progress';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,6 +33,7 @@ import {
 import { CampaignStatusBadge } from '../components/campaign-status-badge';
 import { CandidateStatusBadge } from '../components/candidate-status-badge';
 import { CampaignLinkShare } from '../components/campaign-link-share';
+import type { CandidateResult } from '../types/recruitment.types';
 
 function StatCard({ label, value, icon, color }: { label: string; value: string | number; icon: string; color: string }) {
   return (
@@ -49,9 +51,30 @@ function StatCard({ label, value, icon, color }: { label: string; value: string 
   );
 }
 
+const SORT_OPTIONS = [
+  { value: 'globalScore', label: 'Score global' },
+  { value: 'hardSkillsScore', label: 'Hard Skills' },
+  { value: 'softSkillsScore', label: 'Soft Skills' },
+  { value: 'reliabilityScore', label: 'Fiabilite' },
+  { value: 'adaptabilityScore', label: 'Adaptabilite' },
+  { value: 'leadershipScore', label: 'Leadership' },
+] as const;
+
+type SortKey = (typeof SORT_OPTIONS)[number]['value'];
+
+function sortCandidates(candidates: CandidateResult[], sortBy: SortKey): CandidateResult[] {
+  return [...candidates].sort((a, b) => {
+    const valA = a[sortBy] ?? -1;
+    const valB = b[sortBy] ?? -1;
+    return (valB as number) - (valA as number);
+  });
+}
+
 export default function CampaignDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [sortBy, setSortBy] = useState<SortKey>('globalScore');
 
   const { data: campaign, isLoading: loadingCampaign } = useCampaign(id!);
   const { data: dashboard, isLoading: loadingDashboard } = useCampaignDashboard(id!);
@@ -62,6 +85,7 @@ export default function CampaignDetailPage() {
   const archiveMutation = useArchiveCampaign();
 
   const candidates = candidatesData?.data ?? [];
+  const sortedCandidates = sortCandidates(candidates, sortBy);
 
   const handlePublish = async () => {
     try {
@@ -123,12 +147,30 @@ export default function CampaignDetailPage() {
     );
   }
 
+  // US-8.7: max candidates progress
+  const candidateCount = campaign._count?.candidates ?? 0;
+  const maxCandidates = campaign.maxCandidates;
+  const fillPercent = maxCandidates ? Math.min((candidateCount / maxCandidates) * 100, 100) : null;
+  const isAlmostFull = fillPercent !== null && fillPercent >= 80 && fillPercent < 100;
+  const isFull = fillPercent !== null && fillPercent >= 100;
+
   return (
     <>
       <Toolbar>
         <ToolbarHeading title={campaign.title} />
         <ToolbarActions>
           <CampaignStatusBadge status={campaign.status} />
+          {/* US-8.7: capacity badges */}
+          {isFull && (
+            <Badge variant="destructive" appearance="light" size="sm">
+              Campagne complete
+            </Badge>
+          )}
+          {isAlmostFull && (
+            <Badge variant="warning" appearance="light" size="sm">
+              Bientot complet
+            </Badge>
+          )}
           {campaign.status === 'ACTIVE' && (
             <Button variant="outline" size="sm" asChild>
               <Link to={`/recruitment/campaigns/${id}/shortlist`}>
@@ -160,6 +202,31 @@ export default function CampaignDetailPage() {
           </Card>
         )}
 
+        {/* US-8.7: Max candidates progress bar */}
+        {maxCandidates && (
+          <Card className="mb-5">
+            <CardContent className="py-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium flex items-center gap-2">
+                  <KeenIcon icon="people" style="outline" className="size-4 text-primary" />
+                  Candidats
+                </span>
+                <span className="text-sm font-bold">
+                  {candidateCount} / {maxCandidates} candidats
+                </span>
+              </div>
+              <Progress
+                value={fillPercent ?? 0}
+                className={cn(
+                  'h-2.5',
+                  isFull && '[&>div]:bg-destructive',
+                  isAlmostFull && '[&>div]:bg-warning',
+                )}
+              />
+            </CardContent>
+          </Card>
+        )}
+
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList variant="line" className="mb-5">
             <TabsTrigger value="dashboard">
@@ -176,7 +243,7 @@ export default function CampaignDetailPage() {
             </TabsTrigger>
           </TabsList>
 
-          {/* Dashboard tab */}
+          {/* Dashboard tab - US-8.9 */}
           <TabsContent value="dashboard">
             {loadingDashboard ? (
               <div className="flex justify-center py-12">
@@ -184,6 +251,7 @@ export default function CampaignDetailPage() {
               </div>
             ) : dashboard ? (
               <div className="space-y-5">
+                {/* KPI summary cards */}
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
                   <StatCard label="Total candidats" value={dashboard.totalCandidates} icon="people" color="bg-primary/10 text-primary" />
                   <StatCard label="En attente" value={dashboard.pending} icon="time" color="bg-accent text-muted-foreground" />
@@ -198,23 +266,62 @@ export default function CampaignDetailPage() {
                   />
                 </div>
 
+                {/* Completion rate and average score */}
                 {dashboard.totalCandidates > 0 && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-sm">Taux de completion</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-muted-foreground">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-sm">Taux de completion</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex flex-col items-center gap-3">
+                          <div
+                            className={cn(
+                              'w-20 h-20 rounded-full border-4 flex items-center justify-center',
+                              dashboard.completionRate >= 70
+                                ? 'border-success'
+                                : dashboard.completionRate >= 40
+                                  ? 'border-warning'
+                                  : 'border-destructive',
+                            )}
+                          >
+                            <span className="text-xl font-bold">{Math.round(dashboard.completionRate)}%</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
                             {dashboard.completed} sur {dashboard.totalCandidates} candidats
-                          </span>
-                          <span className="font-semibold">{Math.round(dashboard.completionRate)}%</span>
+                          </p>
+                          <Progress value={dashboard.completionRate} className="h-2.5 w-full" />
                         </div>
-                        <Progress value={dashboard.completionRate} className="h-2.5" />
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-sm">Score moyen</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex flex-col items-center gap-3">
+                          <div
+                            className={cn(
+                              'w-20 h-20 rounded-full border-4 flex items-center justify-center',
+                              (dashboard.averageScore ?? 0) >= 70
+                                ? 'border-success'
+                                : (dashboard.averageScore ?? 0) >= 40
+                                  ? 'border-warning'
+                                  : 'border-muted',
+                            )}
+                          >
+                            <span className="text-xl font-bold">
+                              {dashboard.averageScore !== null ? Math.round(dashboard.averageScore) : '-'}
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            {dashboard.averageScore !== null ? 'sur 100' : 'Aucun resultat'}
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
                 )}
               </div>
             ) : (
@@ -226,7 +333,7 @@ export default function CampaignDetailPage() {
             )}
           </TabsContent>
 
-          {/* Candidates tab */}
+          {/* Candidates tab - US-8.10 + US-10.6 */}
           <TabsContent value="candidates">
             {candidates.length === 0 ? (
               <Card>
@@ -241,71 +348,117 @@ export default function CampaignDetailPage() {
                 </CardContent>
               </Card>
             ) : (
-              <Card>
-                <CardContent className="p-0">
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Candidat</TableHead>
-                          <TableHead>Statut</TableHead>
-                          <TableHead className="text-center">Phase</TableHead>
-                          <TableHead className="text-right">Score</TableHead>
-                          <TableHead className="text-right">Match</TableHead>
-                          <TableHead className="text-right">Date</TableHead>
-                          <TableHead className="text-right">Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {candidates.map((candidate) => (
-                          <TableRow key={candidate.id}>
-                            <TableCell>
-                              <div>
-                                <p className="text-sm font-medium">
-                                  {candidate.user
-                                    ? `${candidate.user.firstName} ${candidate.user.lastName}`
-                                    : 'Candidat inconnu'}
-                                </p>
-                                {candidate.user && (
-                                  <p className="text-xs text-muted-foreground">{candidate.user.email}</p>
-                                )}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <CandidateStatusBadge status={candidate.status} />
-                            </TableCell>
-                            <TableCell className="text-center text-sm">
-                              {candidate.currentPhase ?? '-'}
-                            </TableCell>
-                            <TableCell className="text-right text-sm font-medium">
-                              {candidate.globalScore !== undefined && candidate.globalScore !== null
-                                ? `${Math.round(candidate.globalScore)}%`
-                                : '-'}
-                            </TableCell>
-                            <TableCell className="text-right text-sm">
-                              {candidate.matchPercentage !== undefined && candidate.matchPercentage !== null
-                                ? `${Math.round(candidate.matchPercentage)}%`
-                                : '-'}
-                            </TableCell>
-                            <TableCell className="text-right text-xs text-muted-foreground">
-                              {candidate.startedAt
-                                ? new Date(candidate.startedAt).toLocaleDateString('fr-FR')
-                                : '-'}
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <Button variant="ghost" size="sm" asChild>
-                                <Link to={`/recruitment/campaigns/${id}/candidates/${candidate.id}`}>
-                                  <KeenIcon icon="eye" style="outline" className="size-4" />
-                                </Link>
-                              </Button>
-                            </TableCell>
+              <div className="space-y-4">
+                {/* US-10.6: Sort by competence */}
+                <div className="flex items-center justify-end gap-2">
+                  <span className="text-xs text-muted-foreground">Trier par competence :</span>
+                  <Select value={sortBy} onValueChange={(val) => setSortBy(val as SortKey)}>
+                    <SelectTrigger className="w-[180px] h-8 text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {SORT_OPTIONS.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <Card>
+                  <CardContent className="p-0">
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Candidat</TableHead>
+                            <TableHead>Statut</TableHead>
+                            <TableHead className="text-center">Phase</TableHead>
+                            <TableHead className="text-center">Phase d'abandon</TableHead>
+                            <TableHead className="text-right">Score</TableHead>
+                            <TableHead className="text-right">Match</TableHead>
+                            <TableHead className="text-right">Debut</TableHead>
+                            <TableHead className="text-right">Fin</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </CardContent>
-              </Card>
+                        </TableHeader>
+                        <TableBody>
+                          {sortedCandidates.map((candidate) => (
+                            <TableRow
+                              key={candidate.id}
+                              className="cursor-pointer hover:bg-accent/50"
+                              onClick={() =>
+                                navigate(`/recruitment/campaigns/${id}/candidates/${candidate.id}`)
+                              }
+                            >
+                              <TableCell>
+                                <div>
+                                  <p className="text-sm font-medium">
+                                    {candidate.user
+                                      ? `${candidate.user.firstName} ${candidate.user.lastName}`
+                                      : 'Candidat inconnu'}
+                                  </p>
+                                  {candidate.user && (
+                                    <p className="text-xs text-muted-foreground">{candidate.user.email}</p>
+                                  )}
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <CandidateStatusBadge status={candidate.status} />
+                              </TableCell>
+                              <TableCell className="text-center text-sm">
+                                {candidate.currentPhase ?? '-'}
+                              </TableCell>
+                              <TableCell className="text-center text-sm">
+                                {candidate.status === 'ABANDONED' && candidate.abandonedPhase
+                                  ? (
+                                    <Badge variant="destructive" appearance="light" size="sm">
+                                      Phase {candidate.abandonedPhase}
+                                    </Badge>
+                                  )
+                                  : '-'}
+                              </TableCell>
+                              <TableCell className="text-right text-sm font-medium">
+                                {candidate.globalScore !== undefined && candidate.globalScore !== null
+                                  ? `${Math.round(candidate.globalScore)}%`
+                                  : '-'}
+                              </TableCell>
+                              <TableCell className="text-right text-sm">
+                                {candidate.matchPercentage !== undefined && candidate.matchPercentage !== null
+                                  ? `${Math.round(candidate.matchPercentage)}%`
+                                  : '-'}
+                              </TableCell>
+                              <TableCell className="text-right text-xs text-muted-foreground">
+                                {candidate.startedAt
+                                  ? new Date(candidate.startedAt).toLocaleDateString('fr-FR')
+                                  : '-'}
+                              </TableCell>
+                              <TableCell className="text-right text-xs text-muted-foreground">
+                                {candidate.completedAt
+                                  ? new Date(candidate.completedAt).toLocaleDateString('fr-FR')
+                                  : '-'}
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  asChild
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <Link to={`/recruitment/campaigns/${id}/candidates/${candidate.id}`}>
+                                    <KeenIcon icon="eye" style="outline" className="size-4" />
+                                  </Link>
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             )}
           </TabsContent>
 

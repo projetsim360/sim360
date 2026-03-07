@@ -1,8 +1,10 @@
 import { useParams, Link } from 'react-router';
 import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/layout-6/components/toolbar';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { KeenIcon } from '@/components/keenicons';
+import { toast } from 'sonner';
 import { usePortfolio } from '../api/valorization.api';
 import { PortfolioDeliverableCard } from '../components/portfolio-deliverable-card';
 
@@ -49,13 +51,16 @@ export default function PortfolioPage() {
       <Toolbar>
         <ToolbarHeading title="Portfolio" />
         <ToolbarActions>
-          <Button variant="outline" size="sm" disabled>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              toast.info('Preparation de l\'export PDF...');
+              window.print();
+            }}
+          >
             <KeenIcon icon="download" style="solid" className="text-sm" />
             Exporter en PDF
-          </Button>
-          <Button variant="outline" size="sm" disabled>
-            <KeenIcon icon="download" style="solid" className="text-sm" />
-            Exporter en ZIP
           </Button>
         </ToolbarActions>
       </Toolbar>
@@ -111,8 +116,58 @@ export default function PortfolioPage() {
           </div>
         )}
 
+        {/* Lecons apprises (US-7.11) */}
+        {data.deliverables.filter(
+          (d) => d.type === 'closure-report' || d.type === 'lessons-learned',
+        ).length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <KeenIcon icon="notepad" style="solid" className="text-base text-primary" />
+                Lecons apprises
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {data.deliverables
+                .filter(
+                  (d) => d.type === 'closure-report' || d.type === 'lessons-learned',
+                )
+                .map((deliverable) => (
+                  <div
+                    key={deliverable.id}
+                    className="flex items-start gap-3 p-3 bg-muted rounded-lg"
+                  >
+                    <KeenIcon icon="document" style="solid" className="text-sm text-muted-foreground mt-0.5 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-medium text-gray-900">{deliverable.title}</h4>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Badge
+                          variant={deliverable.status === 'COMPLETED' ? 'success' : 'warning'}
+                          appearance="light"
+                          size="sm"
+                        >
+                          {deliverable.status === 'COMPLETED' ? 'Termine' : deliverable.status}
+                        </Badge>
+                        {deliverable.grade && (
+                          <span className="text-xs font-medium text-muted-foreground">
+                            Note : {deliverable.grade}
+                          </span>
+                        )}
+                      </div>
+                      {deliverable.content && (
+                        <p className="text-sm text-gray-700 mt-2 whitespace-pre-wrap line-clamp-4">
+                          {deliverable.content}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+            </CardContent>
+          </Card>
+        )}
+
         {/* Navigation */}
-        <div className="flex justify-center gap-3 pb-5">
+        <div className="flex justify-center gap-3 pb-5 print:hidden">
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}/debriefing`}>
               <KeenIcon icon="chart" style="solid" className="text-sm" />

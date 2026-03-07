@@ -119,23 +119,29 @@ export default function CvSuggestionsPage() {
           </Card>
         )}
 
-        {/* CV draft (for zero-experience profiles) */}
-        {data.cvDraft && (
+        {/* First CV for zero-experience profiles (US-7.9) */}
+        {(data.firstCvDraft || data.cvDraft) && (
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between w-full">
                 <CardTitle className="flex items-center gap-2">
                   <KeenIcon icon="document" style="solid" className="text-base text-primary" />
-                  Ebauche de CV
+                  Votre premier CV
                 </CardTitle>
-                <CopyButton text={data.cvDraft} />
+                <CopyButton text={data.firstCvDraft || data.cvDraft || ''} />
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-3">
               <div className="p-4 bg-muted rounded-lg">
                 <pre className="text-sm text-gray-700 whitespace-pre-wrap font-sans leading-relaxed">
-                  {data.cvDraft}
+                  {data.firstCvDraft || data.cvDraft}
                 </pre>
+              </div>
+              <div className="flex items-start gap-2 p-3 bg-blue-50 rounded-lg border border-blue-100">
+                <KeenIcon icon="information-2" style="solid" className="text-sm text-blue-600 mt-0.5 shrink-0" />
+                <p className="text-xs text-blue-700">
+                  Ce CV est genere a partir de votre simulation. Personnalisez-le avant de l'utiliser.
+                </p>
               </div>
             </CardContent>
           </Card>

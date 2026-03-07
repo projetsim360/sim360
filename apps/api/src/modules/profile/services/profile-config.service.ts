@@ -7,7 +7,7 @@ export interface ProfileAdaptation {
   pmoTone: 'patient' | 'bienveillant' | 'professionnel' | 'exigeant';
   pmoExplanationLevel: 'detailed' | 'constructive' | 'direct' | 'minimal';
   pmoProactiveInterventions: boolean;
-  pmoInterventionFrequency: 'every_step' | 'regular' | 'on_demand' | 'silent';
+  pmoInterventionFrequency: 'every_step' | 'regular' | 'on_demand' | 'minimal';
 
   // Deliverables
   maxRevisions: number;
@@ -63,7 +63,7 @@ const ADAPTATION_MAP: Record<ProfileType, ProfileAdaptation> = {
     pmoTone: 'exigeant',
     pmoExplanationLevel: 'minimal',
     pmoProactiveInterventions: false,
-    pmoInterventionFrequency: 'silent',
+    pmoInterventionFrequency: 'minimal',
     maxRevisions: 1,
     activePmiProcessCount: { min: 20, max: 25 },
     maxRollbacks: 0,
@@ -85,6 +85,67 @@ export class ProfileConfigService {
   getAdaptation(profileType: ProfileType | null): ProfileAdaptation {
     const type = profileType ?? ProfileType.BEGINNER;
     return ADAPTATION_MAP[type];
+  }
+
+  /**
+   * US-6.5: Get active PMI processes based on profile type.
+   * Returns a list of PMI process names that should be visible/active for the learner.
+   */
+  getActivePmiProcesses(profileType: ProfileType | null): string[] {
+    const type = profileType ?? ProfileType.BEGINNER;
+
+    const basicProcesses = [
+      'Charte de projet',
+      'Registre des parties prenantes',
+      'Structure de decoupage du travail (WBS)',
+    ];
+
+    const intermediateProcesses = [
+      ...basicProcesses,
+      'Registre des risques',
+      'Echeancier du projet',
+      'Budget du projet',
+    ];
+
+    const standardProcesses = [
+      ...intermediateProcesses,
+      'Plan de management du projet',
+      'Matrice RACI',
+      'Plan de communication',
+      'Plan qualite',
+      'Registre des changements',
+      'Plan de management des risques',
+      'Cahier de recette',
+      'Rapport d\'avancement',
+      'Bilan de phase',
+    ];
+
+    const advancedProcesses = [
+      ...standardProcesses,
+      'Valeur acquise (EVM)',
+      'Simulation Monte Carlo',
+      'Analyse quantitative des risques',
+      'Tableau de bord strategique',
+      'Analyse des alternatives',
+      'Benchmarking',
+      'Matrice de priorisation',
+      'Diagramme de flux de valeur',
+      'Lean Six Sigma',
+      'Analyse de la capacite organisationnelle',
+    ];
+
+    switch (type) {
+      case ProfileType.ZERO_EXPERIENCE:
+        return basicProcesses;
+      case ProfileType.BEGINNER:
+        return intermediateProcesses;
+      case ProfileType.RECONVERSION:
+        return standardProcesses;
+      case ProfileType.REINFORCEMENT:
+        return advancedProcesses;
+      default:
+        return intermediateProcesses;
+    }
   }
 
   /**

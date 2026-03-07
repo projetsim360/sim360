@@ -1,8 +1,10 @@
+import { useNavigate } from 'react-router';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { KeenIcon } from '@/components/keenicons';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { differenceInDays, parseISO } from 'date-fns';
 import type { PmoContext } from '../types/pmo.types';
 import type { ProfileAdaptation } from '@/features/profile/types/profile.types';
 import { PMO_TONE_LABELS } from '@/features/profile/types/profile.types';
@@ -47,6 +49,21 @@ const TONE_BADGE_VARIANT: Record<ProfileAdaptation['pmoTone'], 'info' | 'success
   exigeant: 'warning',
 };
 
+function getDeadlineInfo(dueDate: string | null): {
+  label: string;
+  color: string;
+  urgent: boolean;
+} {
+  if (!dueDate) return { label: '', color: 'text-muted-foreground', urgent: false };
+  const now = new Date();
+  const due = parseISO(dueDate);
+  const daysLeft = differenceInDays(due, now);
+
+  if (daysLeft < 0) return { label: `En retard (${Math.abs(daysLeft)}j)`, color: 'text-destructive', urgent: true };
+  if (daysLeft <= 3) return { label: `${daysLeft}j restant${daysLeft > 1 ? 's' : ''}`, color: 'text-warning', urgent: true };
+  return { label: `${daysLeft}j restants`, color: 'text-muted-foreground', urgent: false };
+}
+
 export function PmoContextPanel({
   context,
   isLoading,
@@ -54,6 +71,7 @@ export function PmoContextPanel({
   onToggle,
   adaptation,
 }: PmoContextPanelProps) {
+  const navigate = useNavigate();
   if (collapsed) {
     return (
       <div className="flex flex-col items-center py-4">
@@ -144,20 +162,47 @@ export function PmoContextPanel({
                   Livrables en attente ({context.deliverables.pending.length})
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-3 pt-0 space-y-1.5">
-                {context.deliverables.pending.map((d, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-2 text-xs text-muted-foreground"
-                  >
-                    <KeenIcon
-                      icon="document"
-                      style="outline"
-                      className="size-3 shrink-0"
-                    />
-                    <span className="truncate">{d.title}</span>
-                  </div>
-                ))}
+              <CardContent className="p-3 pt-0 space-y-2">
+                {context.deliverables.pending.map((d, i) => {
+                  const deadline = getDeadlineInfo(d.dueDate);
+                  return (
+                    <div
+                      key={i}
+                      className="flex flex-col gap-0.5 p-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors"
+                      onClick={() =>
+                        navigate(
+                          `/simulations/${context.simulation.id}/deliverables`,
+                        )
+                      }
+                    >
+                      <div className="flex items-center gap-2 text-xs text-foreground">
+                        <KeenIcon
+                          icon="document"
+                          style="outline"
+                          className="size-3 shrink-0"
+                        />
+                        <span className="truncate font-medium">{d.title}</span>
+                        {deadline.urgent && (
+                          <KeenIcon
+                            icon="notification-on"
+                            style="solid"
+                            className={cn('size-3 shrink-0 ml-auto', deadline.color)}
+                          />
+                        )}
+                      </div>
+                      {d.dueDate && (
+                        <div className="flex items-center justify-between pl-5">
+                          <span className="text-[10px] text-muted-foreground">
+                            {new Date(d.dueDate).toLocaleDateString('fr-FR')}
+                          </span>
+                          <span className={cn('text-[10px] font-medium', deadline.color)}>
+                            {deadline.label}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </CardContent>
             </Card>
           )}

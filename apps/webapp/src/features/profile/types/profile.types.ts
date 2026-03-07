@@ -50,9 +50,11 @@ export interface SkillGap {
 }
 
 export interface CustomProjectData {
-  name: string;
+  projectName: string;
   description: string;
   sector: string;
+  teamSize: number;
+  duration: number;
   constraints?: string;
 }
 

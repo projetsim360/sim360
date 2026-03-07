@@ -14,6 +14,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import { toast } from 'sonner';
 import {
   useDeliverable,
@@ -183,7 +188,11 @@ export default function DeliverableEvaluationPage() {
               </div>
 
               {/* Actions */}
-              <div className="ml-auto flex items-center gap-2">
+              <div className="ml-auto flex items-center gap-3">
+                <Badge variant="secondary" appearance="light" size="sm">
+                  Revision {deliverable.revisionNumber} sur {deliverable.maxRevisions}
+                </Badge>
+
                 <Button
                   variant="outline"
                   size="sm"
@@ -238,6 +247,104 @@ export default function DeliverableEvaluationPage() {
           </CardContent>
         </Card>
 
+        {/* Previous evaluations (collapsible) */}
+        {deliverable.evaluations &&
+          deliverable.evaluations.length > 1 && (
+            <Collapsible>
+              <Card>
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <KeenIcon icon="time" style="solid" className="size-4 text-muted-foreground" />
+                      Evaluations precedentes ({deliverable.evaluations.length - 1})
+                    </CardTitle>
+                    <CollapsibleTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-7 text-xs">
+                        <KeenIcon icon="arrow-down" style="outline" className="size-3 mr-1" />
+                        Afficher / Masquer
+                      </Button>
+                    </CollapsibleTrigger>
+                  </div>
+                </CardHeader>
+                <CollapsibleContent>
+                  <CardContent className="space-y-4">
+                    {deliverable.evaluations
+                      .filter((ev) => ev.id !== evaluation.id)
+                      .sort((a, b) => b.revisionNumber - a.revisionNumber)
+                      .map((prevEval) => (
+                        <div
+                          key={prevEval.id}
+                          className="rounded-lg border border-border p-4 space-y-2"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span
+                                className={cn(
+                                  'inline-flex items-center justify-center w-7 h-7 rounded text-sm font-bold',
+                                  gradeColor(prevEval.grade),
+                                )}
+                              >
+                                {prevEval.grade}
+                              </span>
+                              <span className="text-sm font-medium">
+                                Revision {prevEval.revisionNumber}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className={cn('text-sm font-semibold', scoreColor(prevEval.score))}>
+                                {prevEval.score}/100
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {new Date(prevEval.createdAt).toLocaleDateString('fr-FR')}
+                              </span>
+                            </div>
+                          </div>
+                          {prevEval.recommendations.length > 0 && (
+                            <div>
+                              <p className="text-xs font-semibold text-muted-foreground mb-1">
+                                Recommandations :
+                              </p>
+                              <ul className="space-y-0.5">
+                                {prevEval.recommendations.map((rec, ri) => (
+                                  <li key={ri} className="text-xs text-muted-foreground flex items-start gap-1.5">
+                                    <KeenIcon
+                                      icon="abstract-26"
+                                      style="outline"
+                                      className="size-3 shrink-0 mt-0.5 text-primary"
+                                    />
+                                    {rec}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                          {prevEval.improvements.length > 0 && (
+                            <div>
+                              <p className="text-xs font-semibold text-muted-foreground mb-1">
+                                Points a ameliorer :
+                              </p>
+                              <ul className="space-y-0.5">
+                                {prevEval.improvements.map((imp, ii) => (
+                                  <li key={ii} className="text-xs text-muted-foreground flex items-start gap-1.5">
+                                    <KeenIcon
+                                      icon="information-2"
+                                      style="outline"
+                                      className="size-3 shrink-0 mt-0.5 text-warning"
+                                    />
+                                    {imp}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                  </CardContent>
+                </CollapsibleContent>
+              </Card>
+            </Collapsible>
+          )}
+
         {/* Reference comparison */}
         {showReference && (
           <>
@@ -249,6 +356,7 @@ export default function DeliverableEvaluationPage() {
               <ReferenceComparison
                 userContent={deliverable.content || ''}
                 referenceContent={referenceData.referenceExample}
+                deliverableType={deliverable.type}
               />
             ) : (
               <Card>
@@ -307,19 +415,35 @@ export default function DeliverableEvaluationPage() {
           />
         )}
 
-        {/* PMI Coverage */}
+        {/* PMI Alignment */}
         {(evaluation.pmiOutputsCovered.length > 0 ||
           evaluation.pmiOutputsMissing.length > 0) && (
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <KeenIcon
-                  icon="book"
-                  style="solid"
-                  className="size-4 text-primary"
-                />
-                Couverture des outputs PMI
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <KeenIcon
+                    icon="book"
+                    style="solid"
+                    className="size-4 text-primary"
+                  />
+                  Alignement PMI
+                </CardTitle>
+                <Badge
+                  variant={
+                    evaluation.pmiOutputsMissing.length === 0
+                      ? 'success'
+                      : evaluation.pmiOutputsCovered.length > evaluation.pmiOutputsMissing.length
+                        ? 'warning'
+                        : 'destructive'
+                  }
+                  appearance="light"
+                  size="sm"
+                >
+                  {evaluation.pmiOutputsCovered.length}/
+                  {evaluation.pmiOutputsCovered.length + evaluation.pmiOutputsMissing.length} outputs couverts
+                </Badge>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -327,22 +451,22 @@ export default function DeliverableEvaluationPage() {
                 <div>
                   <h4 className="text-xs font-semibold text-success mb-2 flex items-center gap-1.5">
                     <KeenIcon
-                      icon="check"
+                      icon="check-circle"
                       style="solid"
-                      className="size-3"
+                      className="size-3.5"
                     />
                     Outputs couverts ({evaluation.pmiOutputsCovered.length})
                   </h4>
-                  <ul className="space-y-1">
+                  <ul className="space-y-1.5">
                     {evaluation.pmiOutputsCovered.map((output, i) => (
                       <li
                         key={i}
-                        className="text-sm text-muted-foreground flex items-start gap-2"
+                        className="text-sm text-foreground flex items-start gap-2"
                       >
                         <KeenIcon
-                          icon="check"
+                          icon="check-circle"
                           style="outline"
-                          className="size-3 shrink-0 mt-0.5 text-success"
+                          className="size-4 shrink-0 mt-0.5 text-success"
                         />
                         {output}
                       </li>
@@ -354,9 +478,9 @@ export default function DeliverableEvaluationPage() {
                 <div>
                   <h4 className="text-xs font-semibold text-destructive mb-2 flex items-center gap-1.5">
                     <KeenIcon
-                      icon="cross"
+                      icon="cross-circle"
                       style="solid"
-                      className="size-3"
+                      className="size-3.5"
                     />
                     Outputs manquants ({evaluation.pmiOutputsMissing.length})
                   </h4>
@@ -365,16 +489,16 @@ export default function DeliverableEvaluationPage() {
                       Tous les outputs sont couverts.
                     </p>
                   ) : (
-                    <ul className="space-y-1">
+                    <ul className="space-y-1.5">
                       {evaluation.pmiOutputsMissing.map((output, i) => (
                         <li
                           key={i}
-                          className="text-sm text-muted-foreground flex items-start gap-2"
+                          className="text-sm text-foreground flex items-start gap-2"
                         >
                           <KeenIcon
-                            icon="cross"
+                            icon="cross-circle"
                             style="outline"
-                            className="size-3 shrink-0 mt-0.5 text-destructive"
+                            className="size-4 shrink-0 mt-0.5 text-destructive"
                           />
                           {output}
                         </li>

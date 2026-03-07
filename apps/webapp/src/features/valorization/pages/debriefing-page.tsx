@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router';
 import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/layout-6/components/toolbar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { KeenIcon } from '@/components/keenicons';
 import { useDebriefing } from '../api/valorization.api';
@@ -132,6 +133,41 @@ export default function DebriefingPage() {
             iconColor="text-blue-600"
           />
         </div>
+
+        {/* Presentation finale (US-7.10) */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <KeenIcon icon="people" style="solid" className="text-base text-primary" />
+              Presentation finale
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-start gap-3">
+              <div className="flex-1">
+                <p className="text-sm text-gray-700">
+                  L'apprenant a presente son projet devant un comite d'evaluation
+                  lors de la phase de cloture de la simulation.
+                </p>
+                {data.closureMeetingCompleted ? (
+                  <div className="mt-3">
+                    <Badge variant="success" appearance="light" size="sm">
+                      <KeenIcon icon="check-circle" style="solid" className="text-xs mr-1" />
+                      Presentation effectuee
+                    </Badge>
+                  </div>
+                ) : (
+                  <div className="mt-3">
+                    <Badge variant="warning" appearance="light" size="sm">
+                      <KeenIcon icon="time" style="solid" className="text-xs mr-1" />
+                      Presentation non effectuee
+                    </Badge>
+                  </div>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Debriefing summary */}
         {data.debriefingSummary && (

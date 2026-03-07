@@ -1,10 +1,29 @@
-import { useParams, useNavigate } from 'react-router';
+import { useParams, useNavigate, Link } from 'react-router';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { KeenIcon } from '@/components/keenicons';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 import { useCampaignPublicInfo, useJoinCampaign } from '../api/recruitment.api';
+
+const INFO_CARDS = [
+  {
+    icon: 'chart-simple',
+    title: 'Decisions strategiques',
+    description: 'Prenez des decisions critiques qui impactent le projet : budget, planning, ressources et risques.',
+  },
+  {
+    icon: 'people',
+    title: 'Reunions virtuelles',
+    description: 'Participez a des reunions avec des parties prenantes simulees par IA et defendez vos choix.',
+  },
+  {
+    icon: 'document',
+    title: 'Livrables professionnels',
+    description: 'Produisez des livrables concrets : plans, rapports, analyses de risques et tableaux de bord.',
+  },
+];
 
 export default function JoinCampaignPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -69,7 +88,7 @@ export default function JoinCampaignPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="max-w-lg w-full space-y-6">
+      <div className="max-w-2xl w-full space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
           <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
@@ -79,10 +98,12 @@ export default function JoinCampaignPage() {
             {info.companyName}
           </Badge>
           <h1 className="text-2xl font-bold text-gray-900 mt-2">{info.title}</h1>
-          <p className="text-sm text-muted-foreground">Evaluation par simulation</p>
+          <p className="text-base text-muted-foreground">
+            Evaluation par simulation de gestion de projet
+          </p>
         </div>
 
-        {/* Details card */}
+        {/* Job info card */}
         <Card>
           <CardContent className="py-6 space-y-5">
             <div>
@@ -103,10 +124,46 @@ export default function JoinCampaignPage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-2 text-sm">
-              <KeenIcon icon="time" style="outline" className="size-4 text-primary" />
-              <span className="text-muted-foreground">Duree estimee :</span>
-              <span className="font-medium">{info.estimatedDuration}</span>
+            {/* Process description */}
+            <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Vous allez piloter un projet fictif pendant environ 1 heure.
+                Vous serez confronte a des situations realistes : decisions strategiques,
+                reunions d'equipe, evenements imprevus et livrables a produire.
+                Vos actions seront evaluees par une IA pour produire un rapport 360.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 3 info cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {INFO_CARDS.map((card) => (
+            <Card key={card.icon}>
+              <CardContent className="py-5 flex flex-col items-center text-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <KeenIcon icon={card.icon} style="outline" className="size-5 text-primary" />
+                </div>
+                <h4 className="text-sm font-semibold">{card.title}</h4>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {card.description}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* How it works + duration */}
+        <Card>
+          <CardContent className="py-6 space-y-5">
+            <div className="flex items-center gap-3 pb-3 border-b border-border">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                <KeenIcon icon="time" style="outline" className="size-4 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm font-medium">Duree estimee</p>
+                <p className="text-xs text-muted-foreground">~1 heure</p>
+              </div>
             </div>
 
             <div className="rounded-lg border border-border bg-accent/30 p-4">
@@ -131,6 +188,10 @@ export default function JoinCampaignPage() {
               </ol>
             </div>
 
+            <p className="text-xs text-muted-foreground text-center">
+              Vous serez guide etape par etape tout au long de la simulation.
+            </p>
+
             <Button
               variant="primary"
               size="lg"
@@ -153,10 +214,18 @@ export default function JoinCampaignPage() {
           </CardContent>
         </Card>
 
-        {/* Footer */}
-        <p className="text-xs text-center text-muted-foreground">
-          Propulse par ProjectSim360 - Evaluation par simulation de gestion de projet
-        </p>
+        {/* Footer with recruiter note (US-8.1) */}
+        <div className="text-center space-y-2">
+          <p className="text-xs text-muted-foreground">
+            Propulse par ProjectSim360 - Evaluation par simulation de gestion de projet
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Vous etes recruteur ?{' '}
+            <Link to="/contact" className="text-primary hover:underline font-medium">
+              Contactez-nous pour creer votre espace entreprise.
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

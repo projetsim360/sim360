@@ -15,6 +15,9 @@ export interface RecruitmentCampaign {
   closedAt?: string;
   generatedScenarioId?: string;
   _count?: { candidates: number };
+  completedCount?: number;
+  averageScore?: number | null;
+  documents?: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -102,6 +105,12 @@ export interface ComparisonResult {
   recommendation: string;
 }
 
+export interface GapAnalysisItem {
+  skill: string;
+  requiredLevel: number;
+  demonstratedLevel: number;
+}
+
 export interface CreateCampaignDto {
   title: string;
   jobTitle: string;
@@ -112,6 +121,7 @@ export interface CreateCampaignDto {
   culture: CultureType;
   cultureDescription?: string;
   maxCandidates?: number;
+  documents?: string[];
 }
 
 export interface UpdateCampaignDto extends Partial<CreateCampaignDto> {}

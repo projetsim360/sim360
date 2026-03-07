@@ -99,26 +99,36 @@ export default function ShortlistPage() {
 
       <div className="container-fixed space-y-5">
         {/* Stats header */}
-        <Card>
-          <CardContent className="flex items-center justify-between py-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                <KeenIcon icon="star" style="outline" className="size-5 text-primary" />
+        <Card className="border-primary/20 bg-primary/5">
+          <CardContent className="py-5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <KeenIcon icon="star" style="outline" className="size-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold">
+                    Sur {shortlist.totalCandidates} candidats, voici les {shortlist.candidates.length} que nous recommandons
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Selectionnez 2 candidats pour les comparer
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-medium">
-                  {shortlist.candidates.length} meilleur(s) candidat(s)
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  sur {shortlist.totalCandidates} candidats evalues
-                </p>
+              <div className="flex items-center gap-2">
+                {shortlist.criteria && (
+                  <Badge variant="secondary" appearance="light" size="sm">
+                    {shortlist.criteria}
+                  </Badge>
+                )}
+                {selectedForCompare.length === 2 && (
+                  <Button variant="primary" size="sm" onClick={handleCompare}>
+                    <KeenIcon icon="arrow-two-diagonals" style="outline" className="size-4" />
+                    Comparer
+                  </Button>
+                )}
               </div>
             </div>
-            {shortlist.criteria && (
-              <Badge variant="secondary" appearance="light" size="sm">
-                {shortlist.criteria}
-              </Badge>
-            )}
           </CardContent>
         </Card>
 

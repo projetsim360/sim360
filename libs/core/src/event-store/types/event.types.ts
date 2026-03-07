@@ -37,6 +37,7 @@ export enum EventType {
   // Decision
   DECISION_PRESENTED = 'decision.presented',
   DECISION_MADE = 'decision.made',
+  DECISION_ROLLBACK = 'decision.rollback',
 
   // Random Event
   RANDOM_EVENT_TRIGGERED = 'event.triggered',
@@ -324,6 +325,14 @@ export const EVENT_NOTIFICATION_CONFIG: Partial<Record<EventType, EventNotificat
     bodyTemplate: 'Votre decision a ete enregistree.',
     defaultChannels: ['socket'],
     defaultPriority: 1,
+  },
+  [EventType.DECISION_ROLLBACK]: {
+    notificationType: 'decision',
+    category: 'simulation',
+    titleTemplate: 'Decision annulee',
+    bodyTemplate: 'Votre decision "{{data.title}}" a ete annulee. Retour en arriere {{data.rollbackNumber}}/{{data.maxRollbacks}}.',
+    defaultChannels: ['socket'],
+    defaultPriority: 2,
   },
   [EventType.RANDOM_EVENT_TRIGGERED]: {
     notificationType: 'event',

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -73,6 +73,45 @@ export default function CreateCampaignPage() {
   const [step, setStep] = useState(0);
   const [skills, setSkills] = useState<SkillWeight[]>([]);
   const [selectedProjectTypes, setSelectedProjectTypes] = useState<string[]>([]);
+  const [documents, setDocuments] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const MAX_FILES = 5;
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+  const ACCEPTED_TYPES = [
+    'application/pdf',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  ];
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    const validFiles: File[] = [];
+
+    for (const file of files) {
+      if (documents.length + validFiles.length >= MAX_FILES) {
+        toast.error(`Maximum ${MAX_FILES} fichiers autorises`);
+        break;
+      }
+      if (!ACCEPTED_TYPES.includes(file.type)) {
+        toast.error(`Format non supporte : ${file.name}. Utilisez PDF ou DOCX.`);
+        continue;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error(`Fichier trop volumineux : ${file.name}. Maximum 10 Mo.`);
+        continue;
+      }
+      validFiles.push(file);
+    }
+
+    if (validFiles.length > 0) {
+      setDocuments((prev) => [...prev, ...validFiles]);
+    }
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleRemoveFile = (index: number) => {
+    setDocuments((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const createMutation = useCreateCampaign();
 
@@ -111,6 +150,7 @@ export default function CreateCampaignPage() {
       const result = await createMutation.mutateAsync({
         ...data,
         requiredSkills: skills,
+        documents: documents.map((f) => f.name),
       });
       toast.success('Campagne creee avec succes');
       navigate(`/recruitment/campaigns/${result.id}`);
@@ -338,6 +378,74 @@ export default function CreateCampaignPage() {
                       </FormItem>
                     )}
                   />
+
+                  {/* Document upload zone (US-8.4) */}
+                  <div className="space-y-3">
+                    <FormLabel>Documents internes (optionnel)</FormLabel>
+                    <p className="text-xs text-muted-foreground">
+                      Ajoutez des documents de reference pour enrichir le scenario (PDF, DOCX). Maximum {MAX_FILES} fichiers, 10 Mo chacun.
+                    </p>
+
+                    <div
+                      className={cn(
+                        'border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer hover:border-primary/40 hover:bg-accent/30',
+                        documents.length >= MAX_FILES ? 'opacity-50 pointer-events-none' : 'border-border',
+                      )}
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        className="hidden"
+                        accept=".pdf,.docx"
+                        multiple
+                        onChange={handleFileSelect}
+                      />
+                      <KeenIcon icon="folder-up" style="outline" className="size-8 text-muted-foreground mx-auto mb-2" />
+                      <p className="text-sm text-muted-foreground">
+                        Cliquez ou deposez vos fichiers ici
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        PDF ou DOCX - {documents.length}/{MAX_FILES} fichiers
+                      </p>
+                    </div>
+
+                    {documents.length > 0 && (
+                      <div className="space-y-2">
+                        {documents.map((file, index) => (
+                          <div key={index} className="flex items-center gap-3 rounded-lg border border-border p-3">
+                            <KeenIcon
+                              icon={file.name.endsWith('.pdf') ? 'document' : 'file'}
+                              style="outline"
+                              className="size-4 text-primary shrink-0"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate">{file.name}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {(file.size / 1024 / 1024).toFixed(2)} Mo
+                              </p>
+                            </div>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleRemoveFile(index)}
+                              className="text-destructive hover:text-destructive shrink-0"
+                            >
+                              <KeenIcon icon="trash" style="outline" className="size-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="flex items-start gap-2 rounded-lg bg-warning/10 border border-warning/20 p-3">
+                      <KeenIcon icon="information-2" style="outline" className="size-4 text-warning mt-0.5 shrink-0" />
+                      <p className="text-xs text-warning">
+                        Assurez-vous d'anonymiser les donnees sensibles avant de telecharger vos documents.
+                      </p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             )}
@@ -448,6 +556,19 @@ export default function CreateCampaignPage() {
                       {form.getValues('jobDescription')}
                     </p>
                   </div>
+                  {documents.length > 0 && (
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Documents ({documents.length})</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {documents.map((f, i) => (
+                          <Badge key={i} variant="secondary" appearance="light" size="sm">
+                            <KeenIcon icon="document" style="outline" className="size-3 mr-1" />
+                            {f.name}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             )}

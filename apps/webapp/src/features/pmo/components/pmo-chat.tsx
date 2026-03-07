@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { KeenIcon } from '@/components/keenicons';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from 'sonner';
@@ -10,11 +12,19 @@ import { usePmoStream } from '../hooks/use-pmo-stream';
 import { pmoApi, PMO_QUERY_KEYS } from '../api/pmo.api';
 import type { PmoMessage } from '../types/pmo.types';
 
+interface PmoChatScenarioInfo {
+  companyName: string;
+  sector: string;
+  objectives: string[];
+}
+
 interface PmoChatProps {
   simulationId: string;
   initialMessages: PmoMessage[];
   isLoadingHistory: boolean;
   enableGlossaryTooltips?: boolean;
+  pendingDeliverableCount?: number;
+  scenarioInfo?: PmoChatScenarioInfo;
 }
 
 export function PmoChat({
@@ -22,6 +32,8 @@ export function PmoChat({
   initialMessages,
   isLoadingHistory,
   enableGlossaryTooltips = false,
+  pendingDeliverableCount = 0,
+  scenarioInfo,
 }: PmoChatProps) {
   const [messages, setMessages] = useState<PmoMessage[]>([]);
   const [input, setInput] = useState('');
@@ -138,13 +150,59 @@ export function PmoChat({
               </p>
             </div>
           ) : (
-            messages.map((msg) => (
-              <PmoMessageBubble
-                key={msg.id}
-                message={msg}
-                enableGlossaryTooltips={enableGlossaryTooltips}
-              />
-            ))
+            <>
+              {/* Welcome card for the first system/assistant message */}
+              {messages.length > 0 &&
+                messages[0].role !== 'user' &&
+                scenarioInfo && (
+                  <Card className="border-primary/30 bg-primary/5 mb-2">
+                    <CardContent className="p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <KeenIcon icon="people" style="solid" className="size-5 text-primary" />
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="text-sm font-semibold text-foreground">
+                            Bienvenue dans votre simulation
+                          </h3>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {scenarioInfo.companyName} — {scenarioInfo.sector}
+                          </p>
+                          {scenarioInfo.objectives.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5 mt-2">
+                              {scenarioInfo.objectives.map((obj, i) => (
+                                <Badge key={i} variant="primary" appearance="light" size="xs">
+                                  {obj}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+              {/* Pending deliverables reminder */}
+              {pendingDeliverableCount > 0 && messages.length > 0 && (
+                <div className="flex justify-center py-2">
+                  <div className="flex items-center gap-2 rounded-lg bg-warning/10 border border-warning/20 px-3 py-2">
+                    <KeenIcon icon="notification-on" style="solid" className="size-4 text-warning" />
+                    <p className="text-xs text-foreground font-medium">
+                      Vous avez {pendingDeliverableCount} livrable{pendingDeliverableCount > 1 ? 's' : ''} en attente
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {messages.map((msg) => (
+                <PmoMessageBubble
+                  key={msg.id}
+                  message={msg}
+                  enableGlossaryTooltips={enableGlossaryTooltips}
+                />
+              ))}
+            </>
           )}
 
           {/* Streaming bubble */}

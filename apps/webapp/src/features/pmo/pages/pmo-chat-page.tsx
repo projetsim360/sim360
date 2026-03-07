@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link, useParams } from 'react-router';
 import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/layout-6/components/toolbar';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { KeenIcon } from '@/components/keenicons';
 import { PmoChat } from '../components/pmo-chat';
 import { PmoContextPanel } from '../components/pmo-context-panel';
@@ -24,6 +25,11 @@ export default function PmoChatPage() {
 
   const { data: adaptation } = useProfileAdaptation();
 
+  const pendingCount = useMemo(
+    () => context?.deliverables.pending.length ?? 0,
+    [context],
+  );
+
   if (!id) {
     return (
       <div className="container-fixed">
@@ -42,6 +48,12 @@ export default function PmoChatPage() {
       <Toolbar>
         <ToolbarHeading title="Agent PMO" />
         <ToolbarActions>
+          {pendingCount > 0 && (
+            <Badge variant="warning" appearance="light" size="sm">
+              <KeenIcon icon="notification-on" style="outline" className="size-3.5 mr-1" />
+              {pendingCount} rappel{pendingCount > 1 ? 's' : ''}
+            </Badge>
+          )}
           <Button
             variant="ghost"
             size="sm"
@@ -68,6 +80,12 @@ export default function PmoChatPage() {
               initialMessages={historyData?.data || []}
               isLoadingHistory={isLoadingHistory}
               enableGlossaryTooltips={adaptation?.showGlossaryTooltips ?? false}
+              pendingDeliverableCount={pendingCount}
+              scenarioInfo={context ? {
+                companyName: context.scenario.title,
+                sector: context.scenario.sector,
+                objectives: context.scenario.objectives,
+              } : undefined}
             />
           </div>
 

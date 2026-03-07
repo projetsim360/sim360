@@ -69,6 +69,7 @@ export interface PmoContext {
     phase: string | null;
   }>;
   profileAdaptation: ProfileAdaptation;
+  activePmiProcesses: string[];
 }
 
 @Injectable()
@@ -148,6 +149,15 @@ export class PmoContextService {
       effectiveTenantId,
     );
 
+    // US-6.5: Get active PMI processes for this user's profile
+    const userProfile = await this.prisma.userProfile.findFirst({
+      where: { userId: effectiveUserId, tenantId: effectiveTenantId },
+      select: { profileType: true },
+    });
+    const activePmiProcesses = this.profileConfig.getActivePmiProcesses(
+      userProfile?.profileType ?? null,
+    );
+
     const submitted = simulation.userDeliverables
       .filter((d) => d.status !== 'DRAFT')
       .map((d) => ({
@@ -224,6 +234,7 @@ export class PmoContextService {
         phase: d.phase,
       })),
       profileAdaptation,
+      activePmiProcesses,
     };
   }
 
@@ -341,6 +352,14 @@ ${
 ## Adaptation au profil de l'apprenant
 ${this.buildAdaptationDirectives(context.profileAdaptation)}
 
+## Processus PMI actifs pour cet apprenant
+${
+  context.activePmiProcesses.length > 0
+    ? context.activePmiProcesses.map((p) => `- ${p}`).join('\n')
+    : '- Tous les processus PMI standards'
+}
+Ne mentionne que les processus listes ci-dessus. N'introduis pas de processus avances si l'apprenant n'y a pas acces.
+
 ## Instructions speciales
 - Si l'apprenant demande un template, reponds avec le contenu du template en markdown en indiquant clairement qu'il s'agit d'un modele a adapter.
 - Si un KPI est critique (budget < 50%, qualite < 50%, moral < 40%, risque > 80%), alerte proactivement l'apprenant.
@@ -350,17 +369,19 @@ ${this.buildAdaptationDirectives(context.profileAdaptation)}
 
   /**
    * Build adaptation directives for the system prompt based on profile.
+   * Implements US-6.1, US-6.5, US-6.6, US-6.8.
    */
   private buildAdaptationDirectives(adaptation: ProfileAdaptation): string {
+    // US-6.6: Explicit tone mapping per profile
     const toneMap: Record<ProfileAdaptation['pmoTone'], string> = {
       patient:
-        'Adopte un ton tres patient et rassurant. Prends le temps d\'expliquer chaque concept. Ne presuppose aucune connaissance prealable.',
+        'Tu es patient et pedagogue. Tu reformules si l\'apprenant ne comprend pas. Prends le temps d\'expliquer chaque concept. Ne presuppose aucune connaissance prealable.',
       bienveillant:
-        'Adopte un ton bienveillant et encourageant. Felicite les progres tout en guidant vers l\'amelioration.',
+        'Tu es encourageant. Tu soulignes les progres avant les erreurs. Felicite les avancees tout en guidant vers l\'amelioration avec bienveillance.',
       professionnel:
-        'Adopte un ton professionnel et direct. Va droit au but, l\'apprenant a de l\'experience dans d\'autres domaines.',
+        'Tu es factuel et structure. Tu donnes des conseils precis. Va droit au but, l\'apprenant a de l\'experience dans d\'autres domaines.',
       exigeant:
-        'Adopte un ton exigeant et concis. L\'apprenant est experimente : sois rigoureux, evalue strictement, note severement.',
+        'Tu es exigeant. Tu attends de la rigueur et tu le dis clairement. L\'apprenant est experimente : sois rigoureux, evalue strictement, note severement.',
     };
 
     const explanationMap: Record<
@@ -368,7 +389,7 @@ ${this.buildAdaptationDirectives(context.profileAdaptation)}
       string
     > = {
       detailed:
-        'Fournis des explications detaillees avec des exemples concrets pour chaque concept PMI. Utilise des analogies simples.',
+        'Fournis des explications detaillees avec des exemples concrets pour chaque concept PMI. Utilise des analogies simples du quotidien.',
       constructive:
         'Fournis des explications constructives avec le contexte necessaire. Donne des pistes de reflexion plutot que des reponses directes.',
       direct:
@@ -377,24 +398,25 @@ ${this.buildAdaptationDirectives(context.profileAdaptation)}
         'Sois minimaliste dans tes explications. Reponds uniquement a ce qui est demande, sans developper inutilement.',
     };
 
+    // US-6.8: Explicit intervention frequency mapping per profile
     const interventionMap: Record<
       ProfileAdaptation['pmoInterventionFrequency'],
       string
     > = {
       every_step:
-        'Interviens proactivement a chaque etape. Propose de l\'aide, verifie la comprehension, rappelle les prochaines actions a chaque message.',
+        'Interviens proactivement APRES CHAQUE ACTION de l\'apprenant. Propose de l\'aide, verifie la comprehension, rappelle les prochaines actions a chaque message. Ne laisse jamais l\'apprenant sans guidage.',
       regular:
-        'Interviens regulierement pour guider l\'apprenant. Rappelle les livrables en attente et les bonnes pratiques de facon periodique.',
+        'Interviens regulierement aux moments cles pour guider l\'apprenant. Rappelle les livrables en attente et les bonnes pratiques de facon periodique.',
       on_demand:
-        'N\'interviens que lorsque l\'apprenant te sollicite ou en cas de KPI critique. Laisse-le avancer de maniere autonome.',
-      silent:
-        'N\'interviens que lorsque l\'apprenant te pose une question directe. Ne fais pas de rappels proactifs sauf en cas de situation critique.',
+        'N\'interviens que lorsque l\'apprenant te sollicite ou en cas de KPI critique. Laisse-le avancer de maniere autonome. Tu es disponible mais tu ne pousses pas.',
+      minimal:
+        'N\'interviens que pour les alertes critiques (KPI a zero, deadline depassee). Ne fais pas de rappels proactifs. L\'apprenant gere seul.',
     };
 
     const directives: string[] = [
       `- **Ton** : ${toneMap[adaptation.pmoTone]}`,
       `- **Niveau d'explication** : ${explanationMap[adaptation.pmoExplanationLevel]}`,
-      `- **Interventions proactives** : ${adaptation.pmoProactiveInterventions ? 'Oui' : 'Non'} — ${interventionMap[adaptation.pmoInterventionFrequency]}`,
+      `- **Frequence d'intervention** : ${adaptation.pmoProactiveInterventions ? 'Proactif' : 'Reactif'} — ${interventionMap[adaptation.pmoInterventionFrequency]}`,
       `- **Revisions de livrables** : L'apprenant dispose de ${adaptation.maxRevisions} revision(s) maximum par livrable.`,
       `- **Processus PMI actifs** : Entre ${adaptation.activePmiProcessCount.min} et ${adaptation.activePmiProcessCount.max} processus sont actives pour cet apprenant.`,
       `- **Retours en arriere (rollbacks)** : L'apprenant peut revenir sur ${adaptation.maxRollbacks} decision(s) maximum.`,
@@ -406,15 +428,28 @@ ${this.buildAdaptationDirectives(context.profileAdaptation)}
       );
     }
 
+    // US-6.1: Profile-specific directives for "why" explanations
     if (adaptation.pmoTone === 'patient') {
       directives.push(
-        '- **Directive speciale (debutant absolu)** : Avant de demander chaque livrable, explique d\'abord POURQUOI ce livrable est necessaire dans le contexte du projet et du processus PMI. Utilise des exemples concrets du monde reel.',
+        `- **Directive speciale (debutant complet)** : L'apprenant est debutant complet. Tu DOIS expliquer POURQUOI chaque action est importante en gestion de projet. Utilise des analogies simples. Chaque conseil doit commencer par "En gestion de projet, on fait cela parce que...". Avant de demander chaque livrable, explique d'abord POURQUOI ce livrable est necessaire dans le contexte du projet et du processus PMI. Utilise des exemples concrets du monde reel.`,
+      );
+    }
+
+    if (adaptation.pmoTone === 'bienveillant') {
+      directives.push(
+        '- **Directive speciale (debutant)** : L\'apprenant a des bases. Rappelle les concepts PMI quand pertinent mais sans etre condescendant. Encourage les bonnes intuitions.',
+      );
+    }
+
+    if (adaptation.pmoTone === 'professionnel') {
+      directives.push(
+        '- **Directive speciale (reconversion)** : L\'apprenant vient d\'un autre domaine. Fais des paralleles avec d\'autres industries. Valorise les competences transferables qu\'il apporte.',
       );
     }
 
     if (adaptation.pmoTone === 'exigeant') {
       directives.push(
-        '- **Directive speciale (renforcement)** : Ne parle que lorsque l\'apprenant te sollicite. Evalue strictement la qualite des livrables. Attends un niveau de detail professionnel. Note severement.',
+        '- **Directive speciale (renforcement)** : L\'apprenant a de l\'experience. Sois direct et va a l\'essentiel. Ne parle que lorsque l\'apprenant te sollicite. Evalue strictement la qualite des livrables. Attends un niveau de detail professionnel. Note severement.',
       );
     }
 

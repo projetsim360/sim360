@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { KeenIcon } from '@/components/keenicons';
+import { toast } from 'sonner';
 import { useBadge } from '../api/valorization.api';
 import { CompetencyRadarChart } from '../components/competency-radar-chart';
 import { DebriefingSection } from '../components/debriefing-section';
@@ -61,6 +62,30 @@ export default function BadgeDetailPage() {
       <Toolbar>
         <ToolbarHeading title="Detail du badge" />
         <ToolbarActions>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              const verifyUrl = `${window.location.origin}/badges/${badge.id}/verify`;
+              navigator.clipboard.writeText(verifyUrl);
+              toast.success('Lien copie dans le presse-papiers');
+            }}
+          >
+            <KeenIcon icon="copy" style="solid" className="text-sm" />
+            Copier le lien
+          </Button>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => {
+              const verifyUrl = `${window.location.origin}/badges/${badge.id}/verify`;
+              const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(verifyUrl)}`;
+              window.open(linkedInUrl, '_blank', 'noopener,noreferrer');
+            }}
+          >
+            <KeenIcon icon="linkedin" style="solid" className="text-sm" />
+            Partager sur LinkedIn
+          </Button>
           <Button variant="outline" size="sm" onClick={() => setShareOpen(true)}>
             <KeenIcon icon="share" style="solid" className="text-sm" />
             Partager

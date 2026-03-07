@@ -1,11 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, ArrowRight, Clock } from '@/components/keenicons/icons';
+import { Separator } from '@/components/ui/separator';
+import { KeenIcon } from '@/components/keenicons';
+import { ArrowLeft, ArrowRight } from '@/components/keenicons/icons';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { useSubmitAptitudeTest } from '../api/profile.api';
@@ -16,118 +18,163 @@ interface AptitudeTestStepProps {
   onBack: () => void;
 }
 
-interface TestQuestion {
+interface TestScenario {
   id: string;
-  question: string;
+  title: string;
   context: string;
+  question: string;
   options: { value: string; label: string }[];
-  category: 'logic' | 'prioritization' | 'organization';
+  category: 'prioritization' | 'communication' | 'budget';
 }
 
-const TEST_QUESTIONS: TestQuestion[] = [
+const SCENARIOS: TestScenario[] = [
   {
-    id: 'q1',
-    context: 'Vous organisez un anniversaire surprise. Le traiteur annule a la derniere minute.',
-    question: 'Quelle est votre premiere reaction ?',
+    id: 'scenario-1',
+    title: 'Gestion des priorites',
+    context:
+      'Vous avez 3 taches urgentes et seulement 2 heures disponibles : corriger un bug critique en production, preparer la presentation pour le comite de pilotage de demain, et repondre a un appel d\'offre dont la deadline est ce soir.',
+    question: 'Classez ces taches par ordre de priorite. Quelle approche adoptez-vous ?',
     options: [
-      { value: 'a', label: 'Chercher immediatement un remplacant en appelant plusieurs traiteurs' },
-      { value: 'b', label: 'Informer les invites du changement et demander des suggestions' },
-      { value: 'c', label: 'Revoir le budget pour une solution alternative (fait maison)' },
-      { value: 'd', label: 'Reporter l\'evenement pour mieux se preparer' },
-    ],
-    category: 'logic',
-  },
-  {
-    id: 'q2',
-    context: 'Trois taches urgentes arrivent en meme temps : la decoration, la liste des invites et la musique.',
-    question: 'Comment priorisez-vous ?',
-    options: [
-      { value: 'a', label: 'La liste des invites — c\'est la base de la planification' },
-      { value: 'b', label: 'La decoration — elle prend le plus de temps' },
-      { value: 'c', label: 'La musique — c\'est le plus facile a regler rapidement' },
-      { value: 'd', label: 'Je delegue chaque tache a une personne differente' },
+      {
+        value: '1',
+        label:
+          'Bug critique d\'abord (impact immediat), puis appel d\'offre (deadline), puis presentation (demain)',
+      },
+      {
+        value: '2',
+        label:
+          'Appel d\'offre d\'abord (deadline ce soir), puis bug critique, puis presentation',
+      },
+      {
+        value: '3',
+        label:
+          'Deleguer le bug a l\'equipe technique, traiter l\'appel d\'offre soi-meme, et reporter la presentation',
+      },
+      {
+        value: '4',
+        label:
+          'Traiter les 3 en parallele en y consacrant 40 minutes chacune',
+      },
     ],
     category: 'prioritization',
   },
   {
-    id: 'q3',
-    context: 'Le budget initial etait de 500 euros. Apres les premiers achats, il ne reste que 150 euros mais il manque encore le gateau et les boissons.',
-    question: 'Comment gerez-vous cette situation ?',
+    id: 'scenario-2',
+    title: 'Gestion de conflit',
+    context:
+      'Un membre de votre equipe est en conflit ouvert avec le client. Lors de la derniere reunion, il a contredit publiquement les exigences du client en affirmant qu\'elles etaient irrealistes. Le client menace d\'escalader au sponsor du projet.',
+    question: 'Que faites-vous en priorite ?',
     options: [
-      { value: 'a', label: 'Demander une contribution aux invites' },
-      { value: 'b', label: 'Reduire les couts en preparant le gateau soi-meme' },
-      { value: 'c', label: 'Revoir l\'ensemble du budget et couper d\'autres postes' },
-      { value: 'd', label: 'Augmenter le budget en justifiant les depenses supplementaires' },
+      {
+        value: '1',
+        label:
+          'Organiser un entretien individuel avec le membre de l\'equipe pour comprendre ses frustrations, puis une mediation avec le client',
+      },
+      {
+        value: '2',
+        label:
+          'Contacter immediatement le client pour s\'excuser et retirer le collaborateur du projet',
+      },
+      {
+        value: '3',
+        label:
+          'Envoyer un email au client et au collaborateur pour recadrer les regles de communication',
+      },
+      {
+        value: '4',
+        label:
+          'Laisser la situation se calmer d\'elle-meme et intervenir uniquement si le client escalade vraiment',
+      },
     ],
-    category: 'organization',
+    category: 'communication',
   },
   {
-    id: 'q4',
-    context: 'Le jour J, deux invites cles informent qu\'ils auront 2 heures de retard.',
-    question: 'Comment adaptez-vous le planning ?',
+    id: 'scenario-3',
+    title: 'Depassement budgetaire',
+    context:
+      'Votre projet a depasse le budget initial de 20%. Les causes identifiees sont : des changements de perimetre non formalises (+12%), des retards fournisseur ayant entraine des penalites (+5%), et une sous-estimation initiale (+3%). Le sponsor demande un plan d\'action.',
+    question: 'Quelle action prenez-vous ?',
     options: [
-      { value: 'a', label: 'Decaler l\'heure de debut pour tout le monde' },
-      { value: 'b', label: 'Maintenir le planning et prevoir une activite d\'integration pour leur arrivee' },
-      { value: 'c', label: 'Reorganiser l\'ordre des activites pour placer les moments cles apres leur arrivee' },
-      { value: 'd', label: 'Ne rien changer — ceux qui sont la profitent de la fete' },
+      {
+        value: '1',
+        label:
+          'Mettre en place un processus de change control strict, renegocier avec le fournisseur, et presenter une re-estimation au sponsor',
+      },
+      {
+        value: '2',
+        label:
+          'Reduire le perimetre du projet pour revenir dans le budget initial',
+      },
+      {
+        value: '3',
+        label:
+          'Demander un budget supplementaire au sponsor en justifiant chaque depassement',
+      },
+      {
+        value: '4',
+        label:
+          'Absorber le surcout en reduisant la qualite des livrables restants',
+      },
     ],
-    category: 'logic',
+    category: 'budget',
   },
 ];
 
-const TIMER_DURATION = 5 * 60; // 5 minutes
+const CATEGORY_LABELS: Record<TestScenario['category'], string> = {
+  prioritization: 'Priorisation',
+  communication: 'Communication',
+  budget: 'Gestion budgetaire',
+};
+
+const CATEGORY_ICONS: Record<TestScenario['category'], string> = {
+  prioritization: 'sort',
+  communication: 'people',
+  budget: 'chart-simple',
+};
 
 export function AptitudeTestStep({ onNext, onBack }: AptitudeTestStepProps) {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
   const [isStarted, setIsStarted] = useState(false);
+  const [currentScenario, setCurrentScenario] = useState(0);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [showResults, setShowResults] = useState(false);
+  const [results, setResults] = useState<{
+    logic: number;
+    prioritization: number;
+    organization: number;
+  } | null>(null);
   const submitTest = useSubmitAptitudeTest();
 
-  useEffect(() => {
-    if (!isStarted || timeLeft <= 0) return;
-
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [isStarted, timeLeft]);
-
-  const handleTimeExpired = useCallback(() => {
-    toast.warning('Temps ecoule. Vos reponses ont ete soumises.');
-    handleSubmit();
-  }, []);
-
-  useEffect(() => {
-    if (timeLeft === 0 && isStarted) {
-      handleTimeExpired();
-    }
-  }, [timeLeft, isStarted, handleTimeExpired]);
-
-  const formatTime = (seconds: number) => {
-    const min = Math.floor(seconds / 60);
-    const sec = seconds % 60;
-    return `${min}:${sec.toString().padStart(2, '0')}`;
-  };
+  const scenario = SCENARIOS[currentScenario];
+  const progress = ((currentScenario + 1) / SCENARIOS.length) * 100;
+  const allAnswered = Object.keys(answers).length === SCENARIOS.length;
 
   const handleAnswer = (value: string) => {
-    const question = TEST_QUESTIONS[currentQuestion];
-    setAnswers((prev) => ({ ...prev, [question.id]: value }));
+    setAnswers((prev) => ({ ...prev, [scenario.id]: value }));
   };
 
   const handleSubmit = () => {
-    const data: AptitudeTestData = { answers };
+    const scenarioAnswers = SCENARIOS.map((s) => ({
+      scenarioId: s.id,
+      answer: answers[s.id] ?? '',
+    }));
+
+    const data: AptitudeTestData = {
+      answers: Object.fromEntries(
+        scenarioAnswers.map((sa) => [sa.scenarioId, sa.answer]),
+      ),
+    };
+
     submitTest.mutate(data, {
-      onSuccess: () => {
-        toast.success('Test d\'aptitude soumis avec succes.');
-        onNext();
+      onSuccess: (response) => {
+        const profile = response as Record<string, unknown> | undefined;
+        const aptitudeData = profile?.aptitudeTestData as
+          | { scores?: { logic: number; prioritization: number; organization: number } }
+          | undefined;
+        if (aptitudeData?.scores) {
+          setResults(aptitudeData.scores);
+        }
+        setShowResults(true);
+        toast.success("Test d'aptitude soumis avec succes.");
       },
       onError: () => {
         toast.error('Erreur lors de la soumission du test.');
@@ -135,38 +182,112 @@ export function AptitudeTestStep({ onNext, onBack }: AptitudeTestStepProps) {
     });
   };
 
-  const question = TEST_QUESTIONS[currentQuestion];
-  const progress = ((currentQuestion + 1) / TEST_QUESTIONS.length) * 100;
-  const allAnswered = Object.keys(answers).length === TEST_QUESTIONS.length;
+  // Results screen
+  if (showResults) {
+    const scores = results ?? { logic: 0, prioritization: 0, organization: 0 };
+    return (
+      <div className="space-y-6">
+        <div className="text-center space-y-2">
+          <h2 className="text-xl font-semibold text-foreground">Resultats du test</h2>
+          <p className="text-sm text-muted-foreground">
+            Voici vos scores par categorie. Ces resultats seront utilises pour personnaliser votre
+            simulation.
+          </p>
+        </div>
 
+        <div className="grid gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <KeenIcon icon="sort" style="duotone" className="text-lg text-primary" />
+                  <span className="text-sm font-medium text-foreground">Priorisation</span>
+                </div>
+                <Badge variant={scores.prioritization >= 70 ? 'success' : scores.prioritization >= 40 ? 'warning' : 'destructive'} size="sm">
+                  {scores.prioritization}%
+                </Badge>
+              </div>
+              <Progress value={scores.prioritization} className="h-2" />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <KeenIcon icon="abstract-26" style="duotone" className="text-lg text-primary" />
+                  <span className="text-sm font-medium text-foreground">Logique</span>
+                </div>
+                <Badge variant={scores.logic >= 70 ? 'success' : scores.logic >= 40 ? 'warning' : 'destructive'} size="sm">
+                  {scores.logic}%
+                </Badge>
+              </div>
+              <Progress value={scores.logic} className="h-2" />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <KeenIcon icon="chart-simple" style="duotone" className="text-lg text-primary" />
+                  <span className="text-sm font-medium text-foreground">Organisation</span>
+                </div>
+                <Badge variant={scores.organization >= 70 ? 'success' : scores.organization >= 40 ? 'warning' : 'destructive'} size="sm">
+                  {scores.organization}%
+                </Badge>
+              </div>
+              <Progress value={scores.organization} className="h-2" />
+            </CardContent>
+          </Card>
+        </div>
+
+        <Separator />
+
+        <div className="flex items-center justify-end">
+          <Button variant="primary" size="sm" onClick={onNext}>
+            Continuer
+            <ArrowRight className="text-sm ms-1" />
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Intro screen
   if (!isStarted) {
     return (
       <div className="space-y-6">
         <div className="text-center space-y-2">
           <h2 className="text-xl font-semibold text-foreground">Test d'aptitude</h2>
           <p className="text-sm text-muted-foreground">
-            Ce mini-test evalue vos capacites de base en gestion de projet a travers un scenario ludique.
+            Ce mini-test evalue vos reflexes en gestion de projet a travers 3 mises en situation
+            realistes.
           </p>
         </div>
 
         <Card>
           <CardContent className="p-8 text-center space-y-6">
+            <KeenIcon icon="notepad" style="duotone" className="text-5xl text-primary mx-auto" />
             <div className="space-y-2">
-              <h3 className="text-lg font-medium text-foreground">
-                Scenario : Organiser un anniversaire surprise
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Vous devez organiser un anniversaire surprise avec 3 contraintes imprevues.
-                Repondez aux 4 questions de mise en situation.
+              <h3 className="text-lg font-medium text-foreground">3 scenarios de gestion de projet</h3>
+              <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                Vous serez confronte a des situations courantes : gestion des priorites, resolution de
+                conflits et maitrise budgetaire. Il n'y a pas de mauvaise reponse.
               </p>
             </div>
 
-            <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <Clock className="text-base" />
-                <span>5 minutes maximum</span>
-              </div>
-              <span>4 questions</span>
+            <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground">
+              {SCENARIOS.map((s) => (
+                <div key={s.id} className="flex items-center gap-1.5">
+                  <KeenIcon
+                    icon={CATEGORY_ICONS[s.category]}
+                    style="duotone"
+                    className="text-base text-primary"
+                  />
+                  <span>{CATEGORY_LABELS[s.category]}</span>
+                </div>
+              ))}
             </div>
 
             <div className="flex items-center justify-center gap-3">
@@ -174,7 +295,11 @@ export function AptitudeTestStep({ onNext, onBack }: AptitudeTestStepProps) {
                 <ArrowLeft className="text-sm me-1" />
                 Retour
               </Button>
-              <Button variant="primary" size="sm" onClick={() => setIsStarted(true)}>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => setIsStarted(true)}
+              >
                 Commencer le test
               </Button>
             </div>
@@ -190,16 +315,12 @@ export function AptitudeTestStep({ onNext, onBack }: AptitudeTestStepProps) {
         <div className="space-y-1">
           <h2 className="text-xl font-semibold text-foreground">Test d'aptitude</h2>
           <p className="text-sm text-muted-foreground">
-            Question {currentQuestion + 1} sur {TEST_QUESTIONS.length}
+            Scenario {currentScenario + 1} sur {SCENARIOS.length}
           </p>
         </div>
-        <Badge
-          variant={timeLeft < 60 ? 'destructive' : 'secondary'}
-          size="lg"
-          className="font-mono"
-        >
-          <Clock className="text-sm me-1" />
-          {formatTime(timeLeft)}
+        <Badge variant="info" appearance="light" size="lg">
+          <KeenIcon icon={CATEGORY_ICONS[scenario.category]} style="duotone" className="text-sm me-1" />
+          {CATEGORY_LABELS[scenario.category]}
         </Badge>
       </div>
 
@@ -207,35 +328,33 @@ export function AptitudeTestStep({ onNext, onBack }: AptitudeTestStepProps) {
 
       <Card>
         <CardHeader>
-          <div className="space-y-2">
-            <Badge variant="info" appearance="light" size="sm">
-              {question.category === 'logic' && 'Logique'}
-              {question.category === 'prioritization' && 'Priorisation'}
-              {question.category === 'organization' && 'Organisation'}
-            </Badge>
-            <p className="text-sm text-muted-foreground italic">{question.context}</p>
-          </div>
-          <CardTitle className="text-base mt-2">{question.question}</CardTitle>
+          <CardTitle className="text-base">{scenario.title}</CardTitle>
+          <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{scenario.context}</p>
         </CardHeader>
         <CardContent>
+          <p className="text-sm font-medium text-foreground mb-4">{scenario.question}</p>
           <RadioGroup
-            value={answers[question.id] ?? ''}
+            value={answers[scenario.id] ?? ''}
             onValueChange={handleAnswer}
             className="space-y-3"
           >
-            {question.options.map((option) => (
+            {scenario.options.map((option) => (
               <div
                 key={option.value}
                 className={cn(
                   'flex items-start gap-3 p-3 rounded-lg border transition-colors cursor-pointer',
-                  answers[question.id] === option.value
+                  answers[scenario.id] === option.value
                     ? 'border-primary bg-primary/5'
                     : 'border-border hover:border-primary/30',
                 )}
               >
-                <RadioGroupItem value={option.value} id={`${question.id}-${option.value}`} className="mt-0.5" />
+                <RadioGroupItem
+                  value={option.value}
+                  id={`${scenario.id}-${option.value}`}
+                  className="mt-0.5"
+                />
                 <Label
-                  htmlFor={`${question.id}-${option.value}`}
+                  htmlFor={`${scenario.id}-${option.value}`}
                   className="font-normal cursor-pointer leading-normal"
                 >
                   {option.label}
@@ -250,21 +369,26 @@ export function AptitudeTestStep({ onNext, onBack }: AptitudeTestStepProps) {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => setCurrentQuestion((prev) => Math.max(0, prev - 1))}
-          disabled={currentQuestion === 0}
+          onClick={() => {
+            if (currentScenario === 0) {
+              onBack();
+            } else {
+              setCurrentScenario((prev) => prev - 1);
+            }
+          }}
         >
           <ArrowLeft className="text-sm me-1" />
-          Precedente
+          {currentScenario === 0 ? 'Retour' : 'Precedent'}
         </Button>
 
-        {currentQuestion < TEST_QUESTIONS.length - 1 ? (
+        {currentScenario < SCENARIOS.length - 1 ? (
           <Button
             variant="primary"
             size="sm"
-            onClick={() => setCurrentQuestion((prev) => prev + 1)}
-            disabled={!answers[question.id]}
+            onClick={() => setCurrentScenario((prev) => prev + 1)}
+            disabled={!answers[scenario.id]}
           >
-            Suivante
+            Suivant
             <ArrowRight className="text-sm ms-1" />
           </Button>
         ) : (

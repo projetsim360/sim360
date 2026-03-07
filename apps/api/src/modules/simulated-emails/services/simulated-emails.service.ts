@@ -518,6 +518,93 @@ export class SimulatedEmailsService {
   }
 
   /**
+   * US-5.6: Generate 2-3 simultaneous emails with different priorities.
+   * These emails arrive at the same time to test prioritization skills.
+   */
+  async generateSimultaneousEmails(
+    simulationId: string,
+    phaseOrder: number,
+    userId: string,
+    tenantId: string,
+  ) {
+    const simulation = await this.getSimulationWithScenario(
+      simulationId,
+      userId,
+      tenantId,
+    );
+
+    // Check if simultaneous emails already exist for this phase
+    const existingCount = await this.prisma.simulatedEmail.count({
+      where: {
+        simulationId,
+        tenantId,
+        phaseOrder,
+        triggerType: 'simultaneous',
+      },
+    });
+
+    if (existingCount > 0) {
+      this.logger.debug(
+        `Simultaneous emails already generated for phase ${phaseOrder}`,
+      );
+      return { data: [], count: 0 };
+    }
+
+    const generatedEmails =
+      await this.emailGenerator.generateSimultaneousEmails(
+        simulation,
+        phaseOrder,
+        tenantId,
+        userId,
+      );
+
+    const now = new Date();
+    const emails = await Promise.all(
+      generatedEmails.map((generated) =>
+        this.prisma.simulatedEmail.create({
+          data: {
+            simulationId,
+            tenantId,
+            senderName: generated.senderName,
+            senderRole: generated.senderRole,
+            senderEmail: generated.senderEmail,
+            subject: generated.subject,
+            body: generated.body,
+            priority: generated.priority,
+            status: EmailStatus.UNREAD,
+            phaseOrder,
+            triggerType: 'simultaneous',
+            scheduledAt: now, // All arrive at the same time
+          },
+        }),
+      ),
+    );
+
+    this.eventPublisher
+      .publish(
+        EventType.EMAIL_BATCH_GENERATED,
+        AggregateType.SIMULATED_EMAIL,
+        simulationId,
+        {
+          simulationId,
+          phaseOrder,
+          count: emails.length,
+          triggerType: 'simultaneous',
+        },
+        {
+          actorId: userId,
+          actorType: 'system',
+          tenantId,
+          channels: ['socket'],
+          priority: 3,
+        },
+      )
+      .catch(() => {});
+
+    return { data: emails, count: emails.length };
+  }
+
+  /**
    * Generate a change request email from the client (US-5.8).
    */
   async generateChangeRequest(

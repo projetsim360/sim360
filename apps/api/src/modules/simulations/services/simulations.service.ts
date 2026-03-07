@@ -1,10 +1,12 @@
-import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
+import { Injectable, Inject, forwardRef, Logger, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { PrismaService, EventPublisherService, EventType, AggregateType, CacheEvict } from '@sim360/core';
-import { SimulationStatus, TenantPlan } from '@prisma/client';
+import { Prisma, SimulationStatus, TenantPlan } from '@prisma/client';
 import { CreateSimulationDto } from '../dto/create-simulation.dto';
 import { MakeDecisionDto } from '../dto/make-decision.dto';
 import { RespondEventDto } from '../dto/respond-event.dto';
 import { KpiEngineService, KpiImpact } from './kpi-engine.service';
+import { SimulatedEmailsService } from '@/modules/simulated-emails/services/simulated-emails.service';
+import { ProfileConfigService } from '@/modules/profile/services/profile-config.service';
 
 const PLAN_LIMITS: Record<TenantPlan, number> = {
   FREE: 1,
@@ -37,10 +39,15 @@ const SIMULATION_INCLUDE = {
 
 @Injectable()
 export class SimulationsService {
+  private readonly logger = new Logger(SimulationsService.name);
+
   constructor(
     private prisma: PrismaService,
     private eventPublisher: EventPublisherService,
     private kpiEngine: KpiEngineService,
+    @Inject(forwardRef(() => SimulatedEmailsService))
+    private simulatedEmailsService: SimulatedEmailsService,
+    private profileConfigService: ProfileConfigService,
   ) {}
 
   private async recordKpiSnapshot(
@@ -248,6 +255,13 @@ export class SimulationsService {
       { title: scenario.title, scenarioId: scenario.id },
       { actorId: userId, actorType: 'user', tenantId, channels: ['socket'], priority: 1 },
     );
+
+    // US-5.1: Auto-generate welcome email from DRH
+    this.simulatedEmailsService
+      .generateWelcome(result.id, userId, tenantId)
+      .catch((err) =>
+        this.logger.warn(`Failed to generate welcome email for simulation ${result.id}: ${err.message}`),
+      );
 
     return this.findOne(result.id, userId);
   }
@@ -557,6 +571,24 @@ export class SimulationsService {
       ).catch(() => {});
     }
 
+    // US-5.6: Auto-generate simultaneous emails with different priorities for the new phase
+    if (result.sim.status !== 'COMPLETED') {
+      this.simulatedEmailsService
+        .generateSimultaneousEmails(id, nextPhaseOrder, userId, simulation.tenantId)
+        .catch((err) =>
+          this.logger.warn(`Failed to generate simultaneous emails for phase ${nextPhaseOrder}: ${err.message}`),
+        );
+
+      // US-5.8: Generate change request email from client during Execution or Surveillance phases
+      if (nextPhaseOrder >= 3 && nextPhaseOrder <= 4) {
+        this.simulatedEmailsService
+          .generateChangeRequest(id, userId, simulation.tenantId)
+          .catch((err) =>
+            this.logger.warn(`Failed to generate change request email: ${err.message}`),
+          );
+      }
+    }
+
     return result.sim;
   }
 
@@ -720,6 +752,111 @@ export class SimulationsService {
     this.publishCriticalKpiAlerts(simulationId, newKpis, userId, simulation.tenantId);
 
     return updatedEvent;
+  }
+
+  /**
+   * US-6.3: Rollback a decision — reverse KPI impact and reset decision.
+   * Allowed rollbacks depend on the user's profile type.
+   */
+  @CacheEvict({ pattern: 'dashboard:global:*' })
+  async rollbackDecision(simulationId: string, decisionId: string, userId: string, tenantId: string) {
+    const simulation = await this.findOne(simulationId, userId);
+    if (simulation.status !== 'IN_PROGRESS') {
+      throw new BadRequestException('La simulation n\'est pas en cours');
+    }
+
+    const decision = await this.prisma.decision.findUnique({ where: { id: decisionId } });
+    if (!decision || decision.simulationId !== simulationId) {
+      throw new NotFoundException('Decision introuvable');
+    }
+    if (decision.selectedOption === null) {
+      throw new BadRequestException('Cette decision n\'a pas encore ete prise');
+    }
+
+    // Check profile-based rollback limit
+    const adaptation = await this.profileConfigService.getAdaptationForUser(userId, tenantId);
+    if (adaptation.maxRollbacks <= 0) {
+      throw new ForbiddenException('Votre profil ne permet pas de revenir sur vos decisions');
+    }
+
+    // Count existing rollbacks for this simulation (stored as KPI snapshots with trigger 'rollback')
+    const rollbackCount = await this.prisma.simulationKpiSnapshot.count({
+      where: { simulationId, trigger: 'rollback' },
+    });
+
+    if (rollbackCount >= adaptation.maxRollbacks) {
+      throw new ForbiddenException(
+        `Vous avez atteint le nombre maximum de retours en arriere (${adaptation.maxRollbacks})`,
+      );
+    }
+
+    // Reverse the KPI impact
+    const kpiImpact = (decision.kpiImpact as KpiImpact) ?? {};
+    const reversedImpact: KpiImpact = {};
+    if (kpiImpact.budget !== undefined) reversedImpact.budget = -kpiImpact.budget;
+    if (kpiImpact.schedule !== undefined) reversedImpact.schedule = -kpiImpact.schedule;
+    if (kpiImpact.quality !== undefined) reversedImpact.quality = -kpiImpact.quality;
+    if (kpiImpact.teamMorale !== undefined) reversedImpact.teamMorale = -kpiImpact.teamMorale;
+    if (kpiImpact.riskLevel !== undefined) reversedImpact.riskLevel = -kpiImpact.riskLevel;
+
+    const currentKpis = simulation.kpis!;
+    const newKpis = this.kpiEngine.applyImpact(
+      {
+        budget: currentKpis.budget,
+        schedule: currentKpis.schedule,
+        quality: currentKpis.quality,
+        teamMorale: currentKpis.teamMorale,
+        riskLevel: currentKpis.riskLevel,
+      },
+      reversedImpact,
+    );
+
+    const updatedDecision = await this.prisma.$transaction(async (tx) => {
+      const [dec] = await Promise.all([
+        tx.decision.update({
+          where: { id: decisionId },
+          data: {
+            selectedOption: null,
+            decidedAt: null,
+            kpiImpact: Prisma.DbNull,
+          },
+        }),
+        tx.simulationKpi.update({
+          where: { simulationId },
+          data: newKpis,
+        }),
+      ]);
+      await this.recordKpiSnapshot(tx, simulationId, simulation.currentPhaseOrder, 'rollback', decisionId);
+      return dec;
+    });
+
+    await this.eventPublisher.publish(
+      EventType.DECISION_ROLLBACK,
+      AggregateType.DECISION,
+      decisionId,
+      {
+        simulationId,
+        title: decision.title,
+        rollbackNumber: rollbackCount + 1,
+        maxRollbacks: adaptation.maxRollbacks,
+      },
+      { actorId: userId, actorType: 'user', tenantId, channels: ['socket'], priority: 2 },
+    );
+
+    // Publish KPI update for real-time
+    await this.eventPublisher.publish(
+      EventType.KPI_UPDATED,
+      AggregateType.SIMULATION,
+      simulationId,
+      { simulationId, kpis: newKpis },
+      { actorId: userId, actorType: 'user', tenantId, receiverIds: [userId], channels: ['socket'], priority: 1 },
+    );
+
+    return {
+      decision: updatedDecision,
+      rollbacksUsed: rollbackCount + 1,
+      rollbacksRemaining: adaptation.maxRollbacks - rollbackCount - 1,
+    };
   }
 
   async getKpiHistory(id: string, userId: string) {

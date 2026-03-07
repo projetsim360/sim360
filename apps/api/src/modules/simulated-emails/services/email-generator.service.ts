@@ -239,6 +239,87 @@ Retourne un JSON avec cette structure exacte :
   }
 
   /**
+   * US-5.6: Generate 2-3 simultaneous emails with different priorities.
+   * Tests the learner's ability to prioritize communications.
+   */
+  async generateSimultaneousEmails(
+    simulation: SimulationWithScenario,
+    phaseOrder: number,
+    tenantId: string,
+    userId: string,
+  ): Promise<GeneratedEmail[]> {
+    const projectTemplate = simulation.scenario.projectTemplate as Record<
+      string,
+      unknown
+    >;
+    const phaseName = PHASE_NAMES[phaseOrder] || `Phase ${phaseOrder}`;
+
+    const systemPrompt = `Tu es un generateur d'emails professionnels realistes pour une simulation de gestion de projet.
+Tu generes exactement 3 emails qui arrivent SIMULTANEMENT au chef de projet.
+Ces emails DOIVENT avoir des priorites differentes : un URGENT, un HIGH, un NORMAL.
+Ils DOIVENT venir de types d'expediteurs differents (client, membre d'equipe, direction).
+L'objectif pedagogique est de tester la capacite de l'apprenant a prioriser ses reponses.
+L'ordre dans lequel il repond impactera les KPIs de la simulation.
+Tu dois retourner un tableau JSON valide et rien d'autre.`;
+
+    const prompt = `Genere exactement 3 emails professionnels qui arrivent en meme temps au chef de projet durant la phase "${phaseName}".
+
+Contexte :
+- Projet : ${projectTemplate.name || simulation.scenario.title}
+- Secteur : ${simulation.scenario.sector}
+- Difficulte : ${simulation.scenario.difficulty}
+- Description : ${simulation.scenario.description || ''}
+- Budget initial : ${projectTemplate.initialBudget || 'non defini'}
+
+Regles strictes :
+1. Email 1 (URGENT) : Du client ou du sponsor. Necessite une reponse immediate. Consequence grave si ignore.
+2. Email 2 (HIGH) : D'un membre de l'equipe ou d'un fournisseur. Probleme technique ou humain important.
+3. Email 3 (NORMAL) : De la DRH ou d'un collegue. Demande administrative ou informationnelle.
+
+Chaque email doit clairement necessiter une action de la part du chef de projet.
+Le contenu doit etre coherent avec la phase "${phaseName}" du projet.
+
+Retourne un tableau JSON avec cette structure exacte :
+[
+  {
+    "senderName": "Prenom Nom",
+    "senderRole": "Client|Sponsor|Membre equipe|Fournisseur|DRH|Collegue",
+    "senderEmail": "prenom.nom@domaine.com",
+    "subject": "Objet de l'email",
+    "body": "Contenu complet de l'email",
+    "priority": "URGENT|HIGH|NORMAL"
+  }
+]`;
+
+    const result = await this.aiService.complete({
+      prompt,
+      systemPrompt,
+      maxTokens: 3000,
+      temperature: 0.8,
+      trackingContext: {
+        tenantId,
+        userId,
+        simulationId: simulation.id,
+        operation: 'email_generate_simultaneous',
+        metadata: { phaseOrder },
+      },
+    });
+
+    const emails = this.parseGeneratedEmails(result.content);
+
+    // Ensure we have exactly the right priority distribution
+    const priorities: Array<'URGENT' | 'HIGH' | 'NORMAL'> = [
+      'URGENT',
+      'HIGH',
+      'NORMAL',
+    ];
+    return emails.slice(0, 3).map((email, index) => ({
+      ...email,
+      priority: priorities[index] ?? email.priority,
+    }));
+  }
+
+  /**
    * Generate a change request email from the client (US-5.8).
    */
   async generateChangeRequestEmail(

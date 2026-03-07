@@ -164,6 +164,44 @@ export class SimulatedEmailsController {
     );
   }
 
+  // ─── Generate simultaneous emails (US-5.6) ─────────────────
+
+  @Post('simulations/:simId/emails/generate-simultaneous')
+  @Auditable('EMAIL_BATCH_GENERATED', 'SimulatedEmail')
+  @ApiOperation({ summary: 'Generer des emails simultanes avec priorites differentes (test de priorisation)' })
+  @ApiParam({ name: 'simId', description: 'ID de la simulation' })
+  generateSimultaneous(
+    @Param('simId') simId: string,
+    @Body() dto: GenerateEmailsDto,
+    @CurrentUser() user: any,
+    @CurrentTenant() tenantId: string,
+  ) {
+    return this.simulatedEmailsService.generateSimultaneousEmails(
+      simId,
+      dto.phaseOrder ?? 0,
+      user.id,
+      tenantId,
+    );
+  }
+
+  // ─── Generate change request email (US-5.8) ───────────────
+
+  @Post('simulations/:simId/emails/generate-change-request')
+  @Auditable('EMAIL_GENERATED', 'SimulatedEmail')
+  @ApiOperation({ summary: 'Generer un email de demande de changement du client' })
+  @ApiParam({ name: 'simId', description: 'ID de la simulation' })
+  generateChangeRequest(
+    @Param('simId') simId: string,
+    @CurrentUser() user: any,
+    @CurrentTenant() tenantId: string,
+  ) {
+    return this.simulatedEmailsService.generateChangeRequest(
+      simId,
+      user.id,
+      tenantId,
+    );
+  }
+
   // ─── Generate welcome email ─────────────────────────────────
 
   @Post('simulations/:simId/emails/generate-welcome')

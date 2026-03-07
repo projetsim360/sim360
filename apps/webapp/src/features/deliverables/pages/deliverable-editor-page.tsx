@@ -19,6 +19,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import {
   useDeliverable,
@@ -279,12 +280,29 @@ export default function DeliverableEditorPage() {
           {showTemplate && template ? (
             <Card className="border-primary/30">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm text-primary">
-                  Template : {template.title}
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm text-primary">
+                    Template : {template.title}
+                  </CardTitle>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 text-xs"
+                    onClick={() => {
+                      navigator.clipboard.writeText(template.content).then(() => {
+                        toast('Template copie !');
+                      }).catch(() => {
+                        toast.error('Impossible de copier le template.');
+                      });
+                    }}
+                  >
+                    <KeenIcon icon="copy" style="outline" className="size-3 mr-1" />
+                    Copier le template
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="p-0">
-                <div className="max-h-[500px] overflow-y-auto border-t border-border">
+                <div className="max-h-[400px] overflow-y-auto border-t border-border">
                   <MarkdownPreview content={template.content} />
                   {template.pmiProcess && (
                     <div className="px-4 pb-4 pt-2 border-t border-border">
@@ -295,6 +313,27 @@ export default function DeliverableEditorPage() {
                     </div>
                   )}
                 </div>
+                {/* Evaluation criteria checklist */}
+                {template.evaluationCriteria && Object.keys(template.evaluationCriteria).length > 0 && (
+                  <div className="px-4 pb-4 pt-3 border-t border-border">
+                    <p className="text-xs font-semibold text-foreground mb-2">
+                      Criteres d'evaluation :
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {Object.entries(template.evaluationCriteria).map(([key, value]) => (
+                        <Badge
+                          key={key}
+                          variant="info"
+                          appearance="light"
+                          size="xs"
+                        >
+                          <KeenIcon icon="check-circle" style="outline" className="size-3 mr-1" />
+                          {typeof value === 'string' ? value : key}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           ) : showTemplate && isLoadingTemplate ? (

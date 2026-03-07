@@ -14,12 +14,13 @@ import {
   PolarRadiusAxis,
   ResponsiveContainer,
 } from 'recharts';
-import { useCandidateReport } from '../api/recruitment.api';
+import { useCandidateReport, useCampaign } from '../api/recruitment.api';
 import { CandidateStatusBadge } from '../components/candidate-status-badge';
 
 export default function CandidateReportPage() {
   const { id, candidateId } = useParams<{ id: string; candidateId: string }>();
   const { data: candidate, isLoading, error } = useCandidateReport(id!, candidateId!);
+  const { data: campaign } = useCampaign(id!);
 
   if (isLoading) {
     return (
@@ -241,6 +242,89 @@ export default function CandidateReportPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* US-10.10: Adequation au poste / Gap analysis */}
+        {candidate.matchPercentage !== undefined && candidate.matchPercentage !== null && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm flex items-center gap-2">
+                <KeenIcon icon="chart-simple" style="outline" className="size-4 text-primary" />
+                Adequation au poste
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              {/* Big circular match indicator */}
+              <div className="flex flex-col items-center gap-3">
+                <div
+                  className={cn(
+                    'w-24 h-24 rounded-full border-4 flex items-center justify-center',
+                    candidate.matchPercentage >= 70
+                      ? 'border-success'
+                      : candidate.matchPercentage >= 40
+                        ? 'border-warning'
+                        : 'border-destructive',
+                  )}
+                >
+                  <span className="text-2xl font-bold">{Math.round(candidate.matchPercentage)}%</span>
+                </div>
+                <p className="text-sm font-medium">Compatibilite avec le poste</p>
+              </div>
+
+              {/* Gap analysis: required vs demonstrated */}
+              {campaign?.requiredSkills && campaign.requiredSkills.length > 0 && candidate.competencyScores && (
+                <div className="space-y-3">
+                  <h4 className="text-sm font-semibold">Analyse des ecarts</h4>
+                  {campaign.requiredSkills.map((req) => {
+                    const demonstrated = candidate.competencyScores?.[req.skill] ?? 0;
+                    const requiredNormalized = req.weight * 10; // weight 1-10 -> 10-100
+                    const gap = demonstrated - requiredNormalized;
+
+                    return (
+                      <div key={req.skill} className="space-y-1">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="font-medium">{req.skill}</span>
+                          <span className={cn(
+                            'font-medium',
+                            gap >= 0 ? 'text-success' : 'text-destructive',
+                          )}>
+                            {gap >= 0 ? '+' : ''}{gap}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 space-y-1">
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] text-muted-foreground w-16">Requis</span>
+                              <div className="flex-1 h-1.5 bg-accent rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-muted-foreground/40 rounded-full"
+                                  style={{ width: `${requiredNormalized}%` }}
+                                />
+                              </div>
+                              <span className="text-[10px] text-muted-foreground w-8 text-right">{requiredNormalized}%</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] text-muted-foreground w-16">Demontre</span>
+                              <div className="flex-1 h-1.5 bg-accent rounded-full overflow-hidden">
+                                <div
+                                  className={cn(
+                                    'h-full rounded-full',
+                                    demonstrated >= requiredNormalized ? 'bg-success' : 'bg-destructive',
+                                  )}
+                                  style={{ width: `${demonstrated}%` }}
+                                />
+                              </div>
+                              <span className="text-[10px] text-muted-foreground w-8 text-right">{demonstrated}%</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         {/* AI Justification */}
         {candidate.aiJustification && (
