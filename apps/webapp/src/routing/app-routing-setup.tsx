@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { Route, Routes, Navigate } from 'react-router';
 import { DynamicLayout } from '@/components/layouts/dynamic-layout';
 import { AuthLayout } from '@/components/auth/auth-layout';
@@ -16,6 +17,8 @@ import { ConfirmEmailChangePage } from '@/pages/auth/confirm-email-change';
 import { ProfileWizardPage } from '@/pages/profile/wizard';
 import { EditProfilePage } from '@/pages/profile/edit-profile';
 import { SettingsPage } from '@/pages/settings';
+
+const LandingPage = lazy(() => import('@/pages/landing/landing-page'));
 import {
   dashboardRoutes,
   simulationRoutes,
@@ -79,6 +82,7 @@ export function AppRoutingSetup() {
       </Route>
 
       {/* Public routes (no auth, no layout) */}
+      <Route path="/" element={<Suspense><LandingPage /></Suspense>} />
       {badgeVerifyRoute}
       {recruitmentJoinRoute}
 

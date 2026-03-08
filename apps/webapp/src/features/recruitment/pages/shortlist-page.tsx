@@ -36,36 +36,34 @@ export default function ShortlistPage() {
 
   if (isLoading) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Shortlist" />
         </Toolbar>
-        <div className="container-fixed flex justify-center py-16">
+        <div className="flex justify-center py-16">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
-      </>
+      </div>
     );
   }
 
   if (error || !shortlist) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Shortlist" />
         </Toolbar>
-        <div className="container-fixed">
-          <Card>
-            <CardContent className="py-8 text-center">
-              <p className="text-destructive text-sm">Impossible de charger la shortlist.</p>
-            </CardContent>
-          </Card>
-        </div>
-      </>
+        <Card>
+          <CardContent className="py-8 text-center">
+            <p className="text-destructive text-sm">Impossible de charger la shortlist.</p>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="container space-y-5">
       <Toolbar>
         <ToolbarHeading title="Shortlist IA" />
         <ToolbarActions>
@@ -96,8 +94,6 @@ export default function ShortlistPage() {
           </Button>
         </ToolbarActions>
       </Toolbar>
-
-      <div className="container-fixed space-y-5">
         {/* Stats header */}
         <Card className="border-primary/20 bg-primary/5">
           <CardContent className="py-5">
@@ -214,7 +210,6 @@ export default function ShortlistPage() {
             Selectionnez un deuxieme candidat pour lancer la comparaison.
           </p>
         )}
-      </div>
-    </>
+    </div>
   );
 }

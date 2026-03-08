@@ -235,6 +235,32 @@ export class SimulationsService {
         }
       }
 
+      // Create UserDeliverables from project template
+      if (projectTemplate.deliverables && Array.isArray(projectTemplate.deliverables)) {
+        const deliverableDefs = projectTemplate.deliverables as Array<{
+          name: string;
+          description?: string;
+          phaseOrder: number;
+          dueDate?: string;
+          type?: string;
+        }>;
+
+        if (deliverableDefs.length > 0) {
+          const deadlineDays = projectTemplate.deadlineDays ?? 180;
+          await tx.userDeliverable.createMany({
+            data: deliverableDefs.map((del) => ({
+              simulationId: simulation.id,
+              title: del.name,
+              type: del.type ?? del.name.toLowerCase().replace(/[^a-z0-9]+/g, '_'),
+              phaseOrder: del.phaseOrder,
+              dueDate: del.dueDate
+                ? new Date(del.dueDate)
+                : new Date(Date.now() + ((del.phaseOrder + 1) / scenario.phases.length) * deadlineDays * 24 * 60 * 60 * 1000),
+            })),
+          });
+        }
+      }
+
       // Record initial KPI snapshot
       await this.recordKpiSnapshot(tx, simulation.id, 0, 'simulation_start');
 

@@ -24,41 +24,37 @@ export default function CompanyIntranetPage() {
 
   if (!simId) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Intranet Entreprise" />
         </Toolbar>
-        <div className="container-fixed">
-          <Card>
-            <CardContent className="py-8 text-center">
-              <p className="text-sm text-muted-foreground">
-                Aucune simulation selectionnee.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </>
+        <Card>
+          <CardContent className="py-8 text-center">
+            <p className="text-sm text-muted-foreground">
+              Aucune simulation selectionnee.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   if (isLoading) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Intranet Entreprise" />
         </Toolbar>
-        <div className="container-fixed">
-          <div className="flex justify-center py-16">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-          </div>
+        <div className="flex justify-center py-16">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
-      </>
+      </div>
     );
   }
 
   if (error || !simulation) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Intranet Entreprise" />
           <ToolbarActions>
@@ -70,16 +66,14 @@ export default function CompanyIntranetPage() {
             </Button>
           </ToolbarActions>
         </Toolbar>
-        <div className="container-fixed">
-          <Card>
-            <CardContent className="py-8 text-center">
-              <p className="text-destructive text-sm">
-                Erreur lors du chargement des donnees.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </>
+        <Card>
+          <CardContent className="py-8 text-center">
+            <p className="text-destructive text-sm">
+              Erreur lors du chargement des donnees.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
@@ -88,7 +82,7 @@ export default function CompanyIntranetPage() {
   const teamMembers = project?.teamMembers || [];
 
   return (
-    <>
+    <div className="container space-y-5">
       <Toolbar>
         <ToolbarHeading title="Intranet Entreprise" />
         <ToolbarActions>
@@ -106,8 +100,6 @@ export default function CompanyIntranetPage() {
           </Button>
         </ToolbarActions>
       </Toolbar>
-
-      <div className="container-fixed space-y-5">
         {/* Company banner */}
         <CompanyBanner
           companyName={project?.client || scenario?.companyName || 'Entreprise'}
@@ -221,7 +213,6 @@ export default function CompanyIntranetPage() {
             </CardContent>
           </Card>
         )}
-      </div>
-    </>
+    </div>
   );
 }

@@ -116,34 +116,32 @@ export default function CampaignDetailPage() {
 
   if (loadingCampaign) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Chargement..." />
         </Toolbar>
-        <div className="container-fixed flex justify-center py-16">
+        <div className="flex justify-center py-16">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
-      </>
+      </div>
     );
   }
 
   if (!campaign) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Campagne introuvable" />
         </Toolbar>
-        <div className="container-fixed">
-          <Card>
-            <CardContent className="py-8 text-center">
-              <p className="text-muted-foreground text-sm">Cette campagne n'existe pas.</p>
-              <Button variant="primary" size="sm" className="mt-4" asChild>
-                <Link to="/recruitment/campaigns">Retour aux campagnes</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </>
+        <Card>
+          <CardContent className="py-8 text-center">
+            <p className="text-muted-foreground text-sm">Cette campagne n'existe pas.</p>
+            <Button variant="primary" size="sm" className="mt-4" asChild>
+              <Link to="/recruitment/campaigns">Retour aux campagnes</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
@@ -155,7 +153,7 @@ export default function CampaignDetailPage() {
   const isFull = fillPercent !== null && fillPercent >= 100;
 
   return (
-    <>
+    <div className="container">
       <Toolbar>
         <ToolbarHeading title={campaign.title} />
         <ToolbarActions>
@@ -187,8 +185,6 @@ export default function CampaignDetailPage() {
           </Button>
         </ToolbarActions>
       </Toolbar>
-
-      <div className="container-fixed">
         {/* Share link for active campaigns */}
         {campaign.status === 'ACTIVE' && campaign.slug && (
           <Card className="mb-5">
@@ -588,7 +584,6 @@ export default function CampaignDetailPage() {
             </div>
           </TabsContent>
         </Tabs>
-      </div>
-    </>
+    </div>
   );
 }

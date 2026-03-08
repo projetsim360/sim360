@@ -183,6 +183,21 @@ export default function SimulationDetailPage() {
       <Toolbar>
         <ToolbarHeading title={sim.project?.name || 'Simulation'} />
         <ToolbarActions>
+          <Button variant="primary" asChild>
+            <Link to={`/simulations/${id}/pmo`}>
+              Agent PMO
+            </Link>
+          </Button>
+          <Button variant="outline" asChild>
+            <Link to={`/simulations/${id}/emails`}>
+              Emails
+            </Link>
+          </Button>
+          <Button variant="outline" asChild>
+            <Link to={`/simulations/${id}/deliverables`}>
+              Livrables
+            </Link>
+          </Button>
           <Button variant="outline" asChild>
             <Link to="/simulations">Retour</Link>
           </Button>

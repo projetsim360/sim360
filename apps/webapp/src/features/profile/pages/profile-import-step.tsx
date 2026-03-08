@@ -135,15 +135,15 @@ export function ProfileImportStep({ onNext, profile }: ProfileImportStepProps) {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="text-center space-y-2">
-        <h2 className="text-xl font-semibold text-foreground">Importez votre profil</h2>
-        <p className="text-sm text-muted-foreground">
-          Commencez par importer vos donnees existantes pour personnaliser votre experience.
+    <div className="space-y-5">
+      <div>
+        <h2 className="text-lg font-semibold text-foreground">Importez votre profil</h2>
+        <p className="text-sm text-muted-foreground mt-1">
+          Importez vos donnees existantes pour personnaliser votre experience.
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid md:grid-cols-2 gap-4">
         {/* LinkedIn Card */}
         <Card
           className={cn(

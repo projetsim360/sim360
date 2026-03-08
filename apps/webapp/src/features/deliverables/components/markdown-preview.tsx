@@ -1,3 +1,5 @@
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { cn } from '@/lib/utils';
 
 interface MarkdownPreviewProps {
@@ -18,12 +20,20 @@ export function MarkdownPreview({ content, className }: MarkdownPreviewProps) {
     <div
       className={cn(
         'prose prose-sm dark:prose-invert max-w-none p-4',
+        'prose-headings:font-semibold prose-headings:text-foreground',
+        'prose-p:text-foreground prose-p:leading-relaxed',
+        'prose-a:text-primary',
+        'prose-blockquote:border-l-primary prose-blockquote:text-muted-foreground',
+        'prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-xs',
+        'prose-pre:bg-muted prose-pre:rounded-lg',
+        'prose-table:border-collapse',
+        'prose-th:border prose-th:border-border prose-th:bg-muted/50 prose-th:p-2 prose-th:text-left prose-th:text-xs prose-th:font-semibold',
+        'prose-td:border prose-td:border-border prose-td:p-2 prose-td:text-sm',
+        'prose-li:text-foreground',
         className,
       )}
     >
-      <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-foreground bg-transparent p-0 m-0 border-none">
-        {content}
-      </pre>
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
     </div>
   );
 }

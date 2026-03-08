@@ -26,40 +26,36 @@ export default function CvSuggestionsPage() {
 
   if (isLoading) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Suggestions pour votre CV" />
         </Toolbar>
-        <div className="container-fixed">
-          <div className="flex justify-center py-16">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-          </div>
+        <div className="flex justify-center py-16">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
-      </>
+      </div>
     );
   }
 
   if (error || !data) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Suggestions pour votre CV" />
         </Toolbar>
-        <div className="container-fixed">
-          <Card>
-            <CardContent className="py-8 text-center">
-              <p className="text-sm text-destructive">
-                Impossible de charger les suggestions CV.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </>
+        <Card>
+          <CardContent className="py-8 text-center">
+            <p className="text-sm text-destructive">
+              Impossible de charger les suggestions CV.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="container space-y-5">
       <Toolbar>
         <ToolbarHeading title="Suggestions pour votre CV" />
         <ToolbarActions>
@@ -71,8 +67,6 @@ export default function CvSuggestionsPage() {
           </Button>
         </ToolbarActions>
       </Toolbar>
-
-      <div className="container-fixed space-y-5">
         {/* Experience lines */}
         {data.experienceLines && data.experienceLines.length > 0 && (
           <Card>
@@ -162,7 +156,6 @@ export default function CvSuggestionsPage() {
             </Link>
           </Button>
         </div>
-      </div>
-    </>
+    </div>
   );
 }

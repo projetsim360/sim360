@@ -34,6 +34,12 @@ export interface DiagnosticResult {
 export class ProfileAnalysisService {
   private readonly logger = new Logger(ProfileAnalysisService.name);
 
+  private extractJson(raw: string): string {
+    // Strip markdown code fences if present
+    const fenceMatch = raw.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
+    return fenceMatch ? fenceMatch[1].trim() : raw.trim();
+  }
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly aiService: AiService,
@@ -90,7 +96,7 @@ Reponds UNIQUEMENT avec le JSON, sans commentaire.`,
 
     let aptitudeTestData: Record<string, unknown>;
     try {
-      aptitudeTestData = JSON.parse(evaluationResult.content);
+      aptitudeTestData = JSON.parse(this.extractJson(evaluationResult.content));
     } catch {
       this.logger.warn('Failed to parse aptitude test AI response, storing raw');
       aptitudeTestData = {
@@ -212,7 +218,7 @@ Reponds UNIQUEMENT avec le JSON, sans commentaire.`,
 
     let diagnostic: DiagnosticResult;
     try {
-      diagnostic = JSON.parse(diagnosticResult.content);
+      diagnostic = JSON.parse(this.extractJson(diagnosticResult.content));
     } catch {
       this.logger.error('Failed to parse diagnostic AI response');
       throw new BadRequestException(
@@ -329,7 +335,7 @@ Reponds UNIQUEMENT avec le JSON.`,
 
     let cvData: Record<string, unknown>;
     try {
-      cvData = JSON.parse(extractionResult.content);
+      cvData = JSON.parse(this.extractJson(extractionResult.content));
     } catch {
       this.logger.warn('Failed to parse CV extraction AI response');
       cvData = { rawExtraction: extractionResult.content, fileUrl };

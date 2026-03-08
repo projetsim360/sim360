@@ -168,5 +168,23 @@ html {
   @apply w-full mx-auto px-4 lg:px-5;
 }
 
+/* Tiptap Editor */
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--muted-foreground);
+  pointer-events: none;
+  height: 0;
+}
+
+.tiptap:focus {
+  outline: none;
+}
+
+.tiptap .ProseMirror-selectednode {
+  outline: 2px solid var(--primary);
+  border-radius: 4px;
+}
+
 /* Metronic Configs */
 @import './config.metronic.css';

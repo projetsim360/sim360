@@ -18,7 +18,7 @@ export function OnboardingStepper({
   onStepClick,
 }: OnboardingStepperProps) {
   return (
-    <div className="flex items-center justify-center w-full">
+    <div className="flex items-center justify-center w-full gap-0">
       {steps.map((step, index) => {
         const isActive = step === currentStep;
         const isCompleted = isStepCompleted(step);
@@ -27,15 +27,15 @@ export function OnboardingStepper({
         return (
           <div key={step} className="flex items-center">
             <div
-              className="flex flex-col items-center cursor-pointer"
+              className="flex flex-col items-center cursor-pointer group"
               onClick={() => onStepClick?.(step)}
             >
               <div
                 className={cn(
-                  'flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all',
-                  isActive && 'border-primary bg-primary text-primary-foreground',
-                  isCompleted && !isActive && 'border-primary bg-primary/10 text-primary',
-                  !isActive && !isCompleted && 'border-muted-foreground/30 text-muted-foreground',
+                  'flex items-center justify-center w-11 h-11 rounded-full border-2 transition-all shadow-sm',
+                  isActive && 'border-primary bg-primary text-primary-foreground shadow-primary/20 shadow-md scale-110',
+                  isCompleted && !isActive && 'border-primary bg-primary/10 text-primary group-hover:bg-primary/20',
+                  !isActive && !isCompleted && 'border-border text-muted-foreground group-hover:border-muted-foreground/50',
                 )}
               >
                 {isCompleted && !isActive ? (
@@ -46,8 +46,8 @@ export function OnboardingStepper({
               </div>
               <span
                 className={cn(
-                  'mt-2 text-xs font-medium whitespace-nowrap',
-                  isActive && 'text-primary',
+                  'mt-2.5 text-xs font-medium whitespace-nowrap',
+                  isActive && 'text-primary font-semibold',
                   isCompleted && !isActive && 'text-primary/80',
                   !isActive && !isCompleted && 'text-muted-foreground',
                 )}
@@ -58,8 +58,8 @@ export function OnboardingStepper({
             {!isLast && (
               <div
                 className={cn(
-                  'h-0.5 w-12 lg:w-20 mx-2 mt-[-1rem] transition-colors',
-                  isCompleted ? 'bg-primary' : 'bg-muted-foreground/20',
+                  'h-0.5 w-14 lg:w-24 mx-3 mt-[-1rem] transition-colors rounded-full',
+                  isCompleted ? 'bg-primary' : 'bg-border',
                 )}
               />
             )}

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ChevronDown, Search } from '@/components/keenicons/icons';
+import { ChevronDown } from '@/components/keenicons/icons';
+import { KeenIcon } from '@/components/keenicons';
 import { Link, useLocation } from 'react-router-dom';
 import { MENU_ROOT } from '@/config/layout-6.config';
 import { toAbsoluteUrl } from '@/lib/helpers';
@@ -29,22 +30,15 @@ export function SidebarHeader() {
   return (
     <div className="mb-3.5">
       <div className="flex items-center justify-between gap-2.5 px-3.5 h-[70px]">
-        <Link to="/layout-6">
-          <img
-            src={toAbsoluteUrl('/media/app/mini-logo-circle.svg')}
-            className="dark:hidden h-[42px]"
-            alt=""
-          />
-          <img
-            src={toAbsoluteUrl('/media/app/mini-logo-circle-dark.svg')}
-            className="hidden dark:inline-block h-[42px]"
-            alt=""
-          />
+        <Link to="/">
+          <div className="flex items-center justify-center w-[42px] h-[42px] rounded-full bg-primary text-primary-foreground font-bold text-lg">
+            S
+          </div>
         </Link>
 
         <DropdownMenu>
           <DropdownMenuTrigger className="cursor-pointer text-mono font-medium flex items-center justify-between gap-2 w-[150px]">
-            Metronic Cloud
+            Sim360
             <ChevronDown className="size-3.5! text-muted-foreground" />
           </DropdownMenuTrigger>
           <DropdownMenuContent sideOffset={10} side="bottom" align="start">
@@ -65,15 +59,16 @@ export function SidebarHeader() {
       </div>
 
       <div className="pt-2.5 px-3.5 mb-1">
-        <div className="relative">
-          <Search className="text-muted-foreground absolute top-1/2 start-3.5 -translate-y-1/2 size-4" />
-          <Input
-            placeholder="Search"
+        <div className="flex items-center gap-2 rounded-md border border-input bg-background px-3 h-9">
+          <KeenIcon icon="magnifier" style="outline" className="size-4 text-muted-foreground shrink-0" />
+          <input
+            type="text"
+            placeholder="Rechercher"
             onChange={handleInputChange}
-            className="px-9 min-w-0"
             value=""
+            className="flex-1 bg-transparent text-sm placeholder:text-muted-foreground focus:outline-none min-w-0"
           />
-          <span className="text-xs text-muted-foreground absolute end-3.5 top-1/2 -translate-y-1/2">
+          <span className="text-[10px] text-muted-foreground shrink-0">
             cmd + /
           </span>
         </div>

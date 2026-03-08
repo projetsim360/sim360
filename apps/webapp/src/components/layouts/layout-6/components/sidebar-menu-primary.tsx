@@ -4,6 +4,7 @@ import { JSX, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { MENU_SIDEBAR_COMPACT } from '@/config/layout-6.config';
 import { MenuConfig, MenuItem } from '@/config/types';
+import { useFilteredMenu } from '@/hooks/use-filtered-menu';
 import { cn } from '@/lib/utils';
 import {
   AccordionMenu,
@@ -17,6 +18,7 @@ import {
 
 export function SidebarMenuPrimary() {
   const { pathname } = useLocation();
+  const filteredMenu = useFilteredMenu(MENU_SIDEBAR_COMPACT);
 
   // Memoize matchPath to prevent unnecessary re-renders
   const matchPath = useCallback(
@@ -164,7 +166,7 @@ export function SidebarMenuPrimary() {
       collapsible
       classNames={classNames}
     >
-      {buildMenu(MENU_SIDEBAR_COMPACT)}
+      {buildMenu(filteredMenu)}
     </AccordionMenu>
   );
 }

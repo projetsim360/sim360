@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { Link, useParams, useNavigate } from 'react-router';
+import { Link, useParams } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
 import {
   Toolbar,
   ToolbarHeading,
@@ -7,190 +8,471 @@ import {
 } from '@/components/layouts/layout-6/components/toolbar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
 import { KeenIcon } from '@/components/keenicons';
+import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
+import { format, formatDistanceToNow } from 'date-fns';
+import { fr } from 'date-fns/locale';
+import { simulationApi } from '@/features/simulation/api/simulation.api';
 import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from '@/components/ui/select';
-import { useSimulatedEmails, useUnreadEmailCount } from '../api/simulated-emails.api';
-import { EmailListItem } from '../components/email-list-item';
-import { UnreadBadge } from '../components/unread-badge';
-import type { SimulatedEmail, EmailStatus, EmailPriority } from '../types/simulated-email.types';
+  useSimulatedEmails,
+  useArchiveEmail,
+  useRespondToEmail,
+} from '../api/simulated-emails.api';
+import { EmailPriorityBadge } from '../components/email-priority-badge';
+import type { SimulatedEmail, EmailStatus } from '../types/simulated-email.types';
 
-const STATUS_OPTIONS: { value: EmailStatus; label: string }[] = [
-  { value: 'UNREAD', label: 'Non lu' },
-  { value: 'READ', label: 'Lu' },
-  { value: 'RESPONDED', label: 'Repondu' },
-  { value: 'ARCHIVED', label: 'Archive' },
-];
+type Folder = 'inbox' | 'responded' | 'archived';
 
-const PRIORITY_OPTIONS: { value: EmailPriority; label: string }[] = [
-  { value: 'URGENT', label: 'Urgent' },
-  { value: 'HIGH', label: 'Haute' },
-  { value: 'NORMAL', label: 'Normale' },
-  { value: 'LOW', label: 'Basse' },
-];
+const FOLDER_TITLES: Record<Folder, string> = {
+  inbox: 'Boite de reception',
+  responded: 'Repondus',
+  archived: 'Archives',
+};
+
+function getInitials(name: string): string {
+  return name
+    .split(' ')
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+function getStatusesForFolder(folder: Folder): EmailStatus[] {
+  switch (folder) {
+    case 'inbox':
+      return ['UNREAD', 'READ'];
+    case 'responded':
+      return ['RESPONDED'];
+    case 'archived':
+      return ['ARCHIVED'];
+  }
+}
 
 export default function EmailInboxPage() {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const [filterStatus, setFilterStatus] = useState('');
-  const [filterPriority, setFilterPriority] = useState('');
+  const { id: simIdFromUrl, folder: folderParam } = useParams<{
+    id?: string;
+    folder?: string;
+  }>();
 
-  const filters = useMemo(() => {
-    const f: Record<string, string> = {};
-    if (filterStatus) f.status = filterStatus;
-    if (filterPriority) f.priority = filterPriority;
-    return Object.keys(f).length > 0 ? (f as { status?: EmailStatus; priority?: EmailPriority }) : undefined;
-  }, [filterStatus, filterPriority]);
+  const activeFolder: Folder =
+    folderParam === 'responded' || folderParam === 'archived' || folderParam === 'inbox'
+      ? folderParam
+      : 'inbox';
 
-  const { data: emails, isLoading, error } = useSimulatedEmails(id || '', filters);
-  const { data: unreadData } = useUnreadEmailCount(id || '');
+  // If accessed via /emails/:folder, fetch the active simulation
+  const { data: simulations } = useQuery({
+    queryKey: ['simulations'],
+    queryFn: () => simulationApi.getSimulations(),
+    enabled: !simIdFromUrl,
+  });
 
-  const sortedEmails = useMemo(() => {
-    if (!emails) return [];
-    return [...emails].sort(
-      (a, b) => new Date(b.scheduledAt).getTime() - new Date(a.scheduledAt).getTime(),
+  const simulationId = useMemo(() => {
+    if (simIdFromUrl) return simIdFromUrl;
+    if (!simulations || simulations.length === 0) return null;
+    // Pick first active simulation
+    const active = simulations.find(
+      (s: any) => s.status === 'IN_PROGRESS' || s.status === 'ACTIVE',
     );
-  }, [emails]);
+    return active?.id ?? simulations[0]?.id ?? null;
+  }, [simIdFromUrl, simulations]);
 
-  function handleEmailClick(email: SimulatedEmail) {
-    navigate(`/simulations/${id}/emails/${email.id}`);
+  const [selectedEmailId, setSelectedEmailId] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState('');
+
+  const { data: emails, isLoading } = useSimulatedEmails(simulationId || '');
+  const archiveMutation = useArchiveEmail(simulationId || '');
+  const respondMutation = useRespondToEmail(simulationId || '');
+
+  const folderStatuses = getStatusesForFolder(activeFolder);
+
+  const filteredEmails = useMemo(() => {
+    if (!emails) return [];
+    return [...emails]
+      .filter((e) => folderStatuses.includes(e.status))
+      .sort(
+        (a, b) =>
+          new Date(b.scheduledAt).getTime() - new Date(a.scheduledAt).getTime(),
+      );
+  }, [emails, folderStatuses]);
+
+  const selectedEmail = useMemo(
+    () => filteredEmails.find((e) => e.id === selectedEmailId) ?? null,
+    [filteredEmails, selectedEmailId],
+  );
+
+  function handleSelectEmail(email: SimulatedEmail) {
+    setSelectedEmailId(email.id);
+    setReplyText('');
   }
 
-  if (!id) {
+  async function handleArchive() {
+    if (!selectedEmail || !simulationId) return;
+    try {
+      await archiveMutation.mutateAsync(selectedEmail.id);
+      toast.success('Email archive.');
+      setSelectedEmailId(null);
+    } catch {
+      toast.error("Erreur lors de l'archivage.");
+    }
+  }
+
+  async function handleReply(e: React.FormEvent) {
+    e.preventDefault();
+    if (!selectedEmail || !simulationId || !replyText.trim()) return;
+    try {
+      await respondMutation.mutateAsync({
+        emailId: selectedEmail.id,
+        data: { response: replyText.trim() },
+      });
+      toast.success('Reponse envoyee.');
+      setReplyText('');
+    } catch {
+      toast.error("Erreur lors de l'envoi.");
+    }
+  }
+
+  if (!simulationId && !isLoading) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Boite de reception" />
+          <ToolbarHeading title={FOLDER_TITLES[activeFolder]} />
         </Toolbar>
-        <div className="container-fixed">
-          <Card>
-            <CardContent className="py-8 text-center">
-              <p className="text-sm text-muted-foreground">
-                Aucune simulation selectionnee.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </>
+        <Card>
+          <CardContent className="py-16 text-center">
+            <KeenIcon
+              icon="sms"
+              style="duotone"
+              className="size-12 text-muted-foreground/30 mx-auto mb-3"
+            />
+            <p className="text-sm text-muted-foreground">
+              Aucune simulation active. Lancez une simulation pour recevoir des emails.
+            </p>
+            <Button variant="primary" size="sm" className="mt-4" asChild>
+              <Link to="/simulations">Voir les simulations</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="container">
       <Toolbar>
-        <ToolbarHeading title="Boite de reception" />
+        <ToolbarHeading title={FOLDER_TITLES[activeFolder]} />
         <ToolbarActions>
-          {unreadData && unreadData.count > 0 && (
-            <div className="flex items-center gap-2">
-              <UnreadBadge count={unreadData.count} />
-              <span className="text-sm text-muted-foreground">non lu(s)</span>
-            </div>
+          {simulationId && (
+            <Button variant="outline" size="sm" asChild>
+              <Link to={`/simulations/${simulationId}`}>
+                <KeenIcon icon="arrow-left" style="outline" className="size-4" />
+                Simulation
+              </Link>
+            </Button>
           )}
-          <Button variant="outline" size="sm" asChild>
-            <Link to={`/simulations/${id}`}>
-              <KeenIcon icon="arrow-left" style="outline" className="size-4" />
-              Retour
-            </Link>
-          </Button>
         </ToolbarActions>
       </Toolbar>
 
-      <div className="container-fixed">
-        {/* Filters */}
-        <div className="flex items-center gap-3 mb-4">
-          <Select
-            value={filterStatus || 'ALL'}
-            onValueChange={(v) => setFilterStatus(v === 'ALL' ? '' : v)}
-          >
-            <SelectTrigger className="w-[160px]">
-              <SelectValue placeholder="Tous les statuts" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ALL">Tous les statuts</SelectItem>
-              {STATUS_OPTIONS.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
-                  {opt.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select
-            value={filterPriority || 'ALL'}
-            onValueChange={(v) => setFilterPriority(v === 'ALL' ? '' : v)}
-          >
-            <SelectTrigger className="w-[160px]">
-              <SelectValue placeholder="Toutes priorites" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ALL">Toutes priorites</SelectItem>
-              {PRIORITY_OPTIONS.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
-                  {opt.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {(filterStatus || filterPriority) && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                setFilterStatus('');
-                setFilterPriority('');
-              }}
-            >
-              Reinitialiser
-            </Button>
-          )}
-        </div>
-
-        {/* Content */}
-        {isLoading ? (
-          <div className="flex justify-center py-16">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      <Card className="overflow-hidden">
+        <div className="flex h-[calc(100vh-200px)] min-h-[500px]">
+          {/* Left panel — Email list */}
+          <div className="w-80 shrink-0 border-r border-border flex flex-col">
+            <div className="p-3 border-b border-border">
+              <p className="text-sm font-medium text-foreground">
+                {FOLDER_TITLES[activeFolder]}
+                <span className="text-muted-foreground font-normal ml-2">
+                  ({filteredEmails.length})
+                </span>
+              </p>
+            </div>
+            <div className="flex-1 overflow-y-auto">
+              {isLoading ? (
+                <div className="flex justify-center py-16">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
+                </div>
+              ) : filteredEmails.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-16 px-4">
+                  <KeenIcon
+                    icon="sms"
+                    style="duotone"
+                    className="size-10 text-muted-foreground/30 mb-2"
+                  />
+                  <p className="text-sm text-muted-foreground text-center">
+                    Aucun email dans ce dossier.
+                  </p>
+                </div>
+              ) : (
+                filteredEmails.map((email) => {
+                  const isUnread = email.status === 'UNREAD';
+                  const isSelected = selectedEmailId === email.id;
+                  return (
+                    <div
+                      key={email.id}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => handleSelectEmail(email)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ')
+                          handleSelectEmail(email);
+                      }}
+                      className={cn(
+                        'px-4 py-3 border-b border-border cursor-pointer transition-colors',
+                        isSelected
+                          ? 'bg-primary/10 border-l-2 border-l-primary'
+                          : 'hover:bg-muted/50',
+                        isUnread && !isSelected && 'bg-primary/5',
+                      )}
+                    >
+                      <div className="flex items-center gap-3 mb-1">
+                        <div
+                          className={cn(
+                            'shrink-0 flex items-center justify-center w-8 h-8 rounded-full text-xs font-semibold',
+                            isUnread
+                              ? 'bg-primary text-primary-foreground'
+                              : 'bg-muted text-muted-foreground',
+                          )}
+                        >
+                          {getInitials(email.senderName)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <span
+                            className={cn(
+                              'text-sm truncate block',
+                              isUnread
+                                ? 'font-bold text-foreground'
+                                : 'font-medium text-foreground',
+                            )}
+                          >
+                            {email.senderName}
+                          </span>
+                        </div>
+                        <span className="text-[11px] text-muted-foreground shrink-0">
+                          {formatDistanceToNow(new Date(email.scheduledAt), {
+                            addSuffix: false,
+                            locale: fr,
+                          })}
+                        </span>
+                      </div>
+                      <p
+                        className={cn(
+                          'text-sm truncate',
+                          isUnread
+                            ? 'font-semibold text-foreground'
+                            : 'text-foreground',
+                        )}
+                      >
+                        {email.subject}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate mt-0.5">
+                        {email.body.slice(0, 80)}...
+                      </p>
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <EmailPriorityBadge priority={email.priority} />
+                        {email.status === 'RESPONDED' && (
+                          <KeenIcon
+                            icon="double-check"
+                            style="solid"
+                            className="size-3.5 text-success"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
           </div>
-        ) : error ? (
-          <Card>
-            <CardContent className="py-8 text-center">
-              <p className="text-destructive text-sm">
-                {(error as Error).message || 'Erreur lors du chargement des emails.'}
-              </p>
-            </CardContent>
-          </Card>
-        ) : sortedEmails.length === 0 ? (
-          <Card>
-            <CardContent className="flex flex-col items-center justify-center py-16 gap-3">
-              <KeenIcon
-                icon="sms"
-                style="duotone"
-                className="size-12 text-muted-foreground/30"
-              />
-              <p className="text-sm text-muted-foreground">
-                Aucun email pour le moment.
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card className="overflow-hidden">
-            <CardContent className="p-0">
-              {sortedEmails.map((email) => (
-                <EmailListItem
-                  key={email.id}
-                  email={email}
-                  onClick={handleEmailClick}
+
+          {/* Right panel — Email detail */}
+          <div className="flex-1 flex flex-col overflow-hidden">
+            {!selectedEmail ? (
+              <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground">
+                <KeenIcon
+                  icon="sms"
+                  style="duotone"
+                  className="size-16 text-muted-foreground/20 mb-4"
                 />
-              ))}
-            </CardContent>
-          </Card>
-        )}
-      </div>
-    </>
+                <p className="text-sm">Selectionnez un email pour le lire</p>
+              </div>
+            ) : (
+              <>
+                {/* Email header bar */}
+                <div className="shrink-0 px-6 py-3 border-b border-border flex items-center justify-between bg-background">
+                  <div className="flex items-center gap-3">
+                    <EmailPriorityBadge priority={selectedEmail.priority} />
+                    <span className="text-xs text-muted-foreground">
+                      {format(
+                        new Date(selectedEmail.scheduledAt),
+                        'd MMM yyyy, HH:mm',
+                        { locale: fr },
+                      )}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {selectedEmail.status !== 'ARCHIVED' && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleArchive}
+                        disabled={archiveMutation.isPending}
+                      >
+                        <KeenIcon
+                          icon="archive"
+                          style="outline"
+                          className="size-4"
+                        />
+                        Archiver
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Email content */}
+                <div className="flex-1 overflow-y-auto">
+                  <div className="px-6 py-5">
+                    <h2 className="text-lg font-semibold text-foreground mb-4">
+                      {selectedEmail.subject}
+                    </h2>
+
+                    <div className="flex items-center gap-4 mb-5">
+                      <div className="shrink-0 flex items-center justify-center w-11 h-11 rounded-full bg-primary text-primary-foreground font-semibold text-sm">
+                        {getInitials(selectedEmail.senderName)}
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-foreground text-sm">
+                          {selectedEmail.senderName}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {selectedEmail.senderRole} —{' '}
+                          {selectedEmail.senderEmail}
+                        </p>
+                      </div>
+                    </div>
+
+                    <Separator className="mb-5" />
+
+                    <div className="prose prose-sm max-w-none text-foreground whitespace-pre-wrap leading-relaxed">
+                      {selectedEmail.body}
+                    </div>
+
+                    {/* Response section */}
+                    {selectedEmail.status === 'RESPONDED' && (
+                      <div className="mt-6 pt-5 border-t border-border space-y-4">
+                        <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                          <KeenIcon
+                            icon="double-check"
+                            style="solid"
+                            className="size-4 text-success"
+                          />
+                          Votre reponse
+                        </div>
+                        <div className="p-4 bg-muted/30 rounded-lg">
+                          <p className="text-sm text-foreground whitespace-pre-wrap">
+                            {selectedEmail.userResponse}
+                          </p>
+                        </div>
+                        {selectedEmail.respondedAt && (
+                          <p className="text-xs text-muted-foreground">
+                            Repondu le{' '}
+                            {format(
+                              new Date(selectedEmail.respondedAt),
+                              'd MMMM yyyy, HH:mm',
+                              { locale: fr },
+                            )}
+                          </p>
+                        )}
+                        {selectedEmail.responseScore !== undefined && (
+                          <div className="flex items-center gap-3">
+                            <span className="text-sm font-medium">Score :</span>
+                            <Badge
+                              variant={
+                                selectedEmail.responseScore >= 70
+                                  ? 'success'
+                                  : selectedEmail.responseScore >= 40
+                                    ? 'warning'
+                                    : 'destructive'
+                              }
+                              size="sm"
+                            >
+                              {selectedEmail.responseScore}/100
+                            </Badge>
+                          </div>
+                        )}
+                        {selectedEmail.responseFeedback && (
+                          <div>
+                            <h4 className="text-sm font-semibold mb-1">
+                              Retour de l'IA
+                            </h4>
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                              {selectedEmail.responseFeedback}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Reply form */}
+                {selectedEmail.status !== 'RESPONDED' &&
+                  selectedEmail.status !== 'ARCHIVED' && (
+                    <div className="shrink-0 border-t border-border bg-background p-4">
+                      <form onSubmit={handleReply} className="space-y-3">
+                        <Textarea
+                          value={replyText}
+                          onChange={(e) =>
+                            setReplyText(e.target.value.slice(0, 2000))
+                          }
+                          placeholder="Redigez votre reponse..."
+                          rows={3}
+                          disabled={respondMutation.isPending}
+                          className="resize-none"
+                        />
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground">
+                            {replyText.length}/2000
+                          </span>
+                          <Button
+                            type="submit"
+                            variant="primary"
+                            size="sm"
+                            disabled={
+                              respondMutation.isPending || !replyText.trim()
+                            }
+                          >
+                            {respondMutation.isPending ? (
+                              <>
+                                <KeenIcon
+                                  icon="loading"
+                                  style="outline"
+                                  className="size-4 animate-spin mr-1"
+                                />
+                                Evaluation...
+                              </>
+                            ) : (
+                              <>
+                                <KeenIcon
+                                  icon="send"
+                                  style="solid"
+                                  className="size-4 mr-1"
+                                />
+                                Envoyer
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      </form>
+                    </div>
+                  )}
+              </>
+            )}
+          </div>
+        </div>
+      </Card>
+    </div>
   );
 }

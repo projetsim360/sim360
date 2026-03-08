@@ -156,7 +156,7 @@ export default function ReferenceDocumentsPage() {
         </ToolbarActions>
       </Toolbar>
 
-      <div className="container-fixed space-y-4">
+      <div className="container space-y-4">
         {/* Filtres */}
         <Card>
           <CardContent className="p-4">

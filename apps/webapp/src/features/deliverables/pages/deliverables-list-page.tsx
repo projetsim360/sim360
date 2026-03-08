@@ -89,7 +89,7 @@ export default function DeliverablesListPage() {
 
   if (!id) {
     return (
-      <div className="container-fixed">
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Mes livrables" />
         </Toolbar>
@@ -105,7 +105,7 @@ export default function DeliverablesListPage() {
   }
 
   return (
-    <>
+    <div className="container">
       <Toolbar>
         <ToolbarHeading title="Mes livrables" />
         <ToolbarActions>
@@ -123,7 +123,6 @@ export default function DeliverablesListPage() {
         </ToolbarActions>
       </Toolbar>
 
-      <div className="container-fixed">
         {/* Filters */}
         {deliverables && deliverables.length > 0 && (
           <div className="flex items-center gap-3 mb-4">
@@ -277,7 +276,6 @@ export default function DeliverablesListPage() {
             ))}
           </div>
         )}
-      </div>
-    </>
+    </div>
   );
 }

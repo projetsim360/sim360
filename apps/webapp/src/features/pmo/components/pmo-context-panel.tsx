@@ -60,7 +60,8 @@ function getDeadlineInfo(dueDate: string | null): {
   const daysLeft = differenceInDays(due, now);
 
   if (daysLeft < 0) return { label: `En retard (${Math.abs(daysLeft)}j)`, color: 'text-destructive', urgent: true };
-  if (daysLeft <= 3) return { label: `${daysLeft}j restant${daysLeft > 1 ? 's' : ''}`, color: 'text-warning', urgent: true };
+  if (daysLeft < 2) return { label: `${daysLeft}j restant${daysLeft > 1 ? 's' : ''}`, color: 'text-destructive', urgent: true };
+  if (daysLeft <= 5) return { label: `${daysLeft}j restants`, color: 'text-warning', urgent: true };
   return { label: `${daysLeft}j restants`, color: 'text-muted-foreground', urgent: false };
 }
 
@@ -163,15 +164,15 @@ export function PmoContextPanel({
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-3 pt-0 space-y-2">
-                {context.deliverables.pending.map((d, i) => {
+                {context.deliverables.pending.map((d) => {
                   const deadline = getDeadlineInfo(d.dueDate);
                   return (
                     <div
-                      key={i}
-                      className="flex flex-col gap-0.5 p-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors"
+                      key={d.id}
+                      className="flex flex-col gap-1 p-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors border border-transparent hover:border-border"
                       onClick={() =>
                         navigate(
-                          `/simulations/${context.simulation.id}/deliverables`,
+                          `/simulations/${context.simulation.id}/deliverables/${d.id}/edit`,
                         )
                       }
                     >
@@ -190,16 +191,20 @@ export function PmoContextPanel({
                           />
                         )}
                       </div>
-                      {d.dueDate && (
-                        <div className="flex items-center justify-between pl-5">
-                          <span className="text-[10px] text-muted-foreground">
-                            {new Date(d.dueDate).toLocaleDateString('fr-FR')}
-                          </span>
+                      <div className="flex items-center justify-between pl-5">
+                        <Badge
+                          variant={d.status === 'DRAFT' ? 'secondary' : d.status === 'REVISED' ? 'info' : 'primary'}
+                          appearance="light"
+                          size="xs"
+                        >
+                          {d.status}
+                        </Badge>
+                        {d.dueDate && (
                           <span className={cn('text-[10px] font-medium', deadline.color)}>
-                            {deadline.label}
+                            {new Date(d.dueDate).toLocaleDateString('fr-FR')} · {deadline.label}
                           </span>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   );
                 })}

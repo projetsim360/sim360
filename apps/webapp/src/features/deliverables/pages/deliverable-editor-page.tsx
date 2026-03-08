@@ -29,6 +29,7 @@ import {
 } from '../api/deliverables.api';
 import { DeliverableStatusBadge } from '../components/deliverable-status-badge';
 import { MarkdownPreview } from '../components/markdown-preview';
+import { RichTextEditor } from '../components/rich-text-editor';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
@@ -127,7 +128,7 @@ export default function DeliverableEditorPage() {
 
   if (isLoading) {
     return (
-      <div className="container-fixed">
+      <div className="container">
         <div className="flex justify-center py-16">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
@@ -137,7 +138,7 @@ export default function DeliverableEditorPage() {
 
   if (error || !deliverable) {
     return (
-      <div className="container-fixed">
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Editeur de livrable" />
         </Toolbar>
@@ -163,7 +164,7 @@ export default function DeliverableEditorPage() {
     deliverable.status === 'REJECTED';
 
   return (
-    <>
+    <div className="container">
       <Toolbar>
         <ToolbarHeading title={deliverable.title} />
         <ToolbarActions>
@@ -258,25 +259,23 @@ export default function DeliverableEditorPage() {
         </ToolbarActions>
       </Toolbar>
 
-      <div className="container-fixed">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {/* Editor */}
-          <Card>
+        <div className={showTemplate ? 'grid grid-cols-1 lg:grid-cols-3 gap-4' : ''}>
+          {/* WYSIWYG Editor */}
+          <Card className={showTemplate ? 'lg:col-span-2' : ''}>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm">Editeur</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <textarea
-                value={content}
-                onChange={(e) => handleContentChange(e.target.value)}
+              <RichTextEditor
+                content={content}
+                onChange={handleContentChange}
                 disabled={isReadOnly}
                 placeholder="Redigez votre livrable ici..."
-                className="w-full min-h-[500px] p-4 font-mono text-sm resize-none border-t border-border bg-transparent focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed"
               />
             </CardContent>
           </Card>
 
-          {/* Preview or Template */}
+          {/* Template side panel */}
           {showTemplate && template ? (
             <Card className="border-primary/30">
               <CardHeader className="pb-2">
@@ -313,7 +312,6 @@ export default function DeliverableEditorPage() {
                     </div>
                   )}
                 </div>
-                {/* Evaluation criteria checklist */}
                 {template.evaluationCriteria && Object.keys(template.evaluationCriteria).length > 0 && (
                   <div className="px-4 pb-4 pt-3 border-t border-border">
                     <p className="text-xs font-semibold text-foreground mb-2">
@@ -342,18 +340,7 @@ export default function DeliverableEditorPage() {
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
               </CardContent>
             </Card>
-          ) : (
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm">Apercu</CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="max-h-[500px] overflow-y-auto border-t border-border">
-                  <MarkdownPreview content={content} />
-                </div>
-              </CardContent>
-            </Card>
-          )}
+          ) : null}
         </div>
 
         {/* Deliverable info */}
@@ -370,6 +357,6 @@ export default function DeliverableEditorPage() {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 }

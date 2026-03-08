@@ -5,7 +5,11 @@ export const simulatedEmailMenuItems: MenuConfig = [
   {
     title: 'Emails',
     icon: Mail,
-    path: '/simulations',
-    desc: 'Boite de reception simulee',
+    path: '/emails/inbox',
+    children: [
+      { title: 'Boite de reception', path: '/emails/inbox' },
+      { title: 'Repondus', path: '/emails/responded' },
+      { title: 'Archives', path: '/emails/archived' },
+    ],
   },
 ];

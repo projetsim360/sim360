@@ -35,6 +35,7 @@ export const APP_SIDEBAR_MENU: MenuConfig = [
     title: 'Utilisation IA',
     icon: Cpu,
     path: '/ai/usage',
+    roles: ['SUPER_ADMIN', 'ADMIN', 'MANAGER'],
   },
   { heading: 'Application' },
   ...simulationMenuItems,

@@ -39,6 +39,7 @@ export function interpolateTemplate(
   return template
     .replace(/\{\{actorName\}\}/g, meta.actorName ?? 'Utilisateur')
     .replace(/\{\{aggregateId\}\}/g, event.aggregateId)
+    .replace(/\{\{data\.(\w+)\}\}/g, (_, key) => String(data[key] ?? ''))
     .replace(/\{\{(\w+)\}\}/g, (_, key) => String(data[key] ?? ''));
 }
 

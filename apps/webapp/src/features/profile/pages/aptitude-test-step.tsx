@@ -153,15 +153,11 @@ export function AptitudeTestStep({ onNext, onBack }: AptitudeTestStepProps) {
   };
 
   const handleSubmit = () => {
-    const scenarioAnswers = SCENARIOS.map((s) => ({
-      scenarioId: s.id,
-      answer: answers[s.id] ?? '',
-    }));
-
     const data: AptitudeTestData = {
-      answers: Object.fromEntries(
-        scenarioAnswers.map((sa) => [sa.scenarioId, sa.answer]),
-      ),
+      answers: SCENARIOS.map((s) => ({
+        questionId: s.id,
+        answer: answers[s.id] ?? '',
+      })),
     };
 
     submitTest.mutate(data, {

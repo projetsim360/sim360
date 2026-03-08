@@ -12,6 +12,15 @@ import { usePmoStream } from '../hooks/use-pmo-stream';
 import { pmoApi, PMO_QUERY_KEYS } from '../api/pmo.api';
 import type { PmoMessage } from '../types/pmo.types';
 
+interface PendingDeliverable {
+  id: string;
+  title: string;
+  type: string;
+  status: string;
+  phaseOrder: number;
+  dueDate: string | null;
+}
+
 interface PmoChatScenarioInfo {
   companyName: string;
   sector: string;
@@ -23,7 +32,7 @@ interface PmoChatProps {
   initialMessages: PmoMessage[];
   isLoadingHistory: boolean;
   enableGlossaryTooltips?: boolean;
-  pendingDeliverableCount?: number;
+  pendingDeliverables?: PendingDeliverable[];
   scenarioInfo?: PmoChatScenarioInfo;
 }
 
@@ -32,9 +41,10 @@ export function PmoChat({
   initialMessages,
   isLoadingHistory,
   enableGlossaryTooltips = false,
-  pendingDeliverableCount = 0,
+  pendingDeliverables = [],
   scenarioInfo,
 }: PmoChatProps) {
+  const pendingDeliverableCount = pendingDeliverables.length;
   const [messages, setMessages] = useState<PmoMessage[]>([]);
   const [input, setInput] = useState('');
   const [isInitializing, setIsInitializing] = useState(false);
@@ -47,7 +57,7 @@ export function PmoChat({
 
   // Sync initial messages
   useEffect(() => {
-    if (initialMessages.length > 0) {
+    if (Array.isArray(initialMessages) && initialMessages.length > 0) {
       setMessages(initialMessages);
     }
   }, [initialMessages]);
@@ -66,7 +76,7 @@ export function PmoChat({
       pmoApi
         .initConversation(simulationId)
         .then((initMessages) => {
-          setMessages(initMessages);
+          setMessages(Array.isArray(initMessages) ? initMessages : []);
           queryClient.invalidateQueries({
             queryKey: PMO_QUERY_KEYS.history(simulationId),
           });
@@ -183,14 +193,30 @@ export function PmoChat({
                   </Card>
                 )}
 
-              {/* Pending deliverables reminder */}
+              {/* Pending deliverables banner */}
               {pendingDeliverableCount > 0 && messages.length > 0 && (
-                <div className="flex justify-center py-2">
-                  <div className="flex items-center gap-2 rounded-lg bg-warning/10 border border-warning/20 px-3 py-2">
+                <div className="rounded-lg bg-warning/10 border border-warning/20 p-3">
+                  <div className="flex items-center gap-2 mb-2">
                     <KeenIcon icon="notification-on" style="solid" className="size-4 text-warning" />
-                    <p className="text-xs text-foreground font-medium">
-                      Vous avez {pendingDeliverableCount} livrable{pendingDeliverableCount > 1 ? 's' : ''} en attente
+                    <p className="text-sm text-foreground font-semibold">
+                      Vous avez {pendingDeliverableCount} livrable{pendingDeliverableCount > 1 ? 's' : ''} a rendre
                     </p>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {pendingDeliverables.map((d, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-warning/15 hover:bg-warning/25 border border-warning/30 text-xs font-medium text-foreground transition-colors cursor-pointer"
+                        onClick={() => {
+                          setInput(`Quelles sont les attentes pour le livrable "${d.title}" ?`);
+                          inputRef.current?.focus();
+                        }}
+                      >
+                        <KeenIcon icon="document" style="outline" className="size-3 text-warning" />
+                        {d.title}
+                      </button>
+                    ))}
                   </div>
                 </div>
               )}

@@ -30,8 +30,13 @@ export default function ProjectDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-16">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      <div className="container">
+        <Toolbar>
+          <ToolbarHeading title="Projet" />
+        </Toolbar>
+        <div className="flex justify-center py-16">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        </div>
       </div>
     );
   }
@@ -39,6 +44,9 @@ export default function ProjectDetailPage() {
   if (error || !project) {
     return (
       <div className="container">
+        <Toolbar>
+          <ToolbarHeading title="Projet" />
+        </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-red-600 text-sm">{error || 'Projet introuvable'}</p>

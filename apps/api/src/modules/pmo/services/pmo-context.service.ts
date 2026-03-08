@@ -40,8 +40,10 @@ export interface PmoContext {
       latestGrade: string | null;
     }>;
     pending: Array<{
+      id: string;
       title: string;
       type: string;
+      status: string;
       phaseOrder: number;
       dueDate: string | null;
     }>;
@@ -171,8 +173,10 @@ export class PmoContextService {
     const pending = simulation.userDeliverables
       .filter((d) => d.status === 'DRAFT' || d.status === 'REVISED')
       .map((d) => ({
+        id: d.id,
         title: d.title,
         type: d.type,
+        status: d.status,
         phaseOrder: d.phaseOrder,
         dueDate: d.dueDate?.toISOString() ?? null,
       }));

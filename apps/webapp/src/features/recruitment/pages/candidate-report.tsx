@@ -24,34 +24,32 @@ export default function CandidateReportPage() {
 
   if (isLoading) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Chargement..." />
         </Toolbar>
-        <div className="container-fixed flex justify-center py-16">
+        <div className="flex justify-center py-16">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
-      </>
+      </div>
     );
   }
 
   if (error || !candidate) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Rapport candidat" />
         </Toolbar>
-        <div className="container-fixed">
-          <Card>
-            <CardContent className="py-8 text-center">
-              <p className="text-destructive text-sm">Impossible de charger le rapport.</p>
-              <Button variant="outline" size="sm" className="mt-4" asChild>
-                <Link to={`/recruitment/campaigns/${id}`}>Retour</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </>
+        <Card>
+          <CardContent className="py-8 text-center">
+            <p className="text-destructive text-sm">Impossible de charger le rapport.</p>
+            <Button variant="outline" size="sm" className="mt-4" asChild>
+              <Link to={`/recruitment/campaigns/${id}`}>Retour</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
@@ -76,7 +74,7 @@ export default function CandidateReportPage() {
       ];
 
   return (
-    <>
+    <div className="container space-y-5">
       <Toolbar>
         <ToolbarHeading title={`Rapport 360 - ${candidateName}`} />
         <ToolbarActions>
@@ -95,8 +93,6 @@ export default function CandidateReportPage() {
           </Button>
         </ToolbarActions>
       </Toolbar>
-
-      <div className="container-fixed space-y-5">
         {/* Global score */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           <Card className="md:col-span-1">
@@ -342,7 +338,6 @@ export default function CandidateReportPage() {
             </CardContent>
           </Card>
         )}
-      </div>
-    </>
+    </div>
   );
 }

@@ -39,41 +39,37 @@ export default function EmailDetailPage() {
 
   if (!simId || !emailId) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Email" />
         </Toolbar>
-        <div className="container-fixed">
-          <Card>
-            <CardContent className="py-8 text-center">
-              <p className="text-sm text-muted-foreground">
-                Parametres manquants.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </>
+        <Card>
+          <CardContent className="py-8 text-center">
+            <p className="text-sm text-muted-foreground">
+              Parametres manquants.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   if (isLoading) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Email" />
         </Toolbar>
-        <div className="container-fixed">
-          <div className="flex justify-center py-16">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-          </div>
+        <div className="flex justify-center py-16">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
-      </>
+      </div>
     );
   }
 
   if (error || !email) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Email" />
           <ToolbarActions>
@@ -85,16 +81,14 @@ export default function EmailDetailPage() {
             </Button>
           </ToolbarActions>
         </Toolbar>
-        <div className="container-fixed">
-          <Card>
-            <CardContent className="py-8 text-center">
-              <p className="text-destructive text-sm">
-                {(error as Error)?.message || 'Email introuvable.'}
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </>
+        <Card>
+          <CardContent className="py-8 text-center">
+            <p className="text-destructive text-sm">
+              {(error as Error)?.message || 'Email introuvable.'}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
@@ -102,7 +96,7 @@ export default function EmailDetailPage() {
   const isArchived = email.status === 'ARCHIVED';
 
   return (
-    <>
+    <div className="container space-y-5">
       <Toolbar>
         <ToolbarHeading title={email.subject} />
         <ToolbarActions>
@@ -125,8 +119,6 @@ export default function EmailDetailPage() {
           </Button>
         </ToolbarActions>
       </Toolbar>
-
-      <div className="container-fixed space-y-5">
         {/* Email header */}
         <Card>
           <CardHeader>
@@ -224,7 +216,6 @@ export default function EmailDetailPage() {
             emailId={emailId}
           />
         ) : null}
-      </div>
-    </>
+    </div>
   );
 }

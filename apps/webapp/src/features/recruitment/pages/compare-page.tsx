@@ -47,34 +47,32 @@ export default function ComparePage() {
 
   if (loading) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Comparaison" />
         </Toolbar>
-        <div className="container-fixed flex justify-center py-16">
+        <div className="flex justify-center py-16">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
-      </>
+      </div>
     );
   }
 
   if (error || !result) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Comparaison" />
         </Toolbar>
-        <div className="container-fixed">
-          <Card>
-            <CardContent className="py-8 text-center">
-              <p className="text-destructive text-sm">{error ?? 'Impossible de charger la comparaison.'}</p>
-              <Button variant="outline" size="sm" className="mt-4" asChild>
-                <Link to={`/recruitment/campaigns/${id}/shortlist`}>Retour a la shortlist</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </>
+        <Card>
+          <CardContent className="py-8 text-center">
+            <p className="text-destructive text-sm">{error ?? 'Impossible de charger la comparaison.'}</p>
+            <Button variant="outline" size="sm" className="mt-4" asChild>
+              <Link to={`/recruitment/campaigns/${id}/shortlist`}>Retour a la shortlist</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
@@ -126,7 +124,7 @@ export default function ComparePage() {
   ];
 
   return (
-    <>
+    <div className="container space-y-5">
       <Toolbar>
         <ToolbarHeading title="Comparaison de candidats" />
         <ToolbarActions>
@@ -138,8 +136,6 @@ export default function ComparePage() {
           </Button>
         </ToolbarActions>
       </Toolbar>
-
-      <div className="container-fixed space-y-5">
         {/* Candidate headers */}
         <div className="grid grid-cols-2 gap-5">
           {[
@@ -296,7 +292,6 @@ export default function ComparePage() {
             </CardContent>
           </Card>
         )}
-      </div>
-    </>
+    </div>
   );
 }

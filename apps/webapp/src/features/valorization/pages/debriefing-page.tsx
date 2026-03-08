@@ -14,40 +14,36 @@ export default function DebriefingPage() {
 
   if (isLoading) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Debriefing" />
         </Toolbar>
-        <div className="container-fixed">
-          <div className="flex justify-center py-16">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-          </div>
+        <div className="flex justify-center py-16">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
-      </>
+      </div>
     );
   }
 
   if (error || !data) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Debriefing" />
         </Toolbar>
-        <div className="container-fixed">
-          <Card>
-            <CardContent className="py-8 text-center">
-              <p className="text-sm text-destructive">
-                Impossible de charger le debriefing.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </>
+        <Card>
+          <CardContent className="py-8 text-center">
+            <p className="text-sm text-destructive">
+              Impossible de charger le debriefing.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="container space-y-5">
       <Toolbar>
         <ToolbarHeading title="Debriefing" />
         <ToolbarActions>
@@ -63,8 +59,6 @@ export default function DebriefingPage() {
           </Button>
         </ToolbarActions>
       </Toolbar>
-
-      <div className="container-fixed space-y-5">
         {/* Header: Score + Simulation info */}
         <Card>
           <CardContent className="p-6">
@@ -198,7 +192,6 @@ export default function DebriefingPage() {
             </Link>
           </Button>
         </div>
-      </div>
-    </>
+    </div>
   );
 }

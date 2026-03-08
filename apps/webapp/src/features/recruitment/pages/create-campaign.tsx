@@ -177,7 +177,7 @@ export default function CreateCampaignPage() {
   };
 
   return (
-    <>
+    <div className="container">
       <Toolbar>
         <ToolbarHeading title="Nouvelle campagne de recrutement" />
         <ToolbarActions>
@@ -186,8 +186,6 @@ export default function CreateCampaignPage() {
           </Button>
         </ToolbarActions>
       </Toolbar>
-
-      <div className="container-fixed">
         {/* Step indicators */}
         <div className="flex items-center justify-center gap-2 mb-8">
           {STEPS.map((s, i) => (
@@ -619,7 +617,6 @@ export default function CreateCampaignPage() {
             </div>
           </form>
         </Form>
-      </div>
-    </>
+    </div>
   );
 }

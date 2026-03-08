@@ -1,5 +1,4 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { useOnboarding } from '../hooks/use-onboarding';
 import { useProfile } from '../api/profile.api';
@@ -87,14 +86,17 @@ const OnboardingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b bg-card">
-        <div className="max-w-4xl mx-auto px-4 py-6">
-          <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-foreground">Bienvenue sur ProjectSim360</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Completez votre profil pour demarrer votre simulation personnalisee
+    <div className="min-h-screen w-full bg-muted/40 flex flex-col">
+      {/* Header compact */}
+      <div className="border-b bg-background shadow-sm shrink-0 w-full">
+        <div className="w-full max-w-4xl mx-auto px-8 py-6">
+          <div className="flex flex-col items-center mb-6">
+            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary text-primary-foreground font-bold text-lg mb-3">
+              S
+            </div>
+            <h1 className="text-xl font-bold text-foreground">Sim360</h1>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Configuration du profil — Etape {steps.indexOf(currentStep) + 1}/{steps.length}
             </p>
           </div>
 
@@ -106,32 +108,39 @@ const OnboardingPage = () => {
             onStepClick={goToStep}
           />
 
-          <Progress value={progress} className="mt-6 h-1" />
+          <Progress value={progress} className="mt-5 h-1" />
         </div>
       </div>
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-[1fr_280px] gap-8">
-          {/* Main step content */}
-          <div>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentStep}
-                variants={stepVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.25, ease: 'easeInOut' }}
-              >
-                {renderStep()}
-              </motion.div>
-            </AnimatePresence>
-          </div>
+      <div className="flex-1 w-full">
+        <div className="w-full max-w-4xl mx-auto px-8 py-8">
+          <div className="grid lg:grid-cols-[1fr_280px] gap-8 items-start">
+            {/* Main step content */}
+            <div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentStep}
+                  variants={stepVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.25, ease: 'easeInOut' }}
+                >
+                  {renderStep()}
+                </motion.div>
+              </AnimatePresence>
+            </div>
 
-          {/* Sidebar summary */}
-          <div className="hidden lg:block">
-            {profile && <ProfileSummaryCard profile={profile} className="sticky top-4" />}
+            {/* Sidebar summary */}
+            <div className="hidden lg:block">
+              {profile && (
+                <ProfileSummaryCard
+                  profile={profile}
+                  className="sticky top-4"
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>

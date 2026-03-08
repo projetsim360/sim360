@@ -29,8 +29,13 @@ export interface QuestionnaireData {
   mainMotivation: string;
 }
 
+export interface AptitudeAnswer {
+  questionId: string;
+  answer: string;
+}
+
 export interface AptitudeTestData {
-  answers: Record<string, unknown>;
+  answers: AptitudeAnswer[];
   scores?: { logic: number; prioritization: number; organization: number };
 }
 

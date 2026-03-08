@@ -26,7 +26,7 @@ export default function CampaignsListPage() {
   const campaigns = data?.data ?? [];
 
   return (
-    <>
+    <div className="container">
       <Toolbar>
         <ToolbarHeading title="Campagnes de recrutement" />
         <ToolbarActions>
@@ -38,8 +38,6 @@ export default function CampaignsListPage() {
           </Button>
         </ToolbarActions>
       </Toolbar>
-
-      <div className="container-fixed">
         <Tabs value={statusFilter} onValueChange={setStatusFilter} className="mb-5">
           <TabsList variant="line">
             {STATUS_TABS.map((tab) => (
@@ -141,7 +139,6 @@ export default function CampaignsListPage() {
             </CardContent>
           </Card>
         )}
-      </div>
-    </>
+    </div>
   );
 }

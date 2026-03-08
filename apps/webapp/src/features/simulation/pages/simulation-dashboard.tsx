@@ -179,6 +179,24 @@ export default function SimulationDashboardPage() {
           description={`${dashboard.scenarioTitle} — ${dashboard.status === 'IN_PROGRESS' ? 'En cours' : dashboard.status === 'COMPLETED' ? 'Terminee' : dashboard.status}`}
         />
         <ToolbarActions>
+          <Button variant="primary" asChild>
+            <Link to={`/simulations/${id}/pmo`}>
+              <KeenIcon icon="message-text" style="outline" className="size-4" />
+              Agent PMO
+            </Link>
+          </Button>
+          <Button variant="outline" asChild>
+            <Link to={`/simulations/${id}/emails`}>
+              <KeenIcon icon="sms" style="outline" className="size-4" />
+              Emails
+            </Link>
+          </Button>
+          <Button variant="outline" asChild>
+            <Link to={`/simulations/${id}/deliverables`}>
+              <KeenIcon icon="document" style="outline" className="size-4" />
+              Livrables
+            </Link>
+          </Button>
           <Button variant="outline" asChild>
             <Link to={`/simulations/${id}`}>Detail simulation</Link>
           </Button>

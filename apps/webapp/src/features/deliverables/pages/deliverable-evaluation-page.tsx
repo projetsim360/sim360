@@ -87,7 +87,7 @@ export default function DeliverableEvaluationPage() {
 
   if (isLoading) {
     return (
-      <div className="container-fixed">
+      <div className="container">
         <div className="flex justify-center py-16">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
@@ -97,7 +97,7 @@ export default function DeliverableEvaluationPage() {
 
   if (!deliverable || !evaluation) {
     return (
-      <div className="container-fixed">
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Evaluation" />
         </Toolbar>
@@ -124,7 +124,7 @@ export default function DeliverableEvaluationPage() {
     (deliverable.status === 'EVALUATED' || deliverable.status === 'REJECTED');
 
   return (
-    <>
+    <div className="container">
       <Toolbar>
         <ToolbarHeading title={deliverable.title} />
         <ToolbarActions>
@@ -138,7 +138,7 @@ export default function DeliverableEvaluationPage() {
         </ToolbarActions>
       </Toolbar>
 
-      <div className="container-fixed space-y-6">
+      <div className="space-y-6">
         {/* Score header */}
         <Card>
           <CardContent className="p-6">
@@ -527,6 +527,6 @@ export default function DeliverableEvaluationPage() {
           </Card>
         )}
       </div>
-    </>
+    </div>
   );
 }

@@ -8,6 +8,15 @@ const CompanyIntranetPage = lazy(() => import('../pages/company-intranet-page'))
 export const simulatedEmailRoutes = (
   <>
     <Route
+      path="/emails/:folder"
+      element={
+        <Suspense>
+          <EmailInboxPage />
+        </Suspense>
+      }
+    />
+    {/* Legacy route for direct simulation email access */}
+    <Route
       path="/simulations/:id/emails"
       element={
         <Suspense>

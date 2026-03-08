@@ -26,6 +26,8 @@ export function PmiGlossaryText({
 }: PmiGlossaryTextProps) {
   const { data: glossaryEntries } = useGlossary();
 
+  const safeText = text ?? '';
+
   const glossaryMap = useMemo(() => {
     if (!glossaryEntries || glossaryEntries.length === 0) return null;
 
@@ -35,7 +37,9 @@ export function PmiGlossaryText({
         map.set(entry.term.toLowerCase(), entry);
       }
       // Also index by title as fallback
-      map.set(entry.title.toLowerCase(), entry);
+      if (entry.title) {
+        map.set(entry.title.toLowerCase(), entry);
+      }
     }
     return map;
   }, [glossaryEntries]);
@@ -59,12 +63,12 @@ export function PmiGlossaryText({
     let lastIndex = 0;
     let match: RegExpExecArray | null;
 
-    while ((match = pattern.exec(text)) !== null) {
+    while ((match = pattern.exec(safeText)) !== null) {
       // Add preceding text
       if (match.index > lastIndex) {
         result.push({
           type: 'text',
-          value: text.slice(lastIndex, match.index),
+          value: safeText.slice(lastIndex, match.index),
         });
       }
 
@@ -80,19 +84,19 @@ export function PmiGlossaryText({
     }
 
     // Add remaining text
-    if (lastIndex < text.length) {
-      result.push({ type: 'text', value: text.slice(lastIndex) });
+    if (lastIndex < safeText.length) {
+      result.push({ type: 'text', value: safeText.slice(lastIndex) });
     }
 
     // If no terms were found, return null
     if (result.every((s) => s.type === 'text')) return null;
 
     return result;
-  }, [text, enabled, glossaryMap]);
+  }, [safeText, enabled, glossaryMap]);
 
   // If disabled or no matches, render plain text
   if (!segments) {
-    return <span className={className}>{text}</span>;
+    return <span className={className}>{safeText}</span>;
   }
 
   return (

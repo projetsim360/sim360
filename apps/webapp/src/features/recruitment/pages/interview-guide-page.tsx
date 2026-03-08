@@ -22,41 +22,39 @@ export default function InterviewGuidePage() {
 
   if (isLoading) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Guide d'entretien" />
         </Toolbar>
-        <div className="container-fixed flex justify-center py-16">
+        <div className="flex justify-center py-16">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
-      </>
+      </div>
     );
   }
 
   if (error || !questions) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Guide d'entretien" />
         </Toolbar>
-        <div className="container-fixed">
-          <Card>
-            <CardContent className="py-8 text-center">
-              <p className="text-destructive text-sm">Impossible de charger le guide d'entretien.</p>
-              <Button variant="outline" size="sm" className="mt-4" asChild>
-                <Link to={`/recruitment/campaigns/${id}/candidates/${candidateId}`}>
-                  Retour au rapport
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </>
+        <Card>
+          <CardContent className="py-8 text-center">
+            <p className="text-destructive text-sm">Impossible de charger le guide d'entretien.</p>
+            <Button variant="outline" size="sm" className="mt-4" asChild>
+              <Link to={`/recruitment/campaigns/${id}/candidates/${candidateId}`}>
+                Retour au rapport
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="container space-y-5">
       <Toolbar>
         <ToolbarHeading title={`Guide d'entretien - ${candidateName}`} />
         <ToolbarActions>
@@ -72,8 +70,6 @@ export default function InterviewGuidePage() {
           </Button>
         </ToolbarActions>
       </Toolbar>
-
-      <div className="container-fixed space-y-5">
         {/* Header info */}
         <Card>
           <CardContent className="py-4">
@@ -136,7 +132,6 @@ export default function InterviewGuidePage() {
             </CardContent>
           </Card>
         )}
-      </div>
-    </>
+    </div>
   );
 }

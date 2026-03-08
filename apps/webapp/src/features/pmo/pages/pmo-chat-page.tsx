@@ -25,14 +25,16 @@ export default function PmoChatPage() {
 
   const { data: adaptation } = useProfileAdaptation();
 
-  const pendingCount = useMemo(
-    () => context?.deliverables.pending.length ?? 0,
+  const pendingDeliverables = useMemo(
+    () => context?.deliverables.pending ?? [],
     [context],
   );
 
+  const pendingCount = pendingDeliverables.length;
+
   if (!id) {
     return (
-      <div className="container-fixed">
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Agent PMO" />
         </Toolbar>
@@ -44,7 +46,7 @@ export default function PmoChatPage() {
   }
 
   return (
-    <>
+    <div className="container">
       <Toolbar>
         <ToolbarHeading title="Agent PMO" />
         <ToolbarActions>
@@ -71,7 +73,6 @@ export default function PmoChatPage() {
         </ToolbarActions>
       </Toolbar>
 
-      <div className="container-fixed">
         <div className="flex bg-background border border-border rounded-xl overflow-hidden" style={{ height: 'calc(100vh - 200px)' }}>
           {/* Chat */}
           <div className="flex-1 flex flex-col min-w-0">
@@ -80,7 +81,7 @@ export default function PmoChatPage() {
               initialMessages={historyData?.data || []}
               isLoadingHistory={isLoadingHistory}
               enableGlossaryTooltips={adaptation?.showGlossaryTooltips ?? false}
-              pendingDeliverableCount={pendingCount}
+              pendingDeliverables={pendingDeliverables}
               scenarioInfo={context ? {
                 companyName: context.scenario.title,
                 sector: context.scenario.sector,
@@ -98,7 +99,6 @@ export default function PmoChatPage() {
             adaptation={adaptation}
           />
         </div>
-      </div>
-    </>
+    </div>
   );
 }

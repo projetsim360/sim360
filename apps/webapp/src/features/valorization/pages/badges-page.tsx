@@ -9,46 +9,40 @@ export default function BadgesPage() {
 
   if (isLoading) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Mes badges" />
         </Toolbar>
-        <div className="container-fixed">
-          <div className="flex justify-center py-16">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-          </div>
+        <div className="flex justify-center py-16">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
-      </>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <>
+      <div className="container">
         <Toolbar>
           <ToolbarHeading title="Mes badges" />
         </Toolbar>
-        <div className="container-fixed">
-          <Card>
-            <CardContent className="py-8 text-center">
-              <p className="text-sm text-destructive">
-                Impossible de charger vos badges.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </>
+        <Card>
+          <CardContent className="py-8 text-center">
+            <p className="text-sm text-destructive">
+              Impossible de charger vos badges.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="container">
       <Toolbar>
         <ToolbarHeading title="Mes badges" />
         <ToolbarActions />
       </Toolbar>
-
-      <div className="container-fixed">
         {!badges || badges.length === 0 ? (
           <Card>
             <CardContent className="flex flex-col items-center justify-center py-16 gap-4">
@@ -65,7 +59,6 @@ export default function BadgesPage() {
             ))}
           </div>
         )}
-      </div>
-    </>
+    </div>
   );
 }

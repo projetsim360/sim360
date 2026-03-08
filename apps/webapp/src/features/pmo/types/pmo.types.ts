@@ -20,7 +20,7 @@ export interface PmoContext {
   } | null;
   deliverables: {
     submitted: Array<{ title: string; type: string; status: string; latestScore: number | null; latestGrade: string | null }>;
-    pending: Array<{ title: string; type: string; phaseOrder: number; dueDate: string | null }>;
+    pending: Array<{ id: string; title: string; type: string; status: string; phaseOrder: number; dueDate: string | null }>;
   };
   decisions: Array<{ title: string; selectedOption: number | null; phaseOrder: number }>;
   activeEvents: Array<{ title: string; type: string; severity: string }>;
