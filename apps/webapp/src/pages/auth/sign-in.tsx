@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, AlertCircle } from '@/components/keenicons/icons';
 import { useAuth } from '@/providers/auth-provider';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -20,10 +20,18 @@ const signInSchema = z.object({
 type SignInForm = z.infer<typeof signInSchema>;
 
 export function SignInPage() {
-  const { login } = useAuth();
+  const { login, isLoggedIn, isLoading } = useAuth();
+  const navigate = useNavigate();
   const [serverError, setServerError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
+
+  // Redirect to dashboard if already logged in
+  useEffect(() => {
+    if (!isLoading && isLoggedIn) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isLoading, isLoggedIn, navigate]);
 
   const form = useForm<SignInForm>({
     resolver: zodResolver(signInSchema),

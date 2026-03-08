@@ -29,7 +29,7 @@ function kpiColor(value: number): string {
 
 function KpiBar({ label, value }: { label: string; value: number }) {
   return (
-    <div className="flex items-center gap-2 text-xs">
+    <div className="flex items-center gap-2 text-sm">
       <span className="w-16 text-muted-foreground truncate">{label}</span>
       <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
         <div
@@ -157,7 +157,7 @@ export default function SimulationsListPage() {
                       <h3 className="font-semibold text-sm truncate">
                         {sim.project?.name || 'Projet'}
                       </h3>
-                      <p className="text-xs text-muted-foreground truncate">
+                      <p className="text-sm text-muted-foreground truncate">
                         {sim.scenario?.title || 'Scenario'}
                       </p>
                     </div>
@@ -170,7 +170,7 @@ export default function SimulationsListPage() {
 
                   {/* Current phase */}
                   {activePhase && (
-                    <div className="flex items-center gap-2 text-xs">
+                    <div className="flex items-center gap-2 text-sm">
                       <span className="text-muted-foreground">Phase :</span>
                       <span className="font-medium">{activePhase.name}</span>
                     </div>
@@ -207,7 +207,7 @@ export default function SimulationsListPage() {
                   )}
 
                   {/* Footer */}
-                  <div className="flex items-center justify-between text-xs text-muted-foreground pt-1 border-t border-border">
+                  <div className="flex items-center justify-between text-sm text-muted-foreground pt-1 border-t border-border">
                     <span>
                       {sim.startedAt
                         ? `Debut : ${new Date(sim.startedAt).toLocaleDateString('fr-FR')}`

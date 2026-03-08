@@ -59,12 +59,12 @@ export default function InterviewGuidePage() {
         <ToolbarHeading title={`Guide d'entretien - ${candidateName}`} />
         <ToolbarActions>
           <Button variant="outline" size="sm" onClick={handlePrint}>
-            <KeenIcon icon="printer" style="outline" className="size-4" />
+            <KeenIcon icon="printer" style="duotone" className="size-4" />
             Imprimer
           </Button>
           <Button variant="outline" size="sm" asChild>
             <Link to={`/recruitment/campaigns/${id}/candidates/${candidateId}`}>
-              <KeenIcon icon="arrow-left" style="outline" className="size-4" />
+              <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
               Retour au rapport
             </Link>
           </Button>
@@ -75,7 +75,7 @@ export default function InterviewGuidePage() {
           <CardContent className="py-4">
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                <KeenIcon icon="message-text" style="outline" className="size-4" />
+                <KeenIcon icon="message-text" style="duotone" className="size-4" />
               </div>
               <div className="text-sm text-muted-foreground space-y-1">
                 <p>
@@ -105,14 +105,14 @@ export default function InterviewGuidePage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground mb-1 uppercase tracking-wide">
+                  <p className="text-sm font-medium text-muted-foreground mb-1 uppercase tracking-wide">
                     Contexte
                   </p>
                   <p className="text-sm text-muted-foreground">{q.context}</p>
                 </div>
                 <Separator />
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground mb-1 uppercase tracking-wide">
+                  <p className="text-sm font-medium text-muted-foreground mb-1 uppercase tracking-wide">
                     Insight attendu
                   </p>
                   <p className="text-sm text-muted-foreground">{q.expectedInsight}</p>
@@ -125,7 +125,7 @@ export default function InterviewGuidePage() {
         {questions.length === 0 && (
           <Card>
             <CardContent className="py-8 text-center">
-              <KeenIcon icon="message-text" style="outline" className="size-8 text-muted-foreground mx-auto mb-3" />
+              <KeenIcon icon="message-text" style="duotone" className="size-8 text-muted-foreground mx-auto mb-3" />
               <p className="text-muted-foreground text-sm">
                 Aucune question generee. Le candidat doit avoir termine sa simulation.
               </p>

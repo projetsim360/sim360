@@ -163,7 +163,7 @@ export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
                 <div key={skill.name} className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-foreground">{skill.name}</span>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <span>{SKILL_LEVEL_LABELS[skill.currentLevel]}</span>
                       <span className="text-muted-foreground/50">→</span>
                       <span>{SKILL_LEVEL_LABELS[skill.targetLevel]}</span>

@@ -95,7 +95,7 @@ const OnboardingPage = () => {
               S
             </div>
             <h1 className="text-xl font-bold text-foreground">Sim360</h1>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="text-sm text-muted-foreground mt-0.5">
               Configuration du profil — Etape {steps.indexOf(currentStep) + 1}/{steps.length}
             </p>
           </div>

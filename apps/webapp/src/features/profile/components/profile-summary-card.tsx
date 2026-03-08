@@ -77,7 +77,7 @@ export function ProfileSummaryCard({ profile, className }: ProfileSummaryCardPro
                 />
               ))}
               {skillCount > 5 && (
-                <span className="text-xs text-muted-foreground self-center">
+                <span className="text-sm text-muted-foreground self-center">
                   +{skillCount - 5} autres
                 </span>
               )}

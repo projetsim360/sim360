@@ -69,12 +69,12 @@ export default function ShortlistPage() {
         <ToolbarActions>
           {selectedForCompare.length === 2 && (
             <Button variant="primary" size="sm" onClick={handleCompare}>
-              <KeenIcon icon="arrow-two-diagonals" style="outline" className="size-4" />
+              <KeenIcon icon="arrow-two-diagonals" style="duotone" className="size-4" />
               Comparer
             </Button>
           )}
           <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">Top</span>
+            <span className="text-sm text-muted-foreground">Top</span>
             {[3, 5, 10].map((n) => (
               <Button
                 key={n}
@@ -88,7 +88,7 @@ export default function ShortlistPage() {
           </div>
           <Button variant="outline" size="sm" asChild>
             <Link to={`/recruitment/campaigns/${id}`}>
-              <KeenIcon icon="arrow-left" style="outline" className="size-4" />
+              <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
               Retour
             </Link>
           </Button>
@@ -100,13 +100,13 @@ export default function ShortlistPage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <KeenIcon icon="star" style="outline" className="size-5 text-primary" />
+                  <KeenIcon icon="star" style="duotone" className="size-5 text-primary" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold">
                     Sur {shortlist.totalCandidates} candidats, voici les {shortlist.candidates.length} que nous recommandons
                   </p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
+                  <p className="text-sm text-muted-foreground mt-0.5">
                     Selectionnez 2 candidats pour les comparer
                   </p>
                 </div>
@@ -119,7 +119,7 @@ export default function ShortlistPage() {
                 )}
                 {selectedForCompare.length === 2 && (
                   <Button variant="primary" size="sm" onClick={handleCompare}>
-                    <KeenIcon icon="arrow-two-diagonals" style="outline" className="size-4" />
+                    <KeenIcon icon="arrow-two-diagonals" style="duotone" className="size-4" />
                     Comparer
                   </Button>
                 )}
@@ -169,7 +169,7 @@ export default function ShortlistPage() {
                         <p className="text-sm font-medium">{candidateName}</p>
                         <CandidateStatusBadge status={candidate.status} />
                       </div>
-                      <p className="text-xs text-muted-foreground line-clamp-2">
+                      <p className="text-sm text-muted-foreground line-clamp-2">
                         {candidate.justification}
                       </p>
                     </div>
@@ -194,7 +194,7 @@ export default function ShortlistPage() {
                       )}
                       <Button variant="ghost" size="sm" asChild onClick={(e) => e.stopPropagation()}>
                         <Link to={`/recruitment/campaigns/${id}/candidates/${candidate.id}`}>
-                          <KeenIcon icon="eye" style="outline" className="size-4" />
+                          <KeenIcon icon="eye" style="duotone" className="size-4" />
                         </Link>
                       </Button>
                     </div>
@@ -206,7 +206,7 @@ export default function ShortlistPage() {
         </div>
 
         {selectedForCompare.length > 0 && selectedForCompare.length < 2 && (
-          <p className="text-xs text-muted-foreground text-center">
+          <p className="text-sm text-muted-foreground text-center">
             Selectionnez un deuxieme candidat pour lancer la comparaison.
           </p>
         )}

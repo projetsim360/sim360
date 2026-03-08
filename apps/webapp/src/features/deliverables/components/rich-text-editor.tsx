@@ -52,7 +52,7 @@ function ToolbarButton({ icon, label, isActive, disabled, onClick }: ToolbarButt
               disabled && 'opacity-40 pointer-events-none',
             )}
           >
-            <KeenIcon icon={icon} style="outline" className="size-4" />
+            <KeenIcon icon={icon} style="duotone" className="size-4" />
           </button>
         </TooltipTrigger>
         <TooltipContent side="bottom" className="text-xs">

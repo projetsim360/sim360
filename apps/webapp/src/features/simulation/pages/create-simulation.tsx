@@ -80,7 +80,7 @@ export default function CreateSimulationPage() {
                   </p>
                 )}
 
-                <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
+                <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                   <span>📁 Secteur : {selectedScenario.sector}</span>
                   <span>⏱ Duree estimee : {selectedScenario.estimatedDurationHours}h</span>
                   {selectedScenario._count?.simulations !== undefined && (
@@ -91,7 +91,7 @@ export default function CreateSimulationPage() {
                 {/* Objectives */}
                 {selectedScenario.objectives.length > 0 && (
                   <div>
-                    <h4 className="text-xs font-semibold text-muted-foreground mb-1">
+                    <h4 className="text-sm font-semibold text-muted-foreground mb-1">
                       Objectifs
                     </h4>
                     <ul className="list-disc list-inside text-sm space-y-0.5">
@@ -119,7 +119,7 @@ export default function CreateSimulationPage() {
                 {/* Phases */}
                 {selectedScenario.phases.length > 0 && (
                   <div>
-                    <h4 className="text-xs font-semibold text-muted-foreground mb-1">
+                    <h4 className="text-sm font-semibold text-muted-foreground mb-1">
                       Phases ({selectedScenario.phases.length})
                     </h4>
                     <div className="flex flex-wrap gap-2">
@@ -158,7 +158,7 @@ export default function CreateSimulationPage() {
                 </button>
                 <button
                   onClick={() => setSelectedScenario(null)}
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Fermer
                 </button>
@@ -221,12 +221,12 @@ export default function CreateSimulationPage() {
                     </div>
 
                     {scenario.description && (
-                      <p className="text-xs text-muted-foreground line-clamp-2">
+                      <p className="text-sm text-muted-foreground line-clamp-2">
                         {scenario.description}
                       </p>
                     )}
 
-                    <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+                    <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
                       <span>📁 {scenario.sector}</span>
                       <span>⏱ {scenario.estimatedDurationHours}h</span>
                       <span>📊 {scenario.phases.length} phases</span>

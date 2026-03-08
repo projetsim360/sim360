@@ -131,7 +131,7 @@ export default function DeliverableEvaluationPage() {
           <DeliverableStatusBadge status={deliverable.status} />
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}/deliverables`}>
-              <KeenIcon icon="arrow-left" style="outline" className="size-4" />
+              <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
               Retour
             </Link>
           </Button>
@@ -159,7 +159,7 @@ export default function DeliverableEvaluationPage() {
                 >
                   {evaluation.score}
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">sur 100</p>
+                <p className="text-sm text-muted-foreground mt-1">sur 100</p>
               </div>
 
               {/* Grade */}
@@ -200,7 +200,7 @@ export default function DeliverableEvaluationPage() {
                 >
                   <KeenIcon
                     icon="eye"
-                    style="outline"
+                    style="duotone"
                     className="size-4"
                   />
                   {showReference
@@ -216,7 +216,7 @@ export default function DeliverableEvaluationPage() {
                   >
                     <KeenIcon
                       icon="pencil"
-                      style="outline"
+                      style="duotone"
                       className="size-4"
                     />
                     Reviser
@@ -228,7 +228,7 @@ export default function DeliverableEvaluationPage() {
                         <Button size="sm" disabled>
                           <KeenIcon
                             icon="pencil"
-                            style="outline"
+                            style="duotone"
                             className="size-4"
                           />
                           Reviser
@@ -260,7 +260,7 @@ export default function DeliverableEvaluationPage() {
                     </CardTitle>
                     <CollapsibleTrigger asChild>
                       <Button variant="ghost" size="sm" className="h-7 text-xs">
-                        <KeenIcon icon="arrow-down" style="outline" className="size-3 mr-1" />
+                        <KeenIcon icon="arrow-down" style="duotone" className="size-3 mr-1" />
                         Afficher / Masquer
                       </Button>
                     </CollapsibleTrigger>
@@ -294,22 +294,22 @@ export default function DeliverableEvaluationPage() {
                               <span className={cn('text-sm font-semibold', scoreColor(prevEval.score))}>
                                 {prevEval.score}/100
                               </span>
-                              <span className="text-xs text-muted-foreground">
+                              <span className="text-sm text-muted-foreground">
                                 {new Date(prevEval.createdAt).toLocaleDateString('fr-FR')}
                               </span>
                             </div>
                           </div>
                           {prevEval.recommendations.length > 0 && (
                             <div>
-                              <p className="text-xs font-semibold text-muted-foreground mb-1">
+                              <p className="text-sm font-semibold text-muted-foreground mb-1">
                                 Recommandations :
                               </p>
                               <ul className="space-y-0.5">
                                 {prevEval.recommendations.map((rec, ri) => (
-                                  <li key={ri} className="text-xs text-muted-foreground flex items-start gap-1.5">
+                                  <li key={ri} className="text-sm text-muted-foreground flex items-start gap-1.5">
                                     <KeenIcon
                                       icon="abstract-26"
-                                      style="outline"
+                                      style="duotone"
                                       className="size-3 shrink-0 mt-0.5 text-primary"
                                     />
                                     {rec}
@@ -320,15 +320,15 @@ export default function DeliverableEvaluationPage() {
                           )}
                           {prevEval.improvements.length > 0 && (
                             <div>
-                              <p className="text-xs font-semibold text-muted-foreground mb-1">
+                              <p className="text-sm font-semibold text-muted-foreground mb-1">
                                 Points a ameliorer :
                               </p>
                               <ul className="space-y-0.5">
                                 {prevEval.improvements.map((imp, ii) => (
-                                  <li key={ii} className="text-xs text-muted-foreground flex items-start gap-1.5">
+                                  <li key={ii} className="text-sm text-muted-foreground flex items-start gap-1.5">
                                     <KeenIcon
                                       icon="information-2"
-                                      style="outline"
+                                      style="duotone"
                                       className="size-3 shrink-0 mt-0.5 text-warning"
                                     />
                                     {imp}
@@ -449,7 +449,7 @@ export default function DeliverableEvaluationPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Covered */}
                 <div>
-                  <h4 className="text-xs font-semibold text-success mb-2 flex items-center gap-1.5">
+                  <h4 className="text-sm font-semibold text-success mb-2 flex items-center gap-1.5">
                     <KeenIcon
                       icon="check-circle"
                       style="solid"
@@ -465,7 +465,7 @@ export default function DeliverableEvaluationPage() {
                       >
                         <KeenIcon
                           icon="check-circle"
-                          style="outline"
+                          style="duotone"
                           className="size-4 shrink-0 mt-0.5 text-success"
                         />
                         {output}
@@ -476,7 +476,7 @@ export default function DeliverableEvaluationPage() {
 
                 {/* Missing */}
                 <div>
-                  <h4 className="text-xs font-semibold text-destructive mb-2 flex items-center gap-1.5">
+                  <h4 className="text-sm font-semibold text-destructive mb-2 flex items-center gap-1.5">
                     <KeenIcon
                       icon="cross-circle"
                       style="solid"
@@ -485,7 +485,7 @@ export default function DeliverableEvaluationPage() {
                     Outputs manquants ({evaluation.pmiOutputsMissing.length})
                   </h4>
                   {evaluation.pmiOutputsMissing.length === 0 ? (
-                    <p className="text-xs text-muted-foreground italic">
+                    <p className="text-sm text-muted-foreground italic">
                       Tous les outputs sont couverts.
                     </p>
                   ) : (
@@ -497,7 +497,7 @@ export default function DeliverableEvaluationPage() {
                         >
                           <KeenIcon
                             icon="cross-circle"
-                            style="outline"
+                            style="duotone"
                             className="size-4 shrink-0 mt-0.5 text-destructive"
                           />
                           {output}

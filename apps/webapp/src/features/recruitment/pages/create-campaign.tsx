@@ -202,7 +202,7 @@ export default function CreateCampaignPage() {
                       : 'bg-accent/50 text-muted-foreground cursor-default',
                 )}
               >
-                <KeenIcon icon={s.icon} style="outline" className="size-4" />
+                <KeenIcon icon={s.icon} style="duotone" className="size-4" />
                 <span className="hidden sm:inline">{s.label}</span>
                 <span className="sm:hidden">{i + 1}</span>
               </button>
@@ -380,7 +380,7 @@ export default function CreateCampaignPage() {
                   {/* Document upload zone (US-8.4) */}
                   <div className="space-y-3">
                     <FormLabel>Documents internes (optionnel)</FormLabel>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-sm text-muted-foreground">
                       Ajoutez des documents de reference pour enrichir le scenario (PDF, DOCX). Maximum {MAX_FILES} fichiers, 10 Mo chacun.
                     </p>
 
@@ -399,11 +399,11 @@ export default function CreateCampaignPage() {
                         multiple
                         onChange={handleFileSelect}
                       />
-                      <KeenIcon icon="folder-up" style="outline" className="size-8 text-muted-foreground mx-auto mb-2" />
+                      <KeenIcon icon="folder-up" style="duotone" className="size-8 text-muted-foreground mx-auto mb-2" />
                       <p className="text-sm text-muted-foreground">
                         Cliquez ou deposez vos fichiers ici
                       </p>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-sm text-muted-foreground mt-1">
                         PDF ou DOCX - {documents.length}/{MAX_FILES} fichiers
                       </p>
                     </div>
@@ -414,12 +414,12 @@ export default function CreateCampaignPage() {
                           <div key={index} className="flex items-center gap-3 rounded-lg border border-border p-3">
                             <KeenIcon
                               icon={file.name.endsWith('.pdf') ? 'document' : 'file'}
-                              style="outline"
+                              style="duotone"
                               className="size-4 text-primary shrink-0"
                             />
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-medium truncate">{file.name}</p>
-                              <p className="text-xs text-muted-foreground">
+                              <p className="text-sm text-muted-foreground">
                                 {(file.size / 1024 / 1024).toFixed(2)} Mo
                               </p>
                             </div>
@@ -430,7 +430,7 @@ export default function CreateCampaignPage() {
                               onClick={() => handleRemoveFile(index)}
                               className="text-destructive hover:text-destructive shrink-0"
                             >
-                              <KeenIcon icon="trash" style="outline" className="size-4" />
+                              <KeenIcon icon="trash" style="duotone" className="size-4" />
                             </Button>
                           </div>
                         ))}
@@ -438,8 +438,8 @@ export default function CreateCampaignPage() {
                     )}
 
                     <div className="flex items-start gap-2 rounded-lg bg-warning/10 border border-warning/20 p-3">
-                      <KeenIcon icon="information-2" style="outline" className="size-4 text-warning mt-0.5 shrink-0" />
-                      <p className="text-xs text-warning">
+                      <KeenIcon icon="information-2" style="duotone" className="size-4 text-warning mt-0.5 shrink-0" />
+                      <p className="text-sm text-warning">
                         Assurez-vous d'anonymiser les donnees sensibles avant de telecharger vos documents.
                       </p>
                     </div>
@@ -478,7 +478,7 @@ export default function CreateCampaignPage() {
                   />
                   <div className="rounded-lg border border-border bg-accent/30 p-4">
                     <div className="flex items-start gap-3">
-                      <KeenIcon icon="information-2" style="outline" className="size-5 text-primary mt-0.5" />
+                      <KeenIcon icon="information-2" style="duotone" className="size-5 text-primary mt-0.5" />
                       <div className="text-sm text-muted-foreground space-y-1">
                         <p>La campagne sera creee en mode <strong>Brouillon</strong>.</p>
                         <p>
@@ -560,7 +560,7 @@ export default function CreateCampaignPage() {
                       <div className="flex flex-wrap gap-2">
                         {documents.map((f, i) => (
                           <Badge key={i} variant="secondary" appearance="light" size="sm">
-                            <KeenIcon icon="document" style="outline" className="size-3 mr-1" />
+                            <KeenIcon icon="document" style="duotone" className="size-3 mr-1" />
                             {f.name}
                           </Badge>
                         ))}
@@ -580,7 +580,7 @@ export default function CreateCampaignPage() {
                 onClick={goBack}
                 disabled={step === 0}
               >
-                <KeenIcon icon="arrow-left" style="outline" className="size-4" />
+                <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
                 Precedent
               </Button>
               {step < STEPS.length - 1 ? (
@@ -592,7 +592,7 @@ export default function CreateCampaignPage() {
                   disabled={!canProceed()}
                 >
                   Suivant
-                  <KeenIcon icon="arrow-right" style="outline" className="size-4" />
+                  <KeenIcon icon="arrow-right" style="duotone" className="size-4" />
                 </Button>
               ) : (
                 <Button
@@ -608,7 +608,7 @@ export default function CreateCampaignPage() {
                     </>
                   ) : (
                     <>
-                      <KeenIcon icon="check" style="outline" className="size-4" />
+                      <KeenIcon icon="check" style="duotone" className="size-4" />
                       Creer la campagne
                     </>
                   )}

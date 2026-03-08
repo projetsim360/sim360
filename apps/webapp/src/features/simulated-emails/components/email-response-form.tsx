@@ -80,7 +80,7 @@ export function EmailResponseForm({
               {respondMutation.isPending ? (
                 <>
                   <span className="animate-spin mr-2">
-                    <KeenIcon icon="loading" style="outline" className="size-4" />
+                    <KeenIcon icon="loading" style="duotone" className="size-4" />
                   </span>
                   Evaluation en cours...
                 </>

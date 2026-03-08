@@ -135,7 +135,7 @@ export default function DashboardPage() {
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0 flex-1">
                           <h4 className="text-sm font-medium truncate">{sim.project.name}</h4>
-                          <p className="text-xs text-muted-foreground">{sim.scenario.title}</p>
+                          <p className="text-sm text-muted-foreground">{sim.scenario.title}</p>
                         </div>
                         {sim.kpis && <MiniKpis kpis={sim.kpis} />}
                       </div>
@@ -176,7 +176,7 @@ export default function DashboardPage() {
                     >
                       <KeenIcon icon="question-2" style="filled" className="text-lg shrink-0" />
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs font-medium truncate">{d.title}</p>
+                        <p className="text-sm font-medium truncate">{d.title}</p>
                         <p className="text-[10px] text-muted-foreground">{d.projectName}</p>
                       </div>
                       <span className="text-[10px] text-primary shrink-0">Decision</span>
@@ -190,7 +190,7 @@ export default function DashboardPage() {
                     >
                       <KeenIcon icon="flash" style="filled" className="text-lg shrink-0" />
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs font-medium truncate">{e.title}</p>
+                        <p className="text-sm font-medium truncate">{e.title}</p>
                         <p className="text-[10px] text-muted-foreground">{e.projectName}</p>
                       </div>
                       <Badge
@@ -210,7 +210,7 @@ export default function DashboardPage() {
                     >
                       <KeenIcon icon="message-text" style="filled" className="text-lg shrink-0" />
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs font-medium truncate">{m.title}</p>
+                        <p className="text-sm font-medium truncate">{m.title}</p>
                         <p className="text-[10px] text-muted-foreground">{m.projectName}</p>
                       </div>
                       <span className="text-[10px] text-primary shrink-0">
@@ -290,7 +290,7 @@ export default function DashboardPage() {
                       className="text-sm shrink-0"
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs font-medium truncate">{a.title}</p>
+                      <p className="text-sm font-medium truncate">{a.title}</p>
                       <p className="text-[10px] text-muted-foreground">{a.projectName}</p>
                     </div>
                     <span className="text-[10px] text-muted-foreground shrink-0">

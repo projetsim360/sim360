@@ -224,7 +224,7 @@ export function ProfileImportStep({ onNext, profile }: ProfileImportStepProps) {
                     className="text-3xl text-muted-foreground mb-2"
                   />
                   <p className="text-sm text-muted-foreground">Glissez-deposez votre CV ici</p>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-sm text-muted-foreground mt-1">
                     ou cliquez pour parcourir (PDF, max 5 Mo)
                   </p>
                 </>

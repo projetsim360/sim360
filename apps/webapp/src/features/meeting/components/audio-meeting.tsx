@@ -250,7 +250,7 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
               </div>
             )}
             <div>
-              <p className="text-xs font-medium">{participants[0].name}</p>
+              <p className="text-sm font-medium">{participants[0].name}</p>
               <p className="text-[10px] text-muted-foreground">{participants[0].role}</p>
             </div>
           </div>
@@ -258,7 +258,7 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
 
         {/* Error */}
         {error && (
-          <div className="mb-4 p-2 rounded-lg bg-destructive/10 text-destructive text-xs">
+          <div className="mb-4 p-2 rounded-lg bg-destructive/10 text-destructive text-sm">
             {error}
           </div>
         )}

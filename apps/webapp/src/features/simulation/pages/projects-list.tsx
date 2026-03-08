@@ -83,7 +83,7 @@ export default function ProjectsListPage() {
                     <div className="min-w-0">
                       <h3 className="font-semibold text-sm truncate">{project.name}</h3>
                       {project.client && (
-                        <p className="text-xs text-muted-foreground">Client : {project.client}</p>
+                        <p className="text-sm text-muted-foreground">Client : {project.client}</p>
                       )}
                     </div>
                     {simStatus && (
@@ -94,15 +94,15 @@ export default function ProjectsListPage() {
                   </div>
 
                   {project.description && (
-                    <p className="text-xs text-muted-foreground line-clamp-2">{project.description}</p>
+                    <p className="text-sm text-muted-foreground line-clamp-2">{project.description}</p>
                   )}
 
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
                     <span>Secteur : {project.sector}</span>
                     <span>Budget : {project.initialBudget.toLocaleString('fr-FR')} EUR</span>
                   </div>
 
-                  <div className="flex items-center gap-4 text-xs border-t border-border pt-2">
+                  <div className="flex items-center gap-4 text-sm border-t border-border pt-2">
                     <span className="text-muted-foreground">{project._count.teamMembers} membres</span>
                     <span className="text-muted-foreground">{project._count.deliverables} livrables</span>
                   </div>

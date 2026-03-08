@@ -60,11 +60,11 @@ export function CultureSelector({ value, onChange, className }: CultureSelectorP
                 isSelected ? 'bg-primary text-primary-foreground' : 'bg-accent text-muted-foreground',
               )}
             >
-              <KeenIcon icon={option.icon} style="outline" className="size-5" />
+              <KeenIcon icon={option.icon} style="duotone" className="size-5" />
             </div>
             <div>
               <h4 className="text-sm font-semibold">{option.label}</h4>
-              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+              <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
                 {option.description}
               </p>
             </div>

@@ -189,12 +189,12 @@ export default function MeetingsListPage() {
                   </div>
 
                   {meeting.description && (
-                    <p className="text-xs text-muted-foreground line-clamp-2 mb-3">
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                       {meeting.description}
                     </p>
                   )}
 
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
                     <div className="flex items-center gap-3">
                       <span>{meeting.participants.length} participant(s)</span>
                       {meeting._count?.messages !== undefined && (
@@ -211,7 +211,7 @@ export default function MeetingsListPage() {
                             ? 'Voir resume'
                             : ''}
                       {meeting.status !== 'CANCELLED' && (
-                        <KeenIcon icon="arrow-right" style="outline" className="size-3" />
+                        <KeenIcon icon="arrow-right" style="duotone" className="size-3" />
                       )}
                     </span>
                   </div>

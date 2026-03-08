@@ -91,7 +91,7 @@ export default function ProjectDetailPage() {
         <Card>
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
             <CardTitle className="text-sm">Equipe ({project.teamMembers.length})</CardTitle>
-            <Link to={`/projects/${project.id}/team`} className="text-xs text-primary hover:underline">
+            <Link to={`/projects/${project.id}/team`} className="text-sm text-primary hover:underline">
               Voir tout
             </Link>
           </CardHeader>
@@ -104,7 +104,7 @@ export default function ProjectDetailPage() {
                   <TeamMemberRow key={m.id} member={m} />
                 ))}
                 {project.teamMembers.length > 5 && (
-                  <p className="text-xs text-muted-foreground text-center pt-1">
+                  <p className="text-sm text-muted-foreground text-center pt-1">
                     +{project.teamMembers.length - 5} autres
                   </p>
                 )}
@@ -117,7 +117,7 @@ export default function ProjectDetailPage() {
         <Card>
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
             <CardTitle className="text-sm">Livrables ({project.deliverables.length})</CardTitle>
-            <Link to={`/projects/${project.id}/deliverables`} className="text-xs text-primary hover:underline">
+            <Link to={`/projects/${project.id}/deliverables`} className="text-sm text-primary hover:underline">
               Voir tout
             </Link>
           </CardHeader>
@@ -130,7 +130,7 @@ export default function ProjectDetailPage() {
                   <DeliverableRow key={d.id} deliverable={d} />
                 ))}
                 {project.deliverables.length > 5 && (
-                  <p className="text-xs text-muted-foreground text-center pt-1">
+                  <p className="text-sm text-muted-foreground text-center pt-1">
                     +{project.deliverables.length - 5} autres
                   </p>
                 )}
@@ -177,7 +177,7 @@ function TeamMemberRow({ member }: { member: ProjectTeamMember }) {
         </div>
       )}
       <div className="min-w-0 flex-1">
-        <p className="text-xs font-medium truncate">{member.name}</p>
+        <p className="text-sm font-medium truncate">{member.name}</p>
         <p className="text-[10px] text-muted-foreground">{member.role}</p>
       </div>
       <div className="text-right shrink-0">
@@ -194,7 +194,7 @@ function DeliverableRow({ deliverable }: { deliverable: Deliverable }) {
   return (
     <div className="flex items-center justify-between py-1.5">
       <div className="min-w-0 flex-1">
-        <p className="text-xs font-medium truncate">{deliverable.name}</p>
+        <p className="text-sm font-medium truncate">{deliverable.name}</p>
         {deliverable.description && (
           <p className="text-[10px] text-muted-foreground truncate">{deliverable.description}</p>
         )}

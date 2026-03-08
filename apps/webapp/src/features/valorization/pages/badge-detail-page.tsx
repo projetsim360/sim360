@@ -105,7 +105,7 @@ export default function BadgeDetailPage() {
                     {badge.globalScore}
                   </span>
                 </div>
-                <span className="text-xs text-muted-foreground mt-2">Score global</span>
+                <span className="text-sm text-muted-foreground mt-2">Score global</span>
               </div>
 
               {/* Badge info */}

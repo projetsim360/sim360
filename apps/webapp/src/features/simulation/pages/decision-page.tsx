@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { KeenIcon } from '@/components/keenicons';
+import { MarkdownContent } from '@/components/ui/markdown-content';
 import { simulationApi } from '../api/simulation.api';
 import { aiApi, type AiEvaluationResult } from '../api/ai.api';
 import type { Simulation, Decision } from '../types/simulation.types';
@@ -127,7 +128,7 @@ export default function DecisionPage() {
         <ToolbarActions>
           <Button variant="outline" asChild>
             <Link to={`/simulations/${id}`}>
-              <KeenIcon icon="arrow-left" style="outline" className="size-4" /> Retour a la simulation
+              <KeenIcon icon="arrow-left" style="duotone" className="size-4" /> Retour a la simulation
             </Link>
           </Button>
         </ToolbarActions>
@@ -142,12 +143,10 @@ export default function DecisionPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-            {decision.context}
-          </p>
+          <MarkdownContent content={decision.context} className="text-muted-foreground" />
           {decision.timeLimitSeconds && !submitted && (
-            <p className="mt-3 text-xs text-warning">
-              <KeenIcon icon="time" style="outline" className="size-3 inline" /> Limite de temps : {Math.round(decision.timeLimitSeconds / 60)} minutes
+            <p className="mt-3 text-sm text-warning">
+              <KeenIcon icon="time" style="duotone" className="size-3 inline" /> Limite de temps : {Math.round(decision.timeLimitSeconds / 60)} minutes
             </p>
           )}
         </CardContent>
@@ -194,7 +193,7 @@ export default function DecisionPage() {
                   </div>
                   <div className="flex-1">
                     <h4 className="text-sm font-medium">{option.label}</h4>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                       {option.description}
                     </p>
                     {/* Show KPI impact preview (before submission) */}
@@ -235,7 +234,7 @@ export default function DecisionPage() {
           <Button onClick={handleConfirm} disabled={selectedOption === null || submitting}>
             {submitting ? (
               <>
-                <span className="animate-spin inline-block"><KeenIcon icon="loading" style="outline" className="size-4" /></span>
+                <span className="animate-spin inline-block"><KeenIcon icon="loading" style="duotone" className="size-4" /></span>
                 Validation...
               </>
             ) : (
@@ -257,7 +256,7 @@ export default function DecisionPage() {
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
               {Object.entries(decision.kpiImpact).map(([key, val]) => (
                 <div key={key} className="text-center p-2 bg-white rounded-lg border border-success/20">
-                  <p className="text-xs text-muted-foreground">{KPI_LABELS[key] || key}</p>
+                  <p className="text-sm text-muted-foreground">{KPI_LABELS[key] || key}</p>
                   <p className={`text-lg font-bold ${kpiColor(val as number)}`}>
                     {(val as number) > 0 ? '+' : ''}{val as number}
                   </p>
@@ -312,24 +311,24 @@ export default function DecisionPage() {
                 <div>
                   <p className="text-sm font-medium">Score de la decision</p>
                   {aiAnalysis.scoreJustification && (
-                    <p className="text-xs text-muted-foreground">{aiAnalysis.scoreJustification}</p>
+                    <p className="text-sm text-muted-foreground">{aiAnalysis.scoreJustification}</p>
                   )}
                 </div>
               </div>
             )}
             <div>
-              <h4 className="text-xs font-semibold text-primary mb-1">Coaching</h4>
-              <p className="text-sm whitespace-pre-wrap">{aiAnalysis.coaching}</p>
+              <h4 className="text-sm font-semibold text-primary mb-1">Coaching</h4>
+              <MarkdownContent content={aiAnalysis.coaching} />
             </div>
             {aiAnalysis.comparison && (
               <div>
-                <h4 className="text-xs font-semibold text-primary mb-1">Comparaison avec l'optimal</h4>
-                <p className="text-sm whitespace-pre-wrap">{aiAnalysis.comparison}</p>
+                <h4 className="text-sm font-semibold text-primary mb-1">Comparaison avec l'optimal</h4>
+                <MarkdownContent content={aiAnalysis.comparison} />
               </div>
             )}
             {aiAnalysis.patternAnalysis && (
               <div className="border-t border-primary/20 pt-3">
-                <h4 className="text-xs font-semibold text-primary mb-1">
+                <h4 className="text-sm font-semibold text-primary mb-1">
                   Profil decisionnel : <span className="capitalize">{aiAnalysis.patternAnalysis.pattern === 'cautious' ? 'Prudent' : aiAnalysis.patternAnalysis.pattern === 'aggressive' ? 'Audacieux' : aiAnalysis.patternAnalysis.pattern === 'balanced' ? 'Equilibre' : 'Variable'}</span>
                   <span className="text-primary/60 font-normal ml-1">({aiAnalysis.patternAnalysis.confidence}%)</span>
                 </h4>

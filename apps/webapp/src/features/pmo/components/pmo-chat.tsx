@@ -154,7 +154,7 @@ export function PmoChat({
               <p className="text-sm text-muted-foreground">
                 Demarrez une conversation avec votre agent PMO.
               </p>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 Il peut vous aider sur la gestion de projet, les livrables, les
                 decisions a prendre...
               </p>
@@ -175,7 +175,7 @@ export function PmoChat({
                           <h3 className="text-sm font-semibold text-foreground">
                             Bienvenue dans votre simulation
                           </h3>
-                          <p className="text-xs text-muted-foreground mt-1">
+                          <p className="text-sm text-muted-foreground mt-1">
                             {scenarioInfo.companyName} — {scenarioInfo.sector}
                           </p>
                           {scenarioInfo.objectives.length > 0 && (
@@ -207,13 +207,13 @@ export function PmoChat({
                       <button
                         key={i}
                         type="button"
-                        className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-warning/15 hover:bg-warning/25 border border-warning/30 text-xs font-medium text-foreground transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-warning/15 hover:bg-warning/25 border border-warning/30 text-sm font-medium text-foreground transition-colors cursor-pointer"
                         onClick={() => {
                           setInput(`Quelles sont les attentes pour le livrable "${d.title}" ?`);
                           inputRef.current?.focus();
                         }}
                       >
-                        <KeenIcon icon="document" style="outline" className="size-3 text-warning" />
+                        <KeenIcon icon="notepad" style="duotone" className="text-sm text-warning" />
                         {d.title}
                       </button>
                     ))}
@@ -255,7 +255,7 @@ export function PmoChat({
               onClick={cancelStream}
               title="Arreter"
             >
-              <KeenIcon icon="cross" style="outline" className="size-4" />
+              <KeenIcon icon="cross" style="duotone" className="size-4" />
             </Button>
           ) : (
             <Button
@@ -264,7 +264,7 @@ export function PmoChat({
               disabled={!input.trim() || isInitializing}
               title="Envoyer"
             >
-              <KeenIcon icon="arrow-up" style="outline" className="size-4" />
+              <KeenIcon icon="arrow-up" style="duotone" className="size-4" />
             </Button>
           )}
         </div>

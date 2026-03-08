@@ -56,7 +56,7 @@ export default function JoinCampaignPage() {
         <Card className="max-w-md w-full">
           <CardContent className="flex flex-col items-center justify-center py-12 gap-4">
             <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center">
-              <KeenIcon icon="information-2" style="outline" className="size-8 text-destructive" />
+              <KeenIcon icon="information-2" style="duotone" className="size-8 text-destructive" />
             </div>
             <h2 className="text-lg font-semibold">Campagne introuvable</h2>
             <p className="text-sm text-muted-foreground text-center">
@@ -74,7 +74,7 @@ export default function JoinCampaignPage() {
         <Card className="max-w-md w-full">
           <CardContent className="flex flex-col items-center justify-center py-12 gap-4">
             <div className="w-16 h-16 rounded-full bg-warning/10 flex items-center justify-center">
-              <KeenIcon icon="lock" style="outline" className="size-8 text-warning" />
+              <KeenIcon icon="lock" style="duotone" className="size-8 text-warning" />
             </div>
             <h2 className="text-lg font-semibold">Campagne terminee</h2>
             <p className="text-sm text-muted-foreground text-center">
@@ -108,7 +108,7 @@ export default function JoinCampaignPage() {
           <CardContent className="py-6 space-y-5">
             <div>
               <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
-                <KeenIcon icon="briefcase" style="outline" className="size-4 text-primary" />
+                <KeenIcon icon="briefcase" style="duotone" className="size-4 text-primary" />
                 Poste
               </h3>
               <p className="text-sm font-medium">{info.jobTitle}</p>
@@ -116,7 +116,7 @@ export default function JoinCampaignPage() {
 
             <div>
               <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
-                <KeenIcon icon="document" style="outline" className="size-4 text-primary" />
+                <KeenIcon icon="document" style="duotone" className="size-4 text-primary" />
                 Description
               </h3>
               <p className="text-sm text-muted-foreground whitespace-pre-wrap">
@@ -142,10 +142,10 @@ export default function JoinCampaignPage() {
             <Card key={card.icon}>
               <CardContent className="py-5 flex flex-col items-center text-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <KeenIcon icon={card.icon} style="outline" className="size-5 text-primary" />
+                  <KeenIcon icon={card.icon} style="duotone" className="size-5 text-primary" />
                 </div>
                 <h4 className="text-sm font-semibold">{card.title}</h4>
-                <p className="text-xs text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   {card.description}
                 </p>
               </CardContent>
@@ -158,11 +158,11 @@ export default function JoinCampaignPage() {
           <CardContent className="py-6 space-y-5">
             <div className="flex items-center gap-3 pb-3 border-b border-border">
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                <KeenIcon icon="time" style="outline" className="size-4 text-primary" />
+                <KeenIcon icon="time" style="duotone" className="size-4 text-primary" />
               </div>
               <div>
                 <p className="text-sm font-medium">Duree estimee</p>
-                <p className="text-xs text-muted-foreground">~1 heure</p>
+                <p className="text-sm text-muted-foreground">~1 heure</p>
               </div>
             </div>
 
@@ -188,7 +188,7 @@ export default function JoinCampaignPage() {
               </ol>
             </div>
 
-            <p className="text-xs text-muted-foreground text-center">
+            <p className="text-sm text-muted-foreground text-center">
               Vous serez guide etape par etape tout au long de la simulation.
             </p>
 
@@ -206,7 +206,7 @@ export default function JoinCampaignPage() {
                 </>
               ) : (
                 <>
-                  <KeenIcon icon="rocket" style="outline" className="size-5" />
+                  <KeenIcon icon="rocket" style="duotone" className="size-5" />
                   Commencer l'evaluation
                 </>
               )}
@@ -216,10 +216,10 @@ export default function JoinCampaignPage() {
 
         {/* Footer with recruiter note (US-8.1) */}
         <div className="text-center space-y-2">
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             Propulse par ProjectSim360 - Evaluation par simulation de gestion de projet
           </p>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             Vous etes recruteur ?{' '}
             <Link to="/contact" className="text-primary hover:underline font-medium">
               Contactez-nous pour creer votre espace entreprise.

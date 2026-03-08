@@ -220,13 +220,13 @@ export default function SimulationDetailPage() {
                   Client : {sim.project.client}
                 </p>
               )}
-              <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1"><KeenIcon icon="clipboard" style="outline" className="text-sm" /> {sim.scenario?.title}</span>
-                <span className="flex items-center gap-1"><KeenIcon icon="folder" style="outline" className="text-sm" /> {sim.scenario?.sector}</span>
-                <span className="flex items-center gap-1"><KeenIcon icon="target" style="outline" className="text-sm" /> {sim.scenario?.difficulty}</span>
+              <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                <span className="flex items-center gap-1"><KeenIcon icon="clipboard" style="duotone" className="text-sm" /> {sim.scenario?.title}</span>
+                <span className="flex items-center gap-1"><KeenIcon icon="folder" style="duotone" className="text-sm" /> {sim.scenario?.sector}</span>
+                <span className="flex items-center gap-1"><KeenIcon icon="target" style="duotone" className="text-sm" /> {sim.scenario?.difficulty}</span>
                 {sim.project?.initialBudget && (
                   <span className="flex items-center gap-1">
-                    <KeenIcon icon="dollar" style="outline" className="text-sm" /> Budget : {sim.project.currentBudget.toLocaleString('fr-FR')} /{' '}
+                    <KeenIcon icon="dollar" style="duotone" className="text-sm" /> Budget : {sim.project.currentBudget.toLocaleString('fr-FR')} /{' '}
                     {sim.project.initialBudget.toLocaleString('fr-FR')} EUR
                   </span>
                 )}
@@ -332,7 +332,7 @@ export default function SimulationDetailPage() {
           </CardHeader>
           <CardContent>
             {pendingDecisions.length === 0 ? (
-              <p className="text-xs text-muted-foreground py-4 text-center">
+              <p className="text-sm text-muted-foreground py-4 text-center">
                 Aucune decision en attente.
               </p>
             ) : (
@@ -346,17 +346,17 @@ export default function SimulationDetailPage() {
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         <h4 className="text-sm font-medium">{dec.title}</h4>
-                        <p className="text-xs text-muted-foreground line-clamp-1">
+                        <p className="text-sm text-muted-foreground line-clamp-1">
                           {dec.context}
                         </p>
                       </div>
-                      <span className="text-xs text-primary shrink-0">
+                      <span className="text-sm text-primary shrink-0">
                         {dec.options.length} options →
                       </span>
                     </div>
                     {dec.timeLimitSeconds && (
                       <p className="text-[10px] text-warning mt-1">
-                        <KeenIcon icon="time" style="outline" className="size-3" /> Limite : {Math.round(dec.timeLimitSeconds / 60)} min
+                        <KeenIcon icon="time" style="duotone" className="size-3" /> Limite : {Math.round(dec.timeLimitSeconds / 60)} min
                       </p>
                     )}
                   </Link>
@@ -380,7 +380,7 @@ export default function SimulationDetailPage() {
           </CardHeader>
           <CardContent>
             {pendingEvents.length === 0 ? (
-              <p className="text-xs text-muted-foreground py-4 text-center">
+              <p className="text-sm text-muted-foreground py-4 text-center">
                 Aucun evenement en attente.
               </p>
             ) : (
@@ -399,11 +399,11 @@ export default function SimulationDetailPage() {
                             {evt.severity}
                           </Badge>
                         </div>
-                        <p className="text-xs text-muted-foreground line-clamp-2">
+                        <p className="text-sm text-muted-foreground line-clamp-2">
                           {evt.description}
                         </p>
                       </div>
-                      <span className="text-xs text-primary shrink-0">
+                      <span className="text-sm text-primary shrink-0">
                         {evt.options.length} options →
                       </span>
                     </div>
@@ -467,7 +467,7 @@ export default function SimulationDetailPage() {
                   </Link>
                 ))}
               {sim.meetings.filter((m) => m.phaseOrder === sim.currentPhaseOrder).length === 0 && (
-                <p className="text-xs text-muted-foreground py-4 text-center">
+                <p className="text-sm text-muted-foreground py-4 text-center">
                   Aucune reunion pour cette phase.
                 </p>
               )}
@@ -497,7 +497,7 @@ export default function SimulationDetailPage() {
                     </div>
                   )}
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-medium truncate">{member.name}</p>
+                    <p className="text-sm font-medium truncate">{member.name}</p>
                     <p className="text-[10px] text-muted-foreground truncate">
                       {member.role} - {member.expertise}
                     </p>
@@ -528,7 +528,7 @@ export default function SimulationDetailPage() {
         </CardHeader>
         <CardContent>
           {recentTimeline.length === 0 ? (
-            <p className="text-xs text-muted-foreground py-4 text-center">
+            <p className="text-sm text-muted-foreground py-4 text-center">
               Aucun evenement dans l'historique.
             </p>
           ) : (
@@ -545,7 +545,7 @@ export default function SimulationDetailPage() {
                           : <KeenIcon icon="geolocation" style="filled" className="size-4" />}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-medium">{entry.title}</p>
+                    <p className="text-sm font-medium">{entry.title}</p>
                     <p className="text-[10px] text-muted-foreground">
                       {new Date(entry.date).toLocaleString('fr-FR')}
                     </p>

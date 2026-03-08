@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { KeenIcon } from '@/components/keenicons';
+import { MarkdownContent } from '@/components/ui/markdown-content';
 import { PmiGlossaryText } from '@/features/profile/components/pmi-glossary-tooltip';
 import { toast } from 'sonner';
 import type { PmoMessage } from '../types/pmo.types';
@@ -51,7 +52,7 @@ export function PmoMessageBubble({ message, enableGlossaryTooltips = false }: Pm
   if (isSystem) {
     return (
       <div className="flex justify-center py-2">
-        <p className="text-xs text-muted-foreground italic max-w-md text-center">
+        <p className="text-sm text-muted-foreground italic max-w-md text-center">
           {message.content}
         </p>
       </div>
@@ -106,7 +107,7 @@ export function PmoMessageBubble({ message, enableGlossaryTooltips = false }: Pm
                       className="h-6 px-2 text-xs"
                       onClick={() => handleCopyCode(seg.value)}
                     >
-                      <KeenIcon icon="copy" style="outline" className="size-3 mr-1" />
+                      <KeenIcon icon="copy" style="duotone" className="size-3 mr-1" />
                       Copier
                     </Button>
                   </div>
@@ -115,24 +116,16 @@ export function PmoMessageBubble({ message, enableGlossaryTooltips = false }: Pm
                   </pre>
                 </div>
               ) : (
-                <p key={i} className="whitespace-pre-wrap break-words">
-                  {enableGlossaryTooltips ? (
-                    <PmiGlossaryText text={seg.value} enabled />
-                  ) : (
-                    seg.value
-                  )}
-                </p>
+                <div key={i}>
+                  <MarkdownContent content={seg.value} />
+                </div>
               ),
             )}
           </div>
+        ) : isUser ? (
+          <p className="whitespace-pre-wrap break-words">{message.content}</p>
         ) : (
-          <p className="whitespace-pre-wrap break-words">
-            {!isUser && enableGlossaryTooltips ? (
-              <PmiGlossaryText text={message.content} enabled />
-            ) : (
-              message.content
-            )}
-          </p>
+          <MarkdownContent content={message.content} />
         )}
         <p
           className={cn(
@@ -163,10 +156,8 @@ export function StreamingBubble({ content }: StreamingBubbleProps) {
         <KeenIcon icon="abstract-26" style="solid" className="size-4" />
       </div>
       <div className="rounded-xl rounded-bl-sm px-4 py-2.5 text-sm bg-gray-100 dark:bg-gray-800 text-foreground">
-        <p className="whitespace-pre-wrap break-words">
-          {content}
-          <span className="inline-block w-1.5 h-4 bg-gray-400 animate-pulse ml-0.5 align-middle" />
-        </p>
+        <MarkdownContent content={content} />
+        <span className="inline-block w-1.5 h-4 bg-gray-400 animate-pulse ml-0.5 align-middle" />
       </div>
     </div>
   );

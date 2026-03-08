@@ -160,7 +160,7 @@ export default function KpiHistoryPage() {
                       if (!active || !payload?.length) return null;
                       const d = payload[0].payload;
                       return (
-                        <div className="bg-card border border-border rounded-lg p-3 shadow-lg text-xs">
+                        <div className="bg-card border border-border rounded-lg p-3 shadow-lg text-sm">
                           <p className="font-semibold mb-1">
                             {d.label} — {d.phase}
                           </p>
@@ -179,7 +179,7 @@ export default function KpiHistoryPage() {
                   <Legend
                     formatter={(value: string) => {
                       const cfg = KPI_CONFIG.find((k) => k.key === value);
-                      return <span className="text-xs">{cfg?.label ?? value}</span>;
+                      return <span className="text-sm">{cfg?.label ?? value}</span>;
                     }}
                   />
                   <ReferenceLine y={30} stroke="#ef4444" strokeDasharray="5 5" opacity={0.6} />
@@ -206,7 +206,7 @@ export default function KpiHistoryPage() {
               <CardTitle className="text-sm">Details des snapshots</CardTitle>
             </CardHeader>
             <CardContent>
-              <Table className="text-xs">
+              <Table className="text-sm">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-left">#</TableHead>

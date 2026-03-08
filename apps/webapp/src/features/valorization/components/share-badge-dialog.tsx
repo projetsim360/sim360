@@ -83,7 +83,7 @@ export function ShareBadgeDialog({
             <div className="space-y-3">
               {/* URL display */}
               <div className="flex items-center gap-2 p-2 bg-muted rounded-md">
-                <span className="text-xs text-muted-foreground truncate flex-1">
+                <span className="text-sm text-muted-foreground truncate flex-1">
                   {verifyUrl}
                 </span>
                 <Button variant="ghost" size="sm" mode="icon" onClick={handleCopyLink}>

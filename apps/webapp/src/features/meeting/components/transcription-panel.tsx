@@ -69,7 +69,7 @@ export function TranscriptionPanel({ transcriptions, open, onClose }: Transcript
           <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800/50 shrink-0">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-medium text-zinc-300">Transcription en direct</span>
+              <span className="text-sm font-medium text-zinc-300">Transcription en direct</span>
             </div>
             <button
               type="button"
@@ -91,7 +91,7 @@ export function TranscriptionPanel({ transcriptions, open, onClose }: Transcript
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                   </svg>
                 </div>
-                <p className="text-zinc-600 text-xs text-center">
+                <p className="text-zinc-600 text-sm text-center">
                   La transcription apparaitra ici<br />une fois la conversation lancee
                 </p>
               </div>
@@ -108,7 +108,7 @@ export function TranscriptionPanel({ transcriptions, open, onClose }: Transcript
                       </span>
                       <span className="text-[10px] text-zinc-500 font-medium">Vous</span>
                     </div>
-                    <div className="max-w-[88%] rounded-2xl rounded-tr-md px-3 py-2 bg-primary/15 text-zinc-200 text-xs leading-relaxed">
+                    <div className="max-w-[88%] rounded-2xl rounded-tr-md px-3 py-2 bg-primary/15 text-zinc-200 text-sm leading-relaxed">
                       {t.content}
                     </div>
                   </div>
@@ -123,7 +123,7 @@ export function TranscriptionPanel({ transcriptions, open, onClose }: Transcript
                         {formatTime(t.timestamp)}
                       </span>
                     </div>
-                    <div className={`max-w-[88%] rounded-2xl rounded-tl-md px-3 py-2 ${getParticipantBg(t.participantName)} text-zinc-300 text-xs leading-relaxed`}>
+                    <div className={`max-w-[88%] rounded-2xl rounded-tl-md px-3 py-2 ${getParticipantBg(t.participantName)} text-zinc-300 text-sm leading-relaxed`}>
                       {t.content}
                     </div>
                   </div>

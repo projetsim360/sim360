@@ -165,13 +165,13 @@ export default function TokenUsagePage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
-              <KeenIcon icon="arrow-down" style="outline" className="size-4" />
+              <KeenIcon icon="arrow-down" style="duotone" className="size-4" />
               Quota entree
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">
                   {formatTokens(quota?.currentMonthInput ?? 0)} utilises
                 </span>
@@ -191,13 +191,13 @@ export default function TokenUsagePage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
-              <KeenIcon icon="arrow-up" style="outline" className="size-4" />
+              <KeenIcon icon="arrow-up" style="duotone" className="size-4" />
               Quota sortie
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">
                   {formatTokens(quota?.currentMonthOutput ?? 0)} utilises
                 </span>
@@ -220,13 +220,13 @@ export default function TokenUsagePage() {
         <Card className="mb-6">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
-              <KeenIcon icon="setting-2" style="outline" className="size-4" />
+              <KeenIcon icon="setting-2" style="duotone" className="size-4" />
               Cout par modele
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
-              <Table className="text-xs">
+              <Table className="text-sm">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-left">Modele</TableHead>
@@ -258,13 +258,13 @@ export default function TokenUsagePage() {
         <Card className="mb-6">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
-              <KeenIcon icon="category" style="outline" className="size-4" />
+              <KeenIcon icon="category" style="duotone" className="size-4" />
               Cout par operation
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
-              <Table className="text-xs">
+              <Table className="text-sm">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-left">Operation</TableHead>
@@ -296,13 +296,13 @@ export default function TokenUsagePage() {
         <Card className="mb-6">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
-              <KeenIcon icon="chart-line" style="outline" className="size-4" />
+              <KeenIcon icon="chart-line" style="duotone" className="size-4" />
               Cout par projet
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
-              <Table className="text-xs">
+              <Table className="text-sm">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-left">Projet</TableHead>
@@ -350,9 +350,9 @@ export default function TokenUsagePage() {
         <CardContent className="py-4">
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-              <KeenIcon icon="information-2" style="outline" className="size-4" />
+              <KeenIcon icon="information-2" style="duotone" className="size-4" />
             </div>
-            <div className="text-xs text-muted-foreground space-y-1">
+            <div className="text-sm text-muted-foreground space-y-1">
               <p>
                 Les couts sont calcules automatiquement a partir du tarif de chaque modele IA
                 avec une marge de {billing?.marginPercent ?? 30}%.

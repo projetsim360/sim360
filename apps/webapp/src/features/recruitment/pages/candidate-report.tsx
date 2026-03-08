@@ -81,13 +81,13 @@ export default function CandidateReportPage() {
           <CandidateStatusBadge status={candidate.status} />
           <Button variant="outline" size="sm" asChild>
             <Link to={`/recruitment/campaigns/${id}/candidates/${candidateId}/interview`}>
-              <KeenIcon icon="message-text" style="outline" className="size-4" />
+              <KeenIcon icon="message-text" style="duotone" className="size-4" />
               Guide d'entretien
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
             <Link to={`/recruitment/campaigns/${id}`}>
-              <KeenIcon icon="arrow-left" style="outline" className="size-4" />
+              <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
               Retour
             </Link>
           </Button>
@@ -116,11 +116,11 @@ export default function CandidateReportPage() {
                 </div>
               </div>
               <p className="text-sm font-medium mt-3">Score global</p>
-              <p className="text-xs text-muted-foreground">sur 100</p>
+              <p className="text-sm text-muted-foreground">sur 100</p>
 
               {candidate.matchPercentage !== undefined && candidate.matchPercentage !== null && (
                 <div className="w-full mt-6 space-y-2">
-                  <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Compatibilite</span>
                     <span className="font-semibold">{Math.round(candidate.matchPercentage)}%</span>
                   </div>
@@ -175,7 +175,7 @@ export default function CandidateReportPage() {
               <Card key={key}>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm flex items-center gap-2">
-                    <KeenIcon icon={icon} style="outline" className="size-4" />
+                    <KeenIcon icon={icon} style="duotone" className="size-4" />
                     {label}
                   </CardTitle>
                 </CardHeader>
@@ -184,7 +184,7 @@ export default function CandidateReportPage() {
                     <Progress value={candidate.report360![key].score} className="h-2 flex-1 mr-3" />
                     <span className="text-sm font-bold">{candidate.report360![key].score}%</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">{candidate.report360![key].details}</p>
+                  <p className="text-sm text-muted-foreground">{candidate.report360![key].details}</p>
                 </CardContent>
               </Card>
             ))}
@@ -196,7 +196,7 @@ export default function CandidateReportPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-sm flex items-center gap-2">
-                <KeenIcon icon="check-circle" style="outline" className="size-4 text-success" />
+                <KeenIcon icon="check-circle" style="duotone" className="size-4 text-success" />
                 Points forts
               </CardTitle>
             </CardHeader>
@@ -205,7 +205,7 @@ export default function CandidateReportPage() {
                 <ul className="space-y-2">
                   {candidate.strengths.map((s, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm">
-                      <KeenIcon icon="check" style="outline" className="size-3.5 text-success mt-0.5 shrink-0" />
+                      <KeenIcon icon="check" style="duotone" className="size-3.5 text-success mt-0.5 shrink-0" />
                       {s}
                     </li>
                   ))}
@@ -218,7 +218,7 @@ export default function CandidateReportPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-sm flex items-center gap-2">
-                <KeenIcon icon="information-2" style="outline" className="size-4 text-warning" />
+                <KeenIcon icon="information-2" style="duotone" className="size-4 text-warning" />
                 Points d'amelioration
               </CardTitle>
             </CardHeader>
@@ -227,7 +227,7 @@ export default function CandidateReportPage() {
                 <ul className="space-y-2">
                   {candidate.weaknesses.map((w, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm">
-                      <KeenIcon icon="minus" style="outline" className="size-3.5 text-warning mt-0.5 shrink-0" />
+                      <KeenIcon icon="minus" style="duotone" className="size-3.5 text-warning mt-0.5 shrink-0" />
                       {w}
                     </li>
                   ))}
@@ -244,7 +244,7 @@ export default function CandidateReportPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-sm flex items-center gap-2">
-                <KeenIcon icon="chart-simple" style="outline" className="size-4 text-primary" />
+                <KeenIcon icon="chart-simple" style="duotone" className="size-4 text-primary" />
                 Adequation au poste
               </CardTitle>
             </CardHeader>
@@ -277,7 +277,7 @@ export default function CandidateReportPage() {
 
                     return (
                       <div key={req.skill} className="space-y-1">
-                        <div className="flex items-center justify-between text-xs">
+                        <div className="flex items-center justify-between text-sm">
                           <span className="font-medium">{req.skill}</span>
                           <span className={cn(
                             'font-medium',
@@ -327,7 +327,7 @@ export default function CandidateReportPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-sm flex items-center gap-2">
-                <KeenIcon icon="artificial-intelligence" style="outline" className="size-4 text-primary" />
+                <KeenIcon icon="artificial-intelligence" style="duotone" className="size-4 text-primary" />
                 Analyse IA
               </CardTitle>
             </CardHeader>

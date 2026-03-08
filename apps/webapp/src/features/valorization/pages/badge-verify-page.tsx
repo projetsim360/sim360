@@ -96,7 +96,7 @@ export default function BadgeVerifyPage() {
         </Card>
 
         {/* Footer */}
-        <p className="text-center text-xs text-muted-foreground">
+        <p className="text-center text-sm text-muted-foreground">
           Ce badge a ete genere par la plateforme ProjectSim360.
           Il atteste des competences en gestion de projet evaluees lors d'une simulation.
         </p>

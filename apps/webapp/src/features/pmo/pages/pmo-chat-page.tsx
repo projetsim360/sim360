@@ -52,7 +52,7 @@ export default function PmoChatPage() {
         <ToolbarActions>
           {pendingCount > 0 && (
             <Badge variant="warning" appearance="light" size="sm">
-              <KeenIcon icon="notification-on" style="outline" className="size-3.5 mr-1" />
+              <KeenIcon icon="notification-on" style="duotone" className="size-3.5 mr-1" />
               {pendingCount} rappel{pendingCount > 1 ? 's' : ''}
             </Badge>
           )}
@@ -61,12 +61,12 @@ export default function PmoChatPage() {
             size="sm"
             onClick={() => setContextCollapsed(!contextCollapsed)}
           >
-            <KeenIcon icon="setting-2" style="outline" className="size-4" />
+            <KeenIcon icon="setting-2" style="duotone" className="size-4" />
             {contextCollapsed ? 'Afficher contexte' : 'Masquer contexte'}
           </Button>
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}`}>
-              <KeenIcon icon="arrow-left" style="outline" className="size-4" />
+              <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
               Retour
             </Link>
           </Button>

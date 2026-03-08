@@ -32,7 +32,7 @@ export default function CampaignsListPage() {
         <ToolbarActions>
           <Button variant="primary" size="sm" asChild>
             <Link to="/recruitment/campaigns/new">
-              <KeenIcon icon="plus" style="outline" className="size-4" />
+              <KeenIcon icon="plus" style="duotone" className="size-4" />
               Nouvelle campagne
             </Link>
           </Button>
@@ -64,7 +64,7 @@ export default function CampaignsListPage() {
           <Card>
             <CardContent className="flex flex-col items-center justify-center py-16 gap-3">
               <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center">
-                <KeenIcon icon="briefcase" style="outline" className="size-6 text-muted-foreground" />
+                <KeenIcon icon="briefcase" style="duotone" className="size-6 text-muted-foreground" />
               </div>
               <p className="text-muted-foreground text-sm">
                 Aucune campagne trouvee.
@@ -127,7 +127,7 @@ export default function CampaignsListPage() {
                         <TableCell className="text-right">
                           <Button variant="ghost" size="sm" asChild>
                             <Link to={`/recruitment/campaigns/${campaign.id}`}>
-                              <KeenIcon icon="arrow-right" style="outline" className="size-4" />
+                              <KeenIcon icon="arrow-right" style="duotone" className="size-4" />
                             </Link>
                           </Button>
                         </TableCell>

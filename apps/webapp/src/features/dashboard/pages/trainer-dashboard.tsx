@@ -148,7 +148,7 @@ export default function TrainerDashboardPage() {
             <p className="text-sm text-muted-foreground py-8 text-center">Aucun apprenant</p>
           ) : (
             <div className="overflow-x-auto">
-              <Table className="text-xs">
+              <Table className="text-sm">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-left">Apprenant</TableHead>

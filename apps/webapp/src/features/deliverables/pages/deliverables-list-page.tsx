@@ -116,7 +116,7 @@ export default function DeliverablesListPage() {
           )}
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}`}>
-              <KeenIcon icon="arrow-left" style="outline" className="size-4" />
+              <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
               Retour
             </Link>
           </Button>
@@ -193,7 +193,7 @@ export default function DeliverablesListPage() {
             <CardContent className="flex flex-col items-center justify-center py-16 gap-3">
               <KeenIcon
                 icon="document"
-                style="outline"
+                style="duotone"
                 className="size-12 text-muted-foreground/30"
               />
               <p className="text-sm text-muted-foreground">
@@ -215,14 +215,14 @@ export default function DeliverablesListPage() {
                       <h3 className="font-semibold text-sm truncate">
                         {deliverable.title}
                       </h3>
-                      <p className="text-xs text-muted-foreground mt-0.5">
+                      <p className="text-sm text-muted-foreground mt-0.5">
                         {TYPE_LABELS[deliverable.type] ?? deliverable.type}
                       </p>
                     </div>
                     <DeliverableStatusBadge status={deliverable.status} />
                   </div>
 
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
                     <div className="flex items-center gap-3">
                       <span>Phase {deliverable.phaseOrder}</span>
                       {deliverable.evaluations &&
@@ -255,7 +255,7 @@ export default function DeliverablesListPage() {
                             : 'Voir'}
                         <KeenIcon
                           icon="arrow-right"
-                          style="outline"
+                          style="duotone"
                           className="size-3"
                         />
                       </span>

@@ -75,7 +75,7 @@ export default function EmailDetailPage() {
           <ToolbarActions>
             <Button variant="outline" size="sm" asChild>
               <Link to={`/simulations/${simId}/emails`}>
-                <KeenIcon icon="arrow-left" style="outline" className="size-4" />
+                <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
                 Retour
               </Link>
             </Button>
@@ -107,13 +107,13 @@ export default function EmailDetailPage() {
               onClick={handleArchive}
               disabled={archiveMutation.isPending}
             >
-              <KeenIcon icon="archive" style="outline" className="size-4" />
+              <KeenIcon icon="archive" style="duotone" className="size-4" />
               Archiver
             </Button>
           )}
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${simId}/emails`}>
-              <KeenIcon icon="arrow-left" style="outline" className="size-4" />
+              <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
               Retour
             </Link>
           </Button>

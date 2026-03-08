@@ -40,11 +40,11 @@ function StatCard({ label, value, icon, color }: { label: string; value: string 
     <Card>
       <CardContent className="flex items-center gap-4 py-4">
         <div className={cn('w-10 h-10 rounded-lg flex items-center justify-center', color)}>
-          <KeenIcon icon={icon} style="outline" className="size-5" />
+          <KeenIcon icon={icon} style="duotone" className="size-5" />
         </div>
         <div>
           <p className="text-2xl font-bold">{value}</p>
-          <p className="text-xs text-muted-foreground">{label}</p>
+          <p className="text-sm text-muted-foreground">{label}</p>
         </div>
       </CardContent>
     </Card>
@@ -172,14 +172,14 @@ export default function CampaignDetailPage() {
           {campaign.status === 'ACTIVE' && (
             <Button variant="outline" size="sm" asChild>
               <Link to={`/recruitment/campaigns/${id}/shortlist`}>
-                <KeenIcon icon="star" style="outline" className="size-4" />
+                <KeenIcon icon="star" style="duotone" className="size-4" />
                 Shortlist
               </Link>
             </Button>
           )}
           <Button variant="outline" size="sm" asChild>
             <Link to="/recruitment/campaigns">
-              <KeenIcon icon="arrow-left" style="outline" className="size-4" />
+              <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
               Retour
             </Link>
           </Button>
@@ -190,7 +190,7 @@ export default function CampaignDetailPage() {
           <Card className="mb-5">
             <CardContent className="py-4">
               <div className="flex items-center gap-3 mb-2">
-                <KeenIcon icon="share" style="outline" className="size-4 text-primary" />
+                <KeenIcon icon="share" style="duotone" className="size-4 text-primary" />
                 <span className="text-sm font-medium">Lien de candidature</span>
               </div>
               <CampaignLinkShare slug={campaign.slug} />
@@ -204,7 +204,7 @@ export default function CampaignDetailPage() {
             <CardContent className="py-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium flex items-center gap-2">
-                  <KeenIcon icon="people" style="outline" className="size-4 text-primary" />
+                  <KeenIcon icon="people" style="duotone" className="size-4 text-primary" />
                   Candidats
                 </span>
                 <span className="text-sm font-bold">
@@ -226,15 +226,15 @@ export default function CampaignDetailPage() {
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList variant="line" className="mb-5">
             <TabsTrigger value="dashboard">
-              <KeenIcon icon="chart-simple" style="outline" className="size-4" />
+              <KeenIcon icon="chart-simple" style="duotone" className="size-4" />
               Dashboard
             </TabsTrigger>
             <TabsTrigger value="candidates">
-              <KeenIcon icon="people" style="outline" className="size-4" />
+              <KeenIcon icon="people" style="duotone" className="size-4" />
               Candidats
             </TabsTrigger>
             <TabsTrigger value="settings">
-              <KeenIcon icon="setting-2" style="outline" className="size-4" />
+              <KeenIcon icon="setting-2" style="duotone" className="size-4" />
               Parametres
             </TabsTrigger>
           </TabsList>
@@ -283,7 +283,7 @@ export default function CampaignDetailPage() {
                           >
                             <span className="text-xl font-bold">{Math.round(dashboard.completionRate)}%</span>
                           </div>
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-sm text-muted-foreground">
                             {dashboard.completed} sur {dashboard.totalCandidates} candidats
                           </p>
                           <Progress value={dashboard.completionRate} className="h-2.5 w-full" />
@@ -311,7 +311,7 @@ export default function CampaignDetailPage() {
                               {dashboard.averageScore !== null ? Math.round(dashboard.averageScore) : '-'}
                             </span>
                           </div>
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-sm text-muted-foreground">
                             {dashboard.averageScore !== null ? 'sur 100' : 'Aucun resultat'}
                           </p>
                         </div>
@@ -334,10 +334,10 @@ export default function CampaignDetailPage() {
             {candidates.length === 0 ? (
               <Card>
                 <CardContent className="flex flex-col items-center justify-center py-16 gap-3">
-                  <KeenIcon icon="people" style="outline" className="size-8 text-muted-foreground" />
+                  <KeenIcon icon="people" style="duotone" className="size-8 text-muted-foreground" />
                   <p className="text-muted-foreground text-sm">Aucun candidat pour le moment.</p>
                   {campaign.status === 'DRAFT' && (
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-sm text-muted-foreground">
                       Publiez la campagne pour recevoir des candidatures.
                     </p>
                   )}
@@ -347,7 +347,7 @@ export default function CampaignDetailPage() {
               <div className="space-y-4">
                 {/* US-10.6: Sort by competence */}
                 <div className="flex items-center justify-end gap-2">
-                  <span className="text-xs text-muted-foreground">Trier par competence :</span>
+                  <span className="text-sm text-muted-foreground">Trier par competence :</span>
                   <Select value={sortBy} onValueChange={(val) => setSortBy(val as SortKey)}>
                     <SelectTrigger className="w-[180px] h-8 text-xs">
                       <SelectValue />
@@ -396,7 +396,7 @@ export default function CampaignDetailPage() {
                                       : 'Candidat inconnu'}
                                   </p>
                                   {candidate.user && (
-                                    <p className="text-xs text-muted-foreground">{candidate.user.email}</p>
+                                    <p className="text-sm text-muted-foreground">{candidate.user.email}</p>
                                   )}
                                 </div>
                               </TableCell>
@@ -443,7 +443,7 @@ export default function CampaignDetailPage() {
                                   onClick={(e) => e.stopPropagation()}
                                 >
                                   <Link to={`/recruitment/campaigns/${id}/candidates/${candidate.id}`}>
-                                    <KeenIcon icon="eye" style="outline" className="size-4" />
+                                    <KeenIcon icon="eye" style="duotone" className="size-4" />
                                   </Link>
                                 </Button>
                               </TableCell>
@@ -512,7 +512,7 @@ export default function CampaignDetailPage() {
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button variant="primary" size="sm">
-                          <KeenIcon icon="rocket" style="outline" className="size-4" />
+                          <KeenIcon icon="rocket" style="duotone" className="size-4" />
                           Publier la campagne
                         </Button>
                       </AlertDialogTrigger>
@@ -536,7 +536,7 @@ export default function CampaignDetailPage() {
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button variant="destructive" size="sm">
-                          <KeenIcon icon="lock" style="outline" className="size-4" />
+                          <KeenIcon icon="lock" style="duotone" className="size-4" />
                           Cloturer la campagne
                         </Button>
                       </AlertDialogTrigger>
@@ -560,7 +560,7 @@ export default function CampaignDetailPage() {
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button variant="outline" size="sm">
-                          <KeenIcon icon="archive" style="outline" className="size-4" />
+                          <KeenIcon icon="archive" style="duotone" className="size-4" />
                           Archiver
                         </Button>
                       </AlertDialogTrigger>

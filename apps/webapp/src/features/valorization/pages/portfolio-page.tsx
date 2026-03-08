@@ -143,7 +143,7 @@ export default function PortfolioPage() {
                           {deliverable.status === 'COMPLETED' ? 'Termine' : deliverable.status}
                         </Badge>
                         {deliverable.grade && (
-                          <span className="text-xs font-medium text-muted-foreground">
+                          <span className="text-sm font-medium text-muted-foreground">
                             Note : {deliverable.grade}
                           </span>
                         )}

@@ -124,7 +124,7 @@ export default function TimelinePage() {
                           <h4 className="text-sm font-medium">{entry.title}</h4>
                           {/* Extra data display */}
                           {entry.data && Object.keys(entry.data).length > 0 && (
-                            <div className="mt-2 text-xs text-muted-foreground space-y-0.5">
+                            <div className="mt-2 text-sm text-muted-foreground space-y-0.5">
                               {Object.entries(entry.data).map(([key, val]) => (
                                 <p key={key}>
                                   <span className="font-medium">{key}</span> :{' '}

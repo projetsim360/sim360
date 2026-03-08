@@ -24,7 +24,7 @@ export function EvaluationCard({
           <KeenIcon icon={icon} style="solid" className={cn('size-4', iconColor)} />
           {title}
           {items.length > 0 && (
-            <span className="text-xs text-muted-foreground font-normal">
+            <span className="text-sm text-muted-foreground font-normal">
               ({items.length})
             </span>
           )}
@@ -32,7 +32,7 @@ export function EvaluationCard({
       </CardHeader>
       <CardContent>
         {items.length === 0 ? (
-          <p className="text-xs text-muted-foreground italic">{emptyMessage}</p>
+          <p className="text-sm text-muted-foreground italic">{emptyMessage}</p>
         ) : (
           <ul className="space-y-1.5">
             {items.map((item, index) => (

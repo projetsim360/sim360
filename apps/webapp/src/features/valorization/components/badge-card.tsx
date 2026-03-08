@@ -43,7 +43,7 @@ export function BadgeCard({ badge, className }: BadgeCardProps) {
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0 flex-1">
               <h3 className="font-semibold text-sm truncate">{badge.title}</h3>
-              <p className="text-xs text-muted-foreground truncate">
+              <p className="text-sm text-muted-foreground truncate">
                 {badge.scenarioTitle}
               </p>
             </div>

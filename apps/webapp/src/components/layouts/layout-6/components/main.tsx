@@ -24,7 +24,7 @@ export function Main() {
       <div className="flex flex-col lg:flex-row grow pt-(--header-height) lg:pt-0">
         <div className="flex flex-col grow items-stretch rounded-xl bg-background border border-input lg:ms-(--sidebar-width) mt-0 lg:mt-[15px] m-[15px]">
           <div className="flex flex-col grow kt-scrollable-y-auto [--kt-scrollbar-width:auto] pt-5">
-            <main className="grow" role="content">               
+            <main className="grow px-4 lg:px-5" role="content">
               <Outlet />
             </main>
             <Footer />

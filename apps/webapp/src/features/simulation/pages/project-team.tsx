@@ -46,7 +46,7 @@ export default function ProjectTeamPage() {
                   </div>
                   <div>
                     <CardTitle className="text-sm">{m.name}</CardTitle>
-                    <p className="text-xs text-muted-foreground">{m.role}</p>
+                    <p className="text-sm text-muted-foreground">{m.role}</p>
                   </div>
                 </div>
               </CardHeader>
@@ -68,7 +68,7 @@ export default function ProjectTeamPage() {
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-start gap-2 text-xs">
+    <div className="flex items-start gap-2 text-sm">
       <span className="text-muted-foreground shrink-0 w-24">{label}</span>
       <span className="font-medium">{value}</span>
     </div>
@@ -78,7 +78,7 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 function MiniGauge({ label, value }: { label: string; value: number }) {
   const color = value >= 70 ? 'text-green-600' : value >= 40 ? 'text-yellow-600' : 'text-red-600';
   return (
-    <div className="flex items-center gap-2 text-xs">
+    <div className="flex items-center gap-2 text-sm">
       <span className="text-muted-foreground">{label}</span>
       <span className={`font-medium ${color}`}>{value}%</span>
     </div>

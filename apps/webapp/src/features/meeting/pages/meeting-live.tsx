@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { KeenIcon } from '@/components/keenicons';
+import { MarkdownContent } from '@/components/ui/markdown-content';
 import { streamAiResponse } from '@/lib/sse-client';
 import { meetingApi } from '../api/meeting.api';
 import type { ChatMessage, MeetingDetail, MeetingParticipant } from '../types/meeting.types';
@@ -209,7 +210,7 @@ export default function MeetingLivePage() {
       {/* Participant selector */}
       {meeting.participants.length > 1 && (
         <div className="flex items-center gap-2 mb-4">
-          <span className="text-xs text-muted-foreground">Parler a :</span>
+          <span className="text-sm text-muted-foreground">Parler a :</span>
           {meeting.participants.map((p) => (
             <Button
               key={p.id}
@@ -257,8 +258,12 @@ export default function MeetingLivePage() {
                         : 'bg-muted text-foreground'
                     }`}
                   >
-                    {msg.content || (
+                    {!msg.content ? (
                       <span className="inline-block animate-pulse">...</span>
+                    ) : msg.role === 'user' ? (
+                      msg.content
+                    ) : (
+                      <MarkdownContent content={msg.content} />
                     )}
                   </div>
                 </div>

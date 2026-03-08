@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { KeenIcon } from '@/components/keenicons';
+import { MarkdownContent } from '@/components/ui/markdown-content';
 import { simulationApi } from '../api/simulation.api';
 import type { Simulation, RandomEvent } from '../types/simulation.types';
 
@@ -112,7 +113,7 @@ export default function RandomEventPage() {
         <ToolbarActions>
           <Button variant="outline" asChild>
             <Link to={`/simulations/${id}`}>
-              <KeenIcon icon="arrow-left" style="outline" className="size-4" /> Retour a la simulation
+              <KeenIcon icon="arrow-left" style="duotone" className="size-4" /> Retour a la simulation
             </Link>
           </Button>
         </ToolbarActions>
@@ -128,10 +129,8 @@ export default function RandomEventPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-            {event.description}
-          </p>
-          <p className="mt-2 text-xs text-muted-foreground">
+          <MarkdownContent content={event.description} className="text-muted-foreground" />
+          <p className="mt-2 text-sm text-muted-foreground">
             Type : {event.type} · Phase : {event.phaseOrder}
           </p>
         </CardContent>
@@ -179,7 +178,7 @@ export default function RandomEventPage() {
                     </div>
                     <div className="flex-1">
                       <h4 className="text-sm font-medium">{option.label}</h4>
-                      <p className="text-xs text-muted-foreground mt-1">{option.description}</p>
+                      <p className="text-sm text-muted-foreground mt-1">{option.description}</p>
                       {!submitted && option.kpiImpact && Object.keys(option.kpiImpact).length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-2">
                           {Object.entries(option.kpiImpact).map(([key, val]) => (

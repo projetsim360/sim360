@@ -169,7 +169,7 @@ export default function EmailInboxPage() {
           {simulationId && (
             <Button variant="outline" size="sm" asChild>
               <Link to={`/simulations/${simulationId}`}>
-                <KeenIcon icon="arrow-left" style="outline" className="size-4" />
+                <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
                 Simulation
               </Link>
             </Button>
@@ -267,7 +267,7 @@ export default function EmailInboxPage() {
                       >
                         {email.subject}
                       </p>
-                      <p className="text-xs text-muted-foreground truncate mt-0.5">
+                      <p className="text-sm text-muted-foreground truncate mt-0.5">
                         {email.body.slice(0, 80)}...
                       </p>
                       <div className="flex items-center gap-2 mt-1.5">
@@ -322,7 +322,7 @@ export default function EmailInboxPage() {
                       >
                         <KeenIcon
                           icon="archive"
-                          style="outline"
+                          style="duotone"
                           className="size-4"
                         />
                         Archiver
@@ -448,7 +448,7 @@ export default function EmailInboxPage() {
                               <>
                                 <KeenIcon
                                   icon="loading"
-                                  style="outline"
+                                  style="duotone"
                                   className="size-4 animate-spin mr-1"
                                 />
                                 Evaluation...

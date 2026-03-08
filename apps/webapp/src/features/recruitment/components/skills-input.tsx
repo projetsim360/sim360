@@ -51,7 +51,7 @@ export function SkillsInput({ value, onChange, className }: SkillsInputProps) {
           className="flex-1"
         />
         <Button type="button" variant="outline" size="sm" onClick={handleAdd} disabled={!newSkill.trim()}>
-          <KeenIcon icon="plus" style="outline" className="size-4" />
+          <KeenIcon icon="plus" style="duotone" className="size-4" />
           Ajouter
         </Button>
       </div>
@@ -81,7 +81,7 @@ export function SkillsInput({ value, onChange, className }: SkillsInputProps) {
                 onClick={() => handleRemove(index)}
                 className="text-destructive hover:text-destructive"
               >
-                <KeenIcon icon="trash" style="outline" className="size-4" />
+                <KeenIcon icon="trash" style="duotone" className="size-4" />
               </Button>
             </div>
           ))}

@@ -130,7 +130,7 @@ export default function ComparePage() {
         <ToolbarActions>
           <Button variant="outline" size="sm" asChild>
             <Link to={`/recruitment/campaigns/${id}/shortlist`}>
-              <KeenIcon icon="arrow-left" style="outline" className="size-4" />
+              <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
               Retour a la shortlist
             </Link>
           </Button>
@@ -163,7 +163,7 @@ export default function ComparePage() {
                 </div>
                 <Button variant="ghost" size="sm" asChild>
                   <Link to={`/recruitment/campaigns/${id}/candidates/${candidate.id}`}>
-                    <KeenIcon icon="eye" style="outline" className="size-4" />
+                    <KeenIcon icon="eye" style="duotone" className="size-4" />
                   </Link>
                 </Button>
               </CardContent>
@@ -264,7 +264,7 @@ export default function ComparePage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-sm flex items-center gap-2">
-                <KeenIcon icon="artificial-intelligence" style="outline" className="size-4 text-primary" />
+                <KeenIcon icon="artificial-intelligence" style="duotone" className="size-4 text-primary" />
                 Analyse comparative IA
               </CardTitle>
             </CardHeader>

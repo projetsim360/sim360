@@ -31,7 +31,7 @@ export function CampaignLinkShare({ slug, className }: CampaignLinkShareProps) {
       <Button variant="outline" size="sm" onClick={handleCopy}>
         <KeenIcon
           icon={copied ? 'check' : 'copy'}
-          style="outline"
+          style="duotone"
           className="size-4"
         />
         {copied ? 'Copie' : 'Copier'}

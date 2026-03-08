@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { KeenIcon } from '@/components/keenicons';
+import { MarkdownContent } from '@/components/ui/markdown-content';
 import { streamAiResponse } from '@/lib/sse-client';
 import { meetingApi } from '../api/meeting.api';
 import { MeetingConference } from '../components/meeting-conference';
@@ -216,10 +217,10 @@ export default function MeetingRoomPage() {
 
             {meeting.objectives.length > 0 && (
               <div>
-                <h4 className="text-xs font-semibold mb-2">Objectifs</h4>
+                <h4 className="text-sm font-semibold mb-2">Objectifs</h4>
                 <ul className="space-y-1">
                   {meeting.objectives.map((obj, i) => (
-                    <li key={i} className="text-xs text-muted-foreground flex items-start gap-2">
+                    <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
                       <span className="text-primary mt-0.5">-</span>
                       {obj}
                     </li>
@@ -229,7 +230,7 @@ export default function MeetingRoomPage() {
             )}
 
             <div>
-              <h4 className="text-xs font-semibold mb-2">Participants</h4>
+              <h4 className="text-sm font-semibold mb-2">Participants</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {meeting.participants.map((p) => (
                   <div
@@ -244,7 +245,7 @@ export default function MeetingRoomPage() {
                       </div>
                     )}
                     <div>
-                      <p className="text-xs font-medium">{p.name}</p>
+                      <p className="text-sm font-medium">{p.name}</p>
                       <p className="text-[10px] text-muted-foreground">{p.role}</p>
                     </div>
                   </div>
@@ -291,10 +292,10 @@ export default function MeetingRoomPage() {
               <p className="text-sm whitespace-pre-wrap">{meeting.summary.summary}</p>
               {meeting.summary.keyDecisions.length > 0 && (
                 <div className="mt-3">
-                  <h4 className="text-xs font-semibold text-primary mb-1">Decisions cles</h4>
+                  <h4 className="text-sm font-semibold text-primary mb-1">Decisions cles</h4>
                   <ul className="space-y-1">
                     {meeting.summary.keyDecisions.map((d, i) => (
-                      <li key={i} className="text-xs text-primary">- {d}</li>
+                      <li key={i} className="text-sm text-primary">- {d}</li>
                     ))}
                   </ul>
                 </div>
@@ -302,10 +303,10 @@ export default function MeetingRoomPage() {
 
               {meeting.summary.actionItems && meeting.summary.actionItems.length > 0 && (
                 <div className="mt-3">
-                  <h4 className="text-xs font-semibold text-primary mb-1">Actions a mener</h4>
+                  <h4 className="text-sm font-semibold text-primary mb-1">Actions a mener</h4>
                   <div className="space-y-1.5">
                     {meeting.summary.actionItems.map((item, i) => (
-                      <div key={i} className="flex items-start gap-2 text-xs text-primary">
+                      <div key={i} className="flex items-start gap-2 text-sm text-primary">
                         <span className="shrink-0 mt-0.5">-</span>
                         <div>
                           <span className="font-medium">{item.task}</span>
@@ -320,7 +321,7 @@ export default function MeetingRoomPage() {
 
               {meeting.summary.kpiImpact && Object.keys(meeting.summary.kpiImpact).length > 0 && (
                 <div className="mt-3">
-                  <h4 className="text-xs font-semibold text-primary mb-1">Impact KPIs</h4>
+                  <h4 className="text-sm font-semibold text-primary mb-1">Impact KPIs</h4>
                   <div className="flex flex-wrap gap-2">
                     {Object.entries(meeting.summary.kpiImpact).map(([key, val]) => (
                       <Badge
@@ -364,7 +365,7 @@ export default function MeetingRoomPage() {
                           : 'bg-muted text-foreground'
                       }`}
                     >
-                      {msg.content}
+                      {msg.role === 'user' ? msg.content : <MarkdownContent content={msg.content} />}
                     </div>
                   </div>
                 </div>
@@ -428,7 +429,7 @@ export default function MeetingRoomPage() {
           {/* Participant selector */}
           {meeting.participants.length > 1 && (
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-xs text-muted-foreground">Parler a :</span>
+              <span className="text-sm text-muted-foreground">Parler a :</span>
               {meeting.participants.map((p) => (
                 <Button
                   key={p.id}
@@ -476,8 +477,12 @@ export default function MeetingRoomPage() {
                             : 'bg-muted text-foreground'
                         }`}
                       >
-                        {msg.content || (
+                        {!msg.content ? (
                           <span className="inline-block animate-pulse">...</span>
+                        ) : msg.role === 'user' ? (
+                          msg.content
+                        ) : (
+                          <MarkdownContent content={msg.content} />
                         )}
                       </div>
                     </div>

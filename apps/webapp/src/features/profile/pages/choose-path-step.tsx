@@ -158,7 +158,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
           <CardContent className="p-4 flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-foreground">Difficulte suggeree</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 Basee sur votre profil et vos competences
               </p>
             </div>
@@ -190,7 +190,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
         <CardContent className="p-4 flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-foreground">Projet personnalise</p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Vous avez un projet specifique ? Decrivez-le et notre IA generera un scenario adapte.
             </p>
           </div>
@@ -218,12 +218,12 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
           <CardContent className="space-y-3">
             <div>
               <p className="text-sm font-medium text-foreground">{submittedProject.projectName}</p>
-              <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+              <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                 {submittedProject.description}
               </p>
             </div>
             <Separator />
-            <div className="flex gap-4 text-xs text-muted-foreground">
+            <div className="flex gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <KeenIcon icon="category" style="duotone" className="text-sm text-primary" />
                 <span>{sectorLabel}</span>

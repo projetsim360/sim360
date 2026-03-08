@@ -133,7 +133,7 @@ export default function CvSuggestionsPage() {
               </div>
               <div className="flex items-start gap-2 p-3 bg-blue-50 rounded-lg border border-blue-100">
                 <KeenIcon icon="information-2" style="solid" className="text-sm text-blue-600 mt-0.5 shrink-0" />
-                <p className="text-xs text-blue-700">
+                <p className="text-sm text-blue-700">
                   Ce CV est genere a partir de votre simulation. Personnalisez-le avant de l'utiliser.
                 </p>
               </div>

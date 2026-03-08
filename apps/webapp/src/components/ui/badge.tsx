@@ -58,7 +58,7 @@ const badgeVariants = cva(
         variant: 'primary',
         appearance: 'light',
         className:
-          'text-[var(--color-primary-accent,var(--color-blue-700))] bg-[var(--color-primary-soft,var(--color-blue-50))] dark:bg-[var(--color-primary-soft,var(--color-blue-950))] dark:text-[var(--color-primary-soft,var(--color-blue-600))]',
+          'text-[var(--color-primary-accent,var(--color-indigo-700))] bg-[var(--color-primary-soft,var(--color-indigo-50))] dark:bg-[var(--color-primary-soft,var(--color-indigo-950))] dark:text-[var(--color-primary-accent,var(--color-indigo-400))]',
       },
       {
         variant: 'secondary',
@@ -69,56 +69,56 @@ const badgeVariants = cva(
         variant: 'success',
         appearance: 'light',
         className:
-          'text-[var(--color-success-accent,var(--color-green-800))] bg-[var(--color-success-soft,var(--color-green-100))] dark:bg-[var(--color-success-soft,var(--color-green-950))] dark:text-[var(--color-success-soft,var(--color-green-600))]',
+          'text-[var(--color-success-accent,var(--color-emerald-700))] bg-[var(--color-success-soft,var(--color-emerald-50))] dark:bg-[var(--color-success-soft,var(--color-emerald-950))] dark:text-[var(--color-success-accent,var(--color-emerald-400))]',
       },
       {
         variant: 'warning',
         appearance: 'light',
         className:
-          'text-[var(--color-warning-accent,var(--color-yellow-700))] bg-[var(--color-warning-soft,var(--color-yellow-100))] dark:bg-[var(--color-warning-soft,var(--color-yellow-950))] dark:text-[var(--color-warning-soft,var(--color-yellow-600))]',
+          'text-[var(--color-warning-accent,var(--color-amber-700))] bg-[var(--color-warning-soft,var(--color-amber-50))] dark:bg-[var(--color-warning-soft,var(--color-amber-950))] dark:text-[var(--color-warning-accent,var(--color-amber-400))]',
       },
       {
         variant: 'info',
         appearance: 'light',
         className:
-          'text-[var(--color-info-accent,var(--color-violet-700))] bg-[var(--color-info-soft,var(--color-violet-100))] dark:bg-[var(--color-info-soft,var(--color-violet-950))] dark:text-[var(--color-info-soft,var(--color-violet-400))]',
+          'text-[var(--color-info-accent,var(--color-blue-700))] bg-[var(--color-info-soft,var(--color-blue-50))] dark:bg-[var(--color-info-soft,var(--color-blue-950))] dark:text-[var(--color-info-accent,var(--color-blue-400))]',
       },
       {
         variant: 'destructive',
         appearance: 'light',
         className:
-          'text-[var(--color-destructive-accent,var(--color-red-700))] bg-[var(--color-destructive-soft,var(--color-red-50))] dark:bg-[var(--color-destructive-soft,var(--color-red-950))] dark:text-[var(--color-destructive-soft,var(--color-red-600))]',
+          'text-[var(--color-destructive-accent,var(--color-red-700))] bg-[var(--color-destructive-soft,var(--color-red-50))] dark:bg-[var(--color-destructive-soft,var(--color-red-950))] dark:text-[var(--color-destructive-accent,var(--color-red-400))]',
       },
       /* Outline */
       {
         variant: 'primary',
         appearance: 'outline',
         className:
-          'text-[var(--color-primary-accent,var(--color-blue-700))] border-[var(--color-primary-soft,var(--color-blue-100))] bg-[var(--color-primary-soft,var(--color-blue-50))] dark:bg-[var(--color-primary-soft,var(--color-blue-950))] dark:border-[var(--color-primary-soft,var(--color-blue-900))] dark:text-[var(--color-primary-soft,var(--color-blue-600))]',
+          'text-[var(--color-primary-accent,var(--color-indigo-700))] border-[var(--color-primary-soft,var(--color-indigo-200))] bg-[var(--color-primary-soft,var(--color-indigo-50))] dark:bg-[var(--color-primary-soft,var(--color-indigo-950))] dark:border-[var(--color-primary-alpha,var(--color-indigo-800))] dark:text-[var(--color-primary-accent,var(--color-indigo-400))]',
       },
       {
         variant: 'success',
         appearance: 'outline',
         className:
-          'text-[var(--color-success-accent,var(--color-green-700))] border-[var(--color-success-soft,var(--color-green-200))] bg-[var(--color-success-soft,var(--color-green-50))] dark:bg-[var(--color-success-soft,var(--color-green-950))] dark:border-[var(--color-success-soft,var(--color-green-900))] dark:text-[var(--color-success-soft,var(--color-green-600))]',
+          'text-[var(--color-success-accent,var(--color-emerald-700))] border-[var(--color-success-alpha,var(--color-emerald-200))] bg-[var(--color-success-soft,var(--color-emerald-50))] dark:bg-[var(--color-success-soft,var(--color-emerald-950))] dark:border-[var(--color-success-alpha,var(--color-emerald-800))] dark:text-[var(--color-success-accent,var(--color-emerald-400))]',
       },
       {
         variant: 'warning',
         appearance: 'outline',
         className:
-          'text-[var(--color-warning-accent,var(--color-yellow-700))] border-[var(--color-warning-soft,var(--color-yellow-200))] bg-[var(--color-warning-soft,var(--color-yellow-50))] dark:bg-[var(--color-warning-soft,var(--color-yellow-950))] dark:border-[var(--color-warning-soft,var(--color-yellow-900))] dark:text-[var(--color-warning-soft,var(--color-yellow-600))]',
+          'text-[var(--color-warning-accent,var(--color-amber-700))] border-[var(--color-warning-alpha,var(--color-amber-200))] bg-[var(--color-warning-soft,var(--color-amber-50))] dark:bg-[var(--color-warning-soft,var(--color-amber-950))] dark:border-[var(--color-warning-alpha,var(--color-amber-800))] dark:text-[var(--color-warning-accent,var(--color-amber-400))]',
       },
       {
         variant: 'info',
         appearance: 'outline',
         className:
-          'text-[var(--color-info-accent,var(--color-violet-700))] border-[var(--color-info-soft,var(--color-violet-100))] bg-[var(--color-info-soft,var(--color-violet-50))] dark:bg-[var(--color-info-soft,var(--color-violet-950))] dark:border-[var(--color-info-soft,var(--color-violet-900))] dark:text-[var(--color-info-soft,var(--color-violet-400))]',
+          'text-[var(--color-info-accent,var(--color-blue-700))] border-[var(--color-info-alpha,var(--color-blue-200))] bg-[var(--color-info-soft,var(--color-blue-50))] dark:bg-[var(--color-info-soft,var(--color-blue-950))] dark:border-[var(--color-info-alpha,var(--color-blue-800))] dark:text-[var(--color-info-accent,var(--color-blue-400))]',
       },
       {
         variant: 'destructive',
         appearance: 'outline',
         className:
-          'text-[var(--color-destructive-accent,var(--color-red-700))] border-[var(--color-destructive-soft,var(--color-red-100))] bg-[var(--color-destructive-soft,var(--color-red-50))] dark:bg-[var(--color-destructive-soft,var(--color-red-950))] dark:border-[var(--color-destructive-soft,var(--color-red-900))] dark:text-[var(--color-destructive-soft,var(--color-red-600))]',
+          'text-[var(--color-destructive-accent,var(--color-red-700))] border-[var(--color-destructive-alpha,var(--color-red-200))] bg-[var(--color-destructive-soft,var(--color-red-50))] dark:bg-[var(--color-destructive-soft,var(--color-red-950))] dark:border-[var(--color-destructive-alpha,var(--color-red-800))] dark:text-[var(--color-destructive-accent,var(--color-red-400))]',
       },
       /* Ghost */
       {

@@ -47,10 +47,10 @@ export function SidebarMenuSecondary() {
   const classNames: AccordionMenuClassNames = {
     root: 'flex flex-col w-full gap-1.5 px-3.5',
     group: 'gap-px',
-    item: 'group h-9 hover:bg-transparent border border-transparent text-accent-foreground hover:text-primary hover:bg-background hover:border-border data-[selected=true]:text-primary data-[selected=true]:bg-background data-[selected=true]:border-border data-[selected=true]:font-medium',
+    item: 'group h-9 hover:bg-transparent border border-transparent text-accent-foreground hover:text-primary hover:bg-background hover:border-border data-[selected=true]:text-white data-[selected=true]:bg-primary data-[selected=true]:border-primary data-[selected=true]:font-medium',
     sub: '',
     subTrigger:
-      'justify-between h-9 hover:bg-transparent border border-transparent text-accent-foreground hover:text-primary data-[selected=true]:text-primary data-[selected=true]:bg-background data-[selected=true]:border-border data-[selected=true]:font-medium [&_[data-slot=accordion-menu-sub-indicator]]:hidden',
+      'justify-between h-9 hover:bg-transparent border border-transparent text-accent-foreground hover:text-primary data-[selected=true]:text-white data-[selected=true]:bg-primary data-[selected=true]:border-primary data-[selected=true]:font-medium [&_[data-slot=accordion-menu-sub-indicator]]:hidden',
     subContent: 'p-0',
     subWrapper: 'space-y-1.5',
     indicator: 'text-sm text-muted-foreground',

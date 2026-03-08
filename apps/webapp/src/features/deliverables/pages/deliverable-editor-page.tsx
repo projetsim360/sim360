@@ -171,12 +171,12 @@ export default function DeliverableEditorPage() {
           <DeliverableStatusBadge status={deliverable.status} />
 
           {/* Save indicator */}
-          <span className="text-xs text-muted-foreground">
+          <span className="text-sm text-muted-foreground">
             {isSaving ? (
               <>
                 <KeenIcon
                   icon="loading"
-                  style="outline"
+                  style="duotone"
                   className="size-3 inline animate-spin"
                 />{' '}
                 Sauvegarde...
@@ -199,7 +199,7 @@ export default function DeliverableEditorPage() {
             onClick={handleSave}
             disabled={isSaving || isReadOnly}
           >
-            <KeenIcon icon="disk" style="outline" className="size-4" />
+            <KeenIcon icon="disk" style="duotone" className="size-4" />
             Sauvegarder
           </Button>
 
@@ -209,7 +209,7 @@ export default function DeliverableEditorPage() {
             size="sm"
             onClick={() => setShowTemplate(!showTemplate)}
           >
-            <KeenIcon icon="book" style="outline" className="size-4" />
+            <KeenIcon icon="book" style="duotone" className="size-4" />
             {showTemplate ? 'Masquer template' : 'Voir template'}
           </Button>
 
@@ -218,7 +218,7 @@ export default function DeliverableEditorPage() {
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button size="sm" disabled={!content.trim()}>
-                  <KeenIcon icon="send" style="outline" className="size-4" />
+                  <KeenIcon icon="send" style="duotone" className="size-4" />
                   Soumettre
                 </Button>
               </AlertDialogTrigger>
@@ -252,7 +252,7 @@ export default function DeliverableEditorPage() {
 
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}/deliverables`}>
-              <KeenIcon icon="arrow-left" style="outline" className="size-4" />
+              <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
               Retour
             </Link>
           </Button>
@@ -295,7 +295,7 @@ export default function DeliverableEditorPage() {
                       });
                     }}
                   >
-                    <KeenIcon icon="copy" style="outline" className="size-3 mr-1" />
+                    <KeenIcon icon="copy" style="duotone" className="size-3 mr-1" />
                     Copier le template
                   </Button>
                 </div>
@@ -305,7 +305,7 @@ export default function DeliverableEditorPage() {
                   <MarkdownPreview content={template.content} />
                   {template.pmiProcess && (
                     <div className="px-4 pb-4 pt-2 border-t border-border">
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-sm text-muted-foreground">
                         <span className="font-semibold">Processus PMI :</span>{' '}
                         {template.pmiProcess}
                       </p>
@@ -314,7 +314,7 @@ export default function DeliverableEditorPage() {
                 </div>
                 {template.evaluationCriteria && Object.keys(template.evaluationCriteria).length > 0 && (
                   <div className="px-4 pb-4 pt-3 border-t border-border">
-                    <p className="text-xs font-semibold text-foreground mb-2">
+                    <p className="text-sm font-semibold text-foreground mb-2">
                       Criteres d'evaluation :
                     </p>
                     <div className="flex flex-wrap gap-1.5">
@@ -325,7 +325,7 @@ export default function DeliverableEditorPage() {
                           appearance="light"
                           size="xs"
                         >
-                          <KeenIcon icon="check-circle" style="outline" className="size-3 mr-1" />
+                          <KeenIcon icon="check-circle" style="duotone" className="size-3 mr-1" />
                           {typeof value === 'string' ? value : key}
                         </Badge>
                       ))}
@@ -344,7 +344,7 @@ export default function DeliverableEditorPage() {
         </div>
 
         {/* Deliverable info */}
-        <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
+        <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
           <span>Phase {deliverable.phaseOrder}</span>
           <span>
             Revision {deliverable.revisionNumber}/{deliverable.maxRevisions}
@@ -356,7 +356,6 @@ export default function DeliverableEditorPage() {
             </span>
           )}
         </div>
-      </div>
     </div>
   );
 }

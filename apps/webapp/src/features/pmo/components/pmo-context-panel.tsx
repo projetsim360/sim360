@@ -82,7 +82,7 @@ export function PmoContextPanel({
           onClick={onToggle}
           title="Afficher le contexte"
         >
-          <KeenIcon icon="arrow-left" style="outline" className="size-4" />
+          <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
         </Button>
       </div>
     );
@@ -93,7 +93,7 @@ export function PmoContextPanel({
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-foreground">Contexte</h3>
         <Button variant="ghost" size="icon" onClick={onToggle} title="Masquer">
-          <KeenIcon icon="arrow-right" style="outline" className="size-4" />
+          <KeenIcon icon="arrow-right" style="duotone" className="size-4" />
         </Button>
       </div>
 
@@ -108,12 +108,12 @@ export function PmoContextPanel({
           {/* Simulation info */}
           <Card>
             <CardContent className="p-3">
-              <p className="text-xs text-muted-foreground mb-1">Simulation</p>
+              <p className="text-sm text-muted-foreground mb-1">Simulation</p>
               <Badge variant="primary" appearance="light" size="sm">
                 Phase {context.simulation.currentPhaseOrder}
               </Badge>
               {context.currentPhase != null && (
-                <p className="text-xs mt-1 text-foreground">
+                <p className="text-sm mt-1 text-foreground">
                   {context.currentPhase.name}
                 </p>
               )}
@@ -123,26 +123,26 @@ export function PmoContextPanel({
           {/* KPIs */}
           {context.kpis && (
             <Card>
-              <CardHeader className="p-3 pb-1">
-                <CardTitle className="text-xs">KPIs</CardTitle>
+              <CardHeader className="p-3 pb-2">
+                <CardTitle className="text-sm">KPIs</CardTitle>
               </CardHeader>
-              <CardContent className="p-3 pt-0 space-y-2">
+              <CardContent className="p-3 pt-1 space-y-3">
                 {Object.entries(context.kpis).map(([key, value]) => {
                   const config = KPI_CONFIG[key];
                   if (!config) return null;
                   return (
                     <div key={key} className="flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground flex items-center gap-1.5">
+                      <span className="text-sm text-muted-foreground flex items-center gap-2.5">
                         <KeenIcon
                           icon={config.icon}
-                          style="outline"
-                          className="size-3"
+                          style="duotone"
+                          className="text-base shrink-0"
                         />
                         {config.label}
                       </span>
                       <span
                         className={cn(
-                          'text-xs font-semibold',
+                          'text-sm font-semibold',
                           kpiColor(key, value),
                         )}
                       >
@@ -158,12 +158,12 @@ export function PmoContextPanel({
           {/* Pending deliverables */}
           {context.deliverables.pending.length > 0 && (
             <Card>
-              <CardHeader className="p-3 pb-1">
-                <CardTitle className="text-xs">
+              <CardHeader className="p-3 pb-2">
+                <CardTitle className="text-sm">
                   Livrables en attente ({context.deliverables.pending.length})
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-3 pt-0 space-y-2">
+              <CardContent className="p-3 pt-1 space-y-2">
                 {context.deliverables.pending.map((d) => {
                   const deadline = getDeadlineInfo(d.dueDate);
                   return (
@@ -176,11 +176,11 @@ export function PmoContextPanel({
                         )
                       }
                     >
-                      <div className="flex items-center gap-2 text-xs text-foreground">
+                      <div className="flex items-center gap-2 text-sm text-foreground">
                         <KeenIcon
-                          icon="document"
-                          style="outline"
-                          className="size-3 shrink-0"
+                          icon="notepad"
+                          style="duotone"
+                          className="text-sm shrink-0 text-primary"
                         />
                         <span className="truncate font-medium">{d.title}</span>
                         {deadline.urgent && (
@@ -215,16 +215,16 @@ export function PmoContextPanel({
           {/* Submitted deliverables */}
           {context.deliverables.submitted.length > 0 && (
             <Card>
-              <CardHeader className="p-3 pb-1">
-                <CardTitle className="text-xs">
+              <CardHeader className="p-3 pb-2">
+                <CardTitle className="text-sm">
                   Livrables soumis ({context.deliverables.submitted.length})
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-3 pt-0 space-y-1.5">
+              <CardContent className="p-3 pt-1 space-y-3">
                 {context.deliverables.submitted.map((d, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between text-xs"
+                    className="flex items-center justify-between text-sm"
                   >
                     <span className="text-muted-foreground truncate">
                       {d.title}
@@ -247,21 +247,21 @@ export function PmoContextPanel({
           {/* Recent decisions */}
           {context.decisions.length > 0 && (
             <Card>
-              <CardHeader className="p-3 pb-1">
-                <CardTitle className="text-xs">
+              <CardHeader className="p-3 pb-2">
+                <CardTitle className="text-sm">
                   Decisions recentes ({context.decisions.length})
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-3 pt-0 space-y-1.5">
+              <CardContent className="p-3 pt-1 space-y-3">
                 {context.decisions.map((d, i) => (
                   <div
                     key={i}
-                    className="flex items-center gap-2 text-xs text-muted-foreground"
+                    className="flex items-center gap-2.5 text-sm text-muted-foreground"
                   >
                     <KeenIcon
                       icon="check-circle"
-                      style="outline"
-                      className="size-3 shrink-0"
+                      style="duotone"
+                      className="text-base shrink-0"
                     />
                     <span className="truncate">{d.title}</span>
                   </div>
@@ -273,13 +273,13 @@ export function PmoContextPanel({
           {/* Adaptation mode */}
           {adaptation && (
             <Card>
-              <CardHeader className="p-3 pb-1">
-                <CardTitle className="text-xs">Adaptation</CardTitle>
+              <CardHeader className="p-3 pb-2">
+                <CardTitle className="text-sm">Adaptation</CardTitle>
               </CardHeader>
-              <CardContent className="p-3 pt-0 space-y-2">
+              <CardContent className="p-3 pt-1 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground flex items-center gap-1.5">
-                    <KeenIcon icon="message-text" style="outline" className="size-3" />
+                  <span className="text-sm text-muted-foreground flex items-center gap-2.5">
+                    <KeenIcon icon="message-text" style="duotone" className="text-base shrink-0" />
                     Ton PMO
                   </span>
                   <Badge
@@ -291,8 +291,8 @@ export function PmoContextPanel({
                   </Badge>
                 </div>
                 {adaptation.showGlossaryTooltips && (
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <KeenIcon icon="book" style="outline" className="size-3" />
+                  <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
+                    <KeenIcon icon="book" style="duotone" className="text-base shrink-0" />
                     Glossaire PMI actif
                   </div>
                 )}

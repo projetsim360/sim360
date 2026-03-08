@@ -60,7 +60,7 @@ export function EmailListItem({ email, onClick }: EmailListItemProps) {
           >
             {email.senderName}
           </span>
-          <span className="text-xs text-muted-foreground truncate">
+          <span className="text-sm text-muted-foreground truncate">
             {email.senderRole}
           </span>
         </div>

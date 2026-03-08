@@ -112,8 +112,8 @@ function CircularGauge({ value, label, icon, critical, warning, isRisk }: {
           <span className={`text-lg font-bold ${color}`}>{Math.round(isRisk ? value : value)}%</span>
         </div>
       </div>
-      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-        <KeenIcon icon={icon} style="outline" className="size-3.5" />
+      <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+        <KeenIcon icon={icon} style="duotone" className="size-3.5" />
         <span>{label}</span>
       </div>
       {(critical || warning) && (
@@ -181,19 +181,19 @@ export default function SimulationDashboardPage() {
         <ToolbarActions>
           <Button variant="primary" asChild>
             <Link to={`/simulations/${id}/pmo`}>
-              <KeenIcon icon="message-text" style="outline" className="size-4" />
+              <KeenIcon icon="message-text" style="duotone" className="size-4" />
               Agent PMO
             </Link>
           </Button>
           <Button variant="outline" asChild>
             <Link to={`/simulations/${id}/emails`}>
-              <KeenIcon icon="sms" style="outline" className="size-4" />
+              <KeenIcon icon="sms" style="duotone" className="size-4" />
               Emails
             </Link>
           </Button>
           <Button variant="outline" asChild>
             <Link to={`/simulations/${id}/deliverables`}>
-              <KeenIcon icon="document" style="outline" className="size-4" />
+              <KeenIcon icon="document" style="duotone" className="size-4" />
               Livrables
             </Link>
           </Button>
@@ -210,7 +210,7 @@ export default function SimulationDashboardPage() {
             <KeenIcon icon="notification-status" style="solid" className="size-4 text-destructive" />
             <span className="text-sm font-semibold text-destructive">Alertes critiques</span>
           </div>
-          <ul className="text-xs text-destructive space-y-0.5">
+          <ul className="text-sm text-destructive space-y-0.5">
             {dashboard.criticalAlerts.map((alert, i) => (
               <li key={i}>{alert}</li>
             ))}
@@ -223,7 +223,7 @@ export default function SimulationDashboardPage() {
         <Card className="lg:col-span-1">
           <CardContent className="flex flex-col items-center justify-center py-6">
             <span className="text-3xl font-bold text-primary">{dashboard.globalScore}</span>
-            <span className="text-xs text-muted-foreground mt-1">Score global</span>
+            <span className="text-sm text-muted-foreground mt-1">Score global</span>
           </CardContent>
         </Card>
 
@@ -259,7 +259,7 @@ export default function SimulationDashboardPage() {
                 style={{ width: `${progressPct}%` }}
               />
             </div>
-            <span className="text-xs text-muted-foreground ml-2">{progressPct}%</span>
+            <span className="text-sm text-muted-foreground ml-2">{progressPct}%</span>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             {dashboard.phaseProgression.map((phase) => {
@@ -295,7 +295,7 @@ export default function SimulationDashboardPage() {
             {dashboard.pendingActions.decisions.length === 0 &&
               dashboard.pendingActions.events.length === 0 &&
               dashboard.pendingActions.meetings.length === 0 && (
-                <p className="text-xs text-muted-foreground">Aucune action en attente.</p>
+                <p className="text-sm text-muted-foreground">Aucune action en attente.</p>
               )}
 
             {dashboard.pendingActions.decisions.map((d) => (
@@ -305,13 +305,13 @@ export default function SimulationDashboardPage() {
                 className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
               >
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <KeenIcon icon="questionnaire-tablet" style="outline" className="size-4 text-primary" />
+                  <KeenIcon icon="questionnaire-tablet" style="duotone" className="size-4 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium truncate">{d.title}</p>
+                  <p className="text-sm font-medium truncate">{d.title}</p>
                   <p className="text-[10px] text-muted-foreground">Decision en attente</p>
                 </div>
-                <KeenIcon icon="arrow-right" style="outline" className="size-3 text-muted-foreground" />
+                <KeenIcon icon="arrow-right" style="duotone" className="size-3 text-muted-foreground" />
               </Link>
             ))}
 
@@ -322,15 +322,15 @@ export default function SimulationDashboardPage() {
                 className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
               >
                 <div className="w-8 h-8 rounded-full bg-warning/10 flex items-center justify-center shrink-0">
-                  <KeenIcon icon="notification-status" style="outline" className="size-4 text-warning" />
+                  <KeenIcon icon="notification-status" style="duotone" className="size-4 text-warning" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium truncate">{e.title}</p>
+                  <p className="text-sm font-medium truncate">{e.title}</p>
                   <p className="text-[10px] text-muted-foreground">
                     <Badge variant={SEVERITY_VARIANT[e.severity] ?? 'secondary'} size="sm">{e.severity}</Badge>
                   </p>
                 </div>
-                <KeenIcon icon="arrow-right" style="outline" className="size-3 text-muted-foreground" />
+                <KeenIcon icon="arrow-right" style="duotone" className="size-3 text-muted-foreground" />
               </Link>
             ))}
 
@@ -341,15 +341,15 @@ export default function SimulationDashboardPage() {
                 className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
               >
                 <div className="w-8 h-8 rounded-full bg-success/10 flex items-center justify-center shrink-0">
-                  <KeenIcon icon="people" style="outline" className="size-4 text-success" />
+                  <KeenIcon icon="people" style="duotone" className="size-4 text-success" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium truncate">{m.title}</p>
+                  <p className="text-sm font-medium truncate">{m.title}</p>
                   <p className="text-[10px] text-muted-foreground">
                     {m.status === 'SCHEDULED' ? 'Planifiee' : 'En cours'}
                   </p>
                 </div>
-                <KeenIcon icon="arrow-right" style="outline" className="size-3 text-muted-foreground" />
+                <KeenIcon icon="arrow-right" style="duotone" className="size-3 text-muted-foreground" />
               </Link>
             ))}
           </CardContent>
@@ -367,13 +367,13 @@ export default function SimulationDashboardPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             {dashboard.recentTimeline.length === 0 && (
-              <p className="text-xs text-muted-foreground">Aucune activite recente.</p>
+              <p className="text-sm text-muted-foreground">Aucune activite recente.</p>
             )}
             {dashboard.recentTimeline.map((item, i) => (
               <div key={i} className="flex items-start gap-3">
                 <div className="w-2 h-2 rounded-full bg-primary mt-1.5 shrink-0" />
                 <div>
-                  <p className="text-xs font-medium">{item.title}</p>
+                  <p className="text-sm font-medium">{item.title}</p>
                   <p className="text-[10px] text-muted-foreground">
                     {new Date(item.date).toLocaleDateString('fr-FR', {
                       day: 'numeric',
@@ -393,19 +393,19 @@ export default function SimulationDashboardPage() {
       <div className="flex items-center gap-3 flex-wrap">
         <Button variant="outline" size="sm" asChild>
           <Link to={`/simulations/${id}/kpis`}>
-            <KeenIcon icon="graph-up" style="outline" className="size-3.5 mr-1.5" />
+            <KeenIcon icon="graph-up" style="duotone" className="size-3.5 mr-1.5" />
             Historique KPIs
           </Link>
         </Button>
         <Button variant="outline" size="sm" asChild>
           <Link to={`/simulations/${id}/meetings`}>
-            <KeenIcon icon="people" style="outline" className="size-3.5 mr-1.5" />
+            <KeenIcon icon="people" style="duotone" className="size-3.5 mr-1.5" />
             Reunions
           </Link>
         </Button>
         <Button variant="outline" size="sm" asChild>
           <Link to={`/simulations/${id}/timeline`}>
-            <KeenIcon icon="time" style="outline" className="size-3.5 mr-1.5" />
+            <KeenIcon icon="time" style="duotone" className="size-3.5 mr-1.5" />
             Timeline
           </Link>
         </Button>

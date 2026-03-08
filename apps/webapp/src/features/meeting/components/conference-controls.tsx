@@ -95,7 +95,7 @@ export function ConferenceControls({
       {conferenceMode === 'single' && activeParticipantName && (
         <div className="flex items-center justify-center gap-2 py-1">
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-xs text-zinc-400">
+          <span className="text-sm text-zinc-400">
             En conversation avec <span className="text-zinc-200 font-medium">{activeParticipantName}</span>
           </span>
         </div>

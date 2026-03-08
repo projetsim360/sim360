@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { KeenIcon } from '@/components/keenicons';
+import { MarkdownContent } from '@/components/ui/markdown-content';
 import { meetingApi } from '../api/meeting.api';
 import type { ChatMessage, MeetingDetail } from '../types/meeting.types';
 
@@ -113,10 +114,10 @@ export default function MeetingSummaryPage() {
 
             {meeting.summary.keyDecisions.length > 0 && (
               <div>
-                <h4 className="text-xs font-semibold text-primary mb-1">Decisions cles</h4>
+                <h4 className="text-sm font-semibold text-primary mb-1">Decisions cles</h4>
                 <ul className="space-y-1">
                   {meeting.summary.keyDecisions.map((d, i) => (
-                    <li key={i} className="text-xs text-primary">- {d}</li>
+                    <li key={i} className="text-sm text-primary">- {d}</li>
                   ))}
                 </ul>
               </div>
@@ -124,10 +125,10 @@ export default function MeetingSummaryPage() {
 
             {meeting.summary.actionItems && meeting.summary.actionItems.length > 0 && (
               <div>
-                <h4 className="text-xs font-semibold text-primary mb-1">Actions a mener</h4>
+                <h4 className="text-sm font-semibold text-primary mb-1">Actions a mener</h4>
                 <div className="space-y-1.5">
                   {meeting.summary.actionItems.map((item, i) => (
-                    <div key={i} className="flex items-start gap-2 text-xs text-primary">
+                    <div key={i} className="flex items-start gap-2 text-sm text-primary">
                       <span className="shrink-0 mt-0.5">-</span>
                       <div>
                         <span className="font-medium">{item.task}</span>
@@ -142,7 +143,7 @@ export default function MeetingSummaryPage() {
 
             {meeting.summary.kpiImpact && Object.keys(meeting.summary.kpiImpact).length > 0 && (
               <div>
-                <h4 className="text-xs font-semibold text-primary mb-1">Impact KPIs</h4>
+                <h4 className="text-sm font-semibold text-primary mb-1">Impact KPIs</h4>
                 <div className="flex flex-wrap gap-2">
                   {Object.entries(meeting.summary.kpiImpact).map(([key, val]) => (
                     <Badge
@@ -174,7 +175,7 @@ export default function MeetingSummaryPage() {
                   {p.name.charAt(0)}
                 </div>
                 <div>
-                  <p className="text-xs font-medium">{p.name}</p>
+                  <p className="text-sm font-medium">{p.name}</p>
                   <p className="text-[10px] text-muted-foreground">{p.role}</p>
                 </div>
               </div>
@@ -218,7 +219,7 @@ export default function MeetingSummaryPage() {
                           : 'bg-muted text-foreground'
                       }`}
                     >
-                      {msg.content}
+                      {msg.role === 'user' ? msg.content : <MarkdownContent content={msg.content} />}
                     </div>
                   </div>
                 </div>

@@ -44,7 +44,7 @@ export function PortfolioDeliverableCard({ deliverable, className }: PortfolioDe
             <KeenIcon icon="document" style="solid" className="text-base text-muted-foreground shrink-0" />
             <div className="min-w-0">
               <CardTitle className="truncate">{deliverable.title}</CardTitle>
-              <p className="text-xs text-muted-foreground mt-0.5">{deliverable.type}</p>
+              <p className="text-sm text-muted-foreground mt-0.5">{deliverable.type}</p>
             </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">

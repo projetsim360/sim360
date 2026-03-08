@@ -62,7 +62,7 @@ export default function ProjectDeliverablesPage() {
                         )}
                       </div>
                       {d.description && (
-                        <p className="text-xs text-muted-foreground mt-1">{d.description}</p>
+                        <p className="text-sm text-muted-foreground mt-1">{d.description}</p>
                       )}
                     </div>
                     <span className={`shrink-0 px-2 py-0.5 rounded text-xs font-medium ${status.color}`}>
@@ -71,7 +71,7 @@ export default function ProjectDeliverablesPage() {
                   </div>
 
                   {d.qualityScore !== null && (
-                    <div className="mt-2 flex items-center gap-2 text-xs">
+                    <div className="mt-2 flex items-center gap-2 text-sm">
                       <span className="text-muted-foreground">Qualite :</span>
                       <span className={`font-medium ${d.qualityScore >= 70 ? 'text-green-600' : d.qualityScore >= 40 ? 'text-yellow-600' : 'text-red-600'}`}>
                         {d.qualityScore}%

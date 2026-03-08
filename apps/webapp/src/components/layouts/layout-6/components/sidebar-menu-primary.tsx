@@ -34,10 +34,10 @@ export function SidebarMenuPrimary() {
     label:
       'uppercase text-xs font-medium text-muted-foreground/70 pt-2.25 pb-px',
     separator: '',
-    item: 'h-9 hover:bg-transparent border border-transparent text-accent-foreground hover:text-mono data-[selected=true]:text-mono data-[selected=true]:bg-background data-[selected=true]:border-border data-[selected=true]:font-medium',
+    item: 'h-9 hover:bg-transparent border border-transparent text-accent-foreground hover:text-mono data-[selected=true]:text-white data-[selected=true]:bg-primary data-[selected=true]:border-primary data-[selected=true]:font-medium',
     sub: '',
     subTrigger:
-      'h-9 hover:bg-transparent border border-transparent text-accent-foreground hover:text-mono data-[selected=true]:text-mono data-[selected=true]:bg-background data-[selected=true]:border-border data-[selected=true]:font-medium',
+      'h-9 hover:bg-transparent border border-transparent text-accent-foreground hover:text-mono data-[selected=true]:text-white data-[selected=true]:bg-primary data-[selected=true]:border-primary data-[selected=true]:font-medium',
     subContent: 'py-0',
     indicator: '',
   };

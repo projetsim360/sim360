@@ -122,14 +122,14 @@ export function PmiGlossaryText({
               variant="light"
               className="max-w-xs p-3 space-y-1.5"
             >
-              <p className="font-semibold text-xs text-foreground">
+              <p className="font-semibold text-sm text-foreground">
                 {segment.entry.term || segment.entry.title}
               </p>
-              <p className="text-xs text-muted-foreground leading-relaxed">
+              <p className="text-sm text-muted-foreground leading-relaxed">
                 {segment.entry.content}
               </p>
               {segment.entry.example && (
-                <p className="text-xs text-muted-foreground italic border-t border-border pt-1.5 mt-1.5">
+                <p className="text-sm text-muted-foreground italic border-t border-border pt-1.5 mt-1.5">
                   {segment.entry.example}
                 </p>
               )}

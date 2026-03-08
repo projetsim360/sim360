@@ -131,8 +131,8 @@ export function ReferenceComparison({
               <div className="max-h-[500px] overflow-y-auto border-t border-success/20">
                 {userSections.map((section, i) => (
                   <div key={i} className="px-4 py-3 border-b border-border last:border-b-0">
-                    <h4 className="text-xs font-semibold text-foreground mb-1">{section.title}</h4>
-                    <p className="text-xs text-muted-foreground whitespace-pre-wrap">{section.body}</p>
+                    <h4 className="text-sm font-semibold text-foreground mb-1">{section.title}</h4>
+                    <p className="text-sm text-muted-foreground whitespace-pre-wrap">{section.body}</p>
                   </div>
                 ))}
               </div>
@@ -150,8 +150,8 @@ export function ReferenceComparison({
               <div className="max-h-[500px] overflow-y-auto border-t border-primary/20">
                 {referenceSections.map((section, i) => (
                   <div key={i} className="px-4 py-3 border-b border-border last:border-b-0">
-                    <h4 className="text-xs font-semibold text-foreground mb-1">{section.title}</h4>
-                    <p className="text-xs text-muted-foreground whitespace-pre-wrap">{section.body}</p>
+                    <h4 className="text-sm font-semibold text-foreground mb-1">{section.title}</h4>
+                    <p className="text-sm text-muted-foreground whitespace-pre-wrap">{section.body}</p>
                   </div>
                 ))}
               </div>

@@ -60,7 +60,7 @@ export function SidebarHeader() {
 
       <div className="pt-2.5 px-3.5 mb-1">
         <div className="flex items-center gap-2 rounded-md border border-input bg-background px-3 h-9">
-          <KeenIcon icon="magnifier" style="outline" className="size-4 text-muted-foreground shrink-0" />
+          <KeenIcon icon="magnifier" style="duotone" className="size-4 text-muted-foreground shrink-0" />
           <input
             type="text"
             placeholder="Rechercher"

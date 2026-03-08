@@ -83,7 +83,7 @@ export function SkillEditor({ skills, onChange, className }: SkillEditorProps) {
                     ))}
                   </SelectContent>
                 </Select>
-                <span className="text-xs text-muted-foreground">vers</span>
+                <span className="text-sm text-muted-foreground">vers</span>
                 <Select
                   value={skill.targetLevel}
                   onValueChange={(v) => updateSkillLevel(index, 'targetLevel', v as SkillLevel)}

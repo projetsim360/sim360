@@ -60,7 +60,7 @@ export default function CompanyIntranetPage() {
           <ToolbarActions>
             <Button variant="outline" size="sm" asChild>
               <Link to={`/simulations/${simId}`}>
-                <KeenIcon icon="arrow-left" style="outline" className="size-4" />
+                <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
                 Retour
               </Link>
             </Button>
@@ -88,13 +88,13 @@ export default function CompanyIntranetPage() {
         <ToolbarActions>
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${simId}/emails`}>
-              <KeenIcon icon="sms" style="outline" className="size-4" />
+              <KeenIcon icon="sms" style="duotone" className="size-4" />
               Boite de reception
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${simId}`}>
-              <KeenIcon icon="arrow-left" style="outline" className="size-4" />
+              <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
               Retour
             </Link>
           </Button>
@@ -140,7 +140,7 @@ export default function CompanyIntranetPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             <div>
-              <span className="text-xs text-muted-foreground uppercase tracking-wide">
+              <span className="text-sm text-muted-foreground uppercase tracking-wide">
                 Nom du projet
               </span>
               <p className="text-sm font-medium text-foreground">
@@ -149,7 +149,7 @@ export default function CompanyIntranetPage() {
             </div>
             {project?.description && (
               <div>
-                <span className="text-xs text-muted-foreground uppercase tracking-wide">
+                <span className="text-sm text-muted-foreground uppercase tracking-wide">
                   Description
                 </span>
                 <p className="text-sm text-foreground leading-relaxed">
@@ -159,7 +159,7 @@ export default function CompanyIntranetPage() {
             )}
             {scenario?.description && (
               <div>
-                <span className="text-xs text-muted-foreground uppercase tracking-wide">
+                <span className="text-sm text-muted-foreground uppercase tracking-wide">
                   Contexte du scenario
                 </span>
                 <p className="text-sm text-foreground leading-relaxed">
@@ -202,7 +202,7 @@ export default function CompanyIntranetPage() {
                         {member.name || member.role}
                       </p>
                       {member.role && member.name && (
-                        <p className="text-xs text-muted-foreground truncate">
+                        <p className="text-sm text-muted-foreground truncate">
                           {member.role}
                         </p>
                       )}
