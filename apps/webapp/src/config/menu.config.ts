@@ -12,10 +12,8 @@ import {
 } from '@/components/keenicons/icons';
 import { type MenuConfig } from './types';
 import { simulationMenuItems } from '@/features/simulation/config/simulation.menu';
-import { meetingMenuItems } from '@/features/meeting/config/meeting.menu';
 import { reportMenuItems } from '@/features/report/config/report.menu';
 import { adminReferenceMenuItems } from '@/features/admin-reference/config/admin-reference.menu';
-import { simulatedEmailMenuItems } from '@/features/simulated-emails/config/simulated-emails.menu';
 import { valorizationMenuItems } from '@/features/valorization/config/valorization.menu';
 import { recruitmentMenuItems } from '@/features/recruitment/config/recruitment.menu';
 
@@ -31,21 +29,19 @@ export const APP_SIDEBAR_MENU: MenuConfig = [
     icon: LayoutDashboard,
     path: '/dashboard',
   },
+  { heading: 'Application' },
+  ...simulationMenuItems,
+  ...reportMenuItems,
+  ...valorizationMenuItems,
+  ...recruitmentMenuItems,
+  { heading: 'Administration', roles: ['SUPER_ADMIN', 'ADMIN'] },
+  ...adminReferenceMenuItems,
   {
     title: 'Utilisation IA',
     icon: Cpu,
     path: '/ai/usage',
-    roles: ['SUPER_ADMIN', 'ADMIN', 'MANAGER'],
+    roles: ['SUPER_ADMIN', 'ADMIN'],
   },
-  { heading: 'Application' },
-  ...simulationMenuItems,
-  ...meetingMenuItems,
-  ...simulatedEmailMenuItems,
-  ...reportMenuItems,
-  ...valorizationMenuItems,
-  ...recruitmentMenuItems,
-  { heading: 'Administration' },
-  ...adminReferenceMenuItems,
   { heading: 'Compte' },
   {
     title: 'Mon Profil',

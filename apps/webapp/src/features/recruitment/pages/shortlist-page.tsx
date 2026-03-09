@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { KeenIcon } from '@/components/keenicons';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { useShortlist } from '../api/recruitment.api';
 import { CandidateStatusBadge } from '../components/candidate-status-badge';
@@ -36,12 +37,15 @@ export default function ShortlistPage() {
 
   if (isLoading) {
     return (
-      <div className="container">
+      <div className="container space-y-5">
         <Toolbar>
           <ToolbarHeading title="Shortlist" />
         </Toolbar>
-        <div className="flex justify-center py-16">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <Skeleton className="h-20 rounded-lg" />
+        <div className="space-y-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-24 rounded-lg" />
+          ))}
         </div>
       </div>
     );

@@ -4,6 +4,7 @@ import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/la
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { KeenIcon } from '@/components/keenicons';
+import { EmptyState } from '@/components/ui/empty-state';
 import { PmoChat } from '../components/pmo-chat';
 import { PmoContextPanel } from '../components/pmo-context-panel';
 import { usePmoHistory, usePmoContext } from '../api/pmo.api';
@@ -38,9 +39,11 @@ export default function PmoChatPage() {
         <Toolbar>
           <ToolbarHeading title="Agent PMO" />
         </Toolbar>
-        <p className="text-sm text-muted-foreground">
-          Aucune simulation selectionnee.
-        </p>
+        <EmptyState
+          icon="robot"
+          title="Agent PMO"
+          description="Selectionnez une simulation pour commencer a discuter avec votre agent PMO."
+        />
       </div>
     );
   }

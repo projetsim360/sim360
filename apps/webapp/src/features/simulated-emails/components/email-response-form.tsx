@@ -37,7 +37,7 @@ export function EmailResponseForm({
         emailId,
         data: { response: response.trim() },
       });
-      toast.success('Reponse envoyee avec succes.');
+      toast.success("Reponse envoyee. L'evaluation arrivera sous peu.");
       onSuccess?.();
     } catch {
       toast.error('Erreur lors de l\'envoi de la reponse.');

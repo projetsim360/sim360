@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { KeenIcon } from '@/components/keenicons';
+import { EmptyState } from '@/components/ui/empty-state';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useInterviewGuide, useCandidateReport } from '../api/recruitment.api';
 
 export default function InterviewGuidePage() {
@@ -22,12 +24,15 @@ export default function InterviewGuidePage() {
 
   if (isLoading) {
     return (
-      <div className="container">
+      <div className="container space-y-5">
         <Toolbar>
           <ToolbarHeading title="Guide d'entretien" />
         </Toolbar>
-        <div className="flex justify-center py-16">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <Skeleton className="h-16 rounded-lg" />
+        <div className="space-y-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-32 rounded-lg" />
+          ))}
         </div>
       </div>
     );
@@ -124,11 +129,12 @@ export default function InterviewGuidePage() {
 
         {questions.length === 0 && (
           <Card>
-            <CardContent className="py-8 text-center">
-              <KeenIcon icon="message-text" style="duotone" className="size-8 text-muted-foreground mx-auto mb-3" />
-              <p className="text-muted-foreground text-sm">
-                Aucune question generee. Le candidat doit avoir termine sa simulation.
-              </p>
+            <CardContent>
+              <EmptyState
+                icon="question-2"
+                title="Guide non disponible"
+                description="Le guide d'entretien sera genere une fois que le candidat aura termine sa simulation."
+              />
             </CardContent>
           </Card>
         )}

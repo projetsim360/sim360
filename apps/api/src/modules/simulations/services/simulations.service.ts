@@ -667,6 +667,13 @@ export class SimulationsService {
           where: { simulationId },
           data: newKpis,
         }),
+        // Sync Project.currentBudget from KPI percentage
+        tx.project.update({
+          where: { id: simulation.projectId },
+          data: {
+            currentBudget: Math.round(simulation.project.initialBudget * newKpis.budget / 100),
+          },
+        }),
       ]);
       await this.recordKpiSnapshot(tx, simulationId, simulation.currentPhaseOrder, 'decision', decisionId);
       return dec;
@@ -747,6 +754,13 @@ export class SimulationsService {
         tx.simulationKpi.update({
           where: { simulationId },
           data: newKpis,
+        }),
+        // Sync Project.currentBudget from KPI percentage
+        tx.project.update({
+          where: { id: simulation.projectId },
+          data: {
+            currentBudget: Math.round(simulation.project.initialBudget * newKpis.budget / 100),
+          },
         }),
       ]);
       await this.recordKpiSnapshot(tx, simulationId, simulation.currentPhaseOrder, 'event', eventId);
@@ -851,6 +865,13 @@ export class SimulationsService {
           where: { simulationId },
           data: newKpis,
         }),
+        // Sync Project.currentBudget from KPI percentage
+        tx.project.update({
+          where: { id: simulation.projectId },
+          data: {
+            currentBudget: Math.round(simulation.project.initialBudget * newKpis.budget / 100),
+          },
+        }),
       ]);
       await this.recordKpiSnapshot(tx, simulationId, simulation.currentPhaseOrder, 'rollback', decisionId);
       return dec;
@@ -882,6 +903,67 @@ export class SimulationsService {
       decision: updatedDecision,
       rollbacksUsed: rollbackCount + 1,
       rollbacksRemaining: adaptation.maxRollbacks - rollbackCount - 1,
+    };
+  }
+
+  async getCounts(id: string, userId: string, tenantId: string) {
+    const simulation = await this.prisma.simulation.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        userId: true,
+        tenantId: true,
+        status: true,
+        currentPhaseOrder: true,
+        project: { select: { name: true } },
+      },
+    });
+
+    if (!simulation) throw new NotFoundException('Simulation introuvable');
+    if (simulation.tenantId !== tenantId) throw new ForbiddenException('Acces refuse');
+    if (simulation.userId !== userId) throw new ForbiddenException('Acces refuse');
+
+    const [
+      pendingDecisions,
+      pendingEvents,
+      pendingMeetings,
+      unreadEmails,
+      pendingDeliverables,
+    ] = await Promise.all([
+      this.prisma.decision.count({
+        where: { simulationId: id, selectedOption: null },
+      }),
+      this.prisma.randomEvent.count({
+        where: { simulationId: id, resolvedAt: null },
+      }),
+      this.prisma.meeting.count({
+        where: {
+          simulationId: id,
+          phaseOrder: simulation.currentPhaseOrder,
+          status: 'SCHEDULED',
+        },
+      }),
+      this.prisma.simulatedEmail.count({
+        where: { simulationId: id, status: 'UNREAD' },
+      }),
+      this.prisma.userDeliverable.count({
+        where: {
+          simulationId: id,
+          status: { in: ['DRAFT', 'REVISED'] },
+        },
+      }),
+    ]);
+
+    return {
+      simulationId: id,
+      pendingDecisions,
+      pendingEvents,
+      pendingMeetings,
+      unreadEmails,
+      pendingDeliverables,
+      simulationStatus: simulation.status,
+      currentPhase: simulation.currentPhaseOrder,
+      projectName: simulation.project.name,
     };
   }
 

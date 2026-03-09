@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Toolbar, ToolbarHeading } from '@/components/layouts/layout-6/components/toolbar';
 import { Card, CardContent } from '@/components/ui/card';
+import { EmptyState } from '@/components/ui/empty-state';
 import { projectApi, type ProjectListItem } from '../api/project.api';
 
 const STATUS_LABELS: Record<string, string> = {
@@ -56,14 +57,13 @@ export default function ProjectsListPage() {
 
       {!loading && !error && projects.length === 0 && (
         <Card>
-          <CardContent className="flex flex-col items-center justify-center py-16 gap-4">
-            <p className="text-muted-foreground text-sm">Aucun projet. Lancez une simulation pour creer un projet.</p>
-            <Link
-              to="/simulations/new"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors"
-            >
-              Nouvelle simulation
-            </Link>
+          <CardContent>
+            <EmptyState
+              icon="folder"
+              title="Aucun projet"
+              description="Lancez une simulation pour creer votre premier projet."
+              action={{ label: 'Nouvelle simulation', href: '/simulations/new' }}
+            />
           </CardContent>
         </Card>
       )}

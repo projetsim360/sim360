@@ -14,6 +14,7 @@ import {
 import { UserDeliverableStatus } from '@prisma/client';
 import { CreateDeliverableDto, UpdateDeliverableContentDto } from '../dto';
 import { DeliverableEvaluationService } from './deliverable-evaluation.service';
+import { TemplateResolverService } from './template-resolver.service';
 import { ProfileConfigService } from '@/modules/profile/services';
 
 @Injectable()
@@ -24,6 +25,7 @@ export class DeliverablesService {
     private readonly prisma: PrismaService,
     private readonly eventPublisher: EventPublisherService,
     private readonly evaluationService: DeliverableEvaluationService,
+    private readonly templateResolver: TemplateResolverService,
     private readonly profileConfig: ProfileConfigService,
   ) {}
 
@@ -82,6 +84,27 @@ export class DeliverablesService {
       tenantId,
     );
 
+    // Pre-fill template content with simulation context when a template is provided
+    let prefilledContent: string | undefined;
+    if (dto.templateId) {
+      try {
+        const template = await this.prisma.deliverableTemplate.findUnique({
+          where: { id: dto.templateId },
+          select: { content: true },
+        });
+        if (template?.content) {
+          prefilledContent = await this.templateResolver.resolveTemplate(
+            template.content,
+            simulationId,
+          );
+        }
+      } catch (err) {
+        this.logger.warn(
+          `Template pre-fill failed for ${dto.templateId}: ${(err as Error).message}`,
+        );
+      }
+    }
+
     const deliverable = await this.prisma.userDeliverable.create({
       data: {
         simulationId,
@@ -89,6 +112,8 @@ export class DeliverablesService {
         title: dto.title,
         type: dto.type,
         phaseOrder: dto.phaseOrder,
+        content: prefilledContent,
+        lastSavedAt: prefilledContent ? new Date() : undefined,
         status: UserDeliverableStatus.DRAFT,
         maxRevisions: adaptation.maxRevisions,
         dueDate: dto.dueDate ? new Date(dto.dueDate) : undefined,

@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { KeenIcon } from '@/components/keenicons';
+import { EmptyState } from '@/components/ui/empty-state';
 import { toast } from 'sonner';
 import { usePortfolio } from '../api/valorization.api';
 import { PortfolioDeliverableCard } from '../components/portfolio-deliverable-card';
@@ -92,11 +93,12 @@ export default function PortfolioPage() {
         {/* Deliverables list */}
         {data.deliverables.length === 0 ? (
           <Card>
-            <CardContent className="flex flex-col items-center justify-center py-16 gap-3">
-              <KeenIcon icon="folder" style="solid" className="text-3xl text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">
-                Aucun livrable dans ce portfolio.
-              </p>
+            <CardContent>
+              <EmptyState
+                icon="briefcase"
+                title="Portfolio vide"
+                description="Votre portfolio se construit avec vos meilleurs livrables. Soumettez et faites evaluer vos livrables."
+              />
             </CardContent>
           </Card>
         ) : (

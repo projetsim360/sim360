@@ -78,7 +78,7 @@ const ToolbarHeading = ({ title = '' }: ToolbarHeadingProps) => {
   const item = getCurrentItem(MENU_SIDEBAR_COMPACT);
 
   return (
-    <div className="flex flex-col md:flex-row md:items-center flex-wrap gap-1 lg:gap-5">
+    <div data-slot="toolbar-heading" className="flex flex-col md:flex-row md:items-center flex-wrap gap-1 lg:gap-5">
       <h1 className="font-medium text-lg text-mono">{title || item?.title}</h1>
       <ToolbarBreadcrumbs />
     </div>

@@ -5,6 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { KeenIcon } from '@/components/keenicons';
+import { DisabledWithTooltip } from '@/components/ui/disabled-with-tooltip';
+import { EmptyState } from '@/components/ui/empty-state';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { ContextualHelp } from '@/components/ui/contextual-help';
+import { toast } from 'sonner';
 import { simulationApi } from '../api/simulation.api';
 import { useKpiSocket } from '../hooks/use-kpi-socket';
 import type { Simulation, TimelineEntry, KpiValues } from '../types/simulation.types';
@@ -40,28 +46,46 @@ const KPI_THEME: Record<string, { bg: string; text: string; bar: string }> = {
   riskLevel: { bg: 'bg-destructive/10', text: 'text-destructive', bar: 'bg-destructive' },
 };
 
+const KPI_TOOLTIPS: Record<string, string> = {
+  budget: 'Pourcentage du budget restant. En dessous de 40%, le projet est en danger financier.',
+  schedule: 'Respect du calendrier. En dessous de 40%, le projet risque de depasser les echeances.',
+  quality: 'Indice de qualite des livrables et du travail produit.',
+  teamMorale: 'Moral de l\'equipe. Un moral bas reduit la productivite.',
+  riskLevel: 'Exposition aux risques. Plus c\'est bas, plus la situation est critique.',
+};
+
 function KpiBadge({ kpiKey, label, icon, value }: { kpiKey: string; label: string; icon: string; value: number }) {
   const theme = KPI_THEME[kpiKey] ?? KPI_THEME.budget;
   const clamped = Math.min(100, Math.max(0, value));
+  const tooltip = KPI_TOOLTIPS[kpiKey];
 
   return (
-    <Card className="overflow-hidden">
-      <CardContent className="flex items-center gap-3.5 p-4">
-        <div className={`flex items-center justify-center size-12 shrink-0 rounded-lg ${theme.bg}`}>
-          <KeenIcon icon={icon} style="duotone" className={`text-xl ${theme.text}`} />
-        </div>
-        <div className="flex flex-col gap-1.5 min-w-0 flex-1">
-          <span className="text-2xs text-muted-foreground font-medium">{label}</span>
-          <span className={`text-lg font-semibold leading-none ${theme.text}`}>{clamped}%</span>
-          <div className="h-1 rounded-full bg-muted w-full">
-            <div
-              className={`h-1 rounded-full transition-all duration-500 ${theme.bar}`}
-              style={{ width: `${clamped}%` }}
-            />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Card className="overflow-hidden cursor-help">
+          <CardContent className="flex items-center gap-3.5 p-4">
+            <div className={`flex items-center justify-center size-12 shrink-0 rounded-lg ${theme.bg}`}>
+              <KeenIcon icon={icon} style="duotone" className={`text-xl ${theme.text}`} />
+            </div>
+            <div className="flex flex-col gap-1.5 min-w-0 flex-1">
+              <span className="text-2xs text-muted-foreground font-medium">{label}</span>
+              <span className={`text-lg font-semibold leading-none ${theme.text}`}>{clamped}%</span>
+              <div className="h-1 rounded-full bg-muted w-full">
+                <div
+                  className={`h-1 rounded-full transition-all duration-500 ${theme.bar}`}
+                  style={{ width: `${clamped}%` }}
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </TooltipTrigger>
+      {tooltip && (
+        <TooltipContent variant="light" className="max-w-[260px]">
+          {tooltip}
+        </TooltipContent>
+      )}
+    </Tooltip>
   );
 }
 
@@ -98,7 +122,14 @@ export default function SimulationDetailPage() {
   const handleKpiUpdate = useCallback((kpis: KpiValues) => {
     setSim((prev) => {
       if (!prev) return prev;
-      return { ...prev, kpis: { ...prev.kpis!, ...kpis } };
+      // Sync currentBudget from KPI budget percentage
+      const updatedProject = prev.project
+        ? {
+            ...prev.project,
+            currentBudget: Math.round(prev.project.initialBudget * (kpis.budget ?? prev.kpis?.budget ?? 100) / 100),
+          }
+        : prev.project;
+      return { ...prev, kpis: { ...prev.kpis!, ...kpis }, project: updatedProject };
     });
   }, []);
   useKpiSocket(id ?? '', handleKpiUpdate);
@@ -126,8 +157,10 @@ export default function SimulationDetailPage() {
     try {
       await simulationApi.advancePhase(id);
       await loadData();
+      toast.success('Phase suivante demarree ! De nouvelles actions sont disponibles.');
     } catch (err: any) {
       setError(err.message);
+      toast.error('Erreur lors du passage a la phase suivante.');
     } finally {
       setActionLoading(false);
     }
@@ -136,9 +169,19 @@ export default function SimulationDetailPage() {
   if (loading) {
     return (
       <div className="container">
-        <div className="flex justify-center py-16">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <Skeleton className="h-10 w-64 mb-5" />
+        <Skeleton className="h-24 rounded-lg mb-5" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-5">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-20 rounded-lg" />
+          ))}
         </div>
+        <Skeleton className="h-16 rounded-lg mb-5" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+          <Skeleton className="h-48 rounded-lg" />
+          <Skeleton className="h-48 rounded-lg" />
+        </div>
+        <Skeleton className="h-40 rounded-lg" />
       </div>
     );
   }
@@ -201,6 +244,17 @@ export default function SimulationDetailPage() {
           <Button variant="outline" asChild>
             <Link to="/simulations">Retour</Link>
           </Button>
+          <ContextualHelp
+            title="Comment fonctionne la simulation"
+            description="La simulation vous plonge dans un projet fictif ou vous prenez des decisions, participez a des reunions virtuelles et gerez des livrables. Vos actions influencent les KPIs du projet."
+            tips={[
+              'Prenez vos decisions en tenant compte de l\'impact sur le budget, le calendrier et le moral de l\'equipe.',
+              'Participez aux reunions pour obtenir des informations cles et influencer l\'equipe.',
+              'Surveillez vos KPIs regulierement : en dessous de 30%, le projet est en danger.',
+              'Consultez l\'agent PMO pour obtenir des conseils personnalises.',
+              'Soumettez vos livrables avant la fin de chaque phase.',
+            ]}
+          />
         </ToolbarActions>
       </Toolbar>
 
@@ -241,10 +295,12 @@ export default function SimulationDetailPage() {
                   {sim.status === 'IN_PROGRESS' ? 'Pause' : 'Reprendre'}
                 </Button>
                 {sim.status === 'IN_PROGRESS' && (
-                  <Button onClick={handleAdvancePhase} disabled={actionLoading}>
-                    <KeenIcon icon="right" style="filled" className="size-4" />
-                    Phase suivante
-                  </Button>
+                  <DisabledWithTooltip disabled={actionLoading} reason="Chargement en cours...">
+                    <Button onClick={handleAdvancePhase} disabled={actionLoading}>
+                      <KeenIcon icon="right" style="filled" className="size-4" />
+                      Phase suivante
+                    </Button>
+                  </DisabledWithTooltip>
                 )}
               </div>
             )}
@@ -332,9 +388,11 @@ export default function SimulationDetailPage() {
           </CardHeader>
           <CardContent>
             {pendingDecisions.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-4 text-center">
-                Aucune decision en attente.
-              </p>
+              <EmptyState
+                icon="question-2"
+                title="Aucune decision en attente"
+                description="Les decisions apparaitront au fil de la progression."
+              />
             ) : (
               <div className="space-y-2">
                 {pendingDecisions.map((dec) => (
@@ -380,9 +438,11 @@ export default function SimulationDetailPage() {
           </CardHeader>
           <CardContent>
             {pendingEvents.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-4 text-center">
-                Aucun evenement en attente.
-              </p>
+              <EmptyState
+                icon="flash"
+                title="Aucun evenement"
+                description="Des evenements aleatoires peuvent survenir a tout moment !"
+              />
             ) : (
               <div className="space-y-2">
                 {pendingEvents.map((evt) => (
@@ -467,9 +527,11 @@ export default function SimulationDetailPage() {
                   </Link>
                 ))}
               {sim.meetings.filter((m) => m.phaseOrder === sim.currentPhaseOrder).length === 0 && (
-                <p className="text-sm text-muted-foreground py-4 text-center">
-                  Aucune reunion pour cette phase.
-                </p>
+                <EmptyState
+                  icon="message-text"
+                  title="Aucune reunion planifiee"
+                  description="Avancez dans la simulation pour debloquer de nouvelles reunions."
+                />
               )}
             </div>
           </CardContent>
@@ -528,9 +590,11 @@ export default function SimulationDetailPage() {
         </CardHeader>
         <CardContent>
           {recentTimeline.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-4 text-center">
-              Aucun evenement dans l'historique.
-            </p>
+            <EmptyState
+              icon="time"
+              title="Historique vide"
+              description="L'historique se construit au fur et a mesure de vos actions."
+            />
           ) : (
             <div className="space-y-3">
               {recentTimeline.map((entry, i) => (

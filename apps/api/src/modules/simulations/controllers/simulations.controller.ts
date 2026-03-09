@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Patch, Body, Param, Query, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard, RolesGuard, CurrentUser, CurrentTenant, Auditable } from '@sim360/core';
 import { SimulationStatus } from '@prisma/client';
 import { SimulationsService } from '../services/simulations.service';
@@ -97,6 +97,36 @@ export class SimulationsController {
     @CurrentTenant() tenantId: string,
   ) {
     return this.simulationsService.rollbackDecision(simId, decId, userId, tenantId);
+  }
+
+  @Get(':id/counts')
+  @ApiOperation({ summary: 'Compteurs d\'actions en attente pour une simulation' })
+  @ApiResponse({
+    status: 200,
+    description: 'Compteurs retournes avec succes',
+    schema: {
+      type: 'object',
+      properties: {
+        simulationId: { type: 'string' },
+        pendingDecisions: { type: 'number', example: 2 },
+        pendingEvents: { type: 'number', example: 1 },
+        pendingMeetings: { type: 'number', example: 3 },
+        unreadEmails: { type: 'number', example: 5 },
+        pendingDeliverables: { type: 'number', example: 1 },
+        simulationStatus: { type: 'string', example: 'IN_PROGRESS' },
+        currentPhase: { type: 'number', example: 2 },
+        projectName: { type: 'string', example: 'Projet Alpha' },
+      },
+    },
+  })
+  @ApiResponse({ status: 404, description: 'Simulation introuvable' })
+  @ApiResponse({ status: 403, description: 'Acces refuse (tenant mismatch)' })
+  getCounts(
+    @Param('id') id: string,
+    @CurrentUser('id') userId: string,
+    @CurrentTenant() tenantId: string,
+  ) {
+    return this.simulationsService.getCounts(id, userId, tenantId);
   }
 
   @Get(':id/dashboard')

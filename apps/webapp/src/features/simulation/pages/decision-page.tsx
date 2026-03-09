@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { KeenIcon } from '@/components/keenicons';
 import { MarkdownContent } from '@/components/ui/markdown-content';
+import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from 'sonner';
 import { simulationApi } from '../api/simulation.api';
 import { aiApi, type AiEvaluationResult } from '../api/ai.api';
 import type { Simulation, Decision } from '../types/simulation.types';
@@ -74,6 +76,7 @@ export default function DecisionPage() {
       const dec = simData.decisions?.find((d: Decision) => d.id === decId);
       if (dec) setDecision(dec);
       setSubmitted(true);
+      toast.success('Decision enregistree. Les KPIs ont ete mis a jour.');
 
       // Trigger AI analysis (fail silently)
       setAiLoading(true);
@@ -84,6 +87,7 @@ export default function DecisionPage() {
         .finally(() => setAiLoading(false));
     } catch (err: any) {
       setError(err.message);
+      toast.error('Erreur lors de la prise de decision.');
     } finally {
       setSubmitting(false);
     }
@@ -92,8 +96,13 @@ export default function DecisionPage() {
   if (loading) {
     return (
       <div className="container">
-        <div className="flex justify-center py-16">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <Skeleton className="h-10 w-48 mb-5" />
+        <Skeleton className="h-32 rounded-lg mb-5" />
+        <div className="space-y-3 mb-5">
+          <Skeleton className="h-5 w-40" />
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton key={i} className="h-20 rounded-lg" />
+          ))}
         </div>
       </div>
     );

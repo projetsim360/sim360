@@ -2,10 +2,12 @@
 
 import { JSX, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { MENU_SIDEBAR_COMPACT } from '@/config/layout-6.config';
 import { MenuConfig, MenuItem } from '@/config/types';
-import { useFilteredMenu } from '@/hooks/use-filtered-menu';
+import { useContextualMenu } from '@/hooks/use-contextual-menu';
+import { useSimulationCounts } from '@/features/simulation/hooks/use-simulation-counts';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
+import { ArrowLeft } from '@/components/keenicons/icons';
 import {
   AccordionMenu,
   AccordionMenuClassNames,
@@ -18,7 +20,8 @@ import {
 
 export function SidebarMenuPrimary() {
   const { pathname } = useLocation();
-  const filteredMenu = useFilteredMenu(MENU_SIDEBAR_COMPACT);
+  const { menu, isInSimulation, simulationId } = useContextualMenu();
+  const { data: counts } = useSimulationCounts(simulationId);
 
   // Memoize matchPath to prevent unnecessary re-renders
   const matchPath = useCallback(
@@ -42,23 +45,68 @@ export function SidebarMenuPrimary() {
     indicator: '',
   };
 
+  const getCountForKey = (key: string | undefined): number | undefined => {
+    if (!key || !counts) return undefined;
+    return (counts as Record<string, unknown>)[key] as number | undefined;
+  };
+
+  const isSimulationCompleted = counts?.simulationStatus === 'COMPLETED';
+
   const buildMenu = (items: MenuConfig): JSX.Element[] => {
     return items.map((item: MenuItem, index: number) => {
-      if (!item.heading && !item.disabled) {
-        return buildMenuItemRoot(item, index);
-      } else {
+      // Headings
+      if (item.heading) {
+        // Masquer les headings conditionnels "completed" si pas terminée
+        if (item.showWhen === 'completed' && !isSimulationCompleted) {
+          return <span key={`heading-hidden-${index}`} />;
+        }
+        return null as unknown as JSX.Element;
+      }
+
+      if (item.disabled) {
         return <span key={`empty-${index}`} />;
       }
+
+      // Back link — rendu spécial
+      if (item.isBackLink) {
+        return (
+          <div key={`back-${index}`} className="border-b border-input pb-2.5 mb-1">
+            <Link
+              to={item.path || '/simulations'}
+              className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted/50"
+            >
+              <ArrowLeft className="size-3.5" />
+              <span>{item.title}</span>
+            </Link>
+          </div>
+        );
+      }
+
+      // Items avec showWhen === 'completed' : masqué ou grisé
+      if (item.showWhen === 'completed' && !isSimulationCompleted) {
+        return <span key={`hidden-${index}`} />;
+      }
+
+      return buildMenuItemRoot(item, index);
     });
   };
 
   const buildMenuItemRoot = (item: MenuItem, index: number): JSX.Element => {
+    const badgeCount = getCountForKey(item.badgeKey);
+
     if (item.children) {
       return (
         <AccordionMenuSub key={index} value={item.path || `root-${index}`}>
           <AccordionMenuSubTrigger className="text-sm font-medium">
             {item.icon && <item.icon data-slot="accordion-menu-icon" />}
-            <span data-slot="accordion-menu-title">{item.title}</span>
+            <span data-slot="accordion-menu-title" className="flex items-center gap-2">
+              {item.title}
+              {isInSimulation && badgeCount !== undefined && badgeCount > 0 && (
+                <Badge variant="primary" size="xs" shape="circle">
+                  {badgeCount}
+                </Badge>
+              )}
+            </span>
           </AccordionMenuSubTrigger>
           <AccordionMenuSubContent
             type="single"
@@ -79,9 +127,16 @@ export function SidebarMenuPrimary() {
           value={item.path || ''}
           className="text-sm font-medium"
         >
-          <Link to={item.path || '#'}>
-            {item.icon && <item.icon data-slot="accordion-menu-icon" />}
-            <span data-slot="accordion-menu-title">{item.title}</span>
+          <Link to={item.path || '#'} className="flex items-center justify-between w-full">
+            <span className="flex items-center gap-2">
+              {item.icon && <item.icon data-slot="accordion-menu-icon" />}
+              <span data-slot="accordion-menu-title">{item.title}</span>
+            </span>
+            {isInSimulation && badgeCount !== undefined && badgeCount > 0 && (
+              <Badge variant="primary" size="xs" shape="circle">
+                {badgeCount}
+              </Badge>
+            )}
           </Link>
         </AccordionMenuItem>
       );
@@ -166,7 +221,7 @@ export function SidebarMenuPrimary() {
       collapsible
       classNames={classNames}
     >
-      {buildMenu(filteredMenu)}
+      {buildMenu(menu)}
     </AccordionMenu>
   );
 }

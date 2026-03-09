@@ -14,6 +14,7 @@ import { Observable } from 'rxjs';
 import { AiService } from '@/modules/ai/ai.service';
 import { PmoContextService } from './pmo-context.service';
 import { DeliverableTemplatesService } from '@/modules/admin-reference/services/deliverable-templates.service';
+import { TemplateResolverService } from '@/modules/deliverables/services/template-resolver.service';
 
 interface MessageEvent {
   data: string;
@@ -29,6 +30,7 @@ export class PmoService {
     private readonly pmoContext: PmoContextService,
     private readonly eventPublisher: EventPublisherService,
     private readonly deliverableTemplatesService: DeliverableTemplatesService,
+    private readonly templateResolver: TemplateResolverService,
   ) {}
 
   /**
@@ -124,7 +126,17 @@ export class PmoService {
           );
           let enrichedPrompt = systemPrompt;
           if (templateMatch) {
-            enrichedPrompt += `\n\n## Template demande par l'apprenant\nVoici le contenu du template "${templateMatch.title}" (type: ${templateMatch.type}) :\n\n${templateMatch.content}\n\nPresente ce template a l'apprenant en expliquant comment l'adapter a son projet.`;
+            // Resolve template placeholders with simulation context
+            let resolvedContent = templateMatch.content;
+            try {
+              resolvedContent = await this.templateResolver.resolveTemplate(
+                templateMatch.content,
+                simulationId,
+              );
+            } catch (err) {
+              this.logger.warn(`Template resolution failed: ${(err as Error).message}`);
+            }
+            enrichedPrompt += `\n\n## Template demande par l'apprenant\nVoici le contenu du template "${templateMatch.title}" (type: ${templateMatch.type}), deja pre-rempli avec les donnees du projet :\n\n${resolvedContent}\n\nPresente ce template a l'apprenant en expliquant les sections a completer (marquees [A completer]) et comment les adapter a son contexte specifique.`;
 
             // Emit template request event
             this.eventPublisher

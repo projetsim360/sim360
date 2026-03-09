@@ -9,11 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { KeenIcon } from '@/components/keenicons';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { DisabledWithTooltip } from '@/components/ui/disabled-with-tooltip';
 import {
   Collapsible,
   CollapsibleContent,
@@ -27,6 +23,7 @@ import {
   useReviseDeliverable,
 } from '../api/deliverables.api';
 import { DeliverableStatusBadge } from '../components/deliverable-status-badge';
+import { DeliverableWorkflowStepper } from '../components/deliverable-workflow-stepper';
 import { EvaluationCard } from '../components/evaluation-card';
 import { ReferenceComparison } from '../components/reference-comparison';
 import { cn } from '@/lib/utils';
@@ -138,6 +135,11 @@ export default function DeliverableEvaluationPage() {
         </ToolbarActions>
       </Toolbar>
 
+      {/* Workflow stepper */}
+      <div className="mb-5">
+        <DeliverableWorkflowStepper status={deliverable.status} />
+      </div>
+
       <div className="space-y-6">
         {/* Score header */}
         <Card>
@@ -209,38 +211,38 @@ export default function DeliverableEvaluationPage() {
                 </Button>
 
                 {canRevise ? (
-                  <Button
-                    size="sm"
-                    onClick={handleRevise}
-                    disabled={reviseMutation.isPending}
-                  >
-                    <KeenIcon
-                      icon="pencil"
-                      style="duotone"
-                      className="size-4"
-                    />
-                    Reviser
-                  </Button>
+                  <DisabledWithTooltip disabled={reviseMutation.isPending} reason="Revision en cours...">
+                    <Button
+                      size="sm"
+                      onClick={handleRevise}
+                      disabled={reviseMutation.isPending}
+                    >
+                      <KeenIcon
+                        icon="pencil"
+                        style="duotone"
+                        className="size-4"
+                      />
+                      Reviser
+                    </Button>
+                  </DisabledWithTooltip>
                 ) : (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span>
-                        <Button size="sm" disabled>
-                          <KeenIcon
-                            icon="pencil"
-                            style="duotone"
-                            className="size-4"
-                          />
-                          Reviser
-                        </Button>
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      {deliverable.status === 'VALIDATED'
+                  <DisabledWithTooltip
+                    disabled
+                    reason={
+                      deliverable.status === 'VALIDATED'
                         ? 'Ce livrable est deja valide.'
-                        : 'Nombre maximum de revisions atteint.'}
-                    </TooltipContent>
-                  </Tooltip>
+                        : 'Nombre maximum de revisions atteint.'
+                    }
+                  >
+                    <Button size="sm" disabled>
+                      <KeenIcon
+                        icon="pencil"
+                        style="duotone"
+                        className="size-4"
+                      />
+                      Reviser
+                    </Button>
+                  </DisabledWithTooltip>
                 )}
               </div>
             </div>

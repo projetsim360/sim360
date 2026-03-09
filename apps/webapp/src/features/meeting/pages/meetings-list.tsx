@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { KeenIcon } from '@/components/keenicons';
+import { EmptyState } from '@/components/ui/empty-state';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { meetingApi } from '../api/meeting.api';
 import type { Meeting } from '../types/meeting.types';
@@ -160,10 +161,12 @@ export default function MeetingsListPage() {
         </Card>
       ) : meetings.length === 0 ? (
         <Card>
-          <CardContent className="flex flex-col items-center justify-center py-16 gap-3">
-            <p className="text-muted-foreground text-sm">
-              Aucune reunion pour cette simulation.
-            </p>
+          <CardContent>
+            <EmptyState
+              icon="message-text"
+              title="Aucune reunion"
+              description="Les reunions sont planifiees pour chaque phase. Avancez dans la simulation pour les voir apparaitre."
+            />
           </CardContent>
         </Card>
       ) : (

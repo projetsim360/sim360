@@ -321,17 +321,13 @@ export class RecruitmentService {
       maxCandidates: campaign.maxCandidates,
       publishedAt: campaign.publishedAt,
       closedAt: campaign.closedAt,
-      stats: {
-        totalCandidates,
-        byStatus: {
-          pending: pendingCount,
-          inProgress: inProgressCount,
-          completed: completedCount,
-          abandoned: abandonedCount,
-        },
-        completionRate,
-        averageScore,
-      },
+      totalCandidates,
+      pending: pendingCount,
+      inProgress: inProgressCount,
+      completed: completedCount,
+      abandoned: abandonedCount,
+      completionRate,
+      averageScore,
     };
   }
 
@@ -352,11 +348,34 @@ export class RecruitmentService {
         cultureDescription: true,
         maxCandidates: true,
         publishedAt: true,
+        tenant: { select: { name: true } },
         _count: { select: { candidateResults: true } },
       },
     });
 
     if (!campaign) throw new NotFoundException('Campagne introuvable');
-    return campaign;
+
+    // Only expose ACTIVE campaigns publicly
+    const isOpen = campaign.status === CampaignStatus.ACTIVE
+      && (campaign.maxCandidates === null || campaign._count.candidateResults < campaign.maxCandidates);
+
+    const isFull = campaign.status === CampaignStatus.ACTIVE
+      && campaign.maxCandidates !== null
+      && campaign._count.candidateResults >= campaign.maxCandidates;
+
+    return {
+      title: campaign.title,
+      companyName: campaign.tenant.name,
+      jobTitle: campaign.jobTitle,
+      description: campaign.jobDescription,
+      culture: campaign.culture,
+      requiredSkills: campaign.requiredSkills,
+      experienceLevel: campaign.experienceLevel,
+      projectTypes: campaign.projectTypes,
+      estimatedDuration: '~1 heure',
+      status: campaign.status,
+      isOpen,
+      isFull,
+    };
   }
 }

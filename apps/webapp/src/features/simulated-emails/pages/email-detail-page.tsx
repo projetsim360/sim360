@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
 import { KeenIcon } from '@/components/keenicons';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -56,13 +57,12 @@ export default function EmailDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="container">
+      <div className="container space-y-5">
         <Toolbar>
           <ToolbarHeading title="Email" />
         </Toolbar>
-        <div className="flex justify-center py-16">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-        </div>
+        <Skeleton className="h-40 rounded-lg" />
+        <Skeleton className="h-48 rounded-lg" />
       </div>
     );
   }

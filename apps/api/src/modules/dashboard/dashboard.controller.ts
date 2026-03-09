@@ -19,6 +19,15 @@ export class DashboardController {
     return this.dashboardService.getGlobalDashboard(userId, tenantId);
   }
 
+  @Get('summary')
+  @ApiOperation({ summary: 'Command Center — donnees enrichies du dashboard' })
+  getSummary(
+    @CurrentUser('id') userId: string,
+    @CurrentTenant() tenantId: string,
+  ) {
+    return this.dashboardService.getSummary(userId, tenantId);
+  }
+
   @Get('stats')
   @ApiOperation({ summary: 'Statistiques seules (leger)' })
   getStats(

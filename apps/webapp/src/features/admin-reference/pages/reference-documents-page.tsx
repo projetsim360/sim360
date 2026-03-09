@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/layout-6/components/toolbar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { EmptyState } from '@/components/ui/empty-state';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -251,11 +252,13 @@ export default function ReferenceDocumentsPage() {
 
         {!isLoading && !error && sortedDocuments.length === 0 && (
           <Card>
-            <CardContent className="flex flex-col items-center justify-center py-16 gap-4">
-              <p className="text-muted-foreground text-sm">Aucun document trouve.</p>
-              <Button variant="primary" size="sm" onClick={handleCreate}>
-                Creer un premier document
-              </Button>
+            <CardContent>
+              <EmptyState
+                icon="folder"
+                title="Aucun document"
+                description="Aucun document ne correspond a vos filtres."
+                action={{ label: 'Creer un premier document', onClick: handleCreate }}
+              />
             </CardContent>
           </Card>
         )}

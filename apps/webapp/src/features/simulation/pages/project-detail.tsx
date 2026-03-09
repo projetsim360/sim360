@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router';
 import { Toolbar, ToolbarHeading } from '@/components/layouts/layout-6/components/toolbar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { EmptyState } from '@/components/ui/empty-state';
 import { projectApi } from '../api/project.api';
 import type { Project, ProjectTeamMember, Deliverable } from '../types/simulation.types';
 
@@ -97,7 +98,11 @@ export default function ProjectDetailPage() {
           </CardHeader>
           <CardContent>
             {project.teamMembers.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-4 text-center">Aucun membre</p>
+              <EmptyState
+                icon="people"
+                title="Equipe vide"
+                description="L'equipe sera constituee au lancement de la simulation."
+              />
             ) : (
               <div className="space-y-2">
                 {project.teamMembers.slice(0, 5).map((m) => (
@@ -123,7 +128,11 @@ export default function ProjectDetailPage() {
           </CardHeader>
           <CardContent>
             {project.deliverables.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-4 text-center">Aucun livrable</p>
+              <EmptyState
+                icon="document"
+                title="Aucun livrable"
+                description="Les livrables seront disponibles au fur et a mesure des phases."
+              />
             ) : (
               <div className="space-y-2">
                 {project.deliverables.slice(0, 5).map((d) => (

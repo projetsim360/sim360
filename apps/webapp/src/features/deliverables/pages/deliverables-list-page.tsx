@@ -16,6 +16,7 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select';
+import { EmptyState } from '@/components/ui/empty-state';
 import { useDeliverables } from '../api/deliverables.api';
 import { DeliverableStatusBadge } from '../components/deliverable-status-badge';
 import type { UserDeliverableStatus } from '../types/deliverables.types';
@@ -190,15 +191,12 @@ export default function DeliverablesListPage() {
           </Card>
         ) : !deliverables || deliverables.length === 0 ? (
           <Card>
-            <CardContent className="flex flex-col items-center justify-center py-16 gap-3">
-              <KeenIcon
+            <CardContent>
+              <EmptyState
                 icon="document"
-                style="duotone"
-                className="size-12 text-muted-foreground/30"
+                title="Aucun livrable"
+                description="Les livrables apparaissent a chaque nouvelle phase. Avancez dans la simulation pour les debloquer."
               />
-              <p className="text-sm text-muted-foreground">
-                Aucun livrable pour cette simulation.
-              </p>
             </CardContent>
           </Card>
         ) : (

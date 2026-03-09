@@ -14,7 +14,7 @@ export interface RecruitmentCampaign {
   publishedAt?: string;
   closedAt?: string;
   generatedScenarioId?: string;
-  _count?: { candidates: number };
+  _count?: { candidateResults: number };
   completedCount?: number;
   averageScore?: number | null;
   documents?: string[];
@@ -88,8 +88,14 @@ export interface CampaignPublicInfo {
   companyName: string;
   jobTitle: string;
   description: string;
+  culture: CultureType;
+  requiredSkills: SkillWeight[];
+  experienceLevel: string;
+  projectTypes: string[];
   estimatedDuration: string;
+  status: CampaignStatus;
   isOpen: boolean;
+  isFull: boolean;
 }
 
 export interface ShortlistResult {
@@ -128,7 +134,10 @@ export interface UpdateCampaignDto extends Partial<CreateCampaignDto> {}
 
 export interface PaginatedResponse<T> {
   data: T[];
-  total: number;
-  page: number;
-  limit: number;
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 }

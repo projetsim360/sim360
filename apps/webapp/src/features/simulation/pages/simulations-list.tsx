@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/layout-6/components/toolbar';
 import { Card, CardContent } from '@/components/ui/card';
+import { EmptyState } from '@/components/ui/empty-state';
+import { Skeleton } from '@/components/ui/skeleton';
 import { simulationApi } from '../api/simulation.api';
 import type { Simulation } from '../types/simulation.types';
 
@@ -102,8 +104,10 @@ export default function SimulationsListPage() {
 
       {/* Content */}
       {loading && (
-        <div className="flex justify-center py-16">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-52 rounded-lg" />
+          ))}
         </div>
       )}
 
@@ -123,17 +127,13 @@ export default function SimulationsListPage() {
 
       {!loading && !error && simulations.length === 0 && (
         <Card>
-          <CardContent className="flex flex-col items-center justify-center py-16 gap-4">
-            <span className="text-4xl">🎯</span>
-            <p className="text-muted-foreground text-sm">
-              Aucune simulation trouvee.
-            </p>
-            <Link
-              to="/simulations/new"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors"
-            >
-              Creer ma premiere simulation
-            </Link>
+          <CardContent>
+            <EmptyState
+              icon="chart-simple"
+              title="Aucune simulation"
+              description="Choisissez un scenario et plongez dans l'experience !"
+              action={{ label: 'Creer ma premiere simulation', href: '/simulations/new' }}
+            />
           </CardContent>
         </Card>
       )}

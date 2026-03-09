@@ -68,6 +68,24 @@ export default function JoinCampaignPage() {
     );
   }
 
+  if (info.isFull) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <Card className="max-w-md w-full">
+          <CardContent className="flex flex-col items-center justify-center py-12 gap-4">
+            <div className="w-16 h-16 rounded-full bg-warning/10 flex items-center justify-center">
+              <KeenIcon icon="people" style="duotone" className="size-8 text-warning" />
+            </div>
+            <h2 className="text-lg font-semibold">Campagne complete</h2>
+            <p className="text-sm text-muted-foreground text-center">
+              Cette campagne a atteint le nombre maximum de candidats.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (!info.isOpen) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">

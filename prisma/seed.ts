@@ -1,5 +1,6 @@
 import { PrismaClient, UserRole, TenantPlan, Difficulty, Sector, PhaseType, RandomEventType, Severity, ReferenceDocumentCategory } from '@prisma/client';
 import bcryptjs from 'bcryptjs';
+import { seedDeliverableTemplates } from './seeds/deliverable-templates';
 const { hashSync } = bcryptjs;
 
 const prisma = new PrismaClient();
@@ -913,38 +914,9 @@ async function main() {
 
   console.log(`Recruiter user created: ${recruiter.email}`);
 
-  // ─── Deliverable Templates (EPIC 1) ───────────────────────
+  // ─── Deliverable Templates (EPIC 1 — enriched with PM Kit) ─
 
-  const templateData = [
-    { title: 'Charte de projet', type: 'charter', phase: PhaseType.INITIATION, description: 'Document fondateur definissant le perimetre, les objectifs et les parties prenantes.' },
-    { title: 'Plan de management de projet', type: 'project-plan', phase: PhaseType.PLANNING, description: 'Document central decrivant la strategie de gestion du projet.' },
-    { title: 'Registre des risques', type: 'risk-register', phase: PhaseType.PLANNING, description: 'Liste des risques identifies avec probabilite, impact et plan de reponse.' },
-    { title: 'Rapport d\'avancement', type: 'status-report', phase: PhaseType.EXECUTION, description: 'Point regulier sur l\'avancement, les KPIs et les alertes.' },
-    { title: 'Registre des changements', type: 'change-log', phase: PhaseType.MONITORING, description: 'Suivi de toutes les demandes de changement et leur statut.' },
-    { title: 'Rapport de cloture', type: 'closure-report', phase: PhaseType.CLOSURE, description: 'Bilan final du projet avec lecons apprises et recommandations.' },
-  ];
-
-  for (const t of templateData) {
-    await prisma.deliverableTemplate.upsert({
-      where: { id: `seed-template-${t.type}` },
-      update: {},
-      create: {
-        id: `seed-template-${t.type}`,
-        tenantId: tenant.id,
-        createdById: admin.id,
-        title: t.title,
-        type: t.type,
-        phase: t.phase,
-        description: t.description,
-        content: `# ${t.title}\n\n## 1. Introduction\n\n[A completer]\n\n## 2. Contenu principal\n\n[A completer]\n\n## 3. Conclusion\n\n[A completer]`,
-        evaluationCriteria: { criteria: ['Completude', 'Clarte', 'Pertinence', 'Coherence'] },
-        isActive: true,
-        version: 1,
-      },
-    });
-  }
-
-  console.log(`Seeded: ${templateData.length} deliverable templates`);
+  await seedDeliverableTemplates(prisma, tenant.id, admin.id);
 
   // ─── Reference Documents (EPIC 1) ─────────────────────────
 

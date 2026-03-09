@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsArray, IsInt, IsEnum, ValidateNested, Min, Max } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsArray, IsInt, IsEnum, ValidateNested, Min, Max, MinLength, ArrayMinSize } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { CultureType } from '@prisma/client';
@@ -27,13 +27,15 @@ export class CreateCampaignDto {
   @IsNotEmpty()
   jobTitle!: string;
 
-  @ApiProperty({ description: 'Description du poste' })
+  @ApiProperty({ description: 'Description du poste (min 10 caracteres)' })
   @IsString()
   @IsNotEmpty()
+  @MinLength(10, { message: 'La description doit faire au moins 10 caracteres' })
   jobDescription!: string;
 
-  @ApiProperty({ description: 'Competences requises avec ponderation', type: [RequiredSkillDto] })
+  @ApiProperty({ description: 'Competences requises avec ponderation (min 1)', type: [RequiredSkillDto] })
   @IsArray()
+  @ArrayMinSize(1, { message: 'Ajoutez au moins une competence' })
   @ValidateNested({ each: true })
   @Type(() => RequiredSkillDto)
   requiredSkills!: RequiredSkillDto[];

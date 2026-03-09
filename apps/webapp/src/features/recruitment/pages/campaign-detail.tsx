@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Progress } from '@/components/ui/progress';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   AlertDialog,
@@ -20,6 +21,9 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { KeenIcon } from '@/components/keenicons';
+import { EmptyState } from '@/components/ui/empty-state';
+import { DisabledWithTooltip } from '@/components/ui/disabled-with-tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import {
@@ -33,6 +37,7 @@ import {
 import { CampaignStatusBadge } from '../components/campaign-status-badge';
 import { CandidateStatusBadge } from '../components/candidate-status-badge';
 import { CampaignLinkShare } from '../components/campaign-link-share';
+import { CampaignWorkflowStepper } from '../components/campaign-workflow-stepper';
 import type { CandidateResult } from '../types/recruitment.types';
 
 function StatCard({ label, value, icon, color }: { label: string; value: string | number; icon: string; color: string }) {
@@ -90,7 +95,7 @@ export default function CampaignDetailPage() {
   const handlePublish = async () => {
     try {
       await publishMutation.mutateAsync(id!);
-      toast.success('Campagne publiee avec succes');
+      toast.success('Campagne publiee ! Partagez le lien avec vos candidats.');
     } catch {
       toast.error('Erreur lors de la publication');
     }
@@ -99,7 +104,7 @@ export default function CampaignDetailPage() {
   const handleClose = async () => {
     try {
       await closeMutation.mutateAsync(id!);
-      toast.success('Campagne cloturee');
+      toast.success('Campagne cloturee.');
     } catch {
       toast.error('Erreur lors de la cloture');
     }
@@ -108,7 +113,7 @@ export default function CampaignDetailPage() {
   const handleArchive = async () => {
     try {
       await archiveMutation.mutateAsync(id!);
-      toast.success('Campagne archivee');
+      toast.success('Campagne archivee.');
     } catch {
       toast.error("Erreur lors de l'archivage");
     }
@@ -120,8 +125,16 @@ export default function CampaignDetailPage() {
         <Toolbar>
           <ToolbarHeading title="Chargement..." />
         </Toolbar>
-        <div className="flex justify-center py-16">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <Skeleton className="h-12 rounded-lg mb-5" />
+        <Skeleton className="h-16 rounded-lg mb-5" />
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-5">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-20 rounded-lg" />
+          ))}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <Skeleton className="h-48 rounded-lg" />
+          <Skeleton className="h-48 rounded-lg" />
         </div>
       </div>
     );
@@ -146,7 +159,7 @@ export default function CampaignDetailPage() {
   }
 
   // US-8.7: max candidates progress
-  const candidateCount = campaign._count?.candidates ?? 0;
+  const candidateCount = campaign._count?.candidateResults ?? 0;
   const maxCandidates = campaign.maxCandidates;
   const fillPercent = maxCandidates ? Math.min((candidateCount / maxCandidates) * 100, 100) : null;
   const isAlmostFull = fillPercent !== null && fillPercent >= 80 && fillPercent < 100;
@@ -169,14 +182,24 @@ export default function CampaignDetailPage() {
               Bientot complet
             </Badge>
           )}
-          {campaign.status === 'ACTIVE' && (
-            <Button variant="outline" size="sm" asChild>
-              <Link to={`/recruitment/campaigns/${id}/shortlist`}>
-                <KeenIcon icon="star" style="duotone" className="size-4" />
-                Shortlist
-              </Link>
+          <DisabledWithTooltip
+            disabled={campaign.status !== 'ACTIVE'}
+            reason={campaign.status === 'DRAFT' ? 'Publiez la campagne pour acceder a la shortlist' : 'Campagne non active'}
+          >
+            <Button variant="outline" size="sm" asChild={campaign.status === 'ACTIVE'}>
+              {campaign.status === 'ACTIVE' ? (
+                <Link to={`/recruitment/campaigns/${id}/shortlist`}>
+                  <KeenIcon icon="star" style="duotone" className="size-4" />
+                  Shortlist
+                </Link>
+              ) : (
+                <>
+                  <KeenIcon icon="star" style="duotone" className="size-4" />
+                  Shortlist
+                </>
+              )}
             </Button>
-          )}
+          </DisabledWithTooltip>
           <Button variant="outline" size="sm" asChild>
             <Link to="/recruitment/campaigns">
               <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
@@ -185,15 +208,29 @@ export default function CampaignDetailPage() {
           </Button>
         </ToolbarActions>
       </Toolbar>
-        {/* Share link for active campaigns */}
-        {campaign.status === 'ACTIVE' && campaign.slug && (
+        {/* Workflow stepper */}
+        <div className="mb-5">
+          <CampaignWorkflowStepper campaign={campaign} />
+        </div>
+
+        {/* Share link for active campaigns, visible in DRAFT with message */}
+        {(campaign.status === 'ACTIVE' || campaign.status === 'DRAFT') && (
           <Card className="mb-5">
             <CardContent className="py-4">
               <div className="flex items-center gap-3 mb-2">
                 <KeenIcon icon="share" style="duotone" className="size-4 text-primary" />
                 <span className="text-sm font-medium">Lien de candidature</span>
               </div>
-              <CampaignLinkShare slug={campaign.slug} />
+              {campaign.status === 'ACTIVE' && campaign.slug ? (
+                <CampaignLinkShare slug={campaign.slug} />
+              ) : (
+                <div className="flex items-center gap-2 rounded-lg bg-muted p-3">
+                  <KeenIcon icon="information-2" style="duotone" className="size-4 text-muted-foreground shrink-0" />
+                  <p className="text-sm text-muted-foreground">
+                    Publiez la campagne pour obtenir le lien de partage
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         )}
@@ -242,8 +279,16 @@ export default function CampaignDetailPage() {
           {/* Dashboard tab - US-8.9 */}
           <TabsContent value="dashboard">
             {loadingDashboard ? (
-              <div className="flex justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+              <div className="space-y-5">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <Skeleton key={i} className="h-20 rounded-lg" />
+                  ))}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <Skeleton className="h-48 rounded-lg" />
+                  <Skeleton className="h-48 rounded-lg" />
+                </div>
               </div>
             ) : dashboard ? (
               <div className="space-y-5">
@@ -333,14 +378,16 @@ export default function CampaignDetailPage() {
           <TabsContent value="candidates">
             {candidates.length === 0 ? (
               <Card>
-                <CardContent className="flex flex-col items-center justify-center py-16 gap-3">
-                  <KeenIcon icon="people" style="duotone" className="size-8 text-muted-foreground" />
-                  <p className="text-muted-foreground text-sm">Aucun candidat pour le moment.</p>
-                  {campaign.status === 'DRAFT' && (
-                    <p className="text-sm text-muted-foreground">
-                      Publiez la campagne pour recevoir des candidatures.
-                    </p>
-                  )}
+                <CardContent>
+                  <EmptyState
+                    icon="people"
+                    title="Aucun candidat"
+                    description={
+                      campaign.status === 'DRAFT'
+                        ? 'Publiez la campagne et partagez le lien pour recevoir des candidatures.'
+                        : 'Les candidats apparaitront ici quand ils rejoindront la campagne. Partagez le lien !'
+                    }
+                  />
                 </CardContent>
               </Card>
             ) : (
@@ -373,7 +420,16 @@ export default function CampaignDetailPage() {
                             <TableHead className="text-center">Phase</TableHead>
                             <TableHead className="text-center">Phase d'abandon</TableHead>
                             <TableHead className="text-right">Score</TableHead>
-                            <TableHead className="text-right">Match</TableHead>
+                            <TableHead className="text-right">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="cursor-help">Match</span>
+                                </TooltipTrigger>
+                                <TooltipContent variant="light" className="max-w-[280px]">
+                                  Pourcentage d'adequation entre les competences du candidat et les exigences du poste.
+                                </TooltipContent>
+                              </Tooltip>
+                            </TableHead>
                             <TableHead className="text-right">Debut</TableHead>
                             <TableHead className="text-right">Fin</TableHead>
                             <TableHead className="text-right">Actions</TableHead>
@@ -476,7 +532,20 @@ export default function CampaignDetailPage() {
                       <p className="font-medium">{campaign.experienceLevel}</p>
                     </div>
                     <div>
-                      <span className="text-muted-foreground">Culture</span>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="text-muted-foreground cursor-help">Culture</span>
+                        </TooltipTrigger>
+                        <TooltipContent variant="light" className="max-w-[300px]">
+                          {campaign.culture === 'AGILE'
+                            ? 'Environnement agile : favorise l\'adaptabilite, la collaboration et les iterations rapides.'
+                            : campaign.culture === 'STRICT'
+                              ? 'Environnement strict : processus formalises, hierarchie claire et respect des procedures.'
+                              : campaign.culture === 'COLLABORATIVE'
+                                ? 'Environnement collaboratif : travail d\'equipe, communication ouverte et prise de decision collective.'
+                                : 'Type de culture organisationnelle de l\'entreprise.'}
+                        </TooltipContent>
+                      </Tooltip>
                       <p className="font-medium">{campaign.culture}</p>
                     </div>
                     <div>
@@ -493,9 +562,16 @@ export default function CampaignDetailPage() {
                       <span className="text-muted-foreground">Competences</span>
                       <div className="flex flex-wrap gap-2 mt-1">
                         {campaign.requiredSkills.map((s, i) => (
-                          <Badge key={i} variant="primary" appearance="light" size="sm">
-                            {s.skill} ({s.weight}/10)
-                          </Badge>
+                          <Tooltip key={i}>
+                            <TooltipTrigger asChild>
+                              <Badge variant="primary" appearance="light" size="sm" className="cursor-help">
+                                {s.skill} ({s.weight}/10)
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent variant="light" className="max-w-[240px]">
+                              Poids : {s.weight}/10. 1 = peu important, 10 = critique pour le poste.
+                            </TooltipContent>
+                          </Tooltip>
                         ))}
                       </div>
                     </div>
@@ -532,7 +608,7 @@ export default function CampaignDetailPage() {
                     </AlertDialog>
                   )}
 
-                  {campaign.status === 'ACTIVE' && (
+                  {campaign.status === 'ACTIVE' ? (
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button variant="destructive" size="sm">
@@ -554,9 +630,16 @@ export default function CampaignDetailPage() {
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
-                  )}
+                  ) : campaign.status === 'DRAFT' ? (
+                    <DisabledWithTooltip disabled reason="Disponible apres publication">
+                      <Button variant="destructive" size="sm">
+                        <KeenIcon icon="lock" style="duotone" className="size-4" />
+                        Cloturer la campagne
+                      </Button>
+                    </DisabledWithTooltip>
+                  ) : null}
 
-                  {campaign.status === 'CLOSED' && (
+                  {campaign.status === 'CLOSED' ? (
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button variant="outline" size="sm">
@@ -578,7 +661,14 @@ export default function CampaignDetailPage() {
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
-                  )}
+                  ) : (campaign.status === 'ACTIVE' || campaign.status === 'DRAFT') ? (
+                    <DisabledWithTooltip disabled reason="Fermez d'abord la campagne">
+                      <Button variant="outline" size="sm">
+                        <KeenIcon icon="archive" style="duotone" className="size-4" />
+                        Archiver
+                      </Button>
+                    </DisabledWithTooltip>
+                  ) : null}
                 </CardContent>
               </Card>
             </div>

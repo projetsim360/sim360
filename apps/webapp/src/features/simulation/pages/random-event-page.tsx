@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { KeenIcon } from '@/components/keenicons';
 import { MarkdownContent } from '@/components/ui/markdown-content';
+import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from 'sonner';
 import { simulationApi } from '../api/simulation.api';
 import type { Simulation, RandomEvent } from '../types/simulation.types';
 
@@ -69,8 +71,10 @@ export default function RandomEventPage() {
       const evt = simData.randomEvents?.find((e: RandomEvent) => e.id === evtId);
       if (evt) setEvent(evt);
       setSubmitted(true);
+      toast.success('Reaction enregistree.');
     } catch (err: any) {
       setError(err.message);
+      toast.error("Erreur lors de l'enregistrement de la reaction.");
     } finally {
       setSubmitting(false);
     }
@@ -79,8 +83,13 @@ export default function RandomEventPage() {
   if (loading) {
     return (
       <div className="container">
-        <div className="flex justify-center py-16">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <Skeleton className="h-10 w-56 mb-5" />
+        <Skeleton className="h-28 rounded-lg mb-5" />
+        <div className="space-y-3">
+          <Skeleton className="h-5 w-40" />
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton key={i} className="h-20 rounded-lg" />
+          ))}
         </div>
       </div>
     );

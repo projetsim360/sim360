@@ -4,6 +4,7 @@ import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/la
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { KeenIcon } from '@/components/keenicons';
+import { EmptyState } from '@/components/ui/empty-state';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useCampaigns } from '../api/recruitment.api';
@@ -62,16 +63,13 @@ export default function CampaignsListPage() {
           </Card>
         ) : campaigns.length === 0 ? (
           <Card>
-            <CardContent className="flex flex-col items-center justify-center py-16 gap-3">
-              <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center">
-                <KeenIcon icon="briefcase" style="duotone" className="size-6 text-muted-foreground" />
-              </div>
-              <p className="text-muted-foreground text-sm">
-                Aucune campagne trouvee.
-              </p>
-              <Button variant="primary" size="sm" asChild>
-                <Link to="/recruitment/campaigns/new">Creer une campagne</Link>
-              </Button>
+            <CardContent>
+              <EmptyState
+                icon="briefcase"
+                title="Aucune campagne"
+                description="Creez votre premiere campagne pour evaluer des candidats par simulation."
+                action={{ label: 'Nouvelle campagne', href: '/recruitment/campaigns/new' }}
+              />
             </CardContent>
           </Card>
         ) : (
@@ -108,7 +106,7 @@ export default function CampaignsListPage() {
                           <CampaignStatusBadge status={campaign.status} />
                         </TableCell>
                         <TableCell className="text-center text-sm">
-                          {campaign._count?.candidates ?? 0}
+                          {campaign._count?.candidateResults ?? 0}
                         </TableCell>
                         <TableCell className="text-center text-sm">
                           {campaign.completedCount ?? 0}

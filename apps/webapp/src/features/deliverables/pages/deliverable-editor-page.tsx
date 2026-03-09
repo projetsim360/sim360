@@ -20,6 +20,9 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
+import { DisabledWithTooltip } from '@/components/ui/disabled-with-tooltip';
+import { Skeleton } from '@/components/ui/skeleton';
+import { ContextualHelp } from '@/components/ui/contextual-help';
 import { toast } from 'sonner';
 import {
   useDeliverable,
@@ -28,6 +31,7 @@ import {
   useDeliverableTemplate,
 } from '../api/deliverables.api';
 import { DeliverableStatusBadge } from '../components/deliverable-status-badge';
+import { DeliverableWorkflowStepper } from '../components/deliverable-workflow-stepper';
 import { MarkdownPreview } from '../components/markdown-preview';
 import { RichTextEditor } from '../components/rich-text-editor';
 import { formatDistanceToNow } from 'date-fns';
@@ -117,7 +121,7 @@ export default function DeliverableEditorPage() {
         contentChangedRef.current = false;
       }
       await submitMutation.mutateAsync(delId);
-      toast.success('Livrable soumis pour evaluation.');
+      toast.success("Livrable soumis avec succes ! L'evaluation IA est en cours.");
       navigate(`/simulations/${id}/deliverables`);
     } catch (err) {
       toast.error(
@@ -129,9 +133,9 @@ export default function DeliverableEditorPage() {
   if (isLoading) {
     return (
       <div className="container">
-        <div className="flex justify-center py-16">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-        </div>
+        <Skeleton className="h-10 w-64 mb-5" />
+        <Skeleton className="h-12 rounded-lg mb-5" />
+        <Skeleton className="h-96 rounded-lg" />
       </div>
     );
   }
@@ -215,6 +219,7 @@ export default function DeliverableEditorPage() {
 
           {/* Submit */}
           {!isReadOnly && (
+            <DisabledWithTooltip disabled={!content.trim()} reason="Redigez du contenu pour pouvoir soumettre">
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button size="sm" disabled={!content.trim()}>
@@ -248,6 +253,7 @@ export default function DeliverableEditorPage() {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
+            </DisabledWithTooltip>
           )}
 
           <Button variant="outline" size="sm" asChild>
@@ -256,8 +262,34 @@ export default function DeliverableEditorPage() {
               Retour
             </Link>
           </Button>
+          <ContextualHelp
+            title="Comment rediger un livrable"
+            description="L'editeur vous permet de rediger votre livrable en utilisant du texte enrichi. Consultez le template pour connaitre la structure attendue."
+            tips={[
+              'Utilisez le bouton "Voir template" pour afficher le modele de reference a suivre.',
+              'Votre travail est sauvegarde automatiquement toutes les 30 secondes.',
+              'Vous pouvez sauvegarder manuellement a tout moment avec le bouton Sauvegarder.',
+              'Une fois soumis, votre livrable sera evalue par l\'IA. Vous ne pourrez plus le modifier.',
+              'Verifiez le nombre de revisions restantes avant de soumettre.',
+            ]}
+          />
         </ToolbarActions>
       </Toolbar>
+
+        {/* Workflow stepper */}
+        <div className="mb-5">
+          <DeliverableWorkflowStepper status={deliverable.status} />
+        </div>
+
+        {/* Read-only alert for submitted deliverables */}
+        {deliverable.status === 'SUBMITTED' && (
+          <div className="flex items-center gap-2 rounded-lg bg-info/10 p-3 mb-4">
+            <KeenIcon icon="information-2" style="duotone" className="size-4 text-info shrink-0" />
+            <p className="text-sm text-info">
+              Ce livrable est en attente d'evaluation. Vous ne pouvez plus le modifier.
+            </p>
+          </div>
+        )}
 
         <div className={showTemplate ? 'grid grid-cols-1 lg:grid-cols-3 gap-4' : ''}>
           {/* WYSIWYG Editor */}

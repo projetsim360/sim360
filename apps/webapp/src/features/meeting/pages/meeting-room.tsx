@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { KeenIcon } from '@/components/keenicons';
+import { DisabledWithTooltip } from '@/components/ui/disabled-with-tooltip';
 import { MarkdownContent } from '@/components/ui/markdown-content';
 import { streamAiResponse } from '@/lib/sse-client';
 import { meetingApi } from '../api/meeting.api';
@@ -518,13 +519,15 @@ export default function MeetingRoomPage() {
 
           {/* Complete button */}
           <div className="flex justify-center mb-4">
-            <Button
-              variant="outline"
-              onClick={handleComplete}
-              disabled={actionLoading || messages.length === 0}
-            >
-              {actionLoading ? 'Cloture en cours...' : 'Cloturer la reunion'}
-            </Button>
+            <DisabledWithTooltip disabled={messages.length === 0} reason="Echangez d'abord avec les participants">
+              <Button
+                variant="outline"
+                onClick={handleComplete}
+                disabled={actionLoading || messages.length === 0}
+              >
+                {actionLoading ? 'Cloture en cours...' : 'Cloturer la reunion'}
+              </Button>
+            </DisabledWithTooltip>
           </div>
         </>
       )}

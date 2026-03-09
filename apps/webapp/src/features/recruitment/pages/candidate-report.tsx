@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { KeenIcon } from '@/components/keenicons';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import {
   Radar,
@@ -119,13 +120,20 @@ export default function CandidateReportPage() {
               <p className="text-sm text-muted-foreground">sur 100</p>
 
               {candidate.matchPercentage !== undefined && candidate.matchPercentage !== null && (
-                <div className="w-full mt-6 space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Compatibilite</span>
-                    <span className="font-semibold">{Math.round(candidate.matchPercentage)}%</span>
-                  </div>
-                  <Progress value={candidate.matchPercentage} className="h-2" />
-                </div>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="w-full mt-6 space-y-2 cursor-help">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Compatibilite</span>
+                        <span className="font-semibold">{Math.round(candidate.matchPercentage)}%</span>
+                      </div>
+                      <Progress value={candidate.matchPercentage} className="h-2" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent variant="light" className="max-w-[280px]">
+                    Pourcentage d'adequation entre les competences du candidat et les exigences du poste.
+                  </TooltipContent>
+                </Tooltip>
               )}
             </CardContent>
           </Card>
@@ -272,13 +280,22 @@ export default function CandidateReportPage() {
                   <h4 className="text-sm font-semibold">Analyse des ecarts</h4>
                   {campaign.requiredSkills.map((req) => {
                     const demonstrated = candidate.competencyScores?.[req.skill] ?? 0;
-                    const requiredNormalized = req.weight * 10; // weight 1-10 -> 10-100
+                    const requiredNormalized = req.weight * 10; // weight 1-10 -> 10-100 (poids: 1 = peu important, 10 = critique)
                     const gap = demonstrated - requiredNormalized;
 
                     return (
                       <div key={req.skill} className="space-y-1">
                         <div className="flex items-center justify-between text-sm">
-                          <span className="font-medium">{req.skill}</span>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="font-medium cursor-help">
+                                {req.skill} <span className="text-muted-foreground text-xs">({req.weight}/10)</span>
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent variant="light" className="max-w-[240px]">
+                              Poids de la competence : {req.weight}/10. 1 = peu important, 10 = critique pour le poste.
+                            </TooltipContent>
+                          </Tooltip>
                           <span className={cn(
                             'font-medium',
                             gap >= 0 ? 'text-success' : 'text-destructive',

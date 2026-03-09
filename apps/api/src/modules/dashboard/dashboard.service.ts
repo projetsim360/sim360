@@ -6,6 +6,351 @@ import { Cacheable } from '@sim360/core';
 export class DashboardService {
   constructor(private prisma: PrismaService) {}
 
+  // ─── Command Center Summary ──────────────────────────────
+  @Cacheable({ key: 'dashboard:summary::arg0::arg1', ttl: 60 })
+  async getSummary(userId: string, tenantId: string) {
+    // 1. User info
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { firstName: true, profileCompleted: true },
+    });
+
+    // 2. Simulation stats
+    const [activeSimulations, completedSimulations, totalSimulations] = await Promise.all([
+      this.prisma.simulation.count({ where: { userId, tenantId, status: 'IN_PROGRESS' } }),
+      this.prisma.simulation.count({ where: { userId, tenantId, status: 'COMPLETED' } }),
+      this.prisma.simulation.count({ where: { userId, tenantId } }),
+    ]);
+
+    // 3. Completed sims with KPIs for average score + score evolution
+    const completedSims = await this.prisma.simulation.findMany({
+      where: { userId, tenantId, status: 'COMPLETED' },
+      include: {
+        kpis: true,
+        project: { select: { name: true } },
+        scenario: { select: { title: true } },
+      },
+      orderBy: { completedAt: 'asc' },
+    });
+
+    const averageScore =
+      completedSims.length > 0
+        ? Math.round(
+            (completedSims.reduce((sum, s) => {
+              if (!s.kpis) return sum;
+              return (
+                sum +
+                s.kpis.budget * 0.25 +
+                s.kpis.schedule * 0.25 +
+                s.kpis.quality * 0.25 +
+                s.kpis.teamMorale * 0.15 +
+                (100 - s.kpis.riskLevel) * 0.1
+              );
+            }, 0) /
+              completedSims.length) *
+              10,
+          ) / 10
+        : 0;
+
+    // 4. Getting started checklist
+    const [firstDeliverableSubmitted, firstBadge, firstPortfolioShared] = await Promise.all([
+      this.prisma.userDeliverable.findFirst({
+        where: {
+          simulation: { userId, tenantId },
+          status: { in: ['SUBMITTED', 'EVALUATED', 'VALIDATED'] },
+        },
+        select: { id: true },
+      }),
+      this.prisma.competencyBadge.findFirst({
+        where: { userId, tenantId },
+        select: { id: true },
+      }),
+      this.prisma.competencyBadge.findFirst({
+        where: { userId, tenantId, isPublic: true },
+        select: { id: true },
+      }),
+    ]);
+
+    const gettingStartedFlags = {
+      profileCompleted: user?.profileCompleted ?? false,
+      firstSimulationLaunched: totalSimulations > 0,
+      firstDeliverableSubmitted: !!firstDeliverableSubmitted,
+      firstDebriefingViewed: !!firstBadge,
+      firstPortfolioShared: !!firstPortfolioShared,
+    };
+
+    const completedSteps = Object.values(gettingStartedFlags).filter(Boolean).length;
+    const gettingStarted = {
+      ...gettingStartedFlags,
+      completionPercent: Math.round((completedSteps / 5) * 100),
+    };
+
+    // 5. Pending actions counts
+    const [pendingDecisions, pendingEvents, pendingMeetings, pendingEmails, pendingDeliverables] =
+      await Promise.all([
+        this.prisma.decision.findMany({
+          where: {
+            simulation: { userId, tenantId, status: 'IN_PROGRESS' },
+            selectedOption: null,
+          },
+          select: {
+            id: true,
+            title: true,
+            simulation: { select: { id: true, project: { select: { name: true } } } },
+          },
+        }),
+        this.prisma.randomEvent.findMany({
+          where: {
+            simulation: { userId, tenantId, status: 'IN_PROGRESS' },
+            resolvedAt: null,
+          },
+          select: {
+            id: true,
+            title: true,
+            severity: true,
+            simulation: { select: { id: true, project: { select: { name: true } } } },
+          },
+        }),
+        this.prisma.meeting.findMany({
+          where: {
+            simulation: { userId, tenantId, status: 'IN_PROGRESS' },
+            status: { in: ['SCHEDULED', 'IN_PROGRESS'] },
+          },
+          select: {
+            id: true,
+            title: true,
+            simulation: { select: { id: true, project: { select: { name: true } } } },
+          },
+        }),
+        this.prisma.simulatedEmail.findMany({
+          where: {
+            simulation: { userId, tenantId, status: 'IN_PROGRESS' },
+            status: { in: ['UNREAD', 'READ'] },
+          },
+          select: {
+            id: true,
+            simulation: { select: { id: true } },
+          },
+        }),
+        this.prisma.userDeliverable.findMany({
+          where: {
+            simulation: { userId, tenantId, status: 'IN_PROGRESS' },
+            status: { in: ['DRAFT', 'REVISED'] },
+          },
+          select: {
+            id: true,
+            title: true,
+            simulation: { select: { id: true, project: { select: { name: true } } } },
+          },
+        }),
+      ]);
+
+    const pendingActions = {
+      decisions: pendingDecisions.length,
+      events: pendingEvents.length,
+      meetings: pendingMeetings.length,
+      emails: pendingEmails.length,
+      deliverables: pendingDeliverables.length,
+    };
+
+    // 6. Next step (priority: decisions > events > meetings > deliverables > emails > debriefing)
+    const nextStep = this.computeNextStep(
+      pendingDecisions,
+      pendingEvents,
+      pendingMeetings,
+      pendingDeliverables,
+      pendingEmails,
+      completedSims,
+      firstBadge,
+    );
+
+    // 7. Active simulations with KPIs
+    const activeSims = await this.prisma.simulation.findMany({
+      where: { userId, tenantId, status: 'IN_PROGRESS' },
+      include: {
+        project: { select: { name: true } },
+        scenario: { select: { title: true } },
+        kpis: true,
+        phases: { orderBy: { order: 'asc' }, select: { order: true, name: true, status: true } },
+      },
+      orderBy: { updatedAt: 'desc' },
+      take: 5,
+    });
+
+    const activeSimulationsList = activeSims.map((sim) => {
+      const currentPhase = sim.phases.find((p) => p.status === 'ACTIVE');
+      return {
+        id: sim.id,
+        projectName: sim.project.name,
+        scenarioTitle: sim.scenario.title,
+        currentPhase: sim.currentPhaseOrder,
+        phaseName: currentPhase?.name ?? 'Inconnue',
+        kpis: sim.kpis
+          ? {
+              budget: Math.round(sim.kpis.budget),
+              schedule: Math.round(sim.kpis.schedule),
+              quality: Math.round(sim.kpis.quality),
+              morale: Math.round(sim.kpis.teamMorale),
+              risk: Math.round(sim.kpis.riskLevel),
+            }
+          : null,
+      };
+    });
+
+    // 8. Recent activity from domain events
+    const recentEvents = await this.prisma.domainEvent.findMany({
+      where: {
+        tenantId,
+        metadata: { path: ['actorId'], equals: userId },
+      },
+      orderBy: { occurredAt: 'desc' },
+      take: 10,
+      select: {
+        id: true,
+        type: true,
+        aggregateType: true,
+        aggregateId: true,
+        data: true,
+        occurredAt: true,
+      },
+    });
+
+    const recentActivity = recentEvents.map((e) => ({
+      id: e.id,
+      type: e.type,
+      aggregateType: e.aggregateType,
+      aggregateId: e.aggregateId,
+      data: e.data,
+      occurredAt: e.occurredAt,
+    }));
+
+    // 9. Score evolution
+    const scoreEvolution = completedSims.map((s) => ({
+      simulationId: s.id,
+      projectName: s.project.name,
+      scenarioTitle: s.scenario.title,
+      completedAt: s.completedAt,
+      score: s.kpis
+        ? Math.round(
+            (s.kpis.budget * 0.25 +
+              s.kpis.schedule * 0.25 +
+              s.kpis.quality * 0.25 +
+              s.kpis.teamMorale * 0.15 +
+              (100 - s.kpis.riskLevel) * 0.1) *
+              10,
+          ) / 10
+        : 0,
+    }));
+
+    return {
+      user: {
+        firstName: user?.firstName ?? '',
+        profileCompleted: user?.profileCompleted ?? false,
+      },
+      stats: {
+        activeSimulations,
+        completedSimulations,
+        totalSimulations,
+        averageScore,
+      },
+      gettingStarted,
+      nextStep,
+      activeSimulations: activeSimulationsList,
+      pendingActions,
+      recentActivity,
+      scoreEvolution,
+    };
+  }
+
+  /**
+   * Computes the most urgent next step for the user.
+   * Priority: decisions > events > meetings > deliverables > emails > debriefing > all clear
+   */
+  private computeNextStep(
+    pendingDecisions: Array<{ id: string; title: string; simulation: { id: string; project: { name: string } } }>,
+    pendingEvents: Array<{ id: string; title: string; severity: string; simulation: { id: string; project: { name: string } } }>,
+    pendingMeetings: Array<{ id: string; title: string; simulation: { id: string; project: { name: string } } }>,
+    pendingDeliverables: Array<{ id: string; title: string; simulation: { id: string; project: { name: string } } }>,
+    pendingEmails: Array<{ id: string; simulation: { id: string } }>,
+    completedSims: Array<{ id: string; project: { name: string } }>,
+    firstBadge: { id: string } | null,
+  ) {
+    if (pendingDecisions.length > 0) {
+      const first = pendingDecisions[0]!;
+      return {
+        type: 'pending_decisions',
+        count: pendingDecisions.length,
+        simulationId: first.simulation.id,
+        simulationName: first.simulation.project.name,
+        link: `/simulations/${first.simulation.id}/decisions`,
+      };
+    }
+
+    if (pendingEvents.length > 0) {
+      const first = pendingEvents[0]!;
+      return {
+        type: 'pending_events',
+        count: pendingEvents.length,
+        simulationId: first.simulation.id,
+        simulationName: first.simulation.project.name,
+        link: `/simulations/${first.simulation.id}/events`,
+      };
+    }
+
+    if (pendingMeetings.length > 0) {
+      const first = pendingMeetings[0]!;
+      return {
+        type: 'pending_meetings',
+        count: pendingMeetings.length,
+        simulationId: first.simulation.id,
+        simulationName: first.simulation.project.name,
+        link: `/simulations/${first.simulation.id}/meetings`,
+      };
+    }
+
+    if (pendingDeliverables.length > 0) {
+      const first = pendingDeliverables[0]!;
+      return {
+        type: 'pending_deliverables',
+        count: pendingDeliverables.length,
+        simulationId: first.simulation.id,
+        simulationName: first.simulation.project.name,
+        link: `/simulations/${first.simulation.id}/deliverables`,
+      };
+    }
+
+    if (pendingEmails.length > 0) {
+      const first = pendingEmails[0]!;
+      return {
+        type: 'pending_emails',
+        count: pendingEmails.length,
+        simulationId: first.simulation.id,
+        simulationName: '',
+        link: `/simulations/${first.simulation.id}/emails`,
+      };
+    }
+
+    // Debriefing available if completed sims exist but no badge yet
+    if (completedSims.length > 0 && !firstBadge) {
+      const first = completedSims[completedSims.length - 1]!;
+      return {
+        type: 'debriefing_available',
+        count: 1,
+        simulationId: first.id,
+        simulationName: first.project.name,
+        link: `/valorisation/${first.id}/debriefing`,
+      };
+    }
+
+    return {
+      type: 'all_clear',
+      count: 0,
+      simulationId: null,
+      simulationName: null,
+      link: null,
+    };
+  }
+
   @Cacheable({ key: 'dashboard:stats::arg0::arg1', ttl: 60 })
   async getStats(userId: string, tenantId: string) {
     const [active, completed, total] = await Promise.all([

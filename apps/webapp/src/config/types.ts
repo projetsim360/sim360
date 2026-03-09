@@ -20,6 +20,12 @@ export interface MenuItem {
   separator?: boolean;
   /** Roles autorisés à voir cet item. Si absent, visible par tous. */
   roles?: UserRole[];
+  /** Lien de retour (ex: "Retour aux simulations") — rendu spécial avec flèche */
+  isBackLink?: boolean;
+  /** Clé pour afficher un badge compteur dynamique (ex: 'pendingDecisions') */
+  badgeKey?: string;
+  /** Condition d'affichage : 'always' (défaut) ou 'completed' (simulation terminée) */
+  showWhen?: 'always' | 'completed';
 }
 
 export type MenuConfig = MenuItem[];

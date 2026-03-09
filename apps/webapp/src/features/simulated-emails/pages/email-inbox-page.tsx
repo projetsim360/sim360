@@ -13,6 +13,7 @@ import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import { KeenIcon } from '@/components/keenicons';
 import { toast } from 'sonner';
+import { EmptyState } from '@/components/ui/empty-state';
 import { cn } from '@/lib/utils';
 import { format, formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -143,18 +144,13 @@ export default function EmailInboxPage() {
           <ToolbarHeading title={FOLDER_TITLES[activeFolder]} />
         </Toolbar>
         <Card>
-          <CardContent className="py-16 text-center">
-            <KeenIcon
+          <CardContent>
+            <EmptyState
               icon="sms"
-              style="duotone"
-              className="size-12 text-muted-foreground/30 mx-auto mb-3"
+              title="Aucune simulation active"
+              description="Lancez une simulation pour recevoir des emails."
+              action={{ label: 'Lancer une simulation', href: '/simulations/new' }}
             />
-            <p className="text-sm text-muted-foreground">
-              Aucune simulation active. Lancez une simulation pour recevoir des emails.
-            </p>
-            <Button variant="primary" size="sm" className="mt-4" asChild>
-              <Link to="/simulations">Voir les simulations</Link>
-            </Button>
           </CardContent>
         </Card>
       </div>
@@ -195,16 +191,11 @@ export default function EmailInboxPage() {
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
                 </div>
               ) : filteredEmails.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-16 px-4">
-                  <KeenIcon
-                    icon="sms"
-                    style="duotone"
-                    className="size-10 text-muted-foreground/30 mb-2"
-                  />
-                  <p className="text-sm text-muted-foreground text-center">
-                    Aucun email dans ce dossier.
-                  </p>
-                </div>
+                <EmptyState
+                  icon="sms"
+                  title="Dossier vide"
+                  description="Les emails arrivent au fil de la simulation."
+                />
               ) : (
                 filteredEmails.map((email) => {
                   const isUnread = email.status === 'UNREAD';
@@ -417,57 +408,74 @@ export default function EmailInboxPage() {
                   </div>
                 </div>
 
-                {/* Reply form */}
-                {selectedEmail.status !== 'RESPONDED' &&
-                  selectedEmail.status !== 'ARCHIVED' && (
-                    <div className="shrink-0 border-t border-border bg-background p-4">
-                      <form onSubmit={handleReply} className="space-y-3">
-                        <Textarea
-                          value={replyText}
-                          onChange={(e) =>
-                            setReplyText(e.target.value.slice(0, 2000))
-                          }
-                          placeholder="Redigez votre reponse..."
-                          rows={3}
-                          disabled={respondMutation.isPending}
-                          className="resize-none"
-                        />
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs text-muted-foreground">
-                            {replyText.length}/2000
-                          </span>
-                          <Button
-                            type="submit"
-                            variant="primary"
-                            size="sm"
-                            disabled={
-                              respondMutation.isPending || !replyText.trim()
-                            }
-                          >
-                            {respondMutation.isPending ? (
-                              <>
-                                <KeenIcon
-                                  icon="loading"
-                                  style="duotone"
-                                  className="size-4 animate-spin mr-1"
-                                />
-                                Evaluation...
-                              </>
-                            ) : (
-                              <>
-                                <KeenIcon
-                                  icon="send"
-                                  style="solid"
-                                  className="size-4 mr-1"
-                                />
-                                Envoyer
-                              </>
-                            )}
-                          </Button>
-                        </div>
-                      </form>
+                {/* Reply form or status message */}
+                {selectedEmail.status === 'RESPONDED' ? (
+                  <div className="shrink-0 border-t border-border bg-background p-4">
+                    <div className="flex items-center gap-2 rounded-lg bg-muted p-3">
+                      <KeenIcon icon="check-circle" style="duotone" className="size-4 text-success shrink-0" />
+                      <p className="text-sm text-muted-foreground">
+                        Vous avez deja repondu a cet email.
+                      </p>
                     </div>
-                  )}
+                  </div>
+                ) : selectedEmail.status === 'ARCHIVED' ? (
+                  <div className="shrink-0 border-t border-border bg-background p-4">
+                    <div className="flex items-center gap-2 rounded-lg bg-muted p-3">
+                      <KeenIcon icon="archive" style="duotone" className="size-4 text-muted-foreground shrink-0" />
+                      <p className="text-sm text-muted-foreground">
+                        Cet email est archive.
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="shrink-0 border-t border-border bg-background p-4">
+                    <form onSubmit={handleReply} className="space-y-3">
+                      <Textarea
+                        value={replyText}
+                        onChange={(e) =>
+                          setReplyText(e.target.value.slice(0, 2000))
+                        }
+                        placeholder="Redigez votre reponse..."
+                        rows={3}
+                        disabled={respondMutation.isPending}
+                        className="resize-none"
+                      />
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground">
+                          {replyText.length}/2000
+                        </span>
+                        <Button
+                          type="submit"
+                          variant="primary"
+                          size="sm"
+                          disabled={
+                            respondMutation.isPending || !replyText.trim()
+                          }
+                        >
+                          {respondMutation.isPending ? (
+                            <>
+                              <KeenIcon
+                                icon="loading"
+                                style="duotone"
+                                className="size-4 animate-spin mr-1"
+                              />
+                              Evaluation...
+                            </>
+                          ) : (
+                            <>
+                              <KeenIcon
+                                icon="send"
+                                style="solid"
+                                className="size-4 mr-1"
+                              />
+                              Envoyer
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </form>
+                  </div>
+                )}
               </>
             )}
           </div>
