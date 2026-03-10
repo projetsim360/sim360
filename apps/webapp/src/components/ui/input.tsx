@@ -5,20 +5,20 @@ import { cva, type VariantProps } from 'class-variance-authority';
 // Define input size variants
 const inputVariants = cva(
   `
-    flex w-full bg-background border border-input shadow-xs shadow-black/5 transition-[color,box-shadow] text-foreground placeholder:text-muted-foreground/80 
-    focus-visible:ring-ring/30  focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px]     
-    disabled:cursor-not-allowed disabled:opacity-60 
+    flex w-full bg-background border border-input shadow-none transition-[color,box-shadow] text-foreground placeholder:text-muted-foreground/80
+    focus-visible:ring-ring/30  focus-visible:border-ring focus-visible:outline-none focus-visible:ring-2
+    disabled:cursor-not-allowed disabled:opacity-60
     [&[readonly]]:bg-muted/80 [&[readonly]]:cursor-not-allowed
-    file:h-full [&[type=file]]:py-0 file:border-solid file:border-input file:bg-transparent 
+    file:h-full [&[type=file]]:py-0 file:border-solid file:border-input file:bg-transparent
     file:font-medium file:not-italic file:text-foreground file:p-0 file:border-0 file:border-e
     aria-invalid:border-destructive/60 aria-invalid:ring-destructive/10 dark:aria-invalid:border-destructive dark:aria-invalid:ring-destructive/20
   `,
   {
     variants: {
       variant: {
-        lg: 'h-10 px-4 text-sm rounded-md file:pe-4 file:me-4',
-        md: 'h-8.5 px-3 text-[0.8125rem] leading-(--text-sm--line-height) rounded-md file:pe-3 file:me-3',
-        sm: 'h-7 px-2.5 text-xs rounded-md file:pe-2.5 file:me-2.5',
+        lg: 'h-11 px-4 text-sm rounded-lg file:pe-4 file:me-4',
+        md: 'h-9 px-3 text-[0.8125rem] leading-(--text-sm--line-height) rounded-lg file:pe-3 file:me-3',
+        sm: 'h-7.5 px-2.5 text-xs rounded-lg file:pe-2.5 file:me-2.5',
       },
     },
     defaultVariants: {
@@ -28,13 +28,13 @@ const inputVariants = cva(
 );
 
 const inputAddonVariants = cva(
-  'flex items-center shrink-0 justify-center bg-muted border border-input shadow-xs shadow-[rgba(0,0,0,0.05)] text-secondary-foreground [&_svg]:text-secondary-foreground/60 [&_i]:text-secondary-foreground/60',
+  'flex items-center shrink-0 justify-center bg-muted border border-input shadow-none text-secondary-foreground [&_svg]:text-secondary-foreground/60 [&_i]:text-secondary-foreground/60',
   {
     variants: {
       variant: {
-        sm: 'rounded-md h-7 min-w-7 text-xs px-2.5 [&_svg:not([class*=size-])]:size-3.5 [&_i:not([class*=size-])]:text-sm',
-        md: 'rounded-md h-8.5 min-w-8.5 px-3 text-[0.8125rem] leading-(--text-sm--line-height) [&_svg:not([class*=size-])]:size-4.5 [&_i:not([class*=size-])]:text-lg',
-        lg: 'rounded-md h-10 min-w-10 px-4 text-sm [&_svg:not([class*=size-])]:size-4.5 [&_i:not([class*=size-])]:text-lg',
+        sm: 'rounded-lg h-7.5 min-w-7.5 text-xs px-2.5 [&_svg:not([class*=size-])]:size-3.5 [&_i:not([class*=size-])]:text-sm',
+        md: 'rounded-lg h-9 min-w-9 px-3 text-[0.8125rem] leading-(--text-sm--line-height) [&_svg:not([class*=size-])]:size-4.5 [&_i:not([class*=size-])]:text-lg',
+        lg: 'rounded-lg h-11 min-w-11 px-4 text-sm [&_svg:not([class*=size-])]:size-4.5 [&_i:not([class*=size-])]:text-lg',
       },
       mode: {
         default: '',
@@ -78,7 +78,7 @@ const inputWrapperVariants = cva(
     has-[:focus-visible]:ring-ring/30 
     has-[:focus-visible]:border-ring
     has-[:focus-visible]:outline-none 
-    has-[:focus-visible]:ring-[3px]
+    has-[:focus-visible]:ring-2
 
     [&_[data-slot=datefield]]:grow 
     [&_[data-slot=input]]:data-focus-within:ring-transparent  

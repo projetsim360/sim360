@@ -70,7 +70,7 @@ export function CultureSelector({ value, onChange, className }: CultureSelectorP
             </div>
             {isSelected && (
               <div className="self-end">
-                <KeenIcon icon="check-circle" style="solid" className="size-5 text-primary" />
+                <KeenIcon icon="check-circle" style="duotone" className="size-5 text-primary" />
               </div>
             )}
           </button>

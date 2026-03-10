@@ -148,13 +148,13 @@ export function ProfileImportStep({ onNext, profile }: ProfileImportStepProps) {
         <Card
           className={cn(
             'relative cursor-pointer transition-all hover:shadow-md',
-            profile?.linkedinData && 'ring-2 ring-green-500/30 border-green-500/30',
+            profile?.linkedinData && 'ring-2 ring-success/30 border-success/30',
           )}
           onClick={() => setShowLinkedinDialog(true)}
         >
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
-              <KeenIcon icon="linkedin" style="solid" className="text-xl text-[#0077B5]" />
+              <KeenIcon icon="linkedin" style="duotone" className="text-xl text-[#0077B5]" />
               Importer depuis LinkedIn
             </CardTitle>
           </CardHeader>
@@ -172,7 +172,7 @@ export function ProfileImportStep({ onNext, profile }: ProfileImportStepProps) {
                 setShowLinkedinDialog(true);
               }}
             >
-              <KeenIcon icon="linkedin" style="solid" className="text-sm me-1" />
+              <KeenIcon icon="linkedin" style="duotone" className="text-sm me-1" />
               {profile?.linkedinData ? 'Reimporter LinkedIn' : 'Connecter LinkedIn'}
             </Button>
             {profile?.linkedinData && (
@@ -187,7 +187,7 @@ export function ProfileImportStep({ onNext, profile }: ProfileImportStepProps) {
         <Card
           className={cn(
             'relative transition-all',
-            profile?.cvFileUrl && 'ring-2 ring-green-500/30 border-green-500/30',
+            profile?.cvFileUrl && 'ring-2 ring-success/30 border-success/30',
           )}
         >
           <CardHeader>
@@ -284,7 +284,7 @@ export function ProfileImportStep({ onNext, profile }: ProfileImportStepProps) {
             <div className="flex gap-4 text-sm text-muted-foreground">
               {typeof profile.linkedinData === 'object' && (
                 <div className="flex items-center gap-1.5">
-                  <KeenIcon icon="linkedin" style="solid" className="text-base text-[#0077B5]" />
+                  <KeenIcon icon="linkedin" style="duotone" className="text-base text-[#0077B5]" />
                   <span>
                     {Object.keys(profile.linkedinData).length} informations extraites
                   </span>
@@ -312,7 +312,7 @@ export function ProfileImportStep({ onNext, profile }: ProfileImportStepProps) {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <KeenIcon icon="linkedin" style="solid" className="text-xl text-[#0077B5]" />
+              <KeenIcon icon="linkedin" style="duotone" className="text-xl text-[#0077B5]" />
               Importer depuis LinkedIn
             </DialogTitle>
           </DialogHeader>

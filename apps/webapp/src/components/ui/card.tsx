@@ -38,7 +38,7 @@ const cardVariants = cva('flex flex-col items-stretch text-card-foreground round
 const cardHeaderVariants = cva('flex items-center justify-between flex-wrap px-5 min-h-14 gap-2.5', {
   variants: {
     variant: {
-      default: 'relative after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-border/60',
+      default: '',
       accent: '',
     },
   },
@@ -47,7 +47,7 @@ const cardHeaderVariants = cva('flex items-center justify-between flex-wrap px-5
   },
 });
 
-const cardContentVariants = cva('grow p-5', {
+const cardContentVariants = cva('grow p-6', {
   variants: {
     variant: {
       default: '',
@@ -74,7 +74,7 @@ const cardTableVariants = cva('grid grow', {
 const cardFooterVariants = cva('flex items-center px-5 min-h-14', {
   variants: {
     variant: {
-      default: 'border-t border-border',
+      default: 'border-t border-border/60',
       accent: 'bg-card rounded-b-xl mt-[2px]',
     },
   },
@@ -133,7 +133,7 @@ function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElem
   return (
     <h3
       data-slot="card-title"
-      className={cn('text-base font-semibold leading-none tracking-tight', className)}
+      className={cn('text-base font-medium leading-none tracking-tight', className)}
       {...props}
     />
   );

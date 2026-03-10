@@ -27,11 +27,11 @@ const TRIGGER_LABELS: Record<string, string> = {
 };
 
 const KPI_CONFIG = [
-  { key: 'budget', label: 'Budget', color: '#3b82f6' },
-  { key: 'schedule', label: 'Delai', color: '#8b5cf6' },
-  { key: 'quality', label: 'Qualite', color: '#10b981' },
-  { key: 'teamMorale', label: 'Moral', color: '#f59e0b' },
-  { key: 'riskLevel', label: 'Risque', color: '#ef4444' },
+  { key: 'budget', label: 'Budget', color: 'var(--chart-1)' },
+  { key: 'schedule', label: 'Delai', color: 'var(--chart-3)' },
+  { key: 'quality', label: 'Qualite', color: 'var(--chart-2)' },
+  { key: 'teamMorale', label: 'Moral', color: 'var(--chart-5)' },
+  { key: 'riskLevel', label: 'Risque', color: 'var(--chart-4)' },
 ];
 
 export default function KpiHistoryPage() {
@@ -151,10 +151,10 @@ export default function KpiHistoryPage() {
                   <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                   <XAxis
                     dataKey="index"
-                    tick={{ fontSize: 11 }}
+                    tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
                     tickFormatter={(_, i) => chartData[i]?.phase ?? ''}
                   />
-                  <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} />
+                  <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} />
                   <Tooltip
                     content={({ active, payload }) => {
                       if (!active || !payload?.length) return null;

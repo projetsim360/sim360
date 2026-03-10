@@ -195,7 +195,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
             </p>
           </div>
           <Button variant="outline" size="sm" onClick={() => setShowCustomDialog(true)}>
-            <KeenIcon icon="plus" style="solid" className="text-sm me-1" />
+            <KeenIcon icon="plus" style="duotone" className="text-sm me-1" />
             Proposer un projet
           </Button>
         </CardContent>
@@ -277,7 +277,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
                   <FormItem>
                     <FormLabel>Nom du projet</FormLabel>
                     <FormControl>
-                      <Input placeholder="Ex: Migration CRM pour PME" {...field} />
+                      <Input placeholder="Ex: Migration CRM pour PME" aria-label="Titre du projet personnalise" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

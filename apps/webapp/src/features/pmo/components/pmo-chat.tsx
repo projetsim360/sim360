@@ -146,15 +146,17 @@ export function PmoChat({
             </div>
           ) : messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <KeenIcon
-                icon="abstract-26"
-                style="solid"
-                className="size-12 text-muted-foreground/30 mb-4"
-              />
-              <p className="text-sm text-muted-foreground">
-                Demarrez une conversation avec votre agent PMO.
+              <div className="size-14 rounded-2xl bg-brand-50 dark:bg-brand-800/30 flex items-center justify-center mb-4">
+                <KeenIcon
+                  icon="abstract-26"
+                  style="duotone"
+                  className="size-7 text-brand-500 dark:text-brand-400"
+                />
+              </div>
+              <p className="text-sm font-medium text-foreground">
+                Demarrez une conversation avec votre agent PMO
               </p>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="text-xs text-muted-foreground mt-1 max-w-xs">
                 Il peut vous aider sur la gestion de projet, les livrables, les
                 decisions a prendre...
               </p>
@@ -165,17 +167,17 @@ export function PmoChat({
               {messages.length > 0 &&
                 messages[0].role !== 'user' &&
                 scenarioInfo && (
-                  <Card className="border-primary/30 bg-primary/5 mb-2">
+                  <Card className="border-0 shadow-none bg-brand-50/50 dark:bg-brand-900/20 mb-2">
                     <CardContent className="p-4">
                       <div className="flex items-start gap-3">
-                        <div className="shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                          <KeenIcon icon="people" style="solid" className="size-5 text-primary" />
+                        <div className="shrink-0 size-10 rounded-xl bg-brand-500 flex items-center justify-center">
+                          <KeenIcon icon="people" style="duotone" className="size-5 text-white" />
                         </div>
                         <div className="min-w-0">
-                          <h3 className="text-sm font-semibold text-foreground">
+                          <h3 className="text-sm font-bold text-foreground">
                             Bienvenue dans votre simulation
                           </h3>
-                          <p className="text-sm text-muted-foreground mt-1">
+                          <p className="text-sm text-muted-foreground mt-0.5">
                             {scenarioInfo.companyName} — {scenarioInfo.sector}
                           </p>
                           {scenarioInfo.objectives.length > 0 && (
@@ -197,7 +199,7 @@ export function PmoChat({
               {pendingDeliverableCount > 0 && messages.length > 0 && (
                 <div className="rounded-lg bg-warning/10 border border-warning/20 p-3">
                   <div className="flex items-center gap-2 mb-2">
-                    <KeenIcon icon="notification-on" style="solid" className="size-4 text-warning" />
+                    <KeenIcon icon="notification-on" style="duotone" className="size-4 text-warning" />
                     <p className="text-sm text-foreground font-semibold">
                       Vous avez {pendingDeliverableCount} livrable{pendingDeliverableCount > 1 ? 's' : ''} a rendre
                     </p>
@@ -237,8 +239,8 @@ export function PmoChat({
       </ScrollArea>
 
       {/* Input area */}
-      <div className="border-t border-border p-4">
-        <div className="flex items-center gap-2">
+      <div className="border-t border-border p-3 bg-muted/30 dark:bg-white/3">
+        <div className="flex items-center gap-2 rounded-xl bg-card dark:bg-white/5 border border-border px-3 py-1.5">
           <Input
             ref={inputRef}
             value={input}
@@ -246,7 +248,7 @@ export function PmoChat({
             onKeyDown={handleKeyDown}
             placeholder="Posez une question a votre agent PMO..."
             disabled={isStreaming || isInitializing}
-            className="flex-1"
+            className="flex-1 border-0 shadow-none focus-visible:ring-0 focus-visible:outline-none bg-transparent px-0 h-9"
           />
           {isStreaming ? (
             <Button
@@ -254,17 +256,20 @@ export function PmoChat({
               size="icon"
               onClick={cancelStream}
               title="Arreter"
+              className="shrink-0 size-8 rounded-lg"
             >
-              <KeenIcon icon="cross" style="duotone" className="size-4" />
+              <KeenIcon icon="cross" style="duotone" className="size-3.5" />
             </Button>
           ) : (
             <Button
+              variant="primary"
               size="icon"
               onClick={handleSend}
               disabled={!input.trim() || isInitializing}
               title="Envoyer"
+              className="shrink-0 size-8 rounded-lg"
             >
-              <KeenIcon icon="arrow-up" style="duotone" className="size-4" />
+              <KeenIcon icon="arrow-up" style="duotone" className="size-3.5" />
             </Button>
           )}
         </div>

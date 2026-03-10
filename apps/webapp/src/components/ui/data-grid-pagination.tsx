@@ -93,6 +93,7 @@ function DataGridPagination(props: DataGridPaginationProps) {
           mode="icon"
           className={btnBaseClasses}
           variant="ghost"
+          aria-label="Pages supplementaires"
           onClick={() => table.setPageIndex(currentGroupStart - 1)}
         >
           ...
@@ -111,6 +112,7 @@ function DataGridPagination(props: DataGridPaginationProps) {
           variant="ghost"
           size="sm"
           mode="icon"
+          aria-label="Pages supplementaires"
           onClick={() => table.setPageIndex(currentGroupEnd)}
         >
           ...

@@ -46,7 +46,7 @@ export default function BadgesPage() {
         {!badges || badges.length === 0 ? (
           <Card>
             <CardContent className="flex flex-col items-center justify-center py-16 gap-4">
-              <KeenIcon icon="award" style="solid" className="text-4xl text-muted-foreground" />
+              <KeenIcon icon="award" style="duotone" className="text-4xl text-muted-foreground" />
               <p className="text-sm text-muted-foreground">
                 Vous n'avez pas encore de badge. Terminez une simulation pour obtenir votre premier badge de competence.
               </p>

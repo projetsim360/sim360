@@ -3,13 +3,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
+import { DIFFICULTY_VARIANT } from '@/config/theme.constants';
 import type { CompetencyBadge } from '../types/valorization.types';
 
-const DIFFICULTY_COLORS: Record<string, string> = {
-  EASY: 'bg-green-500',
-  MEDIUM: 'bg-yellow-500',
-  HARD: 'bg-orange-500',
-  EXPERT: 'bg-red-500',
+const DIFFICULTY_BG: Record<string, string> = {
+  EASY: 'bg-success',
+  MEDIUM: 'bg-warning',
+  HARD: 'bg-[var(--accent-brand)]',
+  EXPERT: 'bg-destructive',
 };
 
 const DIFFICULTY_LABELS: Record<string, string> = {
@@ -25,7 +26,7 @@ interface BadgeCardProps {
 }
 
 export function BadgeCard({ badge, className }: BadgeCardProps) {
-  const difficultyColor = DIFFICULTY_COLORS[badge.difficulty] ?? 'bg-gray-400';
+  const difficultyColor = DIFFICULTY_BG[badge.difficulty] ?? 'bg-muted-foreground';
 
   return (
     <Link to={`/profile/badges/${badge.id}`}>
@@ -55,11 +56,12 @@ export function BadgeCard({ badge, className }: BadgeCardProps) {
           {/* Metadata */}
           <div className="flex items-center flex-wrap gap-1.5">
             <Badge variant="secondary" size="sm">
-              <KeenIcon icon="category" style="solid" className="text-xs mr-1" />
+              <KeenIcon icon="category" style="duotone" className="text-xs mr-1" />
               {badge.sector}
             </Badge>
             <Badge
-              variant="secondary"
+              variant={(DIFFICULTY_VARIANT[badge.difficulty] as 'success' | 'warning' | 'destructive') ?? 'secondary'}
+              appearance="light"
               size="sm"
             >
               {DIFFICULTY_LABELS[badge.difficulty] ?? badge.difficulty}

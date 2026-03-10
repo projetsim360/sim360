@@ -1,15 +1,18 @@
 import { useBodyClass } from '@/hooks/use-body-class';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { useContextualMenu } from '@/hooks/use-contextual-menu';
 import { Footer } from './footer';
 import { Header } from './header';
 import { Sidebar } from './sidebar';
 import { SimulationContextBar } from './simulation-context-bar';
+import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { Outlet, useLocation } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
 
 export function Main() {
   const isMobile = useIsMobile();
+  const prefersReducedMotion = useReducedMotion();
   const { isInSimulation, simulationId } = useContextualMenu();
   const location = useLocation();
 
@@ -36,11 +39,13 @@ export function Main() {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={location.pathname}
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={prefersReducedMotion ? false : { opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: prefersReducedMotion ? 0 : 0.15 }}
                 >
-                  <Outlet />
+                  <ErrorBoundary>
+                    <Outlet />
+                  </ErrorBoundary>
                 </motion.div>
               </AnimatePresence>
             </main>

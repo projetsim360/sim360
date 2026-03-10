@@ -11,7 +11,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { ContextualHelp } from '@/components/ui/contextual-help';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 import { simulationApi } from '../api/simulation.api';
+import { PmoFab } from '@/features/pmo/components/pmo-fab';
 import { useKpiSocket } from '../hooks/use-kpi-socket';
 import type { Simulation, TimelineEntry, KpiValues } from '../types/simulation.types';
 
@@ -38,12 +40,12 @@ const SEVERITY_VARIANT: Record<string, 'info' | 'warning' | 'destructive'> = {
   CRITICAL: 'destructive',
 };
 
-const KPI_THEME: Record<string, { bg: string; text: string; bar: string }> = {
-  budget: { bg: 'bg-primary/10', text: 'text-primary', bar: 'bg-primary' },
-  schedule: { bg: 'bg-info/10', text: 'text-info', bar: 'bg-info' },
-  quality: { bg: 'bg-success/10', text: 'text-success', bar: 'bg-success' },
-  teamMorale: { bg: 'bg-warning/10', text: 'text-warning', bar: 'bg-warning' },
-  riskLevel: { bg: 'bg-destructive/10', text: 'text-destructive', bar: 'bg-destructive' },
+const KPI_THEME: Record<string, { bg: string; iconBg: string; text: string; bar: string }> = {
+  budget: { bg: '', iconBg: 'bg-muted', text: 'text-primary', bar: 'bg-primary' },
+  schedule: { bg: '', iconBg: 'bg-muted', text: 'text-info', bar: 'bg-info' },
+  quality: { bg: '', iconBg: 'bg-muted', text: 'text-success', bar: 'bg-success' },
+  teamMorale: { bg: '', iconBg: 'bg-muted', text: 'text-warning', bar: 'bg-warning' },
+  riskLevel: { bg: '', iconBg: 'bg-muted', text: 'text-destructive', bar: 'bg-destructive' },
 };
 
 const KPI_TOOLTIPS: Record<string, string> = {
@@ -63,16 +65,16 @@ function KpiBadge({ kpiKey, label, icon, value }: { kpiKey: string; label: strin
     <Tooltip>
       <TooltipTrigger asChild>
         <Card className="overflow-hidden cursor-help">
-          <CardContent className="flex items-center gap-3.5 p-4">
-            <div className={`flex items-center justify-center size-12 shrink-0 rounded-lg ${theme.bg}`}>
-              <KeenIcon icon={icon} style="duotone" className={`text-xl ${theme.text}`} />
+          <CardContent className="flex items-center gap-3.5 p-4 rounded-lg">
+            <div className={cn('w-12 h-12 rounded-full flex items-center justify-center shrink-0', theme.iconBg)}>
+              <KeenIcon icon={icon} style="duotone" className={cn('text-xl', theme.text)} />
             </div>
             <div className="flex flex-col gap-1.5 min-w-0 flex-1">
               <span className="text-2xs text-muted-foreground font-medium">{label}</span>
-              <span className={`text-lg font-semibold leading-none ${theme.text}`}>{clamped}%</span>
-              <div className="h-1 rounded-full bg-muted w-full">
+              <span className={cn('text-xl font-semibold leading-none', theme.text)}>{clamped}%</span>
+              <div className="h-1.5 rounded-full bg-muted w-full overflow-hidden">
                 <div
-                  className={`h-1 rounded-full transition-all duration-500 ${theme.bar}`}
+                  className={cn('h-full rounded-full transition-all duration-500', theme.bar)}
                   style={{ width: `${clamped}%` }}
                 />
               </div>
@@ -226,23 +228,23 @@ export default function SimulationDetailPage() {
       <Toolbar>
         <ToolbarHeading title={sim.project?.name || 'Simulation'} />
         <ToolbarActions>
-          <Button variant="primary" asChild>
-            <Link to={`/simulations/${id}/pmo`}>
-              Agent PMO
-            </Link>
-          </Button>
-          <Button variant="outline" asChild>
+          <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}/emails`}>
+              <KeenIcon icon="sms" style="duotone" className="text-xs" />
               Emails
             </Link>
           </Button>
-          <Button variant="outline" asChild>
+          <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}/deliverables`}>
+              <KeenIcon icon="document" style="duotone" className="text-xs" />
               Livrables
             </Link>
           </Button>
-          <Button variant="outline" asChild>
-            <Link to="/simulations">Retour</Link>
+          <Button variant="ghost" size="sm" asChild>
+            <Link to="/simulations">
+              <KeenIcon icon="arrow-left" style="duotone" className="text-xs" />
+              Retour
+            </Link>
           </Button>
           <ContextualHelp
             title="Comment fonctionne la simulation"
@@ -262,27 +264,35 @@ export default function SimulationDetailPage() {
       <Card className="mb-5">
         <CardContent className="p-5">
           <div className="flex items-start justify-between gap-4 flex-wrap">
-            <div className="space-y-1">
-              <div className="flex items-center gap-3">
-                <h2 className="font-semibold text-lg">{sim.project?.name}</h2>
+            <div className="space-y-2.5">
+              <div className="flex items-center gap-2.5 flex-wrap">
                 <Badge variant={STATUS_VARIANT[sim.status]} appearance="light" size="sm">
                   {STATUS_LABELS[sim.status]}
                 </Badge>
-              </div>
-              {sim.project?.client && (
-                <p className="text-sm text-muted-foreground">
-                  Client : {sim.project.client}
-                </p>
-              )}
-              <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                <span className="flex items-center gap-1"><KeenIcon icon="clipboard" style="duotone" className="text-sm" /> {sim.scenario?.title}</span>
-                <span className="flex items-center gap-1"><KeenIcon icon="folder" style="duotone" className="text-sm" /> {sim.scenario?.sector}</span>
-                <span className="flex items-center gap-1"><KeenIcon icon="target" style="duotone" className="text-sm" /> {sim.scenario?.difficulty}</span>
-                {sim.project?.initialBudget && (
-                  <span className="flex items-center gap-1">
-                    <KeenIcon icon="dollar" style="duotone" className="text-sm" /> Budget : {sim.project.currentBudget.toLocaleString('fr-FR')} /{' '}
-                    {sim.project.initialBudget.toLocaleString('fr-FR')} EUR
+                {sim.project?.client && (
+                  <span className="text-sm text-muted-foreground">
+                    Client : {sim.project.client}
                   </span>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary" size="sm" className="gap-1.5 font-normal">
+                  <KeenIcon icon="clipboard" style="duotone" className="text-xs text-muted-foreground" />
+                  {sim.scenario?.title}
+                </Badge>
+                <Badge variant="secondary" size="sm" className="gap-1.5 font-normal">
+                  <KeenIcon icon="folder" style="duotone" className="text-xs text-muted-foreground" />
+                  {sim.scenario?.sector}
+                </Badge>
+                <Badge variant="secondary" size="sm" className="gap-1.5 font-normal">
+                  <KeenIcon icon="target" style="duotone" className="text-xs text-muted-foreground" />
+                  {sim.scenario?.difficulty}
+                </Badge>
+                {sim.project?.initialBudget && (
+                  <Badge variant="secondary" size="sm" className="gap-1.5 font-normal">
+                    <KeenIcon icon="dollar" style="duotone" className="text-xs text-muted-foreground" />
+                    {sim.project.currentBudget.toLocaleString('fr-FR')} / {sim.project.initialBudget.toLocaleString('fr-FR')} EUR
+                  </Badge>
                 )}
               </div>
             </div>
@@ -291,13 +301,13 @@ export default function SimulationDetailPage() {
             {isActive && (
               <div className="flex items-center gap-2">
                 <Button variant="outline" size="sm" onClick={handlePauseResume} disabled={actionLoading}>
-                  <KeenIcon icon={sim.status === 'IN_PROGRESS' ? 'pause' : 'play'} style="filled" className="size-4" />
+                  <KeenIcon icon={sim.status === 'IN_PROGRESS' ? 'pause' : 'play'} style="duotone" className="text-xs" />
                   {sim.status === 'IN_PROGRESS' ? 'Pause' : 'Reprendre'}
                 </Button>
                 {sim.status === 'IN_PROGRESS' && (
                   <DisabledWithTooltip disabled={actionLoading} reason="Chargement en cours...">
-                    <Button onClick={handleAdvancePhase} disabled={actionLoading}>
-                      <KeenIcon icon="right" style="filled" className="size-4" />
+                    <Button variant="primary" size="sm" onClick={handleAdvancePhase} disabled={actionLoading}>
+                      <KeenIcon icon="arrow-right" style="duotone" className="text-xs" />
                       Phase suivante
                     </Button>
                   </DisabledWithTooltip>
@@ -349,20 +359,24 @@ export default function SimulationDetailPage() {
                 .map((phase) => (
                   <div key={phase.order} className="flex-1 min-w-0">
                     <div
-                      className={`h-3 rounded-full ${
+                      className={cn(
+                        'h-3 rounded-full',
                         phase.status === 'COMPLETED'
-                          ? 'bg-success'
+                          ? 'bg-primary'
                           : phase.status === 'ACTIVE'
-                            ? 'bg-primary animate-pulse'
-                            : 'bg-muted'
-                      }`}
+                            ? 'bg-[var(--accent-brand)] ring-2 ring-[var(--accent-brand)]/20'
+                            : 'bg-muted',
+                      )}
                     />
                     <p
-                      className={`text-[10px] mt-1 truncate text-center ${
+                      className={cn(
+                        'text-[10px] mt-1 truncate text-center',
                         phase.status === 'ACTIVE'
-                          ? 'font-semibold text-primary'
-                          : 'text-muted-foreground'
-                      }`}
+                          ? 'font-semibold text-[var(--accent-brand)]'
+                          : phase.status === 'COMPLETED'
+                            ? 'font-medium text-primary'
+                            : 'text-muted-foreground',
+                      )}
                     >
                       {phase.name}
                     </p>
@@ -378,7 +392,7 @@ export default function SimulationDetailPage() {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm flex items-center gap-2">
-              <KeenIcon icon="question-2" style="filled" className="size-4" /> Decisions en attente
+              <KeenIcon icon="question-2" style="duotone" className="size-4" /> Decisions en attente
               {pendingDecisions.length > 0 && (
                 <Badge variant="primary" appearance="light" size="sm">
                   {pendingDecisions.length}
@@ -428,7 +442,7 @@ export default function SimulationDetailPage() {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm flex items-center gap-2">
-              <KeenIcon icon="flash" style="filled" className="size-4" /> Evenements aleatoires
+              <KeenIcon icon="flash" style="duotone" className="size-4" /> Evenements aleatoires
               {pendingEvents.length > 0 && (
                 <Badge variant="warning" appearance="light" size="sm">
                   {pendingEvents.length}
@@ -481,7 +495,7 @@ export default function SimulationDetailPage() {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm flex items-center gap-2">
-                <KeenIcon icon="people" style="filled" className="size-4" /> Reunions
+                <KeenIcon icon="people" style="duotone" className="size-4" /> Reunions
                 {sim.meetings.filter((m) => m.status === 'SCHEDULED' || m.status === 'IN_PROGRESS').length > 0 && (
                   <Badge variant="primary" appearance="light" size="sm">
                     {sim.meetings.filter((m) => m.status === 'SCHEDULED' || m.status === 'IN_PROGRESS').length}
@@ -505,7 +519,7 @@ export default function SimulationDetailPage() {
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
-                        <KeenIcon icon="message-text" style="filled" className="size-4" />
+                        <KeenIcon icon="message-text" style="duotone" className="size-4" />
                       </div>
                       <div>
                         <h4 className="text-sm font-medium">{meeting.title}</h4>
@@ -542,7 +556,7 @@ export default function SimulationDetailPage() {
       {sim.project?.teamMembers && sim.project.teamMembers.length > 0 && (
         <Card className="mb-5">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm"><KeenIcon icon="people" style="filled" className="size-4" /> Equipe projet</CardTitle>
+            <CardTitle className="text-sm"><KeenIcon icon="people" style="duotone" className="size-4" /> Equipe projet</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
@@ -552,7 +566,7 @@ export default function SimulationDetailPage() {
                   className="flex items-center gap-3 p-2 rounded-lg border border-border"
                 >
                   {member.avatar ? (
-                    <img src={member.avatar} alt={member.name} className="w-8 h-8 rounded-full object-cover shrink-0" />
+                    <img src={member.avatar} alt={member.name} className="w-8 h-8 rounded-full object-cover shrink-0" loading="lazy" />
                   ) : (
                     <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold shrink-0">
                       {member.name.charAt(0)}
@@ -580,7 +594,7 @@ export default function SimulationDetailPage() {
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-sm"><KeenIcon icon="document-2" style="filled" className="size-4" /> Historique recent</CardTitle>
+            <CardTitle className="text-sm"><KeenIcon icon="document-2" style="duotone" className="size-4" /> Historique recent</CardTitle>
             {timeline.length > 5 && (
               <Button variant="link" size="sm" asChild>
                 <Link to={`/simulations/${sim.id}/timeline`}>Voir tout</Link>
@@ -601,12 +615,12 @@ export default function SimulationDetailPage() {
                 <div key={i} className="flex items-start gap-3">
                   <span className="text-sm mt-0.5">
                     {entry.type === 'PHASE_START' || entry.type === 'PHASE_COMPLETE'
-                      ? <KeenIcon icon="clipboard" style="filled" className="size-4" />
+                      ? <KeenIcon icon="clipboard" style="duotone" className="size-4" />
                       : entry.type === 'DECISION'
-                        ? <KeenIcon icon="question-2" style="filled" className="size-4" />
+                        ? <KeenIcon icon="question-2" style="duotone" className="size-4" />
                         : entry.type === 'RANDOM_EVENT'
-                          ? <KeenIcon icon="flash" style="filled" className="size-4" />
-                          : <KeenIcon icon="geolocation" style="filled" className="size-4" />}
+                          ? <KeenIcon icon="flash" style="duotone" className="size-4" />
+                          : <KeenIcon icon="geolocation" style="duotone" className="size-4" />}
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium">{entry.title}</p>
@@ -620,6 +634,14 @@ export default function SimulationDetailPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* PMO Agent FAB */}
+      {id && (
+        <PmoFab
+          simulationId={id}
+          pendingActionsCount={pendingDecisions.length + pendingEvents.length}
+        />
+      )}
     </div>
   );
 }

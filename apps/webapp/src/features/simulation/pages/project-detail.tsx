@@ -3,15 +3,16 @@ import { useParams, Link } from 'react-router';
 import { Toolbar, ToolbarHeading } from '@/components/layouts/layout-6/components/toolbar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/empty-state';
+import { Badge } from '@/components/ui/badge';
 import { projectApi } from '../api/project.api';
 import type { Project, ProjectTeamMember, Deliverable } from '../types/simulation.types';
 
-const DELIVERABLE_STATUS: Record<string, { label: string; color: string }> = {
-  PENDING: { label: 'En attente', color: 'bg-gray-100 text-gray-700' },
-  IN_PROGRESS: { label: 'En cours', color: 'bg-blue-100 text-blue-700' },
-  DELIVERED: { label: 'Livre', color: 'bg-purple-100 text-purple-700' },
-  ACCEPTED: { label: 'Accepte', color: 'bg-green-100 text-green-700' },
-  REJECTED: { label: 'Rejete', color: 'bg-red-100 text-red-700' },
+const DELIVERABLE_STATUS: Record<string, { label: string; variant: 'secondary' | 'primary' | 'success' | 'destructive' }> = {
+  PENDING: { label: 'En attente', variant: 'secondary' },
+  IN_PROGRESS: { label: 'En cours', variant: 'primary' },
+  DELIVERED: { label: 'Livre', variant: 'primary' },
+  ACCEPTED: { label: 'Accepte', variant: 'success' },
+  REJECTED: { label: 'Rejete', variant: 'destructive' },
 };
 
 export default function ProjectDetailPage() {
@@ -50,7 +51,7 @@ export default function ProjectDetailPage() {
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-red-600 text-sm">{error || 'Projet introuvable'}</p>
+            <p className="text-destructive text-sm">{error || 'Projet introuvable'}</p>
           </CardContent>
         </Card>
       </div>
@@ -73,7 +74,7 @@ export default function ProjectDetailPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
         <StatCard label="Budget initial" value={`${project.initialBudget.toLocaleString('fr-FR')} EUR`} />
-        <StatCard label="Budget restant" value={`${project.currentBudget.toLocaleString('fr-FR')} EUR`} color={budgetUsed > 80 ? 'text-red-500' : undefined} />
+        <StatCard label="Budget restant" value={`${project.currentBudget.toLocaleString('fr-FR')} EUR`} color={budgetUsed > 80 ? 'text-destructive' : undefined} />
         <StatCard label="Equipe" value={String(project.teamMembers.length)} />
         <StatCard label="Livrables" value={String(project.deliverables.length)} />
       </div>
@@ -179,7 +180,7 @@ function TeamMemberRow({ member }: { member: ProjectTeamMember }) {
   return (
     <div className="flex items-center gap-3 py-1.5">
       {member.avatar ? (
-        <img src={member.avatar} alt={member.name} className="w-7 h-7 rounded-full object-cover shrink-0" />
+        <img src={member.avatar} alt={member.name} className="w-7 h-7 rounded-full object-cover shrink-0" loading="lazy" />
       ) : (
         <div className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">
           {member.name.charAt(0).toUpperCase()}
@@ -190,7 +191,7 @@ function TeamMemberRow({ member }: { member: ProjectTeamMember }) {
         <p className="text-[10px] text-muted-foreground">{member.role}</p>
       </div>
       <div className="text-right shrink-0">
-        <span className={`text-[10px] font-medium ${member.morale >= 70 ? 'text-green-600' : member.morale >= 40 ? 'text-yellow-600' : 'text-red-600'}`}>
+        <span className={`text-[10px] font-medium ${member.morale >= 70 ? 'text-success' : member.morale >= 40 ? 'text-warning' : 'text-destructive'}`}>
           Moral {member.morale}%
         </span>
       </div>
@@ -199,7 +200,7 @@ function TeamMemberRow({ member }: { member: ProjectTeamMember }) {
 }
 
 function DeliverableRow({ deliverable }: { deliverable: Deliverable }) {
-  const status = DELIVERABLE_STATUS[deliverable.status] ?? { label: deliverable.status, color: '' };
+  const status = DELIVERABLE_STATUS[deliverable.status] ?? { label: deliverable.status, variant: 'secondary' as const };
   return (
     <div className="flex items-center justify-between py-1.5">
       <div className="min-w-0 flex-1">
@@ -208,9 +209,9 @@ function DeliverableRow({ deliverable }: { deliverable: Deliverable }) {
           <p className="text-[10px] text-muted-foreground truncate">{deliverable.description}</p>
         )}
       </div>
-      <span className={`shrink-0 px-1.5 py-0.5 rounded text-[10px] font-medium ${status.color}`}>
+      <Badge variant={status.variant} appearance="light" size="sm">
         {status.label}
-      </span>
+      </Badge>
     </div>
   );
 }

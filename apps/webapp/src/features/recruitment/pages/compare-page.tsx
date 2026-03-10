@@ -282,7 +282,7 @@ export default function ComparePage() {
             <CardContent className="py-4">
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                  <KeenIcon icon="star" style="solid" className="size-4" />
+                  <KeenIcon icon="star" style="duotone" className="size-4" />
                 </div>
                 <div>
                   <h4 className="text-sm font-semibold mb-1">Recommandation</h4>

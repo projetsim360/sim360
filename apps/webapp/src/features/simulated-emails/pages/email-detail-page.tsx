@@ -162,7 +162,7 @@ export default function EmailDetailPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
-                <KeenIcon icon="double-check" style="solid" className="size-5 text-success" />
+                <KeenIcon icon="double-check" style="duotone" className="size-5 text-success" />
                 Votre reponse
               </CardTitle>
             </CardHeader>

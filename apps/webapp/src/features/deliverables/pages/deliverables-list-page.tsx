@@ -17,6 +17,7 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { EmptyState } from '@/components/ui/empty-state';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useDeliverables } from '../api/deliverables.api';
 import { DeliverableStatusBadge } from '../components/deliverable-status-badge';
 import type { UserDeliverableStatus } from '../types/deliverables.types';
@@ -132,7 +133,7 @@ export default function DeliverablesListPage() {
                 value={filterPhase || 'ALL'}
                 onValueChange={(v) => setFilterPhase(v === 'ALL' ? '' : v)}
               >
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder="Toutes les phases" />
                 </SelectTrigger>
                 <SelectContent>
@@ -149,7 +150,7 @@ export default function DeliverablesListPage() {
               value={filterStatus || 'ALL'}
               onValueChange={(v) => setFilterStatus(v === 'ALL' ? '' : v)}
             >
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Tous les statuts" />
               </SelectTrigger>
               <SelectContent>
@@ -178,8 +179,24 @@ export default function DeliverablesListPage() {
 
         {/* Content */}
         {isLoading ? (
-          <div className="flex justify-center py-16">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Card key={i}>
+                <CardContent className="p-5">
+                  <div className="flex items-start justify-between gap-2 mb-3">
+                    <div className="space-y-2 flex-1">
+                      <Skeleton className="h-5 w-36" />
+                      <Skeleton className="h-4 w-24" />
+                    </div>
+                    <Skeleton className="h-5 w-16 rounded-full" />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className="h-4 w-16" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         ) : error ? (
           <Card>
@@ -204,7 +221,7 @@ export default function DeliverablesListPage() {
             {filtered.map((deliverable) => (
               <Card
                 key={deliverable.id}
-                className="hover:shadow-md transition-shadow cursor-pointer"
+                className="cursor-pointer shadow-none hover:shadow-sm transition-shadow duration-200"
                 onClick={() => handleClick(deliverable)}
               >
                 <CardContent className="p-5">

@@ -14,8 +14,8 @@ function CopyButton({ text }: { text: string }) {
   };
 
   return (
-    <Button variant="ghost" size="sm" mode="icon" onClick={handleCopy}>
-      <KeenIcon icon="copy" style="solid" className="text-sm" />
+    <Button variant="ghost" size="sm" mode="icon" aria-label="Copier" onClick={handleCopy}>
+      <KeenIcon icon="copy" style="duotone" className="text-sm" />
     </Button>
   );
 }
@@ -61,7 +61,7 @@ export default function CvSuggestionsPage() {
         <ToolbarActions>
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}/debriefing`}>
-              <KeenIcon icon="chart" style="solid" className="text-sm" />
+              <KeenIcon icon="chart" style="duotone" className="text-sm" />
               Voir le debriefing
             </Link>
           </Button>
@@ -72,7 +72,7 @@ export default function CvSuggestionsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <KeenIcon icon="briefcase" style="solid" className="text-base text-primary" />
+                <KeenIcon icon="briefcase" style="duotone" className="text-base text-primary" />
                 Lignes a ajouter a votre CV
               </CardTitle>
             </CardHeader>
@@ -83,7 +83,7 @@ export default function CvSuggestionsPage() {
                     key={index}
                     className="flex items-start gap-3 p-3 bg-muted rounded-lg"
                   >
-                    <p className="flex-1 text-sm text-gray-700">{line}</p>
+                    <p className="flex-1 text-sm text-foreground">{line}</p>
                     <CopyButton text={line} />
                   </div>
                 ))}
@@ -97,7 +97,7 @@ export default function CvSuggestionsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <KeenIcon icon="award" style="solid" className="text-base text-primary" />
+                <KeenIcon icon="award" style="duotone" className="text-base text-primary" />
                 Competences a mettre en avant
               </CardTitle>
             </CardHeader>
@@ -119,7 +119,7 @@ export default function CvSuggestionsPage() {
             <CardHeader>
               <div className="flex items-center justify-between w-full">
                 <CardTitle className="flex items-center gap-2">
-                  <KeenIcon icon="document" style="solid" className="text-base text-primary" />
+                  <KeenIcon icon="document" style="duotone" className="text-base text-primary" />
                   Votre premier CV
                 </CardTitle>
                 <CopyButton text={data.firstCvDraft || data.cvDraft || ''} />
@@ -127,13 +127,13 @@ export default function CvSuggestionsPage() {
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="p-4 bg-muted rounded-lg">
-                <pre className="text-sm text-gray-700 whitespace-pre-wrap font-sans leading-relaxed">
+                <pre className="text-sm text-foreground whitespace-pre-wrap font-sans leading-relaxed">
                   {data.firstCvDraft || data.cvDraft}
                 </pre>
               </div>
-              <div className="flex items-start gap-2 p-3 bg-blue-50 rounded-lg border border-blue-100">
-                <KeenIcon icon="information-2" style="solid" className="text-sm text-blue-600 mt-0.5 shrink-0" />
-                <p className="text-sm text-blue-700">
+              <div className="flex items-start gap-2 p-3 bg-primary/10 rounded-lg border border-primary/20">
+                <KeenIcon icon="information-2" style="duotone" className="text-sm text-primary mt-0.5 shrink-0" />
+                <p className="text-sm text-primary">
                   Ce CV est genere a partir de votre simulation. Personnalisez-le avant de l'utiliser.
                 </p>
               </div>
@@ -145,13 +145,13 @@ export default function CvSuggestionsPage() {
         <div className="flex justify-center gap-3 pb-5">
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}/debriefing`}>
-              <KeenIcon icon="arrow-left" style="solid" className="text-sm" />
+              <KeenIcon icon="arrow-left" style="duotone" className="text-sm" />
               Retour au debriefing
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
             <Link to="/profile/badges">
-              <KeenIcon icon="award" style="solid" className="text-sm" />
+              <KeenIcon icon="award" style="duotone" className="text-sm" />
               Mes badges
             </Link>
           </Button>

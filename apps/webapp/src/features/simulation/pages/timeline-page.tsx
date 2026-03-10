@@ -28,14 +28,14 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const TYPE_COLORS: Record<string, string> = {
-  PHASE_START: 'border-blue-300 bg-blue-50',
-  PHASE_COMPLETE: 'border-green-300 bg-green-50',
-  DECISION: 'border-purple-300 bg-purple-50',
-  RANDOM_EVENT: 'border-orange-300 bg-orange-50',
-  SIMULATION_START: 'border-blue-300 bg-blue-50',
-  SIMULATION_COMPLETE: 'border-green-300 bg-green-50',
-  SIMULATION_PAUSE: 'border-yellow-300 bg-yellow-50',
-  SIMULATION_RESUME: 'border-blue-300 bg-blue-50',
+  PHASE_START: 'border-primary/30 bg-primary/5',
+  PHASE_COMPLETE: 'border-success/30 bg-success/5',
+  DECISION: 'border-primary/30 bg-primary/5',
+  RANDOM_EVENT: 'border-[var(--accent-brand)]/30 bg-[var(--accent-brand)]/5',
+  SIMULATION_START: 'border-primary/30 bg-primary/5',
+  SIMULATION_COMPLETE: 'border-success/30 bg-success/5',
+  SIMULATION_PAUSE: 'border-warning/30 bg-warning/5',
+  SIMULATION_RESUME: 'border-primary/30 bg-primary/5',
 };
 
 export default function TimelinePage() {
@@ -76,7 +76,7 @@ export default function TimelinePage() {
       {error && (
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-red-600 text-sm">Erreur : {error}</p>
+            <p className="text-destructive text-sm">Erreur : {error}</p>
           </CardContent>
         </Card>
       )}
@@ -101,7 +101,7 @@ export default function TimelinePage() {
             {timeline.map((entry, i) => {
               const icon = TYPE_ICONS[entry.type] || '📌';
               const label = TYPE_LABELS[entry.type] || entry.type;
-              const colorClass = TYPE_COLORS[entry.type] || 'border-gray-300 bg-gray-50';
+              const colorClass = TYPE_COLORS[entry.type] || 'border-border bg-muted';
 
               return (
                 <div key={i} className="relative flex items-start gap-4 pl-12">
@@ -117,7 +117,7 @@ export default function TimelinePage() {
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-600 font-medium">
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground font-medium">
                               {label}
                             </span>
                           </div>

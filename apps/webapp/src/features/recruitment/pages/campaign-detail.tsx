@@ -44,7 +44,7 @@ function StatCard({ label, value, icon, color }: { label: string; value: string 
   return (
     <Card>
       <CardContent className="flex items-center gap-4 py-4">
-        <div className={cn('w-10 h-10 rounded-lg flex items-center justify-center', color)}>
+        <div className={cn('w-10 h-10 rounded-full flex items-center justify-center', color)}>
           <KeenIcon icon={icon} style="duotone" className="size-5" />
         </div>
         <div>
@@ -295,15 +295,15 @@ export default function CampaignDetailPage() {
                 {/* KPI summary cards */}
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
                   <StatCard label="Total candidats" value={dashboard.totalCandidates} icon="people" color="bg-primary/10 text-primary" />
-                  <StatCard label="En attente" value={dashboard.pending} icon="time" color="bg-accent text-muted-foreground" />
-                  <StatCard label="En cours" value={dashboard.inProgress} icon="rocket" color="bg-info/10 text-info" />
+                  <StatCard label="En attente" value={dashboard.pending} icon="time" color="bg-warning/10 text-warning" />
+                  <StatCard label="En cours" value={dashboard.inProgress} icon="loading" color="bg-info/10 text-info" />
                   <StatCard label="Termines" value={dashboard.completed} icon="check-circle" color="bg-success/10 text-success" />
                   <StatCard label="Abandonnes" value={dashboard.abandoned} icon="cross-circle" color="bg-destructive/10 text-destructive" />
                   <StatCard
                     label="Score moyen"
                     value={dashboard.averageScore !== null ? `${Math.round(dashboard.averageScore)}%` : '-'}
-                    icon="chart-simple"
-                    color="bg-warning/10 text-warning"
+                    icon="medal-star"
+                    color="bg-primary/10 text-primary"
                   />
                 </div>
 
@@ -396,7 +396,7 @@ export default function CampaignDetailPage() {
                 <div className="flex items-center justify-end gap-2">
                   <span className="text-sm text-muted-foreground">Trier par competence :</span>
                   <Select value={sortBy} onValueChange={(val) => setSortBy(val as SortKey)}>
-                    <SelectTrigger className="w-[180px] h-8 text-xs">
+                    <SelectTrigger className="w-full sm:w-[180px] h-9 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>

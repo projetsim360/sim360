@@ -31,6 +31,7 @@ const badgeVariants = cva(
         info: 'bg-[var(--color-info-accent,var(--color-violet-500))] text-[var(--color-info-foreground,var(--color-white))]',
         outline: 'bg-transparent border border-border text-secondary-foreground',
         destructive: 'bg-destructive text-destructive-foreground',
+        accent: '',
       },
       appearance: {
         default: '',
@@ -119,6 +120,22 @@ const badgeVariants = cva(
         appearance: 'outline',
         className:
           'text-[var(--color-destructive-accent,var(--color-red-700))] border-[var(--color-destructive-alpha,var(--color-red-200))] bg-[var(--color-destructive-soft,var(--color-red-50))] dark:bg-[var(--color-destructive-soft,var(--color-red-950))] dark:border-[var(--color-destructive-alpha,var(--color-red-800))] dark:text-[var(--color-destructive-accent,var(--color-red-400))]',
+      },
+      /* Accent */
+      {
+        variant: 'accent',
+        appearance: 'default',
+        className: 'bg-[var(--accent-brand)] text-white border-transparent',
+      },
+      {
+        variant: 'accent',
+        appearance: 'light',
+        className: 'bg-[var(--accent-brand-light)] text-[var(--accent-brand)] border-[var(--accent-brand)]/20',
+      },
+      {
+        variant: 'accent',
+        appearance: 'outline',
+        className: 'bg-[var(--accent-brand-light)] text-[var(--accent-brand)] border-[var(--accent-brand)]/30',
       },
       /* Ghost */
       {

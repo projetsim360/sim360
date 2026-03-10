@@ -114,12 +114,12 @@ export default function TrainerDashboardPage() {
           value={scenarioSearch}
           onChange={(e) => setScenarioSearch(e.target.value)}
           placeholder="Filtrer par scenario..."
-          className="w-48"
+          className="w-full sm:w-48"
         />
 
         {/* Period filter */}
         <Select value={period || '__all__'} onValueChange={(v) => setPeriod(v === '__all__' ? '' : v)}>
-          <SelectTrigger className="w-44">
+          <SelectTrigger className="w-full sm:w-44">
             <SelectValue placeholder="Toute periode" />
           </SelectTrigger>
           <SelectContent>

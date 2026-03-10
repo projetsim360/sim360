@@ -147,7 +147,7 @@ export default function DecisionPage() {
       <Card className="mb-5">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <KeenIcon icon="question-2" style="filled" className="size-4" />
+            <KeenIcon icon="question-2" style="duotone" className="size-4" />
             {decision.title}
           </CardTitle>
         </CardHeader>
@@ -258,7 +258,7 @@ export default function DecisionPage() {
         <Card className="mt-5 border-success/30 bg-success/10">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm text-success">
-              <KeenIcon icon="check-circle" style="filled" className="size-4 text-success" /> Impact de votre decision
+              <KeenIcon icon="check-circle" style="duotone" className="size-4 text-success" /> Impact de votre decision
             </CardTitle>
           </CardHeader>
           <CardContent>

@@ -6,6 +6,7 @@ import {
   HelpCircle,
   LayoutDashboard,
   List,
+  MessageSquare,
   Play,
   Settings,
   UserCircle,
@@ -78,7 +79,7 @@ export const APP_SIDEBAR_MENU: MenuConfig = [
 export const APP_HEADER_MENU: MenuConfig = [
   { title: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { title: 'Simulations', path: '/simulations', icon: Play },
-  { title: 'Réunions', path: '/meetings', icon: UserCircle },
+  { title: 'Réunions', path: '/meetings', icon: MessageSquare },
   { title: 'Rapports', path: '/reports', icon: FileBarChart },
   { title: 'Recrutement', path: '/recruitment/campaigns', icon: Briefcase },
   { title: 'Mon Profil', path: '/profile/edit', icon: UserCircle },

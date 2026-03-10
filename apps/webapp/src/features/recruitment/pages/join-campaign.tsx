@@ -44,7 +44,7 @@ export default function JoinCampaignPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary" />
       </div>
     );
@@ -52,7 +52,7 @@ export default function JoinCampaignPage() {
 
   if (error || !info) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
           <CardContent className="flex flex-col items-center justify-center py-12 gap-4">
             <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center">
@@ -70,7 +70,7 @@ export default function JoinCampaignPage() {
 
   if (info.isFull) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
           <CardContent className="flex flex-col items-center justify-center py-12 gap-4">
             <div className="w-16 h-16 rounded-full bg-warning/10 flex items-center justify-center">
@@ -88,7 +88,7 @@ export default function JoinCampaignPage() {
 
   if (!info.isOpen) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
           <CardContent className="flex flex-col items-center justify-center py-12 gap-4">
             <div className="w-16 h-16 rounded-full bg-warning/10 flex items-center justify-center">
@@ -105,17 +105,17 @@ export default function JoinCampaignPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="max-w-2xl w-full space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
-          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-            <KeenIcon icon="briefcase" style="solid" className="size-8 text-primary" />
+          <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center mx-auto mb-4">
+            <KeenIcon icon="briefcase" style="duotone" className="size-8 text-white" />
           </div>
           <Badge variant="primary" appearance="light" size="sm">
             {info.companyName}
           </Badge>
-          <h1 className="text-2xl font-bold text-gray-900 mt-2">{info.title}</h1>
+          <h1 className="text-2xl font-bold text-foreground mt-2">{info.title}</h1>
           <p className="text-base text-muted-foreground">
             Evaluation par simulation de gestion de projet
           </p>
@@ -211,7 +211,7 @@ export default function JoinCampaignPage() {
             </p>
 
             <Button
-              variant="primary"
+              variant="accent"
               size="lg"
               className="w-full"
               onClick={handleStart}

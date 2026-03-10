@@ -18,56 +18,67 @@ i[class*="ki-"] {
 @custom-variant dark (&:is(.dark *));
 
 /** Colors — ProjectSim360 Design System **/
-/** Palette: Indigo primary, Violet secondary, Emerald accent, Slate neutrals **/
+/** Palette: Deep violet primary (#4b2f95), Soft coral accent, Sage green success **/
 :root {
   /* ─── Core surfaces ─── */
-  --background: var(--color-slate-50);
-  --foreground: var(--color-slate-900);
-  --card: var(--color-white);
-  --card-foreground: var(--color-slate-900);
-  --popover: var(--color-white);
-  --popover-foreground: var(--color-slate-900);
+  --background: #fafafa;
+  --foreground: #2d2b33;
+  --card: #ffffff;
+  --card-foreground: #2d2b33;
+  --popover: #ffffff;
+  --popover-foreground: #2d2b33;
 
   /* ─── Brand ─── */
-  --primary: var(--color-indigo-500);
-  --primary-foreground: var(--color-white);
-  --secondary: var(--color-slate-100);
-  --secondary-foreground: var(--color-slate-900);
-  --muted: var(--color-slate-100);
-  --muted-foreground: var(--color-slate-500);
-  --accent: var(--color-slate-100);
-  --accent-foreground: var(--color-slate-900);
+  --primary: #4b2f95;
+  --primary-foreground: #ffffff;
+  --primary-hover: #3f287e;
+  --secondary: #f5f3fa;
+  --secondary-foreground: #2d2b33;
+  --muted: #f5f3fa;
+  --muted-foreground: #706a79;
+  --accent: #f5f3fa;
+  --accent-foreground: #2d2b33;
+
+  /* ─── Accent Brand (Soft coral) ─── */
+  --accent-brand: #d4836a;
+  --accent-brand-foreground: #ffffff;
+  --accent-brand-hover: #c06e55;
+  --accent-brand-light: #fdf6f3;
+
+  /* ─── Gradients ─── */
+  --gradient-brand: linear-gradient(135deg, #4b2f95, #d4836a);
+  --gradient-brand-subtle: linear-gradient(135deg, #f5f3fa, #fdf6f3);
 
   /* ─── Semantic ─── */
-  --destructive: var(--color-red-500);
-  --destructive-foreground: var(--color-white);
-  --color-success: var(--color-emerald-500);
-  --color-success-foreground: var(--color-white);
-  --color-success-soft: var(--color-emerald-50);
-  --color-success-alpha: var(--color-emerald-200);
-  --color-success-accent: var(--color-emerald-600);
-  --color-warning: var(--color-amber-500);
-  --color-warning-foreground: var(--color-white);
-  --color-warning-soft: var(--color-amber-50);
-  --color-warning-alpha: var(--color-amber-200);
-  --color-warning-accent: var(--color-amber-600);
-  --color-info: var(--color-blue-500);
-  --color-info-foreground: var(--color-white);
-  --color-info-soft: var(--color-blue-50);
-  --color-info-alpha: var(--color-blue-200);
-  --color-info-accent: var(--color-blue-600);
+  --destructive: #c75a5a;
+  --destructive-foreground: #ffffff;
+  --color-success: #5da387;
+  --color-success-foreground: #ffffff;
+  --color-success-soft: #f0f7f4;
+  --color-success-alpha: #b3d9c8;
+  --color-success-accent: #4a8a6f;
+  --color-warning: #d4a04a;
+  --color-warning-foreground: #ffffff;
+  --color-warning-soft: #fdf7ec;
+  --color-warning-alpha: #e8d4a0;
+  --color-warning-accent: #b8882e;
+  --color-info: #7d65b5;
+  --color-info-foreground: #ffffff;
+  --color-info-soft: #f5f3fa;
+  --color-info-alpha: #d5ceeb;
+  --color-info-accent: #3f287e;
 
   /* ─── Charts (KPI domain) ─── */
-  --chart-1: var(--color-indigo-500);   /* Budget */
-  --chart-2: var(--color-emerald-500);  /* Qualite */
-  --chart-3: var(--color-amber-500);    /* Delai */
-  --chart-4: var(--color-red-500);      /* Risque */
-  --chart-5: var(--color-violet-500);   /* Scope */
+  --chart-1: #4b2f95;             /* Budget */
+  --chart-2: #5da387;             /* Qualite */
+  --chart-3: #d4836a;             /* Delai */
+  --chart-4: #c75a5a;             /* Risque */
+  --chart-5: #d4a04a;             /* Scope */
 
   /* ─── Borders & inputs ─── */
-  --border: var(--color-slate-200);
-  --input: var(--color-slate-200);
-  --ring: var(--color-indigo-500);
+  --border: #eae8ee;
+  --input: #eae8ee;
+  --ring: rgba(75, 47, 149, 0.3);
   --radius: 0.5rem;
 
   /* ─── Rainbow Button Colors ─── */
@@ -80,53 +91,63 @@ i[class*="ki-"] {
 
 .dark {
   /* ─── Core surfaces ─── */
-  --background: var(--color-slate-900);
-  --foreground: var(--color-slate-100);
-  --card: var(--color-slate-800);
-  --card-foreground: var(--color-slate-100);
-  --popover: var(--color-slate-800);
-  --popover-foreground: var(--color-slate-100);
+  --background: #130c2a;
+  --foreground: #e4dcf4;
+  --card: #1d123d;
+  --card-foreground: #e4dcf4;
+  --popover: #1d123d;
+  --popover-foreground: #e4dcf4;
 
   /* ─── Brand ─── */
-  --primary: var(--color-indigo-500);
-  --primary-foreground: var(--color-white);
-  --secondary: var(--color-slate-800);
-  --secondary-foreground: var(--color-slate-100);
-  --muted: var(--color-slate-800);
-  --muted-foreground: var(--color-slate-400);
-  --accent: var(--color-slate-800);
-  --accent-foreground: var(--color-slate-100);
+  --primary: #7d65b5;
+  --primary-foreground: #ffffff;
+  --primary-hover: #a99bd0;
+  --secondary: #281952;
+  --secondary-foreground: #e4dcf4;
+  --muted: #281952;
+  --muted-foreground: #a99bd0;
+  --accent: #281952;
+  --accent-foreground: #e4dcf4;
+
+  /* ─── Accent Brand (Soft coral) ─── */
+  --accent-brand: #e89e85;
+  --accent-brand-foreground: #ffffff;
+  --accent-brand-hover: #d4836a;
+  --accent-brand-light: #281952;
+
+  /* ─── Gradients ─── */
+  --gradient-brand: linear-gradient(135deg, #7d65b5, #e89e85);
+  --gradient-brand-subtle: linear-gradient(135deg, #281952, #3d2a25);
 
   /* ─── Semantic ─── */
-  --destructive: var(--color-red-500);
-  --destructive-foreground: var(--color-white);
-  --color-success: var(--color-emerald-500);
-  --color-success-foreground: var(--color-emerald-400);
-  --color-success-soft: var(--color-emerald-950);
-  --color-success-alpha: var(--color-emerald-800);
-  --color-success-accent: var(--color-emerald-400);
-  --color-warning: var(--color-amber-500);
-  --color-warning-foreground: var(--color-amber-400);
-  --color-warning-soft: var(--color-amber-950);
-  --color-warning-alpha: var(--color-amber-800);
-  --color-warning-accent: var(--color-amber-400);
-  --color-info: var(--color-blue-500);
-  --color-info-foreground: var(--color-blue-400);
-  --color-info-soft: var(--color-blue-950);
-  --color-info-alpha: var(--color-blue-800);
-  --color-info-accent: var(--color-blue-400);
+  --destructive: #d47a7a;
+  --destructive-foreground: #ffffff;
+  --color-success: #7bc0a3;
+  --color-success-foreground: #ffffff;
+  --color-success-soft: #2a3532;
+  --color-success-alpha: #3d5548;
+  --color-success-accent: #a3d9c3;
+  --color-warning: #e0b86a;
+  --color-warning-foreground: #ffffff;
+  --color-warning-soft: #352f20;
+  --color-warning-alpha: #4d4228;
+  --color-warning-accent: #e8d4a0;
+  --color-info: #a99bd0;
+  --color-info-soft: #281952;
+  --color-info-alpha: #332068;
+  --color-info-accent: #d5ceeb;
 
   /* ─── Charts (KPI domain) ─── */
-  --chart-1: var(--color-indigo-400);
-  --chart-2: var(--color-emerald-400);
-  --chart-3: var(--color-amber-400);
-  --chart-4: var(--color-red-400);
-  --chart-5: var(--color-violet-400);
+  --chart-1: #7d65b5;
+  --chart-2: #7bc0a3;
+  --chart-3: #e89e85;
+  --chart-4: #d47a7a;
+  --chart-5: #e0b86a;
 
   /* ─── Borders & inputs ─── */
-  --border: var(--color-slate-700);
-  --input: var(--color-slate-700);
-  --ring: var(--color-indigo-500);
+  --border: rgba(40, 25, 82, 0.6);
+  --input: rgba(40, 25, 82, 0.6);
+  --ring: rgba(125, 101, 181, 0.3);
 
   /* ─── Rainbow Button Colors ─── */
   --color-1: oklch(66.2% 0.225 25.9);
@@ -162,6 +183,30 @@ i[class*="ki-"] {
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+
+  /** Brand Palette **/
+  --color-brand-50: #f5f3fa;
+  --color-brand-100: #ebe7f5;
+  --color-brand-200: #d5ceeb;
+  --color-brand-300: #a99bd0;
+  --color-brand-400: #7d65b5;
+  --color-brand-500: #4b2f95;
+  --color-brand-600: #3f287e;
+  --color-brand-700: #332068;
+  --color-brand-800: #281952;
+  --color-brand-900: #1d123d;
+  --color-brand-950: #130c2a;
+
+  /** Accent Brand (Soft coral) Palette **/
+  --color-accent-brand: #d4836a;
+  --color-accent-brand-50: #fdf6f3;
+  --color-accent-brand-100: #faeae3;
+  --color-accent-brand-200: #f4d0c3;
+  --color-accent-brand-300: #e89e85;
+  --color-accent-brand-400: #d4836a;
+  --color-accent-brand-500: #c06e55;
+  --color-accent-brand-600: #a85c47;
+  --color-accent-brand-700: #8a4b3a;
 
   /** Base Styles **/
   --color-border: var(--border);
@@ -206,6 +251,16 @@ i[class*="ki-"] {
   }
 }
 
+/** Reduced Motion Accessibility **/
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /** Global Styles **/
 @layer base {
   * {
@@ -226,18 +281,29 @@ i[class*="ki-"] {
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: var(--input);
+    background-color: rgba(75, 47, 149, 0.2);
     border-radius: 5px;
+  }
+  .dark ::-webkit-scrollbar-thumb {
+    background-color: rgba(125, 101, 181, 0.2);
   }
   * {
     scrollbar-width: thin;
-    scrollbar-color: var(--input) transparent;
+    scrollbar-color: rgba(75, 47, 149, 0.2) transparent;
+  }
+  .dark * {
+    scrollbar-color: rgba(125, 101, 181, 0.2) transparent;
   }
 }
 
 /** Smooth scroll **/
 html {
   scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 /** Custom Containers **/
@@ -269,6 +335,12 @@ html {
 .tiptap .ProseMirror-selectednode {
   outline: 2px solid var(--primary);
   border-radius: 4px;
+}
+
+/** Selection highlight **/
+::selection {
+  background-color: rgba(75, 47, 149, 0.15);
+  color: inherit;
 }
 
 /* Metronic Configs */

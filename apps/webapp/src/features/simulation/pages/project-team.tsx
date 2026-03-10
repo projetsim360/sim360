@@ -76,7 +76,7 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 }
 
 function MiniGauge({ label, value }: { label: string; value: number }) {
-  const color = value >= 70 ? 'text-green-600' : value >= 40 ? 'text-yellow-600' : 'text-red-600';
+  const color = value >= 70 ? 'text-success' : value >= 40 ? 'text-warning' : 'text-destructive';
   return (
     <div className="flex items-center gap-2 text-sm">
       <span className="text-muted-foreground">{label}</span>

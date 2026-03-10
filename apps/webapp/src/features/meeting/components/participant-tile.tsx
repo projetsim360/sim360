@@ -12,49 +12,28 @@ interface ParticipantTileProps {
   onClick?: () => void;
 }
 
-// Stable color per participant name
-function getAccentColor(name: string): string {
-  const colors = [
-    'from-blue-500/30 to-blue-600/10',
-    'from-emerald-500/30 to-emerald-600/10',
-    'from-purple-500/30 to-purple-600/10',
-    'from-amber-500/30 to-amber-600/10',
-    'from-pink-500/30 to-pink-600/10',
-    'from-cyan-500/30 to-cyan-600/10',
-    'from-rose-500/30 to-rose-600/10',
-    'from-indigo-500/30 to-indigo-600/10',
-  ];
+// Stable accent colors for participants
+const ACCENT_COLORS = [
+  { bg: 'bg-violet-500/20', ring: 'ring-violet-400', dot: 'bg-violet-400' },
+  { bg: 'bg-emerald-500/20', ring: 'ring-emerald-400', dot: 'bg-emerald-400' },
+  { bg: 'bg-amber-500/20', ring: 'ring-amber-400', dot: 'bg-amber-400' },
+  { bg: 'bg-rose-500/20', ring: 'ring-rose-400', dot: 'bg-rose-400' },
+  { bg: 'bg-cyan-500/20', ring: 'ring-cyan-400', dot: 'bg-cyan-400' },
+  { bg: 'bg-blue-500/20', ring: 'ring-blue-400', dot: 'bg-blue-400' },
+];
+
+function hashName(name: string): number {
   let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return colors[Math.abs(hash) % colors.length];
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  return Math.abs(hash) % ACCENT_COLORS.length;
 }
 
-function getRingColor(name: string): string {
-  const colors = [
-    'ring-blue-400/70',
-    'ring-emerald-400/70',
-    'ring-purple-400/70',
-    'ring-amber-400/70',
-    'ring-pink-400/70',
-    'ring-cyan-400/70',
-    'ring-rose-400/70',
-    'ring-indigo-400/70',
-  ];
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return colors[Math.abs(hash) % colors.length];
-}
-
-const STATUS_DOT: Record<ParticipantConnectionStatus, string> = {
-  idle: 'bg-zinc-500',
-  connecting: 'bg-yellow-400 animate-pulse',
-  connected: 'bg-emerald-400',
-  error: 'bg-red-400',
-  closed: 'bg-zinc-500',
+const STATUS_CONFIG: Record<ParticipantConnectionStatus, { dot: string; label: string }> = {
+  idle: { dot: 'bg-muted-foreground/50', label: 'Hors ligne' },
+  connecting: { dot: 'bg-warning animate-pulse', label: 'Connexion...' },
+  connected: { dot: 'bg-success', label: 'Connecte' },
+  error: { dot: 'bg-destructive', label: 'Erreur' },
+  closed: { dot: 'bg-muted-foreground/50', label: 'Deconnecte' },
 };
 
 export function ParticipantTile({
@@ -69,8 +48,8 @@ export function ParticipantTile({
   onClick,
 }: ParticipantTileProps) {
   const isLarge = size === 'large';
-  const accent = getAccentColor(participant.name);
-  const ringColor = getRingColor(participant.name);
+  const accent = ACCENT_COLORS[hashName(participant.name)];
+  const statusCfg = STATUS_CONFIG[status];
 
   return (
     <button
@@ -78,21 +57,18 @@ export function ParticipantTile({
       onClick={onClick}
       disabled={!onClick}
       className={`
-        group relative flex flex-col items-center justify-center gap-3 rounded-2xl transition-all duration-300 overflow-hidden
-        ${isLarge ? 'min-h-[180px] p-6' : 'min-h-[80px] min-w-[100px] p-3'}
-        ${isActive ? 'ring-2 ring-primary/50 bg-zinc-800/80' : 'bg-zinc-900/80 hover:bg-zinc-800/60'}
+        group relative flex flex-col items-center justify-center rounded-xl transition-all duration-300 overflow-hidden w-full
+        ${isLarge ? 'min-h-[160px] py-5 px-4 gap-2.5' : 'min-h-[70px] min-w-[90px] py-2.5 px-3 gap-1.5'}
+        ${isActive
+          ? `bg-[#1e1833] ring-1 ${accent.ring}/40`
+          : 'bg-[#16122a] hover:bg-[#1e1833]'
+        }
         ${onClick ? 'cursor-pointer' : 'cursor-default'}
       `}
     >
-      {/* Background gradient */}
-      <div className={`absolute inset-0 bg-gradient-to-b ${accent} opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isActive ? '!opacity-100' : ''}`} />
-
-      {/* Speaking pulse rings */}
+      {/* Speaking glow effect */}
       {isSpeaking && (
-        <>
-          <div className={`absolute inset-0 rounded-2xl ring-2 ${ringColor} animate-ping opacity-20`} />
-          <div className={`absolute inset-1 rounded-xl ring-1 ${ringColor} animate-pulse opacity-30`} />
-        </>
+        <div className={`absolute inset-0 rounded-xl ${accent.bg} animate-pulse`} />
       )}
 
       {/* Content */}
@@ -101,10 +77,10 @@ export function ParticipantTile({
         <div className="relative">
           <div
             className={`
-              ${isLarge ? 'w-20 h-20 text-2xl' : 'w-10 h-10 text-sm'}
+              ${isLarge ? 'w-16 h-16 text-xl' : 'w-9 h-9 text-sm'}
               rounded-full flex items-center justify-center font-semibold transition-all duration-300
-              ${isSpeaking ? `ring-[3px] ${ringColor} scale-105` : 'ring-0 scale-100'}
-              ${isUser ? 'bg-primary/20 text-primary' : 'bg-zinc-700/80 text-zinc-200'}
+              ${isSpeaking ? `ring-[3px] ${accent.ring} scale-105` : 'ring-0 scale-100'}
+              ${isUser ? 'bg-brand-500/25 text-brand-400' : 'bg-[#2a2344] text-white/90'}
             `}
           >
             {participant.avatar ? (
@@ -112,7 +88,13 @@ export function ParticipantTile({
                 src={participant.avatar}
                 alt={participant.name}
                 className="w-full h-full rounded-full object-cover"
+                loading="lazy"
               />
+            ) : isUser ? (
+              /* User icon instead of just "V" */
+              <svg className={isLarge ? 'w-7 h-7' : 'w-4 h-4'} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+              </svg>
             ) : (
               participant.name.charAt(0).toUpperCase()
             )}
@@ -123,18 +105,27 @@ export function ParticipantTile({
             <div
               className={`
                 absolute -bottom-0.5 -right-0.5
-                ${isLarge ? 'w-4 h-4' : 'w-3 h-3'}
-                rounded-full border-2 border-zinc-900
-                ${STATUS_DOT[status]}
+                ${isLarge ? 'w-3.5 h-3.5' : 'w-2.5 h-2.5'}
+                rounded-full border-2 border-[#16122a]
+                ${statusCfg.dot}
               `}
             />
           )}
 
           {/* Mute indicator (user only) */}
           {isUser && isMuted && (
-            <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
-              <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <div className={`absolute -bottom-0.5 -right-0.5 ${isLarge ? 'w-5 h-5' : 'w-3.5 h-3.5'} rounded-full bg-destructive flex items-center justify-center`}>
+              <svg className={isLarge ? 'w-3 h-3' : 'w-2 h-2'} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 19L5 5m14 0v6a2 2 0 01-2 2H7" />
+              </svg>
+            </div>
+          )}
+
+          {/* Microphone active indicator (user, not muted) */}
+          {isUser && !isMuted && status === 'connected' && (
+            <div className={`absolute -bottom-0.5 -right-0.5 ${isLarge ? 'w-5 h-5' : 'w-3.5 h-3.5'} rounded-full bg-success flex items-center justify-center`}>
+              <svg className={isLarge ? 'w-3 h-3' : 'w-2 h-2'} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
               </svg>
             </div>
           )}
@@ -142,45 +133,45 @@ export function ParticipantTile({
 
         {/* Name & Role */}
         <div className="text-center">
-          <p className={`font-medium text-zinc-100 truncate ${isLarge ? 'text-sm max-w-[140px]' : 'text-[11px] max-w-[90px]'}`}>
+          <p className={`font-medium text-white/90 truncate ${isLarge ? 'text-sm max-w-[130px]' : 'text-[11px] max-w-[85px]'}`}>
             {isUser ? 'Vous' : participant.name}
           </p>
           {isLarge && !isUser && (
-            <p className="text-[11px] text-zinc-500 truncate max-w-[140px] mt-0.5">
+            <p className="text-[11px] text-white/40 truncate max-w-[130px] mt-0.5">
               {participant.role}
             </p>
           )}
         </div>
 
-        {/* "Click to talk" hint in single mode */}
-        {conferenceMode === 'single' && !isUser && !isActive && isLarge && status !== 'connected' && (
-          <span className="text-[10px] text-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity">
-            Cliquer pour parler
-          </span>
-        )}
-
-        {/* Active indicator in single mode */}
-        {conferenceMode === 'single' && isActive && !isUser && (
-          <div className="flex items-center gap-1 mt-0.5">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[10px] text-emerald-400 font-medium">En conversation</span>
-          </div>
-        )}
-
-        {/* Speaking indicator */}
+        {/* Speaking bars */}
         {isSpeaking && isLarge && (
           <div className="flex items-center gap-[3px]">
             {[...Array(5)].map((_, i) => (
               <div
                 key={i}
-                className="w-[3px] bg-emerald-400 rounded-full animate-pulse"
+                className={`w-[3px] ${accent.dot} rounded-full animate-pulse`}
                 style={{
-                  height: `${8 + Math.random() * 12}px`,
+                  height: `${6 + Math.random() * 10}px`,
                   animationDelay: `${i * 0.1}s`,
                   animationDuration: `${0.4 + Math.random() * 0.3}s`,
                 }}
               />
             ))}
+          </div>
+        )}
+
+        {/* "Click to talk" hint in single mode */}
+        {conferenceMode === 'single' && !isUser && !isActive && isLarge && (
+          <span className="text-[10px] text-white/30 opacity-0 group-hover:opacity-100 transition-opacity">
+            Donner la parole
+          </span>
+        )}
+
+        {/* Active indicator in single mode */}
+        {conferenceMode === 'single' && isActive && !isUser && isLarge && (
+          <div className="flex items-center gap-1 mt-0.5">
+            <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+            <span className="text-[10px] text-success font-medium">A la parole</span>
           </div>
         )}
       </div>

@@ -156,11 +156,11 @@ export default function ShortlistPage() {
                       className={cn(
                         'w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0',
                         index === 0
-                          ? 'bg-yellow-100 text-yellow-700'
+                          ? 'bg-warning/10 text-warning'
                           : index === 1
-                            ? 'bg-gray-100 text-gray-600'
+                            ? 'bg-secondary text-muted-foreground'
                             : index === 2
-                              ? 'bg-orange-100 text-orange-700'
+                              ? 'bg-warning/10 text-warning'
                               : 'bg-accent text-muted-foreground',
                       )}
                     >

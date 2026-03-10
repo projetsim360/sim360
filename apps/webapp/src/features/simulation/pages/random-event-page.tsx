@@ -132,7 +132,7 @@ export default function RandomEventPage() {
       <Card className="mb-5">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <KeenIcon icon="flash" style="filled" className="size-4" />
+            <KeenIcon icon="flash" style="duotone" className="size-4" />
             {event.title}
             <Badge variant={SEVERITY_VARIANT[event.severity]} appearance="light" size="sm">{event.severity}</Badge>
           </CardTitle>

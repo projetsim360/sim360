@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '@/providers/auth-provider';
 import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/layout-6/components/toolbar';
 import { Badge } from '@/components/ui/badge';
@@ -88,9 +89,9 @@ export default function DashboardPage() {
       <Toolbar>
         <ToolbarHeading title="Tableau de bord" />
         <ToolbarActions>
-          <Button variant="outline" size="sm" asChild>
+          <Button variant="primary" size="sm" asChild>
             <Link to="/simulations/new">
-              <KeenIcon icon="plus" style="solid" className="text-xs" />
+              <KeenIcon icon="plus" style="duotone" className="text-xs" />
               Nouvelle simulation
             </Link>
           </Button>
@@ -99,6 +100,16 @@ export default function DashboardPage() {
 
       <div className="container-fixed">
         <div className="grid gap-5 lg:gap-7.5">
+          {/* Hero welcome */}
+          <div className="rounded-2xl bg-card dark:bg-card p-5 lg:p-6 border border-border">
+            <h1 className="text-lg font-bold text-foreground">
+              Bonjour {user?.firstName ?? ''}
+            </h1>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              Voici votre espace de gestion de projet.
+            </p>
+          </div>
+
           {/* Row 1: Getting Started */}
           {loading && <SkeletonCard />}
           {summary && summary.gettingStarted.completionPercent < 100 && (
@@ -140,34 +151,21 @@ export default function DashboardPage() {
 
           {/* Row 5: Stats cards */}
           <div data-tour="stats" className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-5">
-            <StatCard
-              icon="chart-line"
-              label="En cours"
-              value={loading ? '-' : String(summary?.stats.activeSimulations ?? 0)}
-              color="text-primary"
-              bgColor="bg-primary/10"
-            />
-            <StatCard
-              icon="check-circle"
-              label="Terminees"
-              value={loading ? '-' : String(summary?.stats.completedSimulations ?? 0)}
-              color="text-success"
-              bgColor="bg-success/10"
-            />
-            <StatCard
-              icon="abstract-26"
-              label="Total"
-              value={loading ? '-' : String(summary?.stats.totalSimulations ?? 0)}
-              color="text-foreground"
-              bgColor="bg-muted"
-            />
-            <StatCard
-              icon="medal-star"
-              label="Score moyen"
-              value={loading ? '-' : summary?.stats.averageScore != null ? `${summary.stats.averageScore}%` : '-'}
-              color="text-warning"
-              bgColor="bg-warning/10"
-            />
+            {[
+              { icon: 'chart-line', label: 'En cours', value: loading ? '-' : String(summary?.stats.activeSimulations ?? 0), color: 'text-primary', bgColor: '' },
+              { icon: 'check-circle', label: 'Terminees', value: loading ? '-' : String(summary?.stats.completedSimulations ?? 0), color: 'text-success', bgColor: '' },
+              { icon: 'abstract-26', label: 'Total', value: loading ? '-' : String(summary?.stats.totalSimulations ?? 0), color: 'text-foreground', bgColor: '' },
+              { icon: 'medal-star', label: 'Score moyen', value: loading ? '-' : summary?.stats.averageScore != null ? `${summary.stats.averageScore}%` : '-', color: 'text-warning', bgColor: '' },
+            ].map((stat, index) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.06, duration: 0.25 }}
+              >
+                <StatCard {...stat} />
+              </motion.div>
+            ))}
           </div>
         </div>
       </div>
@@ -188,7 +186,7 @@ function ActiveSimulationsCard({
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between w-full">
-          <CardTitle className="flex items-center gap-2 text-sm">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
             <KeenIcon icon="chart-line" style="duotone" className="text-base text-primary" />
             Simulations en cours
           </CardTitle>
@@ -217,7 +215,7 @@ function ActiveSimulationsCard({
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
-                    <h4 className="text-sm font-medium text-gray-900 truncate">{sim.projectName}</h4>
+                    <h4 className="text-sm font-medium text-foreground truncate">{sim.projectName}</h4>
                     <p className="text-xs text-muted-foreground mt-0.5">{sim.scenarioTitle}</p>
                     <div className="flex items-center gap-2 mt-2">
                       <Badge variant="primary" appearance="light" size="xs">
@@ -230,7 +228,7 @@ function ActiveSimulationsCard({
                     <MiniKpis kpis={sim.kpis} />
                     <span className="text-xs text-primary opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
                       Reprendre
-                      <KeenIcon icon="right" style="solid" className="text-[10px]" />
+                      <KeenIcon icon="right" style="duotone" className="text-[10px]" />
                     </span>
                   </div>
                 </div>
@@ -275,7 +273,7 @@ function PendingActionsCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-sm">
+        <CardTitle className="flex items-center gap-2 text-sm font-semibold">
           <KeenIcon icon="notification-status" style="duotone" className="text-base text-warning" />
           Actions en attente
           {totalPending > 0 && (
@@ -293,7 +291,7 @@ function PendingActionsCard({
             <div className="flex items-center justify-center size-12 rounded-full bg-success/10 mb-3">
               <KeenIcon icon="check-circle" style="duotone" className="text-xl text-success" />
             </div>
-            <p className="text-sm font-medium text-gray-900">Tout est a jour</p>
+            <p className="text-sm font-medium text-foreground">Tout est a jour</p>
             <p className="text-xs text-muted-foreground mt-0.5">Aucune action en attente</p>
           </div>
         ) : (
@@ -309,11 +307,11 @@ function PendingActionsCard({
                   <div className={cn('flex items-center justify-center size-8 rounded-lg bg-muted shrink-0')}>
                     <KeenIcon icon={item.icon} style="duotone" className={cn('text-base', item.color)} />
                   </div>
-                  <span className="text-sm text-gray-900 flex-1">{item.label}</span>
+                  <span className="text-sm text-foreground flex-1">{item.label}</span>
                   <Badge variant="secondary" size="sm" shape="circle">
                     {item.count}
                   </Badge>
-                  <KeenIcon icon="right" style="solid" className="text-xs text-muted-foreground" />
+                  <KeenIcon icon="right" style="duotone" className="text-xs text-muted-foreground" />
                 </Link>
               ))}
           </div>
@@ -335,7 +333,7 @@ function ScoreEvolutionCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-sm">
+        <CardTitle className="flex items-center gap-2 text-sm font-semibold">
           <KeenIcon icon="graph-up" style="duotone" className="text-base text-primary" />
           Evolution du score
         </CardTitle>
@@ -363,13 +361,15 @@ function ScoreEvolutionCard({
               margin={{ top: 5, right: 10, left: 0, bottom: 0 }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="date" tick={{ fontSize: 11 }} />
-              <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} />
+              <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} />
+              <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} />
               <Tooltip
                 contentStyle={{
                   fontSize: 12,
                   borderRadius: 8,
                   border: '1px solid hsl(var(--border))',
+                  backgroundColor: 'hsl(var(--card))',
+                  color: 'hsl(var(--card-foreground))',
                 }}
                 formatter={(value: number) => [`${value}%`, 'Score']}
                 labelFormatter={(_, payload) => {
@@ -415,7 +415,7 @@ function RecentActivityCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-sm">
+        <CardTitle className="flex items-center gap-2 text-sm font-semibold">
           <KeenIcon icon="time" style="duotone" className="text-base text-muted-foreground" />
           Activite recente
         </CardTitle>
@@ -443,7 +443,7 @@ function RecentActivityCard({
                     <KeenIcon icon={config.icon} style="duotone" className={cn('text-sm', config.color)} />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-gray-900 truncate">
+                    <p className="text-sm font-medium text-foreground truncate">
                       {activityData?.title ?? config.label}
                     </p>
                     <p className="text-[10px] text-muted-foreground">
@@ -473,7 +473,6 @@ function StatCard({
   label,
   value,
   color,
-  bgColor,
 }: {
   icon: string;
   label: string;
@@ -482,10 +481,12 @@ function StatCard({
   bgColor: string;
 }) {
   return (
-    <Card className={bgColor}>
-      <CardContent className="flex flex-col items-center justify-center py-5 h-full gap-2">
-        <KeenIcon icon={icon} style="duotone" className={cn('text-2xl', color)} />
-        <span className={cn('text-2xl font-bold', color)}>{value}</span>
+    <Card className="border-0 shadow-none overflow-hidden">
+      <CardContent className="flex flex-col items-center justify-center py-5 h-full gap-1.5">
+        <div className="flex items-center justify-center size-9 rounded-xl bg-gradient-to-br from-brand-50 to-brand-100/50 dark:from-brand-800/30 dark:to-brand-900/20">
+          <KeenIcon icon={icon} style="duotone" className={cn('size-4', color)} />
+        </div>
+        <span className="text-2xl font-bold text-foreground tracking-tight">{value}</span>
         <span className="text-xs text-muted-foreground">{label}</span>
       </CardContent>
     </Card>
@@ -570,10 +571,10 @@ function LegacyDashboard({ data }: { data: GlobalDashboard }) {
         <div className="grid gap-5 lg:gap-7.5">
           {/* Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-5">
-            <StatCard icon="chart-line" label="En cours" value={String(data.stats.active)} color="text-primary" bgColor="bg-primary/10" />
-            <StatCard icon="check-circle" label="Terminees" value={String(data.stats.completed)} color="text-success" bgColor="bg-success/10" />
-            <StatCard icon="abstract-26" label="Total" value={String(data.stats.total)} color="text-foreground" bgColor="bg-muted" />
-            <StatCard icon="medal-star" label="Score moyen" value={`${data.stats.avgScore}%`} color="text-warning" bgColor="bg-warning/10" />
+            <StatCard icon="chart-line" label="En cours" value={String(data.stats.active)} color="text-primary" bgColor="" />
+            <StatCard icon="check-circle" label="Terminees" value={String(data.stats.completed)} color="text-success" bgColor="" />
+            <StatCard icon="abstract-26" label="Total" value={String(data.stats.total)} color="text-foreground" bgColor="" />
+            <StatCard icon="medal-star" label="Score moyen" value={`${data.stats.avgScore}%`} color="text-warning" bgColor="" />
           </div>
 
           {/* Active sims + actions */}
@@ -581,7 +582,7 @@ function LegacyDashboard({ data }: { data: GlobalDashboard }) {
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between w-full">
-                  <CardTitle className="text-sm flex items-center gap-2">
+                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
                     <KeenIcon icon="chart-line" style="duotone" className="text-base text-primary" />
                     Simulations en cours
                   </CardTitle>
@@ -632,7 +633,7 @@ function LegacyDashboard({ data }: { data: GlobalDashboard }) {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm flex items-center gap-2">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
                   <KeenIcon icon="notification-status" style="duotone" className="text-base text-warning" />
                   Prochaines actions
                   <Badge variant="warning" appearance="light" size="sm">
@@ -651,7 +652,7 @@ function LegacyDashboard({ data }: { data: GlobalDashboard }) {
                         to={`/simulations/${d.simulationId}/decisions/${d.id}`}
                         className="flex items-center gap-3 p-2.5 rounded-lg border border-border hover:bg-muted/50 transition-colors"
                       >
-                        <KeenIcon icon="question-2" style="filled" className="text-lg shrink-0" />
+                        <KeenIcon icon="question-2" style="duotone" className="text-lg shrink-0" />
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-medium truncate">{d.title}</p>
                           <p className="text-[10px] text-muted-foreground">{d.projectName}</p>
@@ -665,7 +666,7 @@ function LegacyDashboard({ data }: { data: GlobalDashboard }) {
                         to={`/simulations/${e.simulationId}/events/${e.id}`}
                         className="flex items-center gap-3 p-2.5 rounded-lg border border-border hover:bg-muted/50 transition-colors"
                       >
-                        <KeenIcon icon="flash" style="filled" className="text-lg shrink-0" />
+                        <KeenIcon icon="flash" style="duotone" className="text-lg shrink-0" />
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-medium truncate">{e.title}</p>
                           <p className="text-[10px] text-muted-foreground">{e.projectName}</p>
@@ -685,7 +686,7 @@ function LegacyDashboard({ data }: { data: GlobalDashboard }) {
                         to={`/meetings/${m.id}`}
                         className="flex items-center gap-3 p-2.5 rounded-lg border border-border hover:bg-muted/50 transition-colors"
                       >
-                        <KeenIcon icon="message-text" style="filled" className="text-lg shrink-0" />
+                        <KeenIcon icon="message-text" style="duotone" className="text-lg shrink-0" />
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-medium truncate">{m.title}</p>
                           <p className="text-[10px] text-muted-foreground">{m.projectName}</p>
@@ -705,7 +706,7 @@ function LegacyDashboard({ data }: { data: GlobalDashboard }) {
           {data.scoreEvolution && data.scoreEvolution.length > 1 && (
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm flex items-center gap-2">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
                   <KeenIcon icon="graph-up" style="duotone" className="text-base text-primary" />
                   Evolution du score
                 </CardTitle>
@@ -720,10 +721,16 @@ function LegacyDashboard({ data }: { data: GlobalDashboard }) {
                     margin={{ top: 5, right: 10, left: 0, bottom: 0 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                    <XAxis dataKey="date" tick={{ fontSize: 11 }} />
-                    <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} />
+                    <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} />
+                    <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} />
                     <Tooltip
-                      contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid hsl(var(--border))' }}
+                      contentStyle={{
+                        fontSize: 12,
+                        borderRadius: 8,
+                        border: '1px solid hsl(var(--border))',
+                        backgroundColor: 'hsl(var(--card))',
+                        color: 'hsl(var(--card-foreground))',
+                      }}
                       formatter={(value: number) => [`${value}%`, 'Score']}
                     />
                     <Area
@@ -744,7 +751,7 @@ function LegacyDashboard({ data }: { data: GlobalDashboard }) {
           {/* Recent activity */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm flex items-center gap-2">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
                 <KeenIcon icon="time" style="duotone" className="text-base text-muted-foreground" />
                 Activite recente
               </CardTitle>
@@ -762,7 +769,7 @@ function LegacyDashboard({ data }: { data: GlobalDashboard }) {
                     >
                       <KeenIcon
                         icon={a.type === 'decision' ? 'question-2' : a.type === 'meeting' ? 'message-text' : 'flash'}
-                        style="filled"
+                        style="duotone"
                         className="text-sm shrink-0"
                       />
                       <div className="min-w-0 flex-1">

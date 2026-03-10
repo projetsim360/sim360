@@ -21,7 +21,7 @@ export function EvaluationCard({
     <Card>
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
-          <KeenIcon icon={icon} style="solid" className={cn('size-4', iconColor)} />
+          <KeenIcon icon={icon} style="duotone" className={cn('size-4', iconColor)} />
           {title}
           {items.length > 0 && (
             <span className="text-sm text-muted-foreground font-normal">
@@ -42,7 +42,7 @@ export function EvaluationCard({
               >
                 <KeenIcon
                   icon={icon}
-                  style="solid"
+                  style="duotone"
                   className={cn('size-3.5 shrink-0 mt-0.5', iconColor)}
                 />
                 <span>{item}</span>

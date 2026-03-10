@@ -28,9 +28,8 @@ const circleVariants = cva(
   {
     variants: {
       status: {
-        completed:
-          'bg-[var(--color-success-accent,var(--color-green-500))] text-[var(--color-success-foreground,var(--color-white))]',
-        active: 'bg-primary text-primary-foreground',
+        completed: 'bg-primary text-primary-foreground',
+        active: 'bg-[var(--accent-brand)] text-white ring-2 ring-[var(--accent-brand)]/15',
         upcoming: 'bg-secondary text-muted-foreground',
         disabled: 'bg-secondary text-muted-foreground opacity-50',
       },
@@ -49,10 +48,10 @@ const circleVariants = cva(
 const lineVariants = cva('flex-1 h-0.5 transition-colors', {
   variants: {
     status: {
-      completed: 'bg-[var(--color-success-accent,var(--color-green-500))]',
-      active: 'bg-primary border-0 border-dashed',
-      upcoming: 'bg-border',
-      disabled: 'bg-border opacity-50',
+      completed: 'bg-primary',
+      active: 'bg-primary/40 border-0 border-dashed',
+      upcoming: 'bg-muted',
+      disabled: 'bg-muted opacity-50',
     },
     size: {
       sm: 'min-w-4',

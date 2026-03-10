@@ -21,10 +21,10 @@ interface SkillEditorProps {
 }
 
 function getGapColor(gap: number): string {
-  if (gap <= 25) return 'bg-green-500';
-  if (gap <= 50) return 'bg-yellow-500';
-  if (gap <= 75) return 'bg-orange-500';
-  return 'bg-red-500';
+  if (gap <= 25) return 'bg-success';
+  if (gap <= 50) return 'bg-warning';
+  if (gap <= 75) return 'bg-[var(--accent-brand)]';
+  return 'bg-destructive';
 }
 
 export function SkillEditor({ skills, onChange, className }: SkillEditorProps) {

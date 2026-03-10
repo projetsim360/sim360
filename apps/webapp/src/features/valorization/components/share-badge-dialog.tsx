@@ -76,7 +76,7 @@ export function ShareBadgeDialog({
               disabled={shareMutation.isPending}
               className="w-full"
             >
-              <KeenIcon icon="share" style="solid" className="text-sm mr-2" />
+              <KeenIcon icon="share" style="duotone" className="text-sm mr-2" />
               {shareMutation.isPending ? 'Generation...' : 'Generer un lien de partage'}
             </Button>
           ) : (
@@ -86,8 +86,8 @@ export function ShareBadgeDialog({
                 <span className="text-sm text-muted-foreground truncate flex-1">
                   {verifyUrl}
                 </span>
-                <Button variant="ghost" size="sm" mode="icon" onClick={handleCopyLink}>
-                  <KeenIcon icon="copy" style="solid" className="text-sm" />
+                <Button variant="ghost" size="sm" mode="icon" aria-label="Copier le lien" onClick={handleCopyLink}>
+                  <KeenIcon icon="copy" style="duotone" className="text-sm" />
                 </Button>
               </div>
 
@@ -99,7 +99,7 @@ export function ShareBadgeDialog({
                   className="flex-1"
                   onClick={handleCopyLink}
                 >
-                  <KeenIcon icon="copy" style="solid" className="text-sm mr-2" />
+                  <KeenIcon icon="copy" style="duotone" className="text-sm mr-2" />
                   Copier le lien
                 </Button>
                 <Button
@@ -108,7 +108,7 @@ export function ShareBadgeDialog({
                   className="flex-1"
                   onClick={handleShareLinkedIn}
                 >
-                  <KeenIcon icon="linkedin" style="solid" className="text-sm mr-2" />
+                  <KeenIcon icon="linkedin" style="duotone" className="text-sm mr-2" />
                   LinkedIn
                 </Button>
               </div>

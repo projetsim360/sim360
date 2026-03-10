@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Toolbar, ToolbarHeading } from '@/components/layouts/layout-6/components/toolbar';
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { EmptyState } from '@/components/ui/empty-state';
 import { projectApi, type ProjectListItem } from '../api/project.api';
 
@@ -13,12 +14,12 @@ const STATUS_LABELS: Record<string, string> = {
   ABANDONED: 'Abandonne',
 };
 
-const STATUS_COLORS: Record<string, string> = {
-  DRAFT: 'bg-gray-100 text-gray-700',
-  IN_PROGRESS: 'bg-blue-100 text-blue-700',
-  PAUSED: 'bg-yellow-100 text-yellow-700',
-  COMPLETED: 'bg-green-100 text-green-700',
-  ABANDONED: 'bg-red-100 text-red-700',
+const STATUS_VARIANT: Record<string, 'secondary' | 'primary' | 'warning' | 'success' | 'destructive'> = {
+  DRAFT: 'secondary',
+  IN_PROGRESS: 'primary',
+  PAUSED: 'warning',
+  COMPLETED: 'success',
+  ABANDONED: 'destructive',
 };
 
 export default function ProjectsListPage() {
@@ -50,7 +51,7 @@ export default function ProjectsListPage() {
       {error && (
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-red-600 text-sm">Erreur : {error}</p>
+            <p className="text-destructive text-sm">Erreur : {error}</p>
           </CardContent>
         </Card>
       )}
@@ -87,9 +88,9 @@ export default function ProjectsListPage() {
                       )}
                     </div>
                     {simStatus && (
-                      <span className={`shrink-0 px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[simStatus] ?? STATUS_COLORS.DRAFT}`}>
+                      <Badge variant={STATUS_VARIANT[simStatus] ?? 'secondary'} appearance="light" size="sm">
                         {STATUS_LABELS[simStatus] ?? simStatus}
-                      </span>
+                      </Badge>
                     )}
                   </div>
 

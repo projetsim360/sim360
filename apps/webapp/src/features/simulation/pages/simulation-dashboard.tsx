@@ -207,7 +207,7 @@ export default function SimulationDashboardPage() {
       {dashboard.criticalAlerts.length > 0 && (
         <div className="mb-4 p-3 bg-destructive/10 border border-destructive/30 rounded-lg">
           <div className="flex items-center gap-2 mb-1">
-            <KeenIcon icon="notification-status" style="solid" className="size-4 text-destructive" />
+            <KeenIcon icon="notification-status" style="duotone" className="size-4 text-destructive" />
             <span className="text-sm font-semibold text-destructive">Alertes critiques</span>
           </div>
           <ul className="text-sm text-destructive space-y-0.5">

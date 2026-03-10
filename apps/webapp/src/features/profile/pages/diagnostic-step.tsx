@@ -173,10 +173,10 @@ export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
                     value={skill.gap}
                     className="h-1.5"
                     indicatorClassName={cn(
-                      skill.gap <= 25 && 'bg-green-500',
-                      skill.gap > 25 && skill.gap <= 50 && 'bg-yellow-500',
-                      skill.gap > 50 && skill.gap <= 75 && 'bg-orange-500',
-                      skill.gap > 75 && 'bg-red-500',
+                      skill.gap <= 25 && 'bg-success',
+                      skill.gap > 25 && skill.gap <= 50 && 'bg-warning',
+                      skill.gap > 50 && skill.gap <= 75 && 'bg-[var(--accent-brand)]',
+                      skill.gap > 75 && 'bg-destructive',
                     )}
                   />
                 </div>

@@ -19,7 +19,7 @@ export function SidebarFooter() {
     <div className="flex flex-center justify-between shrink-0 ps-4 pe-3.5 h-14">
       <UserDropdownMenu
         trigger={
-          <Avatar className="size-9 cursor-pointer border-2 border-secondary shrink-0">
+          <Avatar className="size-9 cursor-pointer border-2 border-[#eae8ee] dark:border-white/20 shrink-0">
             {user?.avatar ? (
               <AvatarImage
                 src={`${apiBase}${user.avatar}`}
@@ -27,7 +27,7 @@ export function SidebarFooter() {
                 className="size-9"
               />
             ) : null}
-            <AvatarFallback className="text-xs font-semibold">{initials}</AvatarFallback>
+            <AvatarFallback className="text-xs font-semibold bg-[#4b2f95] dark:bg-white/15 text-white">{initials}</AvatarFallback>
           </Avatar>
         }
       />
@@ -38,7 +38,8 @@ export function SidebarFooter() {
             <Button
               variant="ghost"
               mode="icon"
-              className="hover:bg-background hover:[&_svg]:text-primary [&_i]:text-primary"
+              aria-label="Notifications"
+              className="text-[#8a7daa] dark:text-white/70 hover:text-[#4b2f95] dark:hover:text-white hover:bg-white dark:hover:bg-white/10 rounded-lg hover:[&_svg]:text-[#4b2f95] dark:hover:[&_svg]:text-white [&_i]:text-[#8a7daa] dark:[&_i]:text-white/70"
             >
               <MessageSquareDot className="size-4.5!" />
             </Button>
@@ -49,7 +50,8 @@ export function SidebarFooter() {
             <Button
               variant="ghost"
               mode="icon"
-              className="hover:bg-background hover:[&_svg]:text-primary [&_i]:text-primary"
+              aria-label="Messages"
+              className="text-[#8a7daa] dark:text-white/70 hover:text-[#4b2f95] dark:hover:text-white hover:bg-white dark:hover:bg-white/10 rounded-lg hover:[&_svg]:text-[#4b2f95] dark:hover:[&_svg]:text-white [&_i]:text-[#8a7daa] dark:[&_i]:text-white/70"
             >
               <MessageCircleMore className="size-4.5!" />
             </Button>

@@ -220,7 +220,7 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <KeenIcon icon="microphone" style="filled" className="size-5 text-primary" />
+            <KeenIcon icon="microphone" style="duotone" className="size-5 text-primary" />
             <span className="text-sm font-medium">Reunion Audio</span>
             <Badge variant={statusVariant[status]} appearance="light" size="sm">
               {statusLabel[status]}
@@ -243,6 +243,7 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
                 src={participants[0].avatar}
                 alt={participants[0].name}
                 className="w-8 h-8 rounded-full object-cover"
+                loading="lazy"
               />
             ) : (
               <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
@@ -305,7 +306,7 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
         <div className="flex items-center justify-center gap-3">
           {status === 'idle' || status === 'closed' || status === 'error' ? (
             <Button onClick={connect}>
-              <KeenIcon icon="microphone" style="filled" className="size-4" />
+              <KeenIcon icon="microphone" style="duotone" className="size-4" />
               Demarrer la session audio
             </Button>
           ) : (
@@ -317,7 +318,7 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
               >
                 <KeenIcon
                   icon={muted ? 'microphone' : 'microphone'}
-                  style="filled"
+                  style="duotone"
                   className="size-4"
                 />
                 {muted ? 'Desactiver le mute' : 'Mute'}
@@ -327,7 +328,7 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
                 size="sm"
                 onClick={disconnect}
               >
-                <KeenIcon icon="cross-circle" style="filled" className="size-4" />
+                <KeenIcon icon="cross-circle" style="duotone" className="size-4" />
                 Terminer
               </Button>
             </>

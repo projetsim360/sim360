@@ -22,7 +22,7 @@ import { RainbowButton } from '@/components/ui/rainbow-button';
 
 function CustomBadge({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/50 px-4 py-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400">
+    <span className="inline-flex items-center rounded-full border border-[#4b2f95]/20 dark:border-[#4b2f95]/40 bg-[#4b2f95]/5 dark:bg-[#4b2f95]/10 px-4 py-1.5 text-sm font-semibold text-[#4b2f95] dark:text-[#c4a0ff]">
       {children}
     </span>
   );
@@ -67,10 +67,10 @@ const FEATURES = [
     stats: '12k+',
     metric: 'Sessions completees',
     colors: {
-      bg: 'bg-blue-100/40 dark:bg-blue-950/40',
-      icon: 'text-blue-600',
-      hover: 'hover:border-blue-500',
-      gradient: 'from-blue-500 via-blue-600 to-blue-700',
+      bg: 'bg-[#4b2f95]/10 dark:bg-[#4b2f95]/20',
+      icon: 'text-[#4b2f95]',
+      hover: 'hover:border-[#4b2f95]',
+      gradient: 'from-[#4b2f95] via-[#6b3fa0] to-[#f14f1a]',
     },
     iconPath: 'M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z',
   },
@@ -224,7 +224,7 @@ const FAQ_ITEMS = [
 function Logo() {
   return (
     <Link to="/" className="flex items-center gap-2.5">
-      <div className="size-8 rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center">
+      <div className="size-8 rounded-lg bg-gradient-to-br from-[#4b2f95] to-[#f14f1a] flex items-center justify-center">
         <svg viewBox="0 0 24 24" fill="none" className="size-5 text-white">
           <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
           <path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -331,11 +331,11 @@ function Header() {
                 onClick={() => handleNavClick(item)}
                 className={cn(
                   'cursor-pointer transition-colors relative group',
-                  isActiveItem(item) ? 'text-indigo-600 dark:text-indigo-400' : 'text-accent-foreground hover:text-indigo-600 dark:hover:text-indigo-400',
+                  isActiveItem(item) ? 'text-[#4b2f95] dark:text-[#c4a0ff]' : 'text-accent-foreground hover:text-[#4b2f95] dark:hover:text-[#c4a0ff]',
                 )}
               >
                 {item}
-                <span className={cn('absolute -bottom-1 left-0 h-0.5 bg-indigo-600 dark:bg-indigo-400 transition-all', isActiveItem(item) ? 'w-full' : 'w-0 group-hover:w-full')} />
+                <span className={cn('absolute -bottom-1 left-0 h-0.5 bg-[#4b2f95] dark:bg-[#c4a0ff] transition-all', isActiveItem(item) ? 'w-full' : 'w-0 group-hover:w-full')} />
               </button>
             ))}
 
@@ -412,8 +412,8 @@ function Header() {
                       onClick={() => handleNavClick(item)}
                       variant="ghost"
                       className={cn(
-                        'w-full justify-start hover:text-indigo-600',
-                        isActiveItem(item) && 'text-indigo-600 font-medium',
+                        'w-full justify-start hover:text-[#4b2f95]',
+                        isActiveItem(item) && 'text-[#4b2f95] font-medium',
                       )}
                     >
                       {item}
@@ -452,34 +452,34 @@ function HeroSection() {
 
   return (
     <section
-      className="relative lg:min-h-screen bg-gradient-to-br from-gray-50 dark:from-zinc-950 via-indigo-50 dark:via-black to-indigo-50 dark:to-zinc-950 pt-25 pb-20 lg:pt-40 lg:pb-20 overflow-hidden group"
+      className="relative lg:min-h-screen bg-gradient-to-br from-gray-50 dark:from-zinc-950 via-[#4b2f95]/5 dark:via-black to-[#f14f1a]/5 dark:to-zinc-950 pt-25 pb-20 lg:pt-40 lg:pb-20 overflow-hidden group"
       onMouseMove={handleMouseMove}
       onMouseLeave={() => setMouse({ x: 0, y: 0 })}
     >
       {/* Animated gradient orbs — keep motion for repeating animations */}
       <div className="hidden lg:block absolute inset-0 pointer-events-none">
         <motion.div
-          className="absolute left-[10%] top-[15%] w-[320px] h-[320px] dark:w-[160px] dark:h-[160px] rounded-full bg-indigo-200 dark:bg-indigo-900 opacity-90 blur-[60px]"
+          className="absolute left-[10%] top-[15%] w-[320px] h-[320px] dark:w-[160px] dark:h-[160px] rounded-full bg-[#4b2f95]/30 dark:bg-[#4b2f95]/20 opacity-90 blur-[60px]"
           animate={{ scale: [1, 1.13, 1], opacity: [0.85, 1, 0.85], x: mouse.x * 70, y: mouse.y * 40 }}
           transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
-          className="absolute left-[18%] top-[23%] w-[90px] h-[90px] rounded-full bg-indigo-100 dark:bg-indigo-950 opacity-95 blur-[10px]"
+          className="absolute left-[18%] top-[23%] w-[90px] h-[90px] rounded-full bg-[#4b2f95]/15 dark:bg-[#4b2f95]/10 opacity-95 blur-[10px]"
           animate={{ scale: [1, 1.08, 1], opacity: [0.92, 1, 0.92], x: mouse.x * 90, y: mouse.y * 60 }}
           transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
-          className="absolute right-[12%] top-[30%] w-[220px] h-[220px] rounded-full bg-indigo-300 dark:bg-indigo-950 opacity-80 blur-[40px]"
+          className="absolute right-[12%] top-[30%] w-[220px] h-[220px] rounded-full bg-[#f14f1a]/20 dark:bg-[#f14f1a]/10 opacity-80 blur-[40px]"
           animate={{ scale: [1, 1.08, 1], opacity: [0.75, 0.95, 0.75], x: mouse.x * -60, y: mouse.y * 30 }}
           transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
-          className="absolute left-[35%] bottom-[18%] w-[180px] h-[180px] rounded-full bg-blue-200 dark:bg-blue-600 opacity-80 blur-[30px]"
+          className="absolute left-[35%] bottom-[18%] w-[180px] h-[180px] rounded-full bg-[#4b2f95]/20 dark:bg-[#4b2f95]/15 opacity-80 blur-[30px]"
           animate={{ scale: [1, 1.16, 1], opacity: [0.7, 0.9, 0.7], x: mouse.x * 40, y: mouse.y * -60 }}
           transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-indigo-400/10 via-indigo-500/10 to-indigo-600/10"
+          className="absolute inset-0 bg-gradient-to-br from-[#4b2f95]/10 via-[#4b2f95]/5 to-[#f14f1a]/10"
           animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.05, 1] }}
           transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         />
@@ -497,12 +497,12 @@ function HeroSection() {
         <div className="text-center max-w-5xl mx-auto">
           {/* Headline with WordRotate */}
           <h1 className="font-black flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 justify-center text-3xl lg:text-7xl font-bold mb-4 lg:mb-8 leading-[1.2]">
-            <span className="bg-gradient-to-r from-indigo-900 via-blue-900 to-indigo-900 dark:from-gray-50 dark:via-blue-300 dark:to-indigo-900 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#4b2f95] via-[#3a2470] to-[#4b2f95] dark:from-gray-50 dark:via-[#c4a0ff] dark:to-[#4b2f95] bg-clip-text text-transparent">
               Simulez des
             </span>
             <WordRotate
               words={ROTATING_WORDS}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent w-[365px]"
+              className="bg-gradient-to-r from-[#f14f1a] to-[#4b2f95] bg-clip-text text-transparent w-[365px]"
             />
           </h1>
 
@@ -550,9 +550,9 @@ function HeroSection() {
           <div className="relative max-w-5xl mx-auto">
             <HeroVideoDialog
               trigger={
-                <div className="bg-indigo-600/10 dark:bg-indigo-300/10 backdrop-blur-md rounded-full p-4 shadow-lg">
+                <div className="bg-[#4b2f95]/10 dark:bg-[#c4a0ff]/10 backdrop-blur-md rounded-full p-4 shadow-lg">
                   <div className="bg-background rounded-full p-3 shadow-lg">
-                    <svg className="size-6 text-indigo-600 dark:text-indigo-400 fill-indigo-600 dark:fill-indigo-400 ml-0.5" viewBox="0 0 24 24">
+                    <svg className="size-6 text-[#4b2f95] dark:text-[#c4a0ff] fill-[#4b2f95] dark:fill-[#c4a0ff] ml-0.5" viewBox="0 0 24 24">
                       <polygon points="5 3 19 12 5 21 5 3" />
                     </svg>
                   </div>
@@ -628,8 +628,8 @@ function HowItWorksSection() {
                 className="flex flex-col items-center cursor-pointer transition-all duration-300 overflow-hidden"
                 onClick={() => handleStepClick(index)}
               >
-                <div className="size-12 bg-indigo-100/40 dark:bg-indigo-950/60 rounded-full flex items-center justify-center">
-                  <SvgIcon path={step.iconPath} className="size-5 text-indigo-500" />
+                <div className="size-12 bg-[#4b2f95]/10 dark:bg-[#4b2f95]/15 rounded-full flex items-center justify-center">
+                  <SvgIcon path={step.iconPath} className="size-5 text-[#4b2f95] dark:text-[#c4a0ff]" />
                 </div>
                 <h3 className={cn('p-5 pb-3 text-xl font-semibold mb-0 transition-colors duration-300', index === activeStep ? 'text-foreground' : 'text-muted-foreground')}>
                   {step.title}
@@ -645,7 +645,7 @@ function HowItWorksSection() {
                         className="h-0.5 w-full overflow-hidden"
                       >
                         <motion.div
-                          className="h-0.5 bg-gradient-to-r from-indigo-500 to-purple-400"
+                          className="h-0.5 bg-gradient-to-r from-[#4b2f95] to-[#f14f1a]"
                           style={{ width: `${progress}%` }}
                           transition={{ duration: 0.05, ease: 'linear' }}
                         />
@@ -669,8 +669,8 @@ function HowItWorksSection() {
                   transition={{ duration: 0.5, ease: 'easeInOut' }}
                   className="text-center max-w-2xl mx-auto"
                 >
-                  <div className="size-16 bg-indigo-100/60 dark:bg-indigo-950/60 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <SvgIcon path={STEPS[activeStep].iconPath} className="size-8 text-indigo-500" />
+                  <div className="size-16 bg-[#4b2f95]/10 dark:bg-[#4b2f95]/15 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <SvgIcon path={STEPS[activeStep].iconPath} className="size-8 text-[#4b2f95] dark:text-[#c4a0ff]" />
                   </div>
                   <h4 className="text-2xl font-bold text-foreground mb-4">{STEPS[activeStep].title}</h4>
                   <p className="text-muted-foreground leading-relaxed text-lg">{STEPS[activeStep].description}</p>
@@ -749,10 +749,10 @@ function TestimonialsSection() {
   const secondColumn = TESTIMONIALS.slice(5, 10);
 
   const TestimonialCard = ({ testimonial }: { testimonial: (typeof TESTIMONIALS)[0] }) => (
-    <div className="flex-shrink-0 w-[350px] bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/15 dark:to-indigo-900/15 rounded-xl p-6 border border-border/50 shadow-sm mx-1.5">
+    <div className="flex-shrink-0 w-[350px] bg-gradient-to-br from-[#4b2f95]/5 to-[#f14f1a]/5 dark:from-[#4b2f95]/10 dark:to-[#f14f1a]/5 rounded-xl p-6 border border-border/50 shadow-sm mx-1.5">
       <p className="text-muted-foreground mb-4 font-medium">{testimonial.content}</p>
       <div className="flex items-center gap-3">
-        <div className="size-10 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center text-white font-semibold text-sm">
+        <div className="size-10 rounded-full bg-gradient-to-br from-[#4b2f95] to-[#f14f1a] flex items-center justify-center text-white font-semibold text-sm">
           {testimonial.name.split(' ').map(n => n[0]).join('')}
         </div>
         <div>
@@ -831,7 +831,7 @@ function PricingSection() {
                 className="cursor-pointer flex items-center rounded-lg text-sm font-medium px-6 py-2 data-[state=on]:bg-background data-[state=on]:shadow-sm"
               >
                 Annuel
-                <Badge variant="outline" className="leading-0 rounded-sm px-1 py-0.5 text-[11px] bg-indigo-100 border-indigo-100 text-indigo-700 dark:text-indigo-200 dark:bg-indigo-950/50 dark:border-indigo-950/50 font-semibold ml-2">
+                <Badge variant="outline" className="leading-0 rounded-sm px-1 py-0.5 text-[11px] bg-[#4b2f95]/10 border-[#4b2f95]/10 text-[#4b2f95] dark:text-[#c4a0ff] dark:bg-[#4b2f95]/20 dark:border-[#4b2f95]/20 font-semibold ml-2">
                   -20%
                 </Badge>
               </ToggleGroupItem>
@@ -844,11 +844,11 @@ function PricingSection() {
             <div key={index}>
               <Card className={cn(
                 'h-full relative transition-all duration-300 group',
-                plan.popular ? 'border-indigo-500 shadow-2xl scale-105' : 'border-border hover:border-indigo-500',
+                plan.popular ? 'border-[#4b2f95] shadow-2xl scale-105' : 'border-border hover:border-[#4b2f95]',
               )}>
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-2.5 py-1">
+                    <Badge className="bg-gradient-to-r from-[#4b2f95] to-[#f14f1a] text-white px-2.5 py-1">
                       <Star className="h-3 w-3 me-0.5" />
                       Le plus populaire
                     </Badge>
@@ -869,7 +869,7 @@ function PricingSection() {
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: -20, scale: 0.8 }}
                           transition={{ duration: 0.2, ease: 'easeInOut' }}
-                          className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent relative"
+                          className="text-5xl font-bold bg-gradient-to-r from-[#4b2f95] to-[#f14f1a] bg-clip-text text-transparent relative"
                         >
                           {isYearly ? plan.yearlyPrice : plan.monthlyPrice}
                         </motion.span>
@@ -930,7 +930,7 @@ function FaqSection() {
                 value={`item-${index}`}
                 className="bg-background rounded-lg border! border-border px-6 hover:shadow-md transition-shadow"
               >
-                <AccordionTrigger className="text-start font-semibold text-foreground hover:text-indigo-600 data-[state=open]:text-indigo-600 transition-colors cursor-pointer">
+                <AccordionTrigger className="text-start font-semibold text-foreground hover:text-[#4b2f95] data-[state=open]:text-[#4b2f95] transition-colors cursor-pointer">
                   {faq.question}
                 </AccordionTrigger>
                 <AccordionContent className="text-foreground leading-relaxed">
@@ -943,7 +943,7 @@ function FaqSection() {
 
         <div className="flex flex-col justify-center items-center gap-1.5 text-center mt-12">
           <span className="text-muted-foreground">Encore des questions ?</span>
-          <a href="#contact" className="text-indigo-600 hover:text-indigo-700 transition-colors hover:underline">
+          <a href="#contact" className="text-[#4b2f95] hover:text-[#3a2470] transition-colors hover:underline">
             Contactez notre equipe
           </a>
         </div>
@@ -995,20 +995,20 @@ function ContactSection() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-foreground mb-2 block">Nom</label>
-                  <input className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Votre nom" />
+                  <input className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-[#4b2f95]" placeholder="Votre nom" />
                 </div>
                 <div>
                   <label className="text-sm font-medium text-foreground mb-2 block">Email</label>
-                  <input className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="votre@email.com" type="email" />
+                  <input className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-[#4b2f95]" placeholder="votre@email.com" type="email" />
                 </div>
               </div>
               <div>
                 <label className="text-sm font-medium text-foreground mb-2 block">Entreprise</label>
-                <input className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Nom de votre entreprise" />
+                <input className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-[#4b2f95]" placeholder="Nom de votre entreprise" />
               </div>
               <div>
                 <label className="text-sm font-medium text-foreground mb-2 block">Message</label>
-                <textarea className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500 min-h-[120px]" placeholder="Decrivez votre besoin..." />
+                <textarea className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-[#4b2f95] min-h-[120px]" placeholder="Decrivez votre besoin..." />
               </div>
               <Button className="w-full" size="lg">
                 Envoyer le message
@@ -1071,7 +1071,7 @@ function FooterSection() {
                   <ul className="text-base space-y-2">
                     {items.map((item, itemIndex) => (
                       <li key={itemIndex}>
-                        <a href="#" className="text-accent-foreground hover:text-indigo-600 transition-colors hover:underline">
+                        <a href="#" className="text-accent-foreground hover:text-[#4b2f95] transition-colors hover:underline">
                           {item}
                         </a>
                       </li>
@@ -1091,7 +1091,7 @@ function FooterSection() {
           </p>
           <p className="text-muted-foreground text-sm mt-4 md:mt-0">
             Propulse par{' '}
-            <a href="#" className="text-foreground hover:text-indigo-600 hover:underline">
+            <a href="#" className="text-foreground hover:text-[#4b2f95] hover:underline">
               IA Anthropic & OpenAI
             </a>
           </p>

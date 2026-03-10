@@ -220,7 +220,7 @@ export default function MeetingLivePage() {
               size="sm"
             >
               {p.avatar ? (
-                <img src={p.avatar} alt={p.name} className="w-5 h-5 rounded-full object-cover" />
+                <img src={p.avatar} alt={p.name} className="w-5 h-5 rounded-full object-cover" loading="lazy" />
               ) : (
                 <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px] font-bold">
                   {p.name.charAt(0)}

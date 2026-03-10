@@ -27,6 +27,7 @@ import { DeliverableWorkflowStepper } from '../components/deliverable-workflow-s
 import { EvaluationCard } from '../components/evaluation-card';
 import { ReferenceComparison } from '../components/reference-comparison';
 import { cn } from '@/lib/utils';
+import { getScoreTextClass } from '@/config/theme.constants';
 
 function gradeColor(grade: string): string {
   switch (grade) {
@@ -37,19 +38,12 @@ function gradeColor(grade: string): string {
     case 'C':
       return 'bg-warning text-white';
     case 'D':
-      return 'bg-orange-500 text-white';
+      return 'bg-[var(--accent-brand)] text-white';
     case 'F':
       return 'bg-destructive text-white';
     default:
       return 'bg-muted text-foreground';
   }
-}
-
-function scoreColor(score: number): string {
-  if (score >= 80) return 'text-success';
-  if (score >= 60) return 'text-primary';
-  if (score >= 40) return 'text-warning';
-  return 'text-destructive';
 }
 
 export default function DeliverableEvaluationPage() {
@@ -257,7 +251,7 @@ export default function DeliverableEvaluationPage() {
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-sm flex items-center gap-2">
-                      <KeenIcon icon="time" style="solid" className="size-4 text-muted-foreground" />
+                      <KeenIcon icon="time" style="duotone" className="size-4 text-muted-foreground" />
                       Evaluations precedentes ({deliverable.evaluations.length - 1})
                     </CardTitle>
                     <CollapsibleTrigger asChild>
@@ -293,7 +287,7 @@ export default function DeliverableEvaluationPage() {
                               </span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className={cn('text-sm font-semibold', scoreColor(prevEval.score))}>
+                              <span className={cn('text-sm font-semibold', getScoreTextClass(prevEval.score))}>
                                 {prevEval.score}/100
                               </span>
                               <span className="text-sm text-muted-foreground">
@@ -426,7 +420,7 @@ export default function DeliverableEvaluationPage() {
                 <CardTitle className="text-sm flex items-center gap-2">
                   <KeenIcon
                     icon="book"
-                    style="solid"
+                    style="duotone"
                     className="size-4 text-primary"
                   />
                   Alignement PMI
@@ -454,7 +448,7 @@ export default function DeliverableEvaluationPage() {
                   <h4 className="text-sm font-semibold text-success mb-2 flex items-center gap-1.5">
                     <KeenIcon
                       icon="check-circle"
-                      style="solid"
+                      style="duotone"
                       className="size-3.5"
                     />
                     Outputs couverts ({evaluation.pmiOutputsCovered.length})
@@ -481,7 +475,7 @@ export default function DeliverableEvaluationPage() {
                   <h4 className="text-sm font-semibold text-destructive mb-2 flex items-center gap-1.5">
                     <KeenIcon
                       icon="cross-circle"
-                      style="solid"
+                      style="duotone"
                       className="size-3.5"
                     />
                     Outputs manquants ({evaluation.pmiOutputsMissing.length})

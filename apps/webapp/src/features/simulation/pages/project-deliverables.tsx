@@ -2,15 +2,16 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { Toolbar, ToolbarHeading } from '@/components/layouts/layout-6/components/toolbar';
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { projectApi } from '../api/project.api';
 import type { Deliverable } from '../types/simulation.types';
 
-const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
-  PENDING: { label: 'En attente', color: 'bg-gray-100 text-gray-700' },
-  IN_PROGRESS: { label: 'En cours', color: 'bg-blue-100 text-blue-700' },
-  DELIVERED: { label: 'Livre', color: 'bg-purple-100 text-purple-700' },
-  ACCEPTED: { label: 'Accepte', color: 'bg-green-100 text-green-700' },
-  REJECTED: { label: 'Rejete', color: 'bg-red-100 text-red-700' },
+const STATUS_CONFIG: Record<string, { label: string; variant: 'secondary' | 'primary' | 'success' | 'destructive' }> = {
+  PENDING: { label: 'En attente', variant: 'secondary' },
+  IN_PROGRESS: { label: 'En cours', variant: 'primary' },
+  DELIVERED: { label: 'Livre', variant: 'primary' },
+  ACCEPTED: { label: 'Accepte', variant: 'success' },
+  REJECTED: { label: 'Rejete', variant: 'destructive' },
 };
 
 export default function ProjectDeliverablesPage() {
@@ -49,7 +50,7 @@ export default function ProjectDeliverablesPage() {
       ) : (
         <div className="space-y-3">
           {deliverables.map((d) => {
-            const status = STATUS_CONFIG[d.status] ?? { label: d.status, color: '' };
+            const status = STATUS_CONFIG[d.status] ?? { label: d.status, variant: 'secondary' as const };
             return (
               <Card key={d.id}>
                 <CardContent className="p-4">
@@ -65,15 +66,15 @@ export default function ProjectDeliverablesPage() {
                         <p className="text-sm text-muted-foreground mt-1">{d.description}</p>
                       )}
                     </div>
-                    <span className={`shrink-0 px-2 py-0.5 rounded text-xs font-medium ${status.color}`}>
+                    <Badge variant={status.variant} appearance="light" size="sm">
                       {status.label}
-                    </span>
+                    </Badge>
                   </div>
 
                   {d.qualityScore !== null && (
                     <div className="mt-2 flex items-center gap-2 text-sm">
                       <span className="text-muted-foreground">Qualite :</span>
-                      <span className={`font-medium ${d.qualityScore >= 70 ? 'text-green-600' : d.qualityScore >= 40 ? 'text-yellow-600' : 'text-red-600'}`}>
+                      <span className={`font-medium ${d.qualityScore >= 70 ? 'text-success' : d.qualityScore >= 40 ? 'text-warning' : 'text-destructive'}`}>
                         {d.qualityScore}%
                       </span>
                     </div>

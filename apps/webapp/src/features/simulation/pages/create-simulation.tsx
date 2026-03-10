@@ -12,9 +12,9 @@ const DIFFICULTY_LABELS: Record<string, string> = {
 };
 
 const DIFFICULTY_COLORS: Record<string, string> = {
-  BEGINNER: 'bg-green-100 text-green-700',
-  INTERMEDIATE: 'bg-yellow-100 text-yellow-700',
-  ADVANCED: 'bg-red-100 text-red-700',
+  BEGINNER: 'bg-success/10 text-success',
+  INTERMEDIATE: 'bg-warning/10 text-warning',
+  ADVANCED: 'bg-destructive/10 text-destructive',
 };
 
 export default function CreateSimulationPage() {
@@ -108,7 +108,7 @@ export default function CreateSimulationPage() {
                     {selectedScenario.competencies.map((comp, i) => (
                       <span
                         key={i}
-                        className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs"
+                        className="px-2 py-0.5 bg-muted text-muted-foreground rounded text-xs"
                       >
                         {comp}
                       </span>
@@ -169,7 +169,7 @@ export default function CreateSimulationPage() {
       )}
 
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+        <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-sm">
           {error}
         </div>
       )}
@@ -237,13 +237,13 @@ export default function CreateSimulationPage() {
                         {scenario.competencies.slice(0, 4).map((comp, i) => (
                           <span
                             key={i}
-                            className="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px]"
+                            className="px-1.5 py-0.5 bg-muted text-muted-foreground rounded text-[10px]"
                           >
                             {comp}
                           </span>
                         ))}
                         {scenario.competencies.length > 4 && (
-                          <span className="px-1.5 py-0.5 text-gray-400 text-[10px]">
+                          <span className="px-1.5 py-0.5 text-muted-foreground text-[10px]">
                             +{scenario.competencies.length - 4}
                           </span>
                         )}

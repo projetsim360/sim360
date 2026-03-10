@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { KeenIcon } from '@/components/keenicons';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 import { meetingApi } from '../api/meeting.api';
 import type { Meeting } from '../types/meeting.types';
 
@@ -103,7 +104,7 @@ export default function MeetingsListPage() {
       {meetings.length > 0 && (
         <div className="flex items-center gap-3 mb-4">
           <Select value={filterType || 'ALL'} onValueChange={(v) => setFilterType(v === 'ALL' ? '' : v)}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="Tous les types" />
             </SelectTrigger>
             <SelectContent>
@@ -114,7 +115,7 @@ export default function MeetingsListPage() {
             </SelectContent>
           </Select>
           <Select value={filterStatus || 'ALL'} onValueChange={(v) => setFilterStatus(v === 'ALL' ? '' : v)}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="Tous les statuts" />
             </SelectTrigger>
             <SelectContent>
@@ -126,7 +127,7 @@ export default function MeetingsListPage() {
           </Select>
           {availablePhases.length > 1 && (
             <Select value={filterPhase || 'ALL'} onValueChange={(v) => setFilterPhase(v === 'ALL' ? '' : v)}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Toutes les phases" />
               </SelectTrigger>
               <SelectContent>
@@ -150,8 +151,26 @@ export default function MeetingsListPage() {
       )}
 
       {loading ? (
-        <div className="flex justify-center py-16">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Card key={i}>
+              <CardContent className="p-5">
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <Skeleton className="h-5 w-40" />
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-5 w-16 rounded-full" />
+                    <Skeleton className="h-5 w-16 rounded-full" />
+                  </div>
+                </div>
+                <Skeleton className="h-4 w-full mb-1" />
+                <Skeleton className="h-4 w-2/3 mb-3" />
+                <div className="flex items-center justify-between">
+                  <Skeleton className="h-4 w-36" />
+                  <Skeleton className="h-4 w-20" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       ) : error ? (
         <Card>

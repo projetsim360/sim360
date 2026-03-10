@@ -80,7 +80,7 @@ export function EmailListItem({ email, onClick }: EmailListItemProps) {
         {isResponded && (
           <KeenIcon
             icon="double-check"
-            style="solid"
+            style="duotone"
             className="size-4 text-success"
           />
         )}

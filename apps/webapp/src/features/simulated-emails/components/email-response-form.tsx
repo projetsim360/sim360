@@ -86,7 +86,7 @@ export function EmailResponseForm({
                 </>
               ) : (
                 <>
-                  <KeenIcon icon="send" style="solid" className="size-4 mr-1" />
+                  <KeenIcon icon="send" style="duotone" className="size-4 mr-1" />
                   Envoyer la reponse
                 </>
               )}

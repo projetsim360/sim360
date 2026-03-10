@@ -10,6 +10,7 @@ interface ConferenceControlsProps {
   isFullscreen: boolean;
   participantCount: number;
   activeParticipantName?: string;
+  forceSingleMode?: boolean;
   onToggleMute: () => void;
   onToggleConferenceMode: () => void;
   onToggleViewMode: () => void;
@@ -59,6 +60,7 @@ export function ConferenceControls({
   isFullscreen,
   participantCount,
   activeParticipantName,
+  forceSingleMode = false,
   onToggleMute,
   onToggleConferenceMode,
   onToggleViewMode,
@@ -70,21 +72,18 @@ export function ConferenceControls({
   // Pre-join state
   if (!isConnected) {
     return (
-      <div className="flex flex-col items-center gap-4 py-6">
-        <p className="text-sm text-zinc-400">
-          {participantCount} participant{participantCount > 1 ? 's' : ''} IA dans cette reunion
-        </p>
+      <div className="flex items-center justify-center gap-4 py-4">
         <button
           type="button"
           onClick={onConnect}
-          className="flex items-center gap-3 px-8 py-3.5 rounded-full bg-primary text-white font-medium text-sm hover:bg-primary/90 active:scale-[0.98] transition-all shadow-lg shadow-primary/20"
+          className="flex items-center gap-2.5 px-6 py-3 rounded-full bg-brand-500 text-white font-medium text-sm hover:bg-brand-600 active:scale-[0.98] transition-all shadow-lg shadow-brand-500/20 cursor-pointer"
         >
           <MicIcon muted={false} />
           Rejoindre la conference
         </button>
-        <p className="text-[11px] text-zinc-600">
-          Votre micro sera active en rejoignant
-        </p>
+        <span className="text-[11px] text-white/40">
+          {participantCount} participant{participantCount > 1 ? 's' : ''} IA
+        </span>
       </div>
     );
   }
@@ -94,20 +93,20 @@ export function ConferenceControls({
       {/* Active participant indicator in single mode */}
       {conferenceMode === 'single' && activeParticipantName && (
         <div className="flex items-center justify-center gap-2 py-1">
-          <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-sm text-zinc-400">
-            En conversation avec <span className="text-zinc-200 font-medium">{activeParticipantName}</span>
+          <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+          <span className="text-sm text-white/50">
+            En conversation avec <span className="text-white font-medium">{activeParticipantName}</span>
           </span>
         </div>
       )}
 
       {/* Main control bar */}
-      <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-900/90 backdrop-blur-md rounded-2xl border border-zinc-800/50">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-[#1a1528]/90 backdrop-blur-md rounded-2xl border border-border/50">
         {/* Left: Timer + info */}
         <div className="flex items-center gap-3 min-w-[120px]">
           <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-            <span className="text-sm font-mono text-zinc-300 tabular-nums">{formatTime(elapsed)}</span>
+            <div className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
+            <span className="text-sm font-mono text-white/70 tabular-nums">{formatTime(elapsed)}</span>
           </div>
         </div>
 
@@ -118,10 +117,10 @@ export function ConferenceControls({
             type="button"
             onClick={onToggleMute}
             className={`
-              relative w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200
+              relative w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer
               ${isMuted
-                ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30 ring-1 ring-red-500/30'
-                : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white'
+                ? 'bg-destructive/20 text-destructive hover:bg-destructive/30 ring-1 ring-destructive/30'
+                : 'bg-white/10 text-white hover:bg-white/15'
               }
             `}
             title={isMuted ? 'Reactiver le micro' : 'Couper le micro'}
@@ -130,41 +129,43 @@ export function ConferenceControls({
           </button>
 
           {/* Separator */}
-          <div className="w-px h-6 bg-zinc-800 mx-1" />
+          <div className="w-px h-6 bg-border mx-1" />
 
-          {/* Conference mode toggle */}
-          <button
-            type="button"
-            onClick={onToggleConferenceMode}
-            className={`
-              flex items-center gap-2 px-4 py-2.5 rounded-full transition-all duration-200 text-xs font-medium
-              ${conferenceMode === 'all'
-                ? 'bg-zinc-800 text-zinc-200 hover:bg-zinc-700'
-                : 'bg-primary/15 text-primary hover:bg-primary/25 ring-1 ring-primary/20'
-              }
-            `}
-            title={conferenceMode === 'all' ? 'Passer en mode individuel' : 'Passer en mode tous'}
-          >
-            {conferenceMode === 'all' ? (
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-            ) : (
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-            )}
-            {conferenceMode === 'all' ? 'Tous' : 'Individuel'}
-          </button>
+          {/* Conference mode toggle — hidden when forced to single */}
+          {!forceSingleMode && (
+            <button
+              type="button"
+              onClick={onToggleConferenceMode}
+              className={`
+                flex items-center gap-2 px-4 py-2.5 rounded-full transition-all duration-200 text-xs font-medium
+                ${conferenceMode === 'all'
+                  ? 'bg-[#251e3a] text-foreground dark:text-white/90 hover:bg-[#332b4d]'
+                  : 'bg-primary/15 text-primary hover:bg-primary/25 ring-1 ring-primary/20'
+                }
+              `}
+              title={conferenceMode === 'all' ? 'Passer en mode individuel' : 'Passer en mode tous'}
+            >
+              {conferenceMode === 'all' ? (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              )}
+              {conferenceMode === 'all' ? 'Tous' : 'Individuel'}
+            </button>
+          )}
 
           {/* Separator */}
-          <div className="w-px h-6 bg-zinc-800 mx-1" />
+          <div className="w-px h-6 bg-border mx-1" />
 
           {/* Hang up */}
           <button
             type="button"
             onClick={onDisconnect}
-            className="w-11 h-11 rounded-full flex items-center justify-center bg-red-500 text-white hover:bg-red-600 active:scale-95 transition-all duration-200 shadow-lg shadow-red-500/20"
+            className="w-11 h-11 rounded-full flex items-center justify-center bg-destructive text-white hover:bg-destructive/90 active:scale-95 transition-all duration-200 shadow-lg shadow-destructive/20"
             title="Raccrocher"
           >
             <PhoneIcon />
@@ -178,10 +179,10 @@ export function ConferenceControls({
             type="button"
             onClick={onToggleViewMode}
             className={`
-              w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200
+              w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200 cursor-pointer
               ${viewMode === 'grid'
-                ? 'bg-zinc-700/80 text-zinc-200'
-                : 'text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300'
+                ? 'bg-white/10 text-white'
+                : 'text-white/40 hover:bg-white/5 hover:text-white/70'
               }
             `}
             title={viewMode === 'grid' ? 'Vue speaker' : 'Vue grille'}
@@ -202,10 +203,10 @@ export function ConferenceControls({
             type="button"
             onClick={onToggleTranscription}
             className={`
-              w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200
+              w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200 cursor-pointer
               ${transcriptionOpen
-                ? 'bg-zinc-700/80 text-zinc-200'
-                : 'text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300'
+                ? 'bg-white/10 text-white'
+                : 'text-white/40 hover:bg-white/5 hover:text-white/70'
               }
             `}
             title="Transcriptions"
@@ -219,7 +220,7 @@ export function ConferenceControls({
           <button
             type="button"
             onClick={onToggleFullscreen}
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300 transition-all duration-200"
+            className="w-9 h-9 rounded-lg flex items-center justify-center text-white/40 hover:bg-white/5 hover:text-white/70 transition-all duration-200 cursor-pointer"
             title={isFullscreen ? 'Quitter le plein ecran' : 'Plein ecran'}
           >
             {isFullscreen ? (

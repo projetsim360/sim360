@@ -89,14 +89,7 @@ export function PmoContextPanel({
   }
 
   return (
-    <div className="w-72 shrink-0 border-l border-border overflow-y-auto p-4 space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-foreground">Contexte</h3>
-        <Button variant="ghost" size="icon" onClick={onToggle} title="Masquer">
-          <KeenIcon icon="arrow-right" style="duotone" className="size-4" />
-        </Button>
-      </div>
-
+    <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-muted/20 dark:bg-white/3">
       {isLoading && (
         <div className="flex justify-center py-8">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
@@ -106,25 +99,31 @@ export function PmoContextPanel({
       {!isLoading && context && (
         <>
           {/* Simulation info */}
-          <Card>
+          <Card className="shadow-none">
             <CardContent className="p-3">
-              <p className="text-sm text-muted-foreground mb-1">Simulation</p>
-              <Badge variant="primary" appearance="light" size="sm">
-                Phase {context.simulation.currentPhaseOrder}
-              </Badge>
-              {context.currentPhase != null && (
-                <p className="text-sm mt-1 text-foreground">
-                  {context.currentPhase.name}
-                </p>
-              )}
+              <div className="flex items-center gap-2.5">
+                <div className="size-8 rounded-lg bg-brand-500 flex items-center justify-center shrink-0">
+                  <KeenIcon icon="chart-line" style="duotone" className="size-4 text-white" />
+                </div>
+                <div className="min-w-0">
+                  <Badge variant="primary" appearance="light" size="xs">
+                    Phase {context.simulation.currentPhaseOrder}
+                  </Badge>
+                  {context.currentPhase != null && (
+                    <p className="text-sm font-medium text-foreground mt-0.5 truncate">
+                      {context.currentPhase.name}
+                    </p>
+                  )}
+                </div>
+              </div>
             </CardContent>
           </Card>
 
           {/* KPIs */}
           {context.kpis && (
-            <Card>
+            <Card className="shadow-none">
               <CardHeader className="p-3 pb-2">
-                <CardTitle className="text-sm">KPIs</CardTitle>
+                <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">KPIs</CardTitle>
               </CardHeader>
               <CardContent className="p-3 pt-1 space-y-3">
                 {Object.entries(context.kpis).map(([key, value]) => {
@@ -157,9 +156,9 @@ export function PmoContextPanel({
 
           {/* Pending deliverables */}
           {context.deliverables.pending.length > 0 && (
-            <Card>
+            <Card className="shadow-none">
               <CardHeader className="p-3 pb-2">
-                <CardTitle className="text-sm">
+                <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                   Livrables en attente ({context.deliverables.pending.length})
                 </CardTitle>
               </CardHeader>
@@ -186,7 +185,7 @@ export function PmoContextPanel({
                         {deadline.urgent && (
                           <KeenIcon
                             icon="notification-on"
-                            style="solid"
+                            style="duotone"
                             className={cn('size-3 shrink-0 ml-auto', deadline.color)}
                           />
                         )}
@@ -214,9 +213,9 @@ export function PmoContextPanel({
 
           {/* Submitted deliverables */}
           {context.deliverables.submitted.length > 0 && (
-            <Card>
+            <Card className="shadow-none">
               <CardHeader className="p-3 pb-2">
-                <CardTitle className="text-sm">
+                <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                   Livrables soumis ({context.deliverables.submitted.length})
                 </CardTitle>
               </CardHeader>
@@ -246,9 +245,9 @@ export function PmoContextPanel({
 
           {/* Recent decisions */}
           {context.decisions.length > 0 && (
-            <Card>
+            <Card className="shadow-none">
               <CardHeader className="p-3 pb-2">
-                <CardTitle className="text-sm">
+                <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                   Decisions recentes ({context.decisions.length})
                 </CardTitle>
               </CardHeader>
@@ -272,9 +271,9 @@ export function PmoContextPanel({
 
           {/* Adaptation mode */}
           {adaptation && (
-            <Card>
+            <Card className="shadow-none">
               <CardHeader className="p-3 pb-2">
-                <CardTitle className="text-sm">Adaptation</CardTitle>
+                <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Adaptation profil</CardTitle>
               </CardHeader>
               <CardContent className="p-3 pt-1 space-y-2">
                 <div className="flex items-center justify-between">

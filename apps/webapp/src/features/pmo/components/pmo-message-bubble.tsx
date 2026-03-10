@@ -65,20 +65,22 @@ export function PmoMessageBubble({ message, enableGlossaryTooltips = false }: Pm
   return (
     <div
       className={cn(
-        'flex gap-3 max-w-[85%]',
+        'flex gap-2.5 max-w-[85%]',
         isUser ? 'ml-auto flex-row-reverse' : 'mr-auto',
       )}
     >
       {/* Avatar */}
       <div
         className={cn(
-          'shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white',
-          isUser ? 'bg-primary' : 'bg-gray-700',
+          'shrink-0 size-8 rounded-xl flex items-center justify-center',
+          isUser
+            ? 'bg-brand-500 text-white'
+            : 'bg-brand-100 dark:bg-brand-800/40 text-brand-500 dark:text-brand-400',
         )}
       >
         <KeenIcon
           icon={isUser ? 'user' : 'abstract-26'}
-          style="solid"
+          style="duotone"
           className="size-4"
         />
       </div>
@@ -86,17 +88,17 @@ export function PmoMessageBubble({ message, enableGlossaryTooltips = false }: Pm
       {/* Bubble */}
       <div
         className={cn(
-          'rounded-xl px-4 py-2.5 text-sm',
+          'rounded-2xl px-4 py-2.5 text-sm',
           isUser
-            ? 'bg-primary text-primary-foreground rounded-br-sm'
-            : 'bg-gray-100 dark:bg-gray-800 text-foreground rounded-bl-sm',
+            ? 'bg-brand-500 text-white rounded-br-md'
+            : 'bg-muted/60 dark:bg-white/5 text-foreground rounded-bl-md border border-border/50',
         )}
       >
         {segments ? (
           <div className="space-y-2">
             {segments.map((seg, i) =>
               seg.type === 'code' ? (
-                <div key={i} className="relative rounded-lg bg-gray-200 dark:bg-gray-900 overflow-hidden">
+                <div key={i} className="relative rounded-lg bg-accent dark:bg-accent overflow-hidden">
                   <div className="flex items-center justify-between px-3 py-1.5 border-b border-border">
                     <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
                       {seg.lang || 'template'}
@@ -129,9 +131,9 @@ export function PmoMessageBubble({ message, enableGlossaryTooltips = false }: Pm
         )}
         <p
           className={cn(
-            'text-[10px] mt-1',
+            'text-[10px] mt-1.5',
             isUser
-              ? 'text-primary-foreground/60'
+              ? 'text-white/50'
               : 'text-muted-foreground',
           )}
         >
@@ -151,13 +153,13 @@ interface StreamingBubbleProps {
 
 export function StreamingBubble({ content }: StreamingBubbleProps) {
   return (
-    <div className="flex gap-3 max-w-[85%] mr-auto">
-      <div className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white bg-gray-700">
-        <KeenIcon icon="abstract-26" style="solid" className="size-4" />
+    <div className="flex gap-2.5 max-w-[85%] mr-auto">
+      <div className="shrink-0 size-8 rounded-xl flex items-center justify-center bg-brand-100 dark:bg-brand-800/40 text-brand-500 dark:text-brand-400">
+        <KeenIcon icon="abstract-26" style="duotone" className="size-4" />
       </div>
-      <div className="rounded-xl rounded-bl-sm px-4 py-2.5 text-sm bg-gray-100 dark:bg-gray-800 text-foreground">
+      <div className="rounded-2xl rounded-bl-md px-4 py-2.5 text-sm bg-muted/60 dark:bg-white/5 text-foreground border border-border/50">
         <MarkdownContent content={content} />
-        <span className="inline-block w-1.5 h-4 bg-gray-400 animate-pulse ml-0.5 align-middle" />
+        <span className="inline-block w-1.5 h-4 bg-brand-500 dark:bg-brand-400 rounded-full animate-pulse ml-0.5 align-middle" />
       </div>
     </div>
   );

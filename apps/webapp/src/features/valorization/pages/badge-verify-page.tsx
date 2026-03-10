@@ -11,7 +11,7 @@ export default function BadgeVerifyPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     );
@@ -19,11 +19,11 @@ export default function BadgeVerifyPage() {
 
   if (error || !data || !data.valid || !data.badge) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
+      <div className="min-h-screen flex items-center justify-center bg-background p-6">
         <Card className="max-w-md w-full">
           <CardContent className="py-12 text-center space-y-3">
-            <KeenIcon icon="shield-cross" style="solid" className="text-4xl text-destructive" />
-            <h1 className="text-lg font-semibold text-gray-900">
+            <KeenIcon icon="shield-cross" style="duotone" className="text-4xl text-destructive" />
+            <h1 className="text-lg font-semibold text-foreground">
               Badge non valide
             </h1>
             <p className="text-sm text-muted-foreground">
@@ -38,13 +38,13 @@ export default function BadgeVerifyPage() {
   const { badge, userName } = data;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-2xl mx-auto space-y-5">
         {/* Verified header */}
         <Card>
           <CardContent className="p-6 text-center space-y-3">
-            <div className="flex items-center justify-center gap-2 text-green-600">
-              <KeenIcon icon="shield-tick" style="solid" className="text-2xl" />
+            <div className="flex items-center justify-center gap-2 text-success">
+              <KeenIcon icon="shield-tick" style="duotone" className="text-2xl" />
               <span className="text-sm font-semibold uppercase tracking-wide">
                 Badge verifie par ProjectSim360
               </span>
@@ -60,10 +60,10 @@ export default function BadgeVerifyPage() {
             </div>
 
             {/* Badge info */}
-            <h1 className="text-xl font-semibold text-gray-900">{badge.title}</h1>
+            <h1 className="text-xl font-semibold text-foreground">{badge.title}</h1>
             {userName && (
               <p className="text-sm text-muted-foreground">
-                Delivre a <span className="font-medium text-gray-900">{userName}</span>
+                Delivre a <span className="font-medium text-foreground">{userName}</span>
               </p>
             )}
             <p className="text-sm text-muted-foreground">{badge.description}</p>

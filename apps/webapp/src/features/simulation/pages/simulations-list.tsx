@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/layout-6/components/toolbar';
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Skeleton } from '@/components/ui/skeleton';
 import { simulationApi } from '../api/simulation.api';
@@ -15,25 +16,25 @@ const STATUS_LABELS: Record<string, string> = {
   ABANDONED: 'Abandonnee',
 };
 
-const STATUS_COLORS: Record<string, string> = {
-  DRAFT: 'bg-gray-100 text-gray-700',
-  IN_PROGRESS: 'bg-blue-100 text-blue-700',
-  PAUSED: 'bg-yellow-100 text-yellow-700',
-  COMPLETED: 'bg-green-100 text-green-700',
-  ABANDONED: 'bg-red-100 text-red-700',
+const STATUS_VARIANT: Record<string, 'secondary' | 'primary' | 'success' | 'warning' | 'destructive'> = {
+  DRAFT: 'secondary',
+  IN_PROGRESS: 'primary',
+  PAUSED: 'warning',
+  COMPLETED: 'success',
+  ABANDONED: 'destructive',
 };
 
 function kpiColor(value: number): string {
-  if (value > 70) return 'bg-green-500';
-  if (value >= 40) return 'bg-yellow-500';
-  return 'bg-red-500';
+  if (value > 70) return 'bg-success';
+  if (value >= 40) return 'bg-warning';
+  return 'bg-destructive';
 }
 
 function KpiBar({ label, value }: { label: string; value: number }) {
   return (
     <div className="flex items-center gap-2 text-sm">
       <span className="w-16 text-muted-foreground truncate">{label}</span>
-      <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+      <div className="flex-1 h-2 bg-accent rounded-full overflow-hidden">
         <div
           className={`h-full rounded-full transition-all ${kpiColor(value)}`}
           style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
@@ -114,7 +115,7 @@ export default function SimulationsListPage() {
       {error && (
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-red-600 text-sm">Erreur : {error}</p>
+            <p className="text-destructive text-sm">Erreur : {error}</p>
             <button
               onClick={() => setActiveTab(activeTab)}
               className="mt-3 text-sm text-primary hover:underline"
@@ -147,7 +148,7 @@ export default function SimulationsListPage() {
             return (
               <Card
                 key={sim.id}
-                className="cursor-pointer hover:shadow-md transition-shadow"
+                className="cursor-pointer shadow-none hover:shadow-sm transition-shadow duration-200"
                 onClick={() => navigate(`/simulations/${sim.id}`)}
               >
                 <CardContent className="p-5 space-y-4">
@@ -161,11 +162,9 @@ export default function SimulationsListPage() {
                         {sim.scenario?.title || 'Scenario'}
                       </p>
                     </div>
-                    <span
-                      className={`shrink-0 px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[sim.status] || STATUS_COLORS.DRAFT}`}
-                    >
+                    <Badge variant={STATUS_VARIANT[sim.status] || 'secondary'} appearance="light" size="sm">
                       {STATUS_LABELS[sim.status] || sim.status}
-                    </span>
+                    </Badge>
                   </div>
 
                   {/* Current phase */}
@@ -184,10 +183,10 @@ export default function SimulationsListPage() {
                           key={phase.order}
                           className={`h-2 flex-1 rounded-full ${
                             phase.status === 'COMPLETED'
-                              ? 'bg-green-500'
+                              ? 'bg-success'
                               : phase.status === 'ACTIVE'
-                                ? 'bg-blue-500'
-                                : 'bg-gray-200'
+                                ? 'bg-primary'
+                                : 'bg-accent'
                           }`}
                           title={`${phase.name} - ${phase.status}`}
                         />

@@ -24,7 +24,7 @@ export function CompanyBanner({
     >
       {/* Logo placeholder */}
       <div className="flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-lg bg-primary text-primary-foreground">
-        <KeenIcon icon="abstract-26" style="solid" className="size-6" />
+        <KeenIcon icon="abstract-26" style="duotone" className="size-6" />
       </div>
 
       <div className="flex-1 min-w-0">

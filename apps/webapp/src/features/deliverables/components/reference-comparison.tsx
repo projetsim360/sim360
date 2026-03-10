@@ -109,7 +109,7 @@ export function ReferenceComparison({
       {/* Coverage score header */}
       <div className="flex items-center justify-between px-1">
         <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-          <KeenIcon icon="eye" style="solid" className="size-4 text-primary" />
+          <KeenIcon icon="eye" style="duotone" className="size-4 text-primary" />
           Comparaison avec la reference
         </h3>
         <Badge variant={coverageBadgeVariant} appearance="light" size="sm">
@@ -123,7 +123,7 @@ export function ReferenceComparison({
           <Card className="border-success/30">
             <CardHeader className="pb-2 bg-success/5 rounded-t-lg">
               <CardTitle className="text-sm flex items-center gap-2 text-success">
-                <KeenIcon icon="document" style="solid" className="size-4" />
+                <KeenIcon icon="document" style="duotone" className="size-4" />
                 Votre livrable
               </CardTitle>
             </CardHeader>
@@ -142,7 +142,7 @@ export function ReferenceComparison({
           <Card className="border-primary/30">
             <CardHeader className="pb-2 bg-primary/5 rounded-t-lg">
               <CardTitle className="text-sm flex items-center gap-2 text-primary">
-                <KeenIcon icon="abstract-26" style="solid" className="size-4" />
+                <KeenIcon icon="abstract-26" style="duotone" className="size-4" />
                 Reference IA
               </CardTitle>
             </CardHeader>
@@ -164,7 +164,7 @@ export function ReferenceComparison({
           <Card className="border-success/30">
             <CardHeader className="pb-2 bg-success/5 rounded-t-lg">
               <CardTitle className="text-sm flex items-center gap-2 text-success">
-                <KeenIcon icon="document" style="solid" className="size-4" />
+                <KeenIcon icon="document" style="duotone" className="size-4" />
                 Votre livrable
               </CardTitle>
             </CardHeader>
@@ -178,7 +178,7 @@ export function ReferenceComparison({
           <Card className="border-primary/30">
             <CardHeader className="pb-2 bg-primary/5 rounded-t-lg">
               <CardTitle className="text-sm flex items-center gap-2 text-primary">
-                <KeenIcon icon="abstract-26" style="solid" className="size-4" />
+                <KeenIcon icon="abstract-26" style="duotone" className="size-4" />
                 Reference IA
               </CardTitle>
             </CardHeader>

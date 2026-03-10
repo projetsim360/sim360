@@ -266,7 +266,7 @@ export default function EmailInboxPage() {
                         {email.status === 'RESPONDED' && (
                           <KeenIcon
                             icon="double-check"
-                            style="solid"
+                            style="duotone"
                             className="size-3.5 text-success"
                           />
                         )}
@@ -356,7 +356,7 @@ export default function EmailInboxPage() {
                         <div className="flex items-center gap-2 text-sm font-medium text-foreground">
                           <KeenIcon
                             icon="double-check"
-                            style="solid"
+                            style="duotone"
                             className="size-4 text-success"
                           />
                           Votre reponse
@@ -465,7 +465,7 @@ export default function EmailInboxPage() {
                             <>
                               <KeenIcon
                                 icon="send"
-                                style="solid"
+                                style="duotone"
                                 className="size-4 mr-1"
                               />
                               Envoyer

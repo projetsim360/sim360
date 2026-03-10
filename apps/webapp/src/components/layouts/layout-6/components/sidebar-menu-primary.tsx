@@ -1,6 +1,6 @@
 'use client';
 
-import { JSX, useCallback } from 'react';
+import { JSX, useCallback, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { MenuConfig, MenuItem } from '@/config/types';
 import { useContextualMenu } from '@/hooks/use-contextual-menu';
@@ -17,11 +17,28 @@ import {
   AccordionMenuSubContent,
   AccordionMenuSubTrigger,
 } from '@/components/ui/accordion-menu';
+import { useSidebarSearch } from './sidebar';
+
+const menuItemMatches = (item: MenuItem, query: string): boolean => {
+  const lowerQuery = query.toLowerCase();
+  if (item.title && item.title.toLowerCase().includes(lowerQuery)) return true;
+  if (item.heading && item.heading.toLowerCase().includes(lowerQuery)) return true;
+  if (item.children) return item.children.some((child) => menuItemMatches(child, query));
+  return false;
+};
+
+const filterMenuItems = (items: MenuConfig, query: string): MenuConfig => {
+  if (!query) return items;
+  return items.filter((item) => menuItemMatches(item, query));
+};
 
 export function SidebarMenuPrimary() {
   const { pathname } = useLocation();
   const { menu, isInSimulation, simulationId } = useContextualMenu();
   const { data: counts } = useSimulationCounts(simulationId);
+  const { searchQuery } = useSidebarSearch();
+
+  const filteredMenu = useMemo(() => filterMenuItems(menu, searchQuery), [menu, searchQuery]);
 
   // Memoize matchPath to prevent unnecessary re-renders
   const matchPath = useCallback(
@@ -32,17 +49,17 @@ export function SidebarMenuPrimary() {
 
   // Global classNames for consistent styling
   const classNames: AccordionMenuClassNames = {
-    root: 'space-y-2.5 px-3.5',
-    group: 'gap-px',
+    root: 'space-y-3 px-3.5',
+    group: 'gap-0.5',
     label:
-      'uppercase text-xs font-medium text-muted-foreground/70 pt-2.25 pb-px',
+      'uppercase text-[0.6rem] tracking-widest font-medium text-[#8a7daa] dark:text-white/35 pt-2.25 pb-px',
     separator: '',
-    item: 'h-9 hover:bg-transparent border border-transparent text-accent-foreground hover:text-mono data-[selected=true]:text-white data-[selected=true]:bg-primary data-[selected=true]:border-primary data-[selected=true]:font-medium',
+    item: 'h-9.5 font-bold hover:bg-white dark:hover:bg-white/8 rounded-lg border border-transparent text-[#4b2f95] dark:text-white/75 [&_svg]:text-[#4b2f95] dark:[&_svg]:text-white/70 hover:text-[#4b2f95] dark:hover:text-white hover:[&_svg]:text-[#4b2f95] dark:hover:[&_svg]:text-white data-[selected=true]:text-[#4b2f95] dark:data-[selected=true]:text-white data-[selected=true]:bg-white data-[selected=true]:shadow-xs dark:data-[selected=true]:bg-white/12 dark:data-[selected=true]:shadow-none data-[selected=true]:rounded-lg data-[selected=true]:border-transparent data-[selected=true]:font-bold data-[selected=true]:[&_svg]:text-[#4b2f95] dark:data-[selected=true]:[&_svg]:text-white',
     sub: '',
     subTrigger:
-      'h-9 hover:bg-transparent border border-transparent text-accent-foreground hover:text-mono data-[selected=true]:text-white data-[selected=true]:bg-primary data-[selected=true]:border-primary data-[selected=true]:font-medium',
+      'h-9.5 font-bold hover:bg-white dark:hover:bg-white/8 rounded-lg border border-transparent text-[#4b2f95] dark:text-white/75 [&_svg]:text-[#4b2f95] dark:[&_svg]:text-white/70 hover:text-[#4b2f95] dark:hover:text-white hover:[&_svg]:text-[#4b2f95] dark:hover:[&_svg]:text-white data-[selected=true]:text-[#4b2f95] dark:data-[selected=true]:text-white data-[selected=true]:bg-white data-[selected=true]:shadow-xs dark:data-[selected=true]:bg-white/12 dark:data-[selected=true]:shadow-none data-[selected=true]:rounded-lg data-[selected=true]:border-transparent data-[selected=true]:font-bold data-[selected=true]:[&_svg]:text-[#4b2f95] dark:data-[selected=true]:[&_svg]:text-white',
     subContent: 'py-0',
-    indicator: '',
+    indicator: 'text-[#8a7daa] dark:text-white/50',
   };
 
   const getCountForKey = (key: string | undefined): number | undefined => {
@@ -70,12 +87,12 @@ export function SidebarMenuPrimary() {
       // Back link — rendu spécial
       if (item.isBackLink) {
         return (
-          <div key={`back-${index}`} className="border-b border-input pb-2.5 mb-1">
+          <div key={`back-${index}`} className="pb-2.5 mb-1">
             <Link
               to={item.path || '/simulations'}
-              className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted/50"
+              className="flex items-center gap-2 px-3 py-2.5 text-sm text-[#8a7daa] dark:text-white/60 hover:text-[#4b2f95] dark:hover:text-white transition-colors rounded-lg hover:bg-white dark:hover:bg-white/8"
             >
-              <ArrowLeft className="size-3.5" />
+              <ArrowLeft className="size-3.5 text-[#8a7daa] dark:text-white/60" />
               <span>{item.title}</span>
             </Link>
           </div>
@@ -97,12 +114,12 @@ export function SidebarMenuPrimary() {
     if (item.children) {
       return (
         <AccordionMenuSub key={index} value={item.path || `root-${index}`}>
-          <AccordionMenuSubTrigger className="text-sm font-medium">
+          <AccordionMenuSubTrigger className="text-sm font-bold">
             {item.icon && <item.icon data-slot="accordion-menu-icon" />}
             <span data-slot="accordion-menu-title" className="flex items-center gap-2">
               {item.title}
               {isInSimulation && badgeCount !== undefined && badgeCount > 0 && (
-                <Badge variant="primary" size="xs" shape="circle">
+                <Badge className="bg-[#d4836a] text-white border-transparent" size="xs" shape="circle">
                   {badgeCount}
                 </Badge>
               )}
@@ -125,7 +142,7 @@ export function SidebarMenuPrimary() {
         <AccordionMenuItem
           key={index}
           value={item.path || ''}
-          className="text-sm font-medium"
+          className="text-sm font-bold"
         >
           <Link to={item.path || '#'} className="flex items-center justify-between w-full">
             <span className="flex items-center gap-2">
@@ -169,7 +186,7 @@ export function SidebarMenuPrimary() {
         >
           <AccordionMenuSubTrigger className="text-[13px]">
             {item.collapse ? (
-              <span className="text-muted-foreground">
+              <span className="text-[#8b8694] dark:text-white/50">
                 <span className="hidden [[data-state=open]>span>&]:inline">
                   {item.collapseTitle}
                 </span>
@@ -221,7 +238,7 @@ export function SidebarMenuPrimary() {
       collapsible
       classNames={classNames}
     >
-      {buildMenu(menu)}
+      {buildMenu(filteredMenu)}
     </AccordionMenu>
   );
 }

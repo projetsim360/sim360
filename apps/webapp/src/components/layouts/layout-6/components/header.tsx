@@ -49,7 +49,7 @@ const Header = () => {
               </Button>
             </SheetTrigger>
             <SheetContent
-              className="p-0 gap-0 w-[275px]"
+              className="p-0 gap-0 w-[85vw] max-w-[275px]"
               side="left"
               close={false}
             >
