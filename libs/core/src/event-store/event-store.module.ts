@@ -9,18 +9,15 @@ import { SocketIOConsumer } from './consumers/socket-io.consumer';
 import { NotifierConsumer } from './consumers/notifier.consumer';
 import { AuditConsumer } from './consumers/audit.consumer';
 import { NotificationGateway } from '../notifications/notification.gateway';
+import { getRedisOptions } from '../config/redis.utils';
 
 @Module({
   imports: [
     BullModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        connection: {
-          host: config.get<string>('redis.host', 'localhost'),
-          port: config.get<number>('redis.port', 6379),
-          password: config.get<string>('redis.password') || undefined,
-        },
+      useFactory: () => ({
+        connection: getRedisOptions(),
       }),
     }),
     BullModule.registerQueue({ name: 'events' }),

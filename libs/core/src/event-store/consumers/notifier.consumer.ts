@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DomainEvent } from '@prisma/client';
-import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
 import { PrismaService } from '../../prisma/prisma.service';
 import { MailService } from '../../mail/mail.service';
 import { EventType } from '../types/event.types';
+import { getRedisOptions } from '../../config/redis.utils';
 import {
   IEventConsumer,
   getMetadata,
@@ -25,13 +25,8 @@ export class NotifierConsumer implements IEventConsumer {
   constructor(
     private prisma: PrismaService,
     private mailService: MailService,
-    private config: ConfigService,
   ) {
-    this.redis = new Redis({
-      host: this.config.get<string>('redis.host', 'localhost'),
-      port: this.config.get<number>('redis.port', 6379),
-      password: this.config.get<string>('redis.password') || undefined,
-    });
+    this.redis = new Redis(getRedisOptions());
   }
 
   shouldProcess(event: DomainEvent): boolean {
