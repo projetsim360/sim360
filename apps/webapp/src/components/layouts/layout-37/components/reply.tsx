@@ -51,7 +51,7 @@ export function Reply({ onOpenChange, mode = 'reply' }: ReplyProps) {
 			setEmailChips([]);
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		 
 		const handleEmailSelected = (_: CustomEvent) => {
 			
 			// Auto-add email chip when email is selected (only in reply mode)
