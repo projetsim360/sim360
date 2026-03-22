@@ -1,26 +1,34 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import { verificationEmailTemplate } from './templates/verification.template';
 import { passwordResetTemplate } from './templates/password-reset.template';
 import { welcomeTemplate } from './templates/welcome.template';
 import { emailChangeTemplate } from './templates/email-change.template';
 
+type MailProvider = 'smtp' | 'resend' | 'disabled';
+
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
-  private transporter: nodemailer.Transporter;
-
-  private enabled: boolean;
+  private transporter: nodemailer.Transporter | null = null;
+  private resend: Resend | null = null;
+  private provider: MailProvider;
 
   constructor(private config: ConfigService) {
-    const host = this.config.get<string>('SMTP_HOST', '');
-    this.enabled = !!host && host !== 'disabled';
+    const resendApiKey = this.config.get<string>('RESEND_API_KEY', '');
+    const smtpHost = this.config.get<string>('SMTP_HOST', '');
 
-    if (this.enabled) {
+    if (resendApiKey) {
+      this.provider = 'resend';
+      this.resend = new Resend(resendApiKey);
+      this.logger.log('Mail provider: Resend (HTTP API)');
+    } else if (smtpHost && smtpHost !== 'disabled') {
+      this.provider = 'smtp';
       const port = this.config.get<number>('SMTP_PORT', 1025);
       this.transporter = nodemailer.createTransport({
-        host,
+        host: smtpHost,
         port,
         secure: port === 465,
         auth: this.config.get<string>('SMTP_USER')
@@ -30,14 +38,15 @@ export class MailService {
             }
           : undefined,
       });
+      this.logger.log(`Mail provider: SMTP (${smtpHost}:${port})`);
     } else {
-      this.logger.warn('SMTP disabled — emails will be logged but not sent');
-      this.transporter = null as any;
+      this.provider = 'disabled';
+      this.logger.warn('Mail disabled — no RESEND_API_KEY or SMTP_HOST configured');
     }
   }
 
   private get from(): string {
-    return this.config.get<string>('SMTP_FROM', 'noreply@sim360.dev');
+    return this.config.get<string>('SMTP_FROM', 'onboarding@resend.dev');
   }
 
   private get frontendUrl(): string {
@@ -45,11 +54,25 @@ export class MailService {
   }
 
   private async send(to: string, subject: string, html: string): Promise<void> {
-    if (!this.enabled) {
-      this.logger.log(`[SMTP disabled] Would send "${subject}" to ${to}`);
+    if (this.provider === 'disabled') {
+      this.logger.log(`[Mail disabled] Would send "${subject}" to ${to}`);
       return;
     }
-    await this.transporter.sendMail({ from: this.from, to, subject, html });
+
+    if (this.provider === 'resend' && this.resend) {
+      await this.resend.emails.send({
+        from: this.from,
+        to,
+        subject,
+        html,
+      });
+      return;
+    }
+
+    if (this.provider === 'smtp' && this.transporter) {
+      await this.transporter.sendMail({ from: this.from, to, subject, html });
+      return;
+    }
   }
 
   async sendVerificationEmail(to: string, firstName: string, token: string): Promise<void> {
