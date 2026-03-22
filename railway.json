@@ -4,7 +4,7 @@
     "builder": "DOCKERFILE"
   },
   "deploy": {
-    "startCommand": "node_modules/.bin/prisma migrate deploy && node apps/api/dist/main.js",
+    "startCommand": "/app/node_modules/.bin/prisma migrate deploy && node /app/apps/api/dist/main.js",
     "healthcheckPath": "/health/live",
     "healthcheckTimeout": 30,
     "restartPolicyType": "ON_FAILURE",
