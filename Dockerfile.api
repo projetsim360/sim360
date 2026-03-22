@@ -40,6 +40,7 @@ RUN pnpm --filter @sim360/api build
 # ─── Stage 3: Production ─────────────────────────────────────
 FROM node:20-alpine AS production
 
+# Cache bust: v2
 RUN apk add --no-cache curl
 
 WORKDIR /app
