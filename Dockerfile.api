@@ -21,16 +21,14 @@ RUN corepack enable && corepack prepare pnpm@10.20.0 --activate
 
 WORKDIR /app
 
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/api/node_modules ./apps/api/node_modules
-COPY --from=deps /app/libs/core/node_modules ./libs/core/node_modules
-COPY --from=deps /app/packages/ ./packages/
+# Copy all deps (pnpm uses virtual store, so copy entire node_modules)
+COPY --from=deps /app/ ./
 
 # Copy source code
-COPY package.json turbo.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY prisma/ ./prisma/
 COPY libs/core/ ./libs/core/
 COPY apps/api/ ./apps/api/
+COPY packages/ ./packages/
 
 # Generate Prisma client
 RUN npx prisma generate
@@ -49,21 +47,26 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3001
 
-# Copy built artifacts
+# Copy the entire build output (pnpm virtual store requires intact node_modules)
 COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
+
+# Copy built API
 COPY --from=build /app/apps/api/dist ./apps/api/dist
-COPY --from=build /app/apps/api/node_modules ./apps/api/node_modules
 COPY --from=build /app/apps/api/package.json ./apps/api/package.json
+COPY --from=build /app/apps/api/node_modules ./apps/api/node_modules
+
+# Copy built core library
 COPY --from=build /app/libs/core/dist ./libs/core/dist
 COPY --from=build /app/libs/core/package.json ./libs/core/package.json
 COPY --from=build /app/libs/core/node_modules ./libs/core/node_modules
-COPY --from=build /app/packages/ ./packages/
-COPY --from=build /app/package.json ./package.json
+
+# Copy packages (shared-types, config)
+COPY --from=build /app/packages ./packages
 
 # Copy Prisma schema + migrations for deploy
 COPY --from=build /app/prisma ./prisma
-COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=build /app/node_modules/@prisma ./node_modules/@prisma
 
 EXPOSE 3001
 
