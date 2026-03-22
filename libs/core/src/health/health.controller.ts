@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import {
   HealthCheck,
   HealthCheckService,
@@ -17,9 +17,19 @@ export class HealthController {
     private prisma: PrismaService,
   ) {}
 
+  /** Liveness probe — always returns OK if the process is running */
+  @Get('live')
+  @Public()
+  @ApiOperation({ summary: 'Liveness check (no dependencies)' })
+  live() {
+    return { status: 'ok', timestamp: new Date().toISOString() };
+  }
+
+  /** Readiness probe — checks database connectivity */
   @Get()
   @Public()
   @HealthCheck()
+  @ApiOperation({ summary: 'Readiness check (database)' })
   check() {
     return this.health.check([
       () => this.prismaHealth.pingCheck('database', this.prisma),
