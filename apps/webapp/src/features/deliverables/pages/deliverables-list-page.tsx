@@ -20,9 +20,12 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useDeliverables } from '../api/deliverables.api';
 import { DeliverableStatusBadge } from '../components/deliverable-status-badge';
-import type { UserDeliverableStatus } from '../types/deliverables.types';
+import type { UserDeliverableStatus, UserDeliverable } from '../types/deliverables.types';
+import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+
+type DelegationFilter = 'ALL' | 'SELF' | 'DELEGATED' | 'APPROVAL';
 
 const TYPE_LABELS: Record<string, string> = {
   CHARTER: 'Charte projet',
@@ -46,6 +49,7 @@ const STATUS_OPTIONS: { value: UserDeliverableStatus; label: string }[] = [
   { value: 'REVISED', label: 'Revise' },
   { value: 'VALIDATED', label: 'Valide' },
   { value: 'REJECTED', label: 'Rejete' },
+  { value: 'PENDING_APPROVAL', label: 'En approbation' },
 ];
 
 export default function DeliverablesListPage() {
@@ -53,6 +57,7 @@ export default function DeliverablesListPage() {
   const navigate = useNavigate();
   const [filterPhase, setFilterPhase] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
+  const [delegationFilter, setDelegationFilter] = useState<DelegationFilter>('ALL');
 
   const { data: deliverables, isLoading, error } = useDeliverables(id || '');
 
@@ -65,12 +70,15 @@ export default function DeliverablesListPage() {
 
   const filtered = useMemo(() => {
     if (!deliverables) return [];
-    return deliverables.filter((d) => {
+    return deliverables.filter((d: UserDeliverable) => {
       if (filterPhase && d.phaseOrder !== Number(filterPhase)) return false;
       if (filterStatus && d.status !== filterStatus) return false;
+      if (delegationFilter === 'SELF' && d.delegationType === 'DELEGATED') return false;
+      if (delegationFilter === 'DELEGATED' && d.delegationType !== 'DELEGATED') return false;
+      if (delegationFilter === 'APPROVAL' && d.status !== 'PENDING_APPROVAL') return false;
       return true;
     });
-  }, [deliverables, filterPhase, filterStatus]);
+  }, [deliverables, filterPhase, filterStatus, delegationFilter]);
 
   const validatedCount = deliverables?.filter(
     (d) => d.status === 'VALIDATED',
@@ -81,12 +89,20 @@ export default function DeliverablesListPage() {
     if (
       deliverable.status === 'EVALUATED' ||
       deliverable.status === 'VALIDATED' ||
-      deliverable.status === 'REJECTED'
+      deliverable.status === 'REJECTED' ||
+      deliverable.status === 'PENDING_APPROVAL'
     ) {
       navigate(`/simulations/${id}/deliverables/${deliverable.id}/evaluation`);
     } else {
       navigate(`/simulations/${id}/deliverables/${deliverable.id}/edit`);
     }
+  }
+
+  function getActionLabel(status: UserDeliverableStatus) {
+    if (status === 'DRAFT' || status === 'REVISED') return 'Editer';
+    if (status === 'SUBMITTED') return 'En attente';
+    if (status === 'PENDING_APPROVAL') return 'Approbation';
+    return 'Voir';
   }
 
   if (!id) {
@@ -124,6 +140,34 @@ export default function DeliverablesListPage() {
           </Button>
         </ToolbarActions>
       </Toolbar>
+
+        {/* Delegation filter tabs */}
+        {deliverables && deliverables.length > 0 && (
+          <div className="flex items-center gap-1 mb-4 border-b border-border">
+            {(
+              [
+                { key: 'ALL', label: 'Tous' },
+                { key: 'SELF', label: 'Mes livrables' },
+                { key: 'DELEGATED', label: 'Delegues' },
+                { key: 'APPROVAL', label: 'En approbation' },
+              ] as const
+            ).map((tab) => (
+              <button
+                key={tab.key}
+                type="button"
+                className={cn(
+                  'px-3 py-2 text-sm font-medium border-b-2 -mb-px transition-colors',
+                  delegationFilter === tab.key
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border',
+                )}
+                onClick={() => setDelegationFilter(tab.key)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Filters */}
         {deliverables && deliverables.length > 0 && (
@@ -237,6 +281,25 @@ export default function DeliverablesListPage() {
                     <DeliverableStatusBadge status={deliverable.status} />
                   </div>
 
+                  {/* Delegation info */}
+                  {deliverable.delegationType === 'DELEGATED' &&
+                    deliverable.assignedToMember && (
+                      <div className="flex items-center gap-1.5 mb-2">
+                        <KeenIcon
+                          icon="people"
+                          style="duotone"
+                          className="size-3.5 text-muted-foreground"
+                        />
+                        <span className="text-xs text-muted-foreground">
+                          Delegue a{' '}
+                          <span className="font-medium text-foreground">
+                            {deliverable.assignedToMember.name}
+                          </span>{' '}
+                          ({deliverable.assignedToMember.role})
+                        </span>
+                      </div>
+                    )}
+
                   <div className="flex items-center justify-between text-sm text-muted-foreground">
                     <div className="flex items-center gap-3">
                       <span>Phase {deliverable.phaseOrder}</span>
@@ -262,12 +325,7 @@ export default function DeliverablesListPage() {
                         </span>
                       )}
                       <span className="text-primary font-medium inline-flex items-center gap-1">
-                        {deliverable.status === 'DRAFT' ||
-                        deliverable.status === 'REVISED'
-                          ? 'Editer'
-                          : deliverable.status === 'SUBMITTED'
-                            ? 'En attente'
-                            : 'Voir'}
+                        {getActionLabel(deliverable.status)}
                         <KeenIcon
                           icon="arrow-right"
                           style="duotone"
@@ -286,6 +344,25 @@ export default function DeliverablesListPage() {
                       </p>
                     </div>
                   )}
+
+                  {/* Assign to expert button */}
+                  {(deliverable.status === 'DRAFT' || deliverable.status === 'REVISED') &&
+                    deliverable.delegationType !== 'DELEGATED' && (
+                      <div className="mt-3 pt-3 border-t border-border">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full text-xs gap-1.5"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/simulations/${id}/deliverables/${deliverable.id}?action=assign`);
+                          }}
+                        >
+                          <KeenIcon icon="people" style="duotone" className="text-xs leading-none" />
+                          Assigner a un expert
+                        </Button>
+                      </div>
+                    )}
                 </CardContent>
               </Card>
             ))}

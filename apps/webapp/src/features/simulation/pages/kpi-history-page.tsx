@@ -3,6 +3,9 @@ import { Link, useParams } from 'react-router';
 import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/layout-6/components/toolbar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { KeenIcon } from '@/components/keenicons';
+import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import {
   LineChart,
@@ -96,19 +99,37 @@ export default function KpiHistoryPage() {
 
   if (loading) {
     return (
-      <div className="container">
-        <div className="flex justify-center py-16">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-        </div>
+      <div className="container-fixed space-y-5">
+        <Toolbar>
+          <ToolbarHeading>
+            <h1 className="text-xl font-medium text-gray-900">Historique des KPIs</h1>
+          </ToolbarHeading>
+        </Toolbar>
+        <Card>
+          <CardContent className="p-5">
+            <Skeleton className="h-5 w-48 mb-4" />
+            <Skeleton className="h-[400px] w-full rounded-lg" />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-5 space-y-3">
+            <Skeleton className="h-5 w-40" />
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-10 w-full" />
+            ))}
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="container">
+      <div className="container-fixed space-y-5">
         <Toolbar>
-          <ToolbarHeading title="Historique KPIs" />
+          <ToolbarHeading>
+            <h1 className="text-xl font-medium text-gray-900">Historique KPIs</h1>
+          </ToolbarHeading>
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
@@ -120,21 +141,38 @@ export default function KpiHistoryPage() {
   }
 
   return (
-    <div className="container">
+    <div className="container-fixed space-y-5">
       <Toolbar>
-        <ToolbarHeading title="Historique des KPIs" />
+        <ToolbarHeading>
+          <h1 className="text-xl font-medium text-gray-900">Historique des KPIs</h1>
+          {snapshots.length > 0 && (
+            <p className="text-sm text-gray-700">{snapshots.length} snapshot(s)</p>
+          )}
+        </ToolbarHeading>
         <ToolbarActions>
           {snapshots.length > 0 && (
-            <Button variant="outline" onClick={handleExportPng}>Exporter PNG</Button>
+            <Button variant="outline" size="sm" onClick={handleExportPng}>
+              <KeenIcon icon="cloud-download" style="duotone" className="text-sm" />
+              Exporter PNG
+            </Button>
           )}
-          <Button variant="outline" asChild><Link to={`/simulations/${id}`}>Retour</Link></Button>
+          <Button variant="outline" size="sm" asChild>
+            <Link to={`/simulations/${id}`}>
+              <KeenIcon icon="arrow-left" style="duotone" className="text-sm" />
+              Retour
+            </Link>
+          </Button>
         </ToolbarActions>
       </Toolbar>
 
       {snapshots.length === 0 ? (
         <Card>
-          <CardContent className="py-12 text-center">
-            <p className="text-muted-foreground text-sm">Aucun historique KPI disponible.</p>
+          <CardContent>
+            <EmptyState
+              icon="chart-simple"
+              title="Aucun historique"
+              description="Les KPIs seront enregistres au fil de vos actions dans la simulation."
+            />
           </CardContent>
         </Card>
       ) : (

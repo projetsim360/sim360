@@ -1,0 +1,37 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    # Only deploy after CI passes
+    needs: []
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway
+        run: railway up --service ${{ vars.RAILWAY_SERVICE_ID || 'sim360-api' }}
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      # Note: Railway auto-detects Dockerfile changes and rebuilds.
+      # The webapp service should be configured separately in Railway
+      # dashboard pointing to Dockerfile.webapp.
+      #
+      # Required GitHub secrets:
+      #   RAILWAY_TOKEN - API token from Railway dashboard
+      #
+      # Required GitHub variables (optional):
+      #   RAILWAY_SERVICE_ID - Service ID if not using default

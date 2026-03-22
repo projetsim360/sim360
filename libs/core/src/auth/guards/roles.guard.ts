@@ -7,6 +7,7 @@ const ROLE_HIERARCHY: Record<UserRole, number> = {
   SUPER_ADMIN: 0,
   ADMIN: 1,
   MANAGER: 2,
+  MENTOR: 2,
   MEMBER: 3,
   VIEWER: 4,
 };

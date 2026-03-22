@@ -33,6 +33,7 @@ import {
   badgeVerifyRoute,
   recruitmentRoutes,
   recruitmentJoinRoute,
+  mentoringRoutes,
 } from '@/features';
 
 export function AppRoutingSetup() {
@@ -78,6 +79,7 @@ export function AppRoutingSetup() {
           {simulatedEmailRoutes}
           {valorizationRoutes}
           {recruitmentRoutes}
+          {mentoringRoutes}
         </Route>
       </Route>
 

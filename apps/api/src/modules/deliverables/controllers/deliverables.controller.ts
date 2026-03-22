@@ -24,9 +24,14 @@ import {
 } from '@sim360/core';
 import { UserDeliverableStatus } from '@prisma/client';
 import { DeliverablesService } from '../services/deliverables.service';
+import { DeliverableDelegationService } from '../services/deliverable-delegation.service';
+import { ApprovalWorkflowService } from '../services/approval-workflow.service';
 import {
   CreateDeliverableDto,
   UpdateDeliverableContentDto,
+  AssignDeliverableDto,
+  RequestRevisionDelegatedDto,
+  DefineApprovalChainDto,
 } from '../dto';
 
 @ApiTags('Deliverables')
@@ -34,7 +39,11 @@ import {
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller()
 export class DeliverablesController {
-  constructor(private readonly deliverablesService: DeliverablesService) {}
+  constructor(
+    private readonly deliverablesService: DeliverablesService,
+    private readonly delegationService: DeliverableDelegationService,
+    private readonly approvalService: ApprovalWorkflowService,
+  ) {}
 
   // ─── US-4.3: List deliverables ────────────────────────────
 
@@ -218,5 +227,92 @@ export class DeliverablesController {
       user.id,
       tenantId,
     );
+  }
+
+  // ─── Delegation: Assign to expert IA ────────────────────
+
+  @Post('simulations/:simId/deliverables/:id/assign')
+  @Auditable('DELIVERABLE_ASSIGN', 'UserDeliverable')
+  @ApiOperation({ summary: 'Assigner un livrable a un expert IA de l\'equipe' })
+  @ApiParam({ name: 'simId', description: 'ID de la simulation' })
+  @ApiParam({ name: 'id', description: 'ID du livrable' })
+  assignToExpert(
+    @Param('simId') simId: string,
+    @Param('id') id: string,
+    @Body() dto: AssignDeliverableDto,
+    @CurrentUser() user: any,
+    @CurrentTenant() tenantId: string,
+  ) {
+    return this.delegationService.assignToExpert(
+      simId, id, user.id, tenantId, dto.teamMemberId, dto.instructions,
+    );
+  }
+
+  // ─── Delegation: Request revision from expert ────────────
+
+  @Post('simulations/:simId/deliverables/:id/request-revision')
+  @Auditable('DELIVERABLE_REQUEST_REVISION', 'UserDeliverable')
+  @ApiOperation({ summary: 'Demander a l\'expert IA de reviser le livrable' })
+  @ApiParam({ name: 'simId', description: 'ID de la simulation' })
+  @ApiParam({ name: 'id', description: 'ID du livrable' })
+  requestRevision(
+    @Param('simId') simId: string,
+    @Param('id') id: string,
+    @Body() dto: RequestRevisionDelegatedDto,
+    @CurrentUser() user: any,
+    @CurrentTenant() tenantId: string,
+  ) {
+    return this.delegationService.requestRevision(
+      simId, id, user.id, tenantId, dto.feedback,
+    );
+  }
+
+  // ─── Approval: Define approval chain ─────────────────────
+
+  @Post('simulations/:simId/deliverables/:id/approval-chain')
+  @Auditable('DELIVERABLE_DEFINE_APPROVAL', 'UserDeliverable')
+  @ApiOperation({ summary: 'Definir la chaine d\'approbation (Sponsor, Client, etc.)' })
+  @ApiParam({ name: 'simId', description: 'ID de la simulation' })
+  @ApiParam({ name: 'id', description: 'ID du livrable' })
+  defineApprovalChain(
+    @Param('simId') simId: string,
+    @Param('id') id: string,
+    @Body() dto: DefineApprovalChainDto,
+    @CurrentUser() user: any,
+    @CurrentTenant() tenantId: string,
+  ) {
+    return this.approvalService.defineApprovalChain(
+      simId, id, user.id, tenantId, dto.chain,
+    );
+  }
+
+  // ─── Approval: Submit for approval ───────────────────────
+
+  @Post('simulations/:simId/deliverables/:id/submit-approval')
+  @Auditable('DELIVERABLE_SUBMIT_APPROVAL', 'UserDeliverable')
+  @ApiOperation({ summary: 'Soumettre le livrable pour approbation par la chaine' })
+  @ApiParam({ name: 'simId', description: 'ID de la simulation' })
+  @ApiParam({ name: 'id', description: 'ID du livrable' })
+  submitForApproval(
+    @Param('simId') simId: string,
+    @Param('id') id: string,
+    @CurrentUser() user: any,
+    @CurrentTenant() tenantId: string,
+  ) {
+    return this.approvalService.submitForApproval(simId, id, user.id, tenantId);
+  }
+
+  // ─── Approval: Get approval status ───────────────────────
+
+  @Get('simulations/:simId/deliverables/:id/approval-status')
+  @ApiOperation({ summary: 'Obtenir le statut d\'approbation du livrable' })
+  @ApiParam({ name: 'simId', description: 'ID de la simulation' })
+  @ApiParam({ name: 'id', description: 'ID du livrable' })
+  getApprovalStatus(
+    @Param('simId') simId: string,
+    @Param('id') id: string,
+    @CurrentUser() user: any,
+  ) {
+    return this.approvalService.getApprovalStatus(simId, id, user.id);
   }
 }

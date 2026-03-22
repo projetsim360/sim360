@@ -123,9 +123,9 @@ export function ParticipantTile({
 
           {/* Microphone active indicator (user, not muted) */}
           {isUser && !isMuted && status === 'connected' && (
-            <div className={`absolute -bottom-0.5 -right-0.5 ${isLarge ? 'w-5 h-5' : 'w-3.5 h-3.5'} rounded-full bg-success flex items-center justify-center`}>
-              <svg className={isLarge ? 'w-3 h-3' : 'w-2 h-2'} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+            <div className={`absolute -bottom-0.5 -right-0.5 ${isLarge ? 'w-6 h-6' : 'w-4 h-4'} rounded-full bg-success flex items-center justify-center`}>
+              <svg className={isLarge ? 'w-3.5 h-3.5' : 'w-2.5 h-2.5'} viewBox="0 0 24 24" fill="white">
+                <path d="M12 14a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 0014 0h-2zm-5 9a1 1 0 011 1v1h-2v-1a1 1 0 011-1z" />
               </svg>
             </div>
           )}

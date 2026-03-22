@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { KeenIcon } from '@/components/keenicons';
@@ -17,8 +18,22 @@ export function SectorSelector({
   onChange,
   className,
 }: SectorSelectorProps) {
+  const handleKeyDown = useCallback(
+    (sectorValue: string) => (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        onChange(sectorValue);
+      }
+    },
+    [onChange],
+  );
+
   return (
-    <div className={cn('grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4', className)}>
+    <div
+      role="radiogroup"
+      aria-label="Selection du secteur de simulation"
+      className={cn('grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3', className)}
+    >
       {SECTORS.map((sector) => {
         const isSelected = value === sector.value;
         const isSuggested = suggestedSector === sector.value;
@@ -26,14 +41,20 @@ export function SectorSelector({
         return (
           <Card
             key={sector.value}
+            role="radio"
+            tabIndex={0}
+            aria-checked={isSelected}
+            aria-label={`${sector.label}${isSuggested ? ' (suggere par l\'IA)' : ''}`}
             className={cn(
-              'cursor-pointer transition-all hover:shadow-md relative',
-              isSelected && 'ring-2 ring-primary border-primary',
+              'cursor-pointer transition-all hover:shadow-md relative outline-none',
+              'focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+              isSelected && 'ring-2 ring-primary border-primary bg-primary/5',
               !isSelected && 'hover:border-primary/50',
             )}
             onClick={() => onChange(sector.value)}
+            onKeyDown={handleKeyDown(sector.value)}
           >
-            <CardContent className="flex flex-col items-center justify-center p-6 gap-3">
+            <CardContent className="flex flex-col items-center justify-center p-5 gap-2.5">
               {isSuggested && (
                 <Badge
                   variant="primary"
@@ -43,22 +64,36 @@ export function SectorSelector({
                   Suggere par l'IA
                 </Badge>
               )}
-              <KeenIcon
-                icon={sector.icon}
-                style="duotone"
+              <div
                 className={cn(
-                  'text-3xl',
-                  isSelected ? 'text-primary' : 'text-muted-foreground',
+                  'flex items-center justify-center w-12 h-12 rounded-xl transition-colors',
+                  isSelected ? 'bg-primary/10' : 'bg-muted',
                 )}
-              />
+              >
+                <KeenIcon
+                  icon={sector.icon}
+                  style="duotone"
+                  className={cn(
+                    'text-2xl transition-colors',
+                    isSelected ? 'text-primary' : 'text-muted-foreground',
+                  )}
+                />
+              </div>
               <span
                 className={cn(
-                  'text-sm font-medium text-center',
+                  'text-sm font-medium text-center transition-colors',
                   isSelected ? 'text-primary' : 'text-foreground',
                 )}
               >
                 {sector.label}
               </span>
+              {isSelected && (
+                <div className="absolute top-2 left-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                    <path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+              )}
             </CardContent>
           </Card>
         );

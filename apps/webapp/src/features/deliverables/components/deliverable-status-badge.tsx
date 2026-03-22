@@ -11,6 +11,7 @@ const STATUS_CONFIG: Record<
   REVISED: { label: 'Revise', variant: 'info' },
   VALIDATED: { label: 'Valide', variant: 'success' },
   REJECTED: { label: 'Rejete', variant: 'destructive' },
+  PENDING_APPROVAL: { label: 'En approbation', variant: 'warning' },
 };
 
 interface DeliverableStatusBadgeProps {

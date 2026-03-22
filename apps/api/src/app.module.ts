@@ -23,6 +23,7 @@ import { ProfileModule } from './modules/profile/profile.module';
 import { SimulatedEmailsModule } from './modules/simulated-emails/simulated-emails.module';
 import { ValorizationModule } from './modules/valorization/valorization.module';
 import { RecruitmentModule } from './modules/recruitment/recruitment.module';
+import { MentoringModule } from './modules/mentoring/mentoring.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { RecruitmentModule } from './modules/recruitment/recruitment.module';
     SimulatedEmailsModule,
     ValorizationModule,
     RecruitmentModule,
+    MentoringModule,
   ],
   providers: [
     {

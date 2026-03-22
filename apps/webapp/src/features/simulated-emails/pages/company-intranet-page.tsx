@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { KeenIcon } from '@/components/keenicons';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api-client';
 import { CompanyBanner } from '../components/company-banner';
@@ -41,13 +42,32 @@ export default function CompanyIntranetPage() {
 
   if (isLoading) {
     return (
-      <div className="container">
+      <div className="container-fixed space-y-5">
         <Toolbar>
-          <ToolbarHeading title="Intranet Entreprise" />
+          <ToolbarHeading>
+            <h1 className="text-xl font-medium text-gray-900">Intranet Entreprise</h1>
+          </ToolbarHeading>
         </Toolbar>
-        <div className="flex justify-center py-16">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-        </div>
+        <Skeleton className="h-32 w-full rounded-lg" />
+        <Card>
+          <CardContent className="p-5 space-y-3">
+            <Skeleton className="h-5 w-32" />
+            <div className="flex items-center gap-4">
+              <Skeleton className="size-14 rounded-full" />
+              <div className="space-y-2 flex-1">
+                <Skeleton className="h-5 w-40" />
+                <Skeleton className="h-4 w-64" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-5 space-y-3">
+            <Skeleton className="h-5 w-36" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -82,7 +102,7 @@ export default function CompanyIntranetPage() {
   const teamMembers = project?.teamMembers || [];
 
   return (
-    <div className="container space-y-5">
+    <div className="container-fixed space-y-5">
       <Toolbar>
         <ToolbarHeading title="Intranet Entreprise" />
         <ToolbarActions>

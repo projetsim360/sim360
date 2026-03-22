@@ -1,3 +1,4 @@
+import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router';
 import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/layout-6/components/toolbar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,12 +8,23 @@ import { KeenIcon } from '@/components/keenicons';
 import { EmptyState } from '@/components/ui/empty-state';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
-import { usePortfolio } from '../api/valorization.api';
+import { Slider } from '@/components/ui/slider';
+import { usePortfolio, valorizationApi } from '../api/valorization.api';
 import { PortfolioDeliverableCard } from '../components/portfolio-deliverable-card';
 
 export default function PortfolioPage() {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading, error } = usePortfolio(id!);
+  const [minScore, setMinScore] = useState(0);
+
+  const filteredDeliverables = useMemo(() => {
+    if (!data?.deliverables) return [];
+    if (minScore <= 0) return data.deliverables;
+    return data.deliverables.filter((d) => {
+      const score = d.evaluation?.score ?? d.score;
+      return typeof score === 'number' && score >= minScore;
+    });
+  }, [data?.deliverables, minScore]);
 
   if (isLoading) {
     return (
@@ -82,11 +94,22 @@ export default function PortfolioPage() {
             size="sm"
             onClick={() => {
               toast.info('Preparation de l\'export PDF...');
-              window.print();
+              window.open(valorizationApi.exportPortfolioPdf(id!));
             }}
           >
-            <KeenIcon icon="download" style="duotone" className="text-sm" />
-            Exporter en PDF
+            <KeenIcon icon="document" style="duotone" className="text-sm" />
+            Exporter PDF
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              toast.info('Preparation de l\'export ZIP...');
+              window.open(valorizationApi.exportPortfolioZip(id!));
+            }}
+          >
+            <KeenIcon icon="cloud-download" style="duotone" className="text-sm" />
+            Exporter ZIP
           </Button>
         </ToolbarActions>
       </Toolbar>
@@ -99,12 +122,13 @@ export default function PortfolioPage() {
                   {data.simulation.project.name}
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  {data.simulation.scenario.title} — Client : {data.simulation.project.client}
+                  {data.simulation.scenario.title}
+                  {data.simulation.project.client && <> — Client : {data.simulation.project.client}</>}
                 </p>
-                {data.completedAt && (
+                {data.simulation.completedAt && (
                   <p className="text-xs text-muted-foreground mt-1">
                     Termine le{' '}
-                    {new Date(data.completedAt).toLocaleDateString('fr-FR', {
+                    {new Date(data.simulation.completedAt).toLocaleDateString('fr-FR', {
                       day: 'numeric',
                       month: 'long',
                       year: 'numeric',
@@ -112,15 +136,47 @@ export default function PortfolioPage() {
                   </p>
                 )}
               </div>
-              <div className="flex items-center justify-center size-14 rounded-full bg-primary/10 text-primary font-bold text-lg">
-                {data.globalScore}
-              </div>
+              {data.stats.averageDeliverableScore != null && (
+                <div className="flex items-center justify-center size-14 rounded-full bg-primary/10 text-primary font-bold text-lg">
+                  {Math.round(data.stats.averageDeliverableScore)}
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
 
+        {/* Score filter */}
+        <Card>
+          <CardContent className="p-5">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 shrink-0">
+                <KeenIcon icon="filter" style="duotone" className="text-sm text-muted-foreground" />
+                <span className="text-sm font-medium text-foreground">
+                  Score minimum :
+                </span>
+                <Badge variant="primary" size="sm">
+                  {minScore}
+                </Badge>
+              </div>
+              <Slider
+                value={[minScore]}
+                onValueChange={(v) => setMinScore(v[0])}
+                min={0}
+                max={100}
+                step={5}
+                className="flex-1"
+              />
+            </div>
+            {minScore > 0 && (
+              <p className="text-xs text-muted-foreground mt-2">
+                {filteredDeliverables.length} livrable(s) avec un score &ge; {minScore}
+              </p>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Deliverables list */}
-        {data.deliverables.length === 0 ? (
+        {filteredDeliverables.length === 0 ? (
           <Card>
             <CardContent>
               <EmptyState
@@ -132,7 +188,7 @@ export default function PortfolioPage() {
           </Card>
         ) : (
           <div className="space-y-3">
-            {data.deliverables.map((deliverable) => (
+            {filteredDeliverables.map((deliverable) => (
               <PortfolioDeliverableCard
                 key={deliverable.id}
                 deliverable={deliverable}
@@ -173,9 +229,9 @@ export default function PortfolioPage() {
                         >
                           {deliverable.status === 'COMPLETED' ? 'Termine' : deliverable.status}
                         </Badge>
-                        {deliverable.grade && (
+                        {(deliverable.evaluation?.grade ?? deliverable.grade) && (
                           <span className="text-sm font-medium text-muted-foreground">
-                            Note : {deliverable.grade}
+                            Note : {deliverable.evaluation?.grade ?? deliverable.grade}
                           </span>
                         )}
                       </div>

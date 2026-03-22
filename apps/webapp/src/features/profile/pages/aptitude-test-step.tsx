@@ -334,29 +334,40 @@ export function AptitudeTestStep({ onNext, onBack }: AptitudeTestStepProps) {
             onValueChange={handleAnswer}
             className="space-y-3"
           >
-            {scenario.options.map((option) => (
-              <div
-                key={option.value}
-                className={cn(
-                  'flex items-start gap-3 p-3 rounded-lg border transition-colors cursor-pointer',
-                  answers[scenario.id] === option.value
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border hover:border-primary/30',
-                )}
-              >
-                <RadioGroupItem
-                  value={option.value}
-                  id={`${scenario.id}-${option.value}`}
-                  className="mt-0.5"
-                />
-                <Label
-                  htmlFor={`${scenario.id}-${option.value}`}
-                  className="font-normal cursor-pointer leading-normal"
+            {scenario.options.map((option) => {
+              const isOptionSelected = answers[scenario.id] === option.value;
+              return (
+                <div
+                  key={option.value}
+                  className={cn(
+                    'flex items-start gap-3 p-3.5 rounded-lg border-2 transition-all cursor-pointer',
+                    isOptionSelected
+                      ? 'border-primary bg-primary/5 shadow-sm shadow-primary/10'
+                      : 'border-border hover:border-primary/30 hover:bg-muted/30',
+                  )}
+                  onClick={() => handleAnswer(option.value)}
                 >
-                  {option.label}
-                </Label>
-              </div>
-            ))}
+                  <RadioGroupItem
+                    value={option.value}
+                    id={`${scenario.id}-${option.value}`}
+                    className="mt-0.5 shrink-0"
+                  />
+                  <Label
+                    htmlFor={`${scenario.id}-${option.value}`}
+                    className="font-normal cursor-pointer leading-normal flex-1"
+                  >
+                    {option.label}
+                  </Label>
+                  {isOptionSelected && (
+                    <div className="flex items-center justify-center w-5 h-5 rounded-full bg-primary shrink-0 mt-0.5">
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                        <path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </RadioGroup>
         </CardContent>
       </Card>
@@ -364,7 +375,7 @@ export function AptitudeTestStep({ onNext, onBack }: AptitudeTestStepProps) {
       <div className="flex items-center justify-between">
         <Button
           variant="ghost"
-          size="sm"
+          className="min-h-[44px] px-4"
           onClick={() => {
             if (currentScenario === 0) {
               onBack();
@@ -380,7 +391,7 @@ export function AptitudeTestStep({ onNext, onBack }: AptitudeTestStepProps) {
         {currentScenario < SCENARIOS.length - 1 ? (
           <Button
             variant="primary"
-            size="sm"
+            className="min-h-[44px] px-5"
             onClick={() => setCurrentScenario((prev) => prev + 1)}
             disabled={!answers[scenario.id]}
           >
@@ -390,7 +401,7 @@ export function AptitudeTestStep({ onNext, onBack }: AptitudeTestStepProps) {
         ) : (
           <Button
             variant="primary"
-            size="sm"
+            className="min-h-[44px] px-5"
             onClick={handleSubmit}
             disabled={!allAnswered || submitTest.isPending}
           >

@@ -3,6 +3,7 @@ import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse } from '@ne
 import { JwtAuthGuard, RolesGuard, CurrentUser, CurrentTenant, Auditable } from '@sim360/core';
 import { SimulationStatus } from '@prisma/client';
 import { SimulationsService } from '../services/simulations.service';
+import { StakeholderIdentificationService } from '../services/stakeholder-identification.service';
 import { CreateSimulationDto } from '../dto/create-simulation.dto';
 import { MakeDecisionDto } from '../dto/make-decision.dto';
 import { RespondEventDto } from '../dto/respond-event.dto';
@@ -12,7 +13,10 @@ import { RespondEventDto } from '../dto/respond-event.dto';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('simulations')
 export class SimulationsController {
-  constructor(private simulationsService: SimulationsService) {}
+  constructor(
+    private simulationsService: SimulationsService,
+    private stakeholderService: StakeholderIdentificationService,
+  ) {}
 
   @Post()
   @Auditable('simulation.create', 'Simulation')
@@ -151,5 +155,29 @@ export class SimulationsController {
   @ApiOperation({ summary: 'Timeline des actions' })
   getTimeline(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.simulationsService.getTimeline(id, userId);
+  }
+
+  // ─── Stakeholder identification (Greenfield) ─────────────
+
+  @Post(':id/stakeholders/suggest')
+  @ApiOperation({ summary: 'Suggerer des parties prenantes via IA (Greenfield)' })
+  suggestStakeholders(
+    @Param('id') id: string,
+    @CurrentUser('id') userId: string,
+    @CurrentTenant() tenantId: string,
+    @Body() body: { charterContent?: string },
+  ) {
+    return this.stakeholderService.suggestStakeholders(id, userId, tenantId, body.charterContent);
+  }
+
+  @Post(':id/stakeholders/apply')
+  @Auditable('STAKEHOLDERS_APPLY', 'Simulation')
+  @ApiOperation({ summary: 'Appliquer les parties prenantes selectionnees au projet' })
+  applyStakeholders(
+    @Param('id') id: string,
+    @CurrentUser('id') userId: string,
+    @Body() body: { stakeholders: Array<{ name: string; role: string; expertise: string; personality: string; morale?: number }> },
+  ) {
+    return this.stakeholderService.applyStakeholders(id, userId, body.stakeholders);
   }
 }

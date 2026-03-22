@@ -5,8 +5,10 @@ import { CreateSimulationDto } from '../dto/create-simulation.dto';
 import { MakeDecisionDto } from '../dto/make-decision.dto';
 import { RespondEventDto } from '../dto/respond-event.dto';
 import { KpiEngineService, KpiImpact } from './kpi-engine.service';
+import { BrownfieldContextService, BrownfieldContext } from './brownfield-context.service';
 import { SimulatedEmailsService } from '@/modules/simulated-emails/services/simulated-emails.service';
 import { ProfileConfigService } from '@/modules/profile/services/profile-config.service';
+import { HandoverService } from '@/modules/meetings/handover.service';
 
 const PLAN_LIMITS: Record<TenantPlan, number> = {
   FREE: 1,
@@ -22,7 +24,7 @@ const SIMULATION_INCLUDE = {
       deliverables: true,
     },
   },
-  scenario: { select: { id: true, title: true, difficulty: true, sector: true } },
+  scenario: { select: { id: true, title: true, difficulty: true, sector: true, scenarioType: true, startingPhaseOrder: true, brownfieldContext: true } },
   kpis: true,
   phases: { orderBy: { order: 'asc' as const } },
   decisions: { orderBy: { phaseOrder: 'asc' as const } },
@@ -45,6 +47,8 @@ export class SimulationsService {
     private prisma: PrismaService,
     private eventPublisher: EventPublisherService,
     private kpiEngine: KpiEngineService,
+    private brownfieldContextService: BrownfieldContextService,
+    private handoverService: HandoverService,
     @Inject(forwardRef(() => SimulatedEmailsService))
     private simulatedEmailsService: SimulatedEmailsService,
     private profileConfigService: ProfileConfigService,
@@ -80,7 +84,7 @@ export class SimulationsService {
     if (!tenant) throw new NotFoundException('Tenant introuvable');
 
     const activeCount = await this.prisma.simulation.count({
-      where: { userId, tenantId, status: { in: ['DRAFT', 'IN_PROGRESS', 'PAUSED'] } },
+      where: { userId, tenantId, status: { in: ['DRAFT', 'ONBOARDING', 'IN_PROGRESS', 'PAUSED'] } },
     });
 
     const limit = PLAN_LIMITS[tenant.plan];
@@ -108,6 +112,24 @@ export class SimulationsService {
 
     const projectTemplate = scenario.projectTemplate as Record<string, any>;
     const initialKpis = scenario.initialKpis as Record<string, number>;
+
+    // 2b. Determine starting phase (Brownfield support)
+    const isBrownfield = scenario.scenarioType === 'BROWNFIELD';
+    const startingPhaseOrder = dto.startingPhaseOrder ?? scenario.startingPhaseOrder ?? 0;
+    const brownfieldContext = isBrownfield ? (scenario.brownfieldContext as BrownfieldContext | null) : null;
+
+    // Validate starting phase exists
+    if (startingPhaseOrder > 0) {
+      const maxPhase = Math.max(...scenario.phases.map((p) => p.order));
+      if (startingPhaseOrder > maxPhase) {
+        throw new BadRequestException(`Phase de depart ${startingPhaseOrder} invalide. Maximum: ${maxPhase}`);
+      }
+    }
+
+    // Compute adjusted KPIs for Brownfield
+    const startingKpis = isBrownfield && startingPhaseOrder > 0
+      ? this.brownfieldContextService.computeBrownfieldKpis(initialKpis, brownfieldContext)
+      : initialKpis;
 
     // 3. Create everything in a transaction
     const result = await this.prisma.$transaction(async (tx) => {
@@ -157,16 +179,16 @@ export class SimulationsService {
           scenarioId: scenario.id,
           userId,
           tenantId,
-          status: 'IN_PROGRESS',
-          currentPhaseOrder: 0,
+          status: 'ONBOARDING',
+          currentPhaseOrder: startingPhaseOrder,
           startedAt: new Date(),
           kpis: {
             create: {
-              budget: initialKpis.budget ?? 100,
-              schedule: initialKpis.schedule ?? 100,
-              quality: initialKpis.quality ?? 80,
-              teamMorale: initialKpis.teamMorale ?? 75,
-              riskLevel: initialKpis.riskLevel ?? 20,
+              budget: startingKpis.budget ?? 100,
+              schedule: startingKpis.schedule ?? 100,
+              quality: startingKpis.quality ?? 80,
+              teamMorale: startingKpis.teamMorale ?? 75,
+              riskLevel: startingKpis.riskLevel ?? 20,
             },
           },
           phases: {
@@ -174,20 +196,25 @@ export class SimulationsService {
               order: phase.order,
               name: phase.name,
               type: phase.type,
-              status: phase.order === 0 ? 'ACTIVE' : 'LOCKED',
-              startedAt: phase.order === 0 ? new Date() : undefined,
+              status: phase.order < startingPhaseOrder
+                ? 'COMPLETED'
+                : phase.order === startingPhaseOrder
+                  ? 'ACTIVE'
+                  : 'LOCKED',
+              startedAt: phase.order <= startingPhaseOrder ? new Date() : undefined,
+              completedAt: phase.order < startingPhaseOrder ? new Date() : undefined,
             })),
           },
         },
       });
 
-      // Instantiate decisions for phase 0
-      const firstPhase = scenario.phases.find((p) => p.order === 0);
+      // Instantiate decisions for starting phase
+      const firstPhase = scenario.phases.find((p) => p.order === startingPhaseOrder);
       if (firstPhase?.decisionTemplates.length) {
         await tx.decision.createMany({
           data: firstPhase.decisionTemplates.map((tpl) => ({
             simulationId: simulation.id,
-            phaseOrder: 0,
+            phaseOrder: startingPhaseOrder,
             templateId: tpl.id,
             title: tpl.title,
             context: tpl.context,
@@ -202,19 +229,19 @@ export class SimulationsService {
             EventType.DECISION_PRESENTED,
             AggregateType.DECISION,
             simulation.id,
-            { title: tpl.title, simulationId: simulation.id, phaseOrder: 0 },
+            { title: tpl.title, simulationId: simulation.id, phaseOrder: startingPhaseOrder },
             { actorId: userId, actorType: 'system', tenantId, receiverIds: [userId], channels: ['socket'], priority: 2 },
           ).catch(() => {});
         }
       }
 
-      // Instantiate meetings for phase 0
+      // Instantiate meetings for starting phase
       if (firstPhase?.meetingTemplates.length) {
         for (const tpl of firstPhase.meetingTemplates) {
           await tx.meeting.create({
             data: {
               simulationId: simulation.id,
-              phaseOrder: 0,
+              phaseOrder: startingPhaseOrder,
               templateId: tpl.id,
               title: tpl.title,
               description: tpl.description,
@@ -236,7 +263,9 @@ export class SimulationsService {
       }
 
       // Create UserDeliverables from project template
-      if (projectTemplate.deliverables && Array.isArray(projectTemplate.deliverables)) {
+      const hasDeliverables = projectTemplate.deliverables && Array.isArray(projectTemplate.deliverables) && projectTemplate.deliverables.length > 0;
+
+      if (hasDeliverables) {
         const deliverableDefs = projectTemplate.deliverables as Array<{
           name: string;
           description?: string;
@@ -245,24 +274,46 @@ export class SimulationsService {
           type?: string;
         }>;
 
-        if (deliverableDefs.length > 0) {
-          const deadlineDays = projectTemplate.deadlineDays ?? 180;
-          await tx.userDeliverable.createMany({
-            data: deliverableDefs.map((del) => ({
-              simulationId: simulation.id,
-              title: del.name,
-              type: del.type ?? del.name.toLowerCase().replace(/[^a-z0-9]+/g, '_'),
-              phaseOrder: del.phaseOrder,
-              dueDate: del.dueDate
-                ? new Date(del.dueDate)
-                : new Date(Date.now() + ((del.phaseOrder + 1) / scenario.phases.length) * deadlineDays * 24 * 60 * 60 * 1000),
-            })),
-          });
-        }
+        const deadlineDays = projectTemplate.deadlineDays ?? 180;
+        await tx.userDeliverable.createMany({
+          data: deliverableDefs.map((del) => ({
+            simulationId: simulation.id,
+            title: del.name,
+            type: del.type ?? del.name.toLowerCase().replace(/[^a-z0-9]+/g, '_'),
+            phaseOrder: del.phaseOrder,
+            dueDate: del.dueDate
+              ? new Date(del.dueDate)
+              : new Date(Date.now() + ((del.phaseOrder + 1) / scenario.phases.length) * deadlineDays * 24 * 60 * 60 * 1000),
+          })),
+        });
+      } else if (!isBrownfield) {
+        // Greenfield "mandat brut": create mandatory charter deliverable
+        await tx.userDeliverable.create({
+          data: {
+            simulationId: simulation.id,
+            title: 'Charte de projet',
+            type: 'charter',
+            phaseOrder: startingPhaseOrder,
+            content: null,
+            status: 'DRAFT',
+          },
+        });
+      }
+
+      // Brownfield: populate historical data for completed phases
+      if (isBrownfield && startingPhaseOrder > 0) {
+        await this.brownfieldContextService.populateHistoricalData(
+          tx,
+          simulation.id,
+          scenario.phases,
+          startingPhaseOrder,
+          brownfieldContext,
+          initialKpis,
+        );
       }
 
       // Record initial KPI snapshot
-      await this.recordKpiSnapshot(tx, simulation.id, 0, 'simulation_start');
+      await this.recordKpiSnapshot(tx, simulation.id, startingPhaseOrder, 'simulation_start');
 
       // Update project status
       await tx.project.update({
@@ -289,6 +340,13 @@ export class SimulationsService {
         this.logger.warn(`Failed to generate welcome email for simulation ${result.id}: ${err.message}`),
       );
 
+    // Trigger handover sequence (HR → PMO)
+    this.handoverService
+      .triggerHandoverSequence(result.id, userId, tenantId)
+      .catch((err) =>
+        this.logger.warn(`Failed to trigger handover for simulation ${result.id}: ${err.message}`),
+      );
+
     return this.findOne(result.id, userId);
   }
 
@@ -300,7 +358,7 @@ export class SimulationsService {
       where,
       include: {
         project: { select: { id: true, name: true, client: true, sector: true, status: true } },
-        scenario: { select: { id: true, title: true, difficulty: true, sector: true } },
+        scenario: { select: { id: true, title: true, difficulty: true, sector: true, scenarioType: true, startingPhaseOrder: true, brownfieldContext: true } },
         kpis: true,
         phases: { orderBy: { order: 'asc' }, select: { order: true, name: true, type: true, status: true } },
       },

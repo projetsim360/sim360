@@ -38,6 +38,17 @@ export const valorizationApi = {
 
   verifyBadge: (id: string) =>
     api.get<BadgeVerification>(`/badges/${id}/verify`),
+
+  exportPortfolioPdf: (simId: string) =>
+    `/api/v1/simulations/${simId}/portfolio/export/pdf`,
+
+  exportPortfolioZip: (simId: string) =>
+    `/api/v1/simulations/${simId}/portfolio/export/zip`,
+
+  getBestDeliverables: (simId: string, minScore?: number) => {
+    const qs = minScore ? `?minScore=${minScore}` : '';
+    return api.get<PortfolioData>(`/simulations/${simId}/portfolio/best${qs}`);
+  },
 };
 
 export const useDebriefing = (simId: string) =>

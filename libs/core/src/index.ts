@@ -86,6 +86,10 @@ export {
   CacheEvict,
 } from './common/decorators';
 export type { AuditableOptions } from './common/decorators/auditable.decorator';
+export { RequiredPlan, REQUIRED_PLAN_KEY } from './common/decorators/required-plan.decorator';
+
+// Common - Guards
+export { PlanGuard } from './common/guards/plan.guard';
 
 // Common - Filters
 export { GlobalExceptionFilter } from './common/filters';

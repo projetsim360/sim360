@@ -10,6 +10,7 @@ import type {
   DeliverableTemplate,
   DeliverableFilters,
   CreateDeliverableDto,
+  ApprovalStatus,
 } from '../types/deliverables.types';
 
 const QUERY_KEYS = {
@@ -70,6 +71,34 @@ export const deliverablesApi = {
     api.post<UserDeliverable>(
       `/simulations/${simId}/deliverables/${id}/revise`,
     ),
+
+  // Delegation
+  assignToExpert: (simId: string, id: string, teamMemberId: string, instructions?: string) =>
+    api.post<UserDeliverable>(`/simulations/${simId}/deliverables/${id}/assign`, {
+      teamMemberId,
+      instructions,
+    }),
+
+  requestRevision: (simId: string, id: string, feedback: string) =>
+    api.post<UserDeliverable>(`/simulations/${simId}/deliverables/${id}/request-revision`, {
+      feedback,
+    }),
+
+  // Approval
+  defineApprovalChain: (
+    simId: string,
+    id: string,
+    chain: Array<{ role: string; memberId: string }>,
+  ) =>
+    api.post<UserDeliverable>(`/simulations/${simId}/deliverables/${id}/approval-chain`, {
+      chain,
+    }),
+
+  submitForApproval: (simId: string, id: string) =>
+    api.post<UserDeliverable>(`/simulations/${simId}/deliverables/${id}/submit-approval`),
+
+  getApprovalStatus: (simId: string, id: string) =>
+    api.get<ApprovalStatus>(`/simulations/${simId}/deliverables/${id}/approval-status`),
 };
 
 // ---------- Query hooks ----------
@@ -153,3 +182,65 @@ export const useReviseDeliverable = (simId: string) => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.all(simId) }),
   });
 };
+
+// ---------- Delegation hooks ----------
+
+export const useAssignToExpert = (simId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      teamMemberId,
+      instructions,
+    }: {
+      id: string;
+      teamMemberId: string;
+      instructions?: string;
+    }) => deliverablesApi.assignToExpert(simId, id, teamMemberId, instructions),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.all(simId) }),
+  });
+};
+
+export const useRequestRevision = (simId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, feedback }: { id: string; feedback: string }) =>
+      deliverablesApi.requestRevision(simId, id, feedback),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.all(simId) }),
+  });
+};
+
+// ---------- Approval hooks ----------
+
+export const useDefineApprovalChain = (simId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      chain,
+    }: {
+      id: string;
+      chain: Array<{ role: string; memberId: string }>;
+    }) => deliverablesApi.defineApprovalChain(simId, id, chain),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.all(simId) }),
+  });
+};
+
+export const useSubmitForApproval = (simId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => deliverablesApi.submitForApproval(simId, id),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.all(simId) }),
+  });
+};
+
+export const useApprovalStatus = (simId: string, id: string, enabled = true) =>
+  useQuery({
+    queryKey: [...QUERY_KEYS.detail(simId, id), 'approval'] as const,
+    queryFn: () => deliverablesApi.getApprovalStatus(simId, id),
+    enabled: !!simId && !!id && enabled,
+  });

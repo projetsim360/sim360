@@ -42,14 +42,14 @@ export function PortfolioDeliverableCard({ deliverable, className }: PortfolioDe
             </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            {deliverable.grade && (
-              <span className={cn('font-bold text-lg', getGradeTextClass(deliverable.grade))}>
-                {deliverable.grade}
+            {(deliverable.evaluation?.grade ?? deliverable.grade) && (
+              <span className={cn('font-bold text-lg', getGradeTextClass(deliverable.evaluation?.grade ?? deliverable.grade ?? ''))}>
+                {deliverable.evaluation?.grade ?? deliverable.grade}
               </span>
             )}
-            {deliverable.score != null && (
+            {(deliverable.evaluation?.score ?? deliverable.score) != null && (
               <span className="text-sm font-medium text-muted-foreground">
-                {deliverable.score}/100
+                {deliverable.evaluation?.score ?? deliverable.score}/100
               </span>
             )}
             <Badge

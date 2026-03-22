@@ -17,6 +17,7 @@ import { reportMenuItems } from '@/features/report/config/report.menu';
 import { adminReferenceMenuItems } from '@/features/admin-reference/config/admin-reference.menu';
 import { valorizationMenuItems } from '@/features/valorization/config/valorization.menu';
 import { recruitmentMenuItems } from '@/features/recruitment/config/recruitment.menu';
+import { mentoringMenuItems } from '@/features/mentoring/config/mentoring.menu';
 
 // ---------------------------------------------------------------------------
 // Source de vérité unique pour tous les menus de l'application Sim360.
@@ -35,6 +36,7 @@ export const APP_SIDEBAR_MENU: MenuConfig = [
   ...reportMenuItems,
   ...valorizationMenuItems,
   ...recruitmentMenuItems,
+  ...mentoringMenuItems,
   { heading: 'Administration', roles: ['SUPER_ADMIN', 'ADMIN'] },
   ...adminReferenceMenuItems,
   {

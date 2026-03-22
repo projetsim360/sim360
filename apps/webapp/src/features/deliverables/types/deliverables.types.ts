@@ -4,7 +4,32 @@ export type UserDeliverableStatus =
   | 'EVALUATED'
   | 'REVISED'
   | 'VALIDATED'
-  | 'REJECTED';
+  | 'REJECTED'
+  | 'PENDING_APPROVAL';
+
+export type DeliverableDelegationType = 'SELF_PRODUCED' | 'DELEGATED';
+
+export interface DeliverableApproval {
+  id: string;
+  deliverableId: string;
+  reviewerMemberId: string | null;
+  reviewerRole: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  comment: string | null;
+  reviewedAt: string | null;
+}
+
+export interface ApprovalStatus {
+  chain: Array<{
+    role: string;
+    memberId: string;
+    memberName: string;
+    status: 'PENDING' | 'APPROVED' | 'REJECTED';
+    comment?: string;
+  }> | null;
+  approvals: DeliverableApproval[];
+  status: string;
+}
 
 export interface UserDeliverable {
   id: string;
@@ -21,6 +46,20 @@ export interface UserDeliverable {
   submittedAt?: string;
   lastSavedAt?: string;
   meetingId?: string;
+  delegationType: DeliverableDelegationType;
+  assignedToMemberId: string | null;
+  assignedToMember: {
+    id: string;
+    name: string;
+    role: string;
+    expertise: string;
+    personality: string;
+  } | null;
+  assignedToRole: string | null;
+  approvalChain: any | null;
+  approvedBy: string | null;
+  approvedAt: string | null;
+  rejectionReason: string | null;
   evaluations?: DeliverableEvaluation[];
   createdAt: string;
   updatedAt: string;

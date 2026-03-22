@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, type MutableRefObject } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -54,6 +54,57 @@ export function PmoChat({
 
   const { sendMessage, isStreaming, streamedContent, cancelStream } =
     usePmoStream(simulationId);
+
+  // Voice recording state
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null) as MutableRefObject<MediaRecorder | null>;
+  const audioChunksRef = useRef<Blob[]>([]) as MutableRefObject<Blob[]>;
+
+  const startRecording = useCallback(async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) audioChunksRef.current.push(event.data);
+      };
+
+      mediaRecorder.onstop = async () => {
+        stream.getTracks().forEach((track) => track.stop());
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        if (audioBlob.size < 1000) return; // Too small, ignore
+
+        setIsTranscribing(true);
+        try {
+          const text = await pmoApi.transcribeAudio(simulationId, audioBlob);
+          if (text.trim()) {
+            setInput((prev) => (prev ? `${prev} ${text.trim()}` : text.trim()));
+            inputRef.current?.focus();
+            toast.success('Audio transcrit');
+          }
+        } catch {
+          toast.error('Erreur de transcription audio');
+        } finally {
+          setIsTranscribing(false);
+        }
+      };
+
+      mediaRecorder.start();
+      mediaRecorderRef.current = mediaRecorder;
+      setIsRecording(true);
+    } catch {
+      toast.error('Impossible d\'acceder au microphone');
+    }
+  }, [simulationId]);
+
+  const stopRecording = useCallback(() => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  }, []);
 
   // Sync initial messages
   useEffect(() => {
@@ -250,6 +301,24 @@ export function PmoChat({
             disabled={isStreaming || isInitializing}
             className="flex-1 border-0 shadow-none focus-visible:ring-0 focus-visible:outline-none bg-transparent px-0 h-9"
           />
+          {/* Voice recording button */}
+          {!isStreaming && (
+            <Button
+              variant={isRecording ? 'destructive' : 'outline'}
+              size="icon"
+              onClick={isRecording ? stopRecording : startRecording}
+              disabled={isTranscribing || isInitializing}
+              title={isRecording ? 'Arreter l\'enregistrement' : 'Enregistrer un message vocal'}
+              className={`shrink-0 size-8 rounded-lg ${isRecording ? 'animate-pulse' : ''}`}
+            >
+              {isTranscribing ? (
+                <span className="animate-spin size-3.5">⏳</span>
+              ) : (
+                <KeenIcon icon={isRecording ? 'cross-circle' : 'speaker'} style="duotone" className="size-3.5" />
+              )}
+            </Button>
+          )}
+
           {isStreaming ? (
             <Button
               variant="outline"
@@ -265,7 +334,7 @@ export function PmoChat({
               variant="primary"
               size="icon"
               onClick={handleSend}
-              disabled={!input.trim() || isInitializing}
+              disabled={!input.trim() || isInitializing || isTranscribing}
               title="Envoyer"
               className="shrink-0 size-8 rounded-lg"
             >

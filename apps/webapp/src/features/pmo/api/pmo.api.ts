@@ -32,6 +32,23 @@ export const pmoApi = {
 
   initConversation: (simulationId: string) =>
     api.post<PmoMessage[]>(`/simulations/${simulationId}/pmo/init`),
+
+  transcribeAudio: async (simulationId: string, audioBlob: Blob): Promise<string> => {
+    const token = localStorage.getItem('sim360_access_token');
+    const formData = new FormData();
+    formData.append('audio', audioBlob, 'recording.webm');
+
+    const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
+    const res = await fetch(`${baseUrl}/simulations/${simulationId}/pmo/transcribe`, {
+      method: 'POST',
+      headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      body: formData,
+    });
+
+    if (!res.ok) throw new Error('Erreur de transcription');
+    const data = await res.json();
+    return data.text;
+  },
 };
 
 export const usePmoHistory = (simulationId: string, enabled = true) =>

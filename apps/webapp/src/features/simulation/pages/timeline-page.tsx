@@ -2,18 +2,23 @@ import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router';
 import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/layout-6/components/toolbar';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { KeenIcon } from '@/components/keenicons';
+import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
 import { simulationApi } from '../api/simulation.api';
 import type { TimelineEntry } from '../types/simulation.types';
 
 const TYPE_ICONS: Record<string, string> = {
-  PHASE_START: '📋',
-  PHASE_COMPLETE: '✅',
-  DECISION: '🤔',
-  RANDOM_EVENT: '⚡',
-  SIMULATION_START: '🚀',
-  SIMULATION_COMPLETE: '🏁',
-  SIMULATION_PAUSE: '⏸',
-  SIMULATION_RESUME: '▶',
+  PHASE_START: 'notepad',
+  PHASE_COMPLETE: 'check-circle',
+  DECISION: 'question-2',
+  RANDOM_EVENT: 'flash',
+  SIMULATION_START: 'rocket',
+  SIMULATION_COMPLETE: 'flag',
+  SIMULATION_PAUSE: 'time',
+  SIMULATION_RESUME: 'arrow-right',
 };
 
 const TYPE_LABELS: Record<string, string> = {
@@ -27,15 +32,26 @@ const TYPE_LABELS: Record<string, string> = {
   SIMULATION_RESUME: 'Simulation reprise',
 };
 
-const TYPE_COLORS: Record<string, string> = {
-  PHASE_START: 'border-primary/30 bg-primary/5',
-  PHASE_COMPLETE: 'border-success/30 bg-success/5',
-  DECISION: 'border-primary/30 bg-primary/5',
-  RANDOM_EVENT: 'border-[var(--accent-brand)]/30 bg-[var(--accent-brand)]/5',
-  SIMULATION_START: 'border-primary/30 bg-primary/5',
-  SIMULATION_COMPLETE: 'border-success/30 bg-success/5',
-  SIMULATION_PAUSE: 'border-warning/30 bg-warning/5',
-  SIMULATION_RESUME: 'border-primary/30 bg-primary/5',
+const TYPE_DOT_COLORS: Record<string, string> = {
+  PHASE_START: 'bg-primary/15 text-primary border-primary/30',
+  PHASE_COMPLETE: 'bg-success/15 text-success border-success/30',
+  DECISION: 'bg-primary/15 text-primary border-primary/30',
+  RANDOM_EVENT: 'bg-warning/15 text-warning border-warning/30',
+  SIMULATION_START: 'bg-primary/15 text-primary border-primary/30',
+  SIMULATION_COMPLETE: 'bg-success/15 text-success border-success/30',
+  SIMULATION_PAUSE: 'bg-warning/15 text-warning border-warning/30',
+  SIMULATION_RESUME: 'bg-primary/15 text-primary border-primary/30',
+};
+
+const TYPE_BADGE_VARIANT: Record<string, 'primary' | 'success' | 'warning' | 'secondary'> = {
+  PHASE_START: 'primary',
+  PHASE_COMPLETE: 'success',
+  DECISION: 'primary',
+  RANDOM_EVENT: 'warning',
+  SIMULATION_START: 'primary',
+  SIMULATION_COMPLETE: 'success',
+  SIMULATION_PAUSE: 'warning',
+  SIMULATION_RESUME: 'primary',
 };
 
 export default function TimelinePage() {
@@ -54,22 +70,32 @@ export default function TimelinePage() {
   }, [id]);
 
   return (
-    <div className="container">
+    <div className="container-fixed space-y-5">
       <Toolbar>
-        <ToolbarHeading title="Historique de la simulation" />
+        <ToolbarHeading>
+          <h1 className="text-xl font-medium text-gray-900">Historique de la simulation</h1>
+          {!loading && timeline.length > 0 && (
+            <p className="text-sm text-gray-700">{timeline.length} evenement(s)</p>
+          )}
+        </ToolbarHeading>
         <ToolbarActions>
-          <Link
-            to={`/simulations/${id}`}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium hover:bg-muted transition-colors"
-          >
-            ← Retour a la simulation
-          </Link>
+          <Button variant="outline" size="sm" asChild>
+            <Link to={`/simulations/${id}`}>
+              <KeenIcon icon="arrow-left" style="duotone" className="text-sm" />
+              Retour
+            </Link>
+          </Button>
         </ToolbarActions>
       </Toolbar>
 
       {loading && (
-        <div className="flex justify-center py-16">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <div className="space-y-4">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="flex items-start gap-4 pl-12 relative">
+              <Skeleton className="absolute left-3 w-7 h-7 rounded-full" />
+              <Skeleton className="h-20 w-full rounded-lg" />
+            </div>
+          ))}
         </div>
       )}
 
@@ -83,11 +109,12 @@ export default function TimelinePage() {
 
       {!loading && !error && timeline.length === 0 && (
         <Card>
-          <CardContent className="flex flex-col items-center justify-center py-16 gap-4">
-            <span className="text-4xl">📜</span>
-            <p className="text-muted-foreground text-sm">
-              Aucun evenement dans l'historique.
-            </p>
+          <CardContent>
+            <EmptyState
+              icon="calendar"
+              title="Aucun evenement"
+              description="L'historique se construira au fil de la simulation."
+            />
           </CardContent>
         </Card>
       )}
@@ -95,21 +122,22 @@ export default function TimelinePage() {
       {!loading && !error && timeline.length > 0 && (
         <div className="relative">
           {/* Vertical line */}
-          <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-border" />
+          <div className="absolute left-[18px] top-3 bottom-3 w-0.5 bg-border" aria-hidden="true" />
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             {timeline.map((entry, i) => {
-              const icon = TYPE_ICONS[entry.type] || '📌';
+              const icon = TYPE_ICONS[entry.type] || 'element-11';
               const label = TYPE_LABELS[entry.type] || entry.type;
-              const colorClass = TYPE_COLORS[entry.type] || 'border-border bg-muted';
+              const dotColor = TYPE_DOT_COLORS[entry.type] || 'bg-muted text-muted-foreground border-border';
+              const badgeVariant = TYPE_BADGE_VARIANT[entry.type] || 'secondary';
 
               return (
-                <div key={i} className="relative flex items-start gap-4 pl-12">
+                <div key={i} className="relative flex items-start gap-3 pl-12">
                   {/* Dot on the line */}
                   <div
-                    className={`absolute left-3 w-5 h-5 rounded-full border-2 flex items-center justify-center text-[10px] ${colorClass}`}
+                    className={`absolute left-1.5 w-7 h-7 rounded-full border-2 flex items-center justify-center ${dotColor}`}
                   >
-                    {icon}
+                    <KeenIcon icon={icon} style="duotone" className="text-[10px]" />
                   </div>
 
                   <Card className="flex-1">
@@ -117,14 +145,13 @@ export default function TimelinePage() {
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground font-medium">
+                            <Badge variant={badgeVariant} appearance="light" size="sm">
                               {label}
-                            </span>
+                            </Badge>
                           </div>
-                          <h4 className="text-sm font-medium">{entry.title}</h4>
-                          {/* Extra data display */}
+                          <h4 className="text-sm font-medium text-foreground">{entry.title}</h4>
                           {entry.data && Object.keys(entry.data).length > 0 && (
-                            <div className="mt-2 text-sm text-muted-foreground space-y-0.5">
+                            <div className="mt-2 text-xs text-muted-foreground space-y-0.5">
                               {Object.entries(entry.data).map(([key, val]) => (
                                 <p key={key}>
                                   <span className="font-medium">{key}</span> :{' '}
@@ -134,11 +161,10 @@ export default function TimelinePage() {
                             </div>
                           )}
                         </div>
-                        <span className="text-[10px] text-muted-foreground shrink-0 whitespace-nowrap">
+                        <span className="text-xs text-muted-foreground shrink-0 whitespace-nowrap">
                           {new Date(entry.date).toLocaleString('fr-FR', {
                             day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric',
+                            month: 'short',
                             hour: '2-digit',
                             minute: '2-digit',
                           })}

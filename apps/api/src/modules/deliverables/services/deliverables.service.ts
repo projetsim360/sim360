@@ -439,9 +439,13 @@ export class DeliverablesService {
     }
 
     if (!deliverable.templateId) {
-      throw new NotFoundException(
-        'Aucun template associe a ce livrable',
-      );
+      return {
+        templateId: null,
+        title: deliverable.title,
+        type: deliverable.type,
+        referenceExample: null,
+        message: 'Aucun exemple de reference disponible pour ce livrable. Le Jumeau Parfait est disponible uniquement pour les livrables bases sur un template de reference.',
+      };
     }
 
     const template = await this.prisma.deliverableTemplate.findUnique({
@@ -455,9 +459,13 @@ export class DeliverablesService {
     });
 
     if (!template || !template.referenceExample) {
-      throw new NotFoundException(
-        'Aucun exemple de reference disponible',
-      );
+      return {
+        templateId: template?.id ?? null,
+        title: template?.title ?? deliverable.title,
+        type: template?.type ?? deliverable.type,
+        referenceExample: null,
+        message: 'Aucun exemple de reference redige pour ce template.',
+      };
     }
 
     return {

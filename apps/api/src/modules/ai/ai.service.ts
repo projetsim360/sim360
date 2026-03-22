@@ -238,6 +238,30 @@ export class AiService {
     subscriber.complete();
   }
 
+  /**
+   * Transcribe audio using OpenAI Whisper API.
+   */
+  async transcribe(audioBuffer: Buffer, filename: string): Promise<string> {
+    if (!this.openai) {
+      throw new Error('OpenAI client not configured. Set OPENAI_API_KEY.');
+    }
+
+    const file = new File([audioBuffer as unknown as BlobPart], filename, {
+      type: 'audio/webm',
+    });
+
+    const response = await this.openai.audio.transcriptions.create({
+      model: 'whisper-1',
+      file,
+      language: 'fr',
+      response_format: 'text',
+    });
+
+    return typeof response === 'string'
+      ? response
+      : (response as any).text ?? '';
+  }
+
   async cacheSystemPrompt(cacheKey: string, prompt: string, ttlSeconds = 3600): Promise<void> {
     await this.cache.set(`ai:sys:${cacheKey}`, prompt, ttlSeconds);
   }

@@ -6,6 +6,18 @@ export interface KpiValues {
   riskLevel: number;
 }
 
+export type ScenarioType = 'GREENFIELD' | 'BROWNFIELD';
+
+export interface BrownfieldContext {
+  previousDecisions: Array<{ phase: number; title: string; outcome: string; impact: 'positive' | 'negative' | 'neutral' }>;
+  completedDeliverables: Array<{ name: string; score: number; status: 'VALIDATED' | 'REJECTED' }>;
+  accumulatedDelays: number;
+  budgetUsed: number;
+  knownRisks: Array<{ title: string; severity: string; status: string }>;
+  teamMorale: string;
+  previousPmNotes: string;
+}
+
 export interface Scenario {
   id: string;
   title: string;
@@ -13,9 +25,13 @@ export interface Scenario {
   objectives: string[];
   sector: string;
   difficulty: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+  scenarioType: ScenarioType;
+  startingPhaseOrder: number;
+  brownfieldContext: BrownfieldContext | null;
   estimatedDurationHours: number;
   competencies: string[];
   phases: { id: string; name: string; type: string; order: number }[];
+  isPublished?: boolean;
   _count?: { simulations: number };
 }
 
@@ -112,14 +128,22 @@ export interface SimulationMeeting {
   _count?: { messages: number };
 }
 
+export interface HandoverStatus {
+  hasHandover: boolean;
+  hrMeeting: SimulationMeeting | null;
+  pmoMeeting: SimulationMeeting | null;
+  isComplete: boolean;
+  currentStep: 'HR' | 'PMO' | 'DONE';
+}
+
 export interface Simulation {
   id: string;
-  status: 'DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED' | 'ABANDONED';
+  status: 'DRAFT' | 'ONBOARDING' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED' | 'ABANDONED';
   currentPhaseOrder: number;
   startedAt: string | null;
   completedAt: string | null;
   project: Project;
-  scenario: { id: string; title: string; difficulty: string; sector: string };
+  scenario: { id: string; title: string; difficulty: string; sector: string; scenarioType: ScenarioType; startingPhaseOrder: number; brownfieldContext: BrownfieldContext | null };
   kpis: SimulationKpi | null;
   phases: SimulationPhase[];
   decisions: Decision[];

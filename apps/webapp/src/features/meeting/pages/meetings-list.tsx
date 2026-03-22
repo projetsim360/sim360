@@ -71,9 +71,11 @@ export default function MeetingsListPage() {
 
   if (!simId) {
     return (
-      <div className="container">
+      <div className="container-fixed space-y-5">
         <Toolbar>
-          <ToolbarHeading title="Reunions" />
+          <ToolbarHeading>
+            <h1 className="text-xl font-medium text-gray-900">Reunions</h1>
+          </ToolbarHeading>
         </Toolbar>
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-16 gap-3">
@@ -90,12 +92,20 @@ export default function MeetingsListPage() {
   }
 
   return (
-    <div className="container">
+    <div className="container-fixed space-y-5">
       <Toolbar>
-        <ToolbarHeading title="Reunions" />
+        <ToolbarHeading>
+          <h1 className="text-xl font-medium text-gray-900">Reunions</h1>
+          <p className="text-sm text-gray-700">
+            {meetings.length} reunion(s){filteredMeetings.length !== meetings.length ? ` (${filteredMeetings.length} affichee(s))` : ''}
+          </p>
+        </ToolbarHeading>
         <ToolbarActions>
-          <Button variant="outline" asChild>
-            <Link to={`/simulations/${simId}`}>Retour a la simulation</Link>
+          <Button variant="outline" size="sm" asChild>
+            <Link to={`/simulations/${simId}`}>
+              <KeenIcon icon="arrow-left" style="duotone" className="text-sm" />
+              Retour
+            </Link>
           </Button>
         </ToolbarActions>
       </Toolbar>
@@ -196,7 +206,7 @@ export default function MeetingsListPage() {
               to={`/meetings/${meeting.id}`}
               className="block"
             >
-              <Card className="hover:shadow-md transition-shadow h-full">
+              <Card className="hover:shadow-md transition-shadow h-full cursor-pointer">
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <h3 className="font-semibold text-sm">{meeting.title}</h3>

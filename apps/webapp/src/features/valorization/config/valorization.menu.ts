@@ -7,6 +7,7 @@ export const valorizationMenuItems: MenuItem[] = [
     icon: Award,
     path: '/profile/badges',
     children: [
+      { title: 'Portfolio', path: '/valorization/portfolio' },
       { title: 'Mes badges', path: '/profile/badges' },
     ],
   },

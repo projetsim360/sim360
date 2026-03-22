@@ -10,8 +10,9 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { Response } from 'express';
-import { JwtAuthGuard, CurrentUser } from '@sim360/core';
+import { JwtAuthGuard, CurrentUser, CurrentTenant } from '@sim360/core';
 import { MeetingsService } from './meetings.service';
+import { HandoverService } from './handover.service';
 import { SendMessageDto, CreateRealtimeSessionsDto } from './dto';
 
 @ApiTags('Meetings')
@@ -19,7 +20,10 @@ import { SendMessageDto, CreateRealtimeSessionsDto } from './dto';
 @UseGuards(JwtAuthGuard)
 @Controller()
 export class MeetingsController {
-  constructor(private meetingsService: MeetingsService) {}
+  constructor(
+    private meetingsService: MeetingsService,
+    private handoverService: HandoverService,
+  ) {}
 
   @Get('simulations/:simId/meetings')
   @ApiOperation({ summary: 'List meetings for a simulation' })
@@ -122,5 +126,23 @@ export class MeetingsController {
     @Body() dto: { transcriptions: Array<{ role: 'user' | 'assistant'; content: string; participantId?: string }> },
   ) {
     return this.meetingsService.saveTranscriptions(id, user.id, dto.transcriptions);
+  }
+
+  // ─── Handover endpoints ─────────────────────────────────
+
+  @Get('simulations/:simId/handover')
+  @ApiOperation({ summary: 'Get handover status (HR + PMO meetings)' })
+  getHandoverStatus(@Param('simId') simId: string) {
+    return this.handoverService.getHandoverStatus(simId);
+  }
+
+  @Post('simulations/:simId/handover/complete')
+  @ApiOperation({ summary: 'Finalize handover and transition to IN_PROGRESS' })
+  completeHandover(
+    @Param('simId') simId: string,
+    @CurrentUser() user: any,
+    @CurrentTenant() tenantId: string,
+  ) {
+    return this.handoverService.completeHandover(simId, user.id, tenantId);
   }
 }

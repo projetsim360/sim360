@@ -243,20 +243,27 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
 
       <Separator />
 
-      <div className="flex items-center justify-between">
-        <Button variant="ghost" size="sm" onClick={onBack}>
-          <ArrowLeft className="text-sm me-1" />
-          Retour
-        </Button>
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={handleComplete}
-          disabled={(!selectedSector && !submittedProject) || completeOnboarding.isPending}
-        >
-          {completeOnboarding.isPending ? 'Finalisation...' : 'Commencer la simulation'}
-          <Play className="text-sm ms-1" />
-        </Button>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <Button variant="ghost" className="min-h-[44px] px-4" onClick={onBack}>
+            <ArrowLeft className="text-sm me-1" />
+            Retour
+          </Button>
+          <Button
+            variant="primary"
+            className="min-h-[44px] px-5"
+            onClick={handleComplete}
+            disabled={(!selectedSector && !submittedProject) || completeOnboarding.isPending}
+          >
+            {completeOnboarding.isPending ? 'Finalisation...' : 'Commencer la simulation'}
+            <Play className="text-sm ms-1" />
+          </Button>
+        </div>
+        {!selectedSector && !submittedProject && (
+          <p className="text-xs text-muted-foreground text-right">
+            Selectionnez un secteur ou proposez un projet pour continuer.
+          </p>
+        )}
       </div>
 
       {/* Custom Project Dialog */}

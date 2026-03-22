@@ -348,8 +348,8 @@ export default function MeetingRoomPage() {
                     <div className="space-y-2">
                       {meeting.objectives.map((obj, i) => (
                         <div key={i} className="flex items-start gap-2.5">
-                          <div className="size-5 rounded-full bg-brand-500/10 flex items-center justify-center shrink-0 mt-0.5">
-                            <KeenIcon icon="check" style="duotone" className="size-3 text-brand-500" />
+                          <div className="size-5 rounded-full bg-muted flex items-center justify-center shrink-0 mt-0.5">
+                            <span className="text-[10px] font-bold text-muted-foreground">{i + 1}</span>
                           </div>
                           <span className="text-sm text-foreground">{obj}</span>
                         </div>
@@ -374,7 +374,7 @@ export default function MeetingRoomPage() {
             {/* CTA */}
             <div className="flex justify-center">
               <Button variant="primary" size="lg" onClick={handleStart} disabled={actionLoading} className="px-8">
-                <KeenIcon icon="play" style="duotone" className="text-sm" />
+                <KeenIcon icon="rocket" style="duotone" className="text-sm" />
                 {actionLoading ? 'Demarrage...' : 'Demarrer la reunion'}
               </Button>
             </div>
@@ -638,15 +638,15 @@ export default function MeetingRoomPage() {
                 <Card>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-sm flex items-center gap-2">
-                      <KeenIcon icon="target" style="duotone" className="size-4" />
-                      Objectifs
+                      <KeenIcon icon="focus" style="duotone" className="size-4" />
+                      Objectifs a atteindre
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-2">
                     {meeting.objectives.map((obj, i) => (
                       <div key={i} className="flex items-start gap-2">
-                        <KeenIcon icon="check-circle" style="duotone" className="size-4 text-success shrink-0 mt-0.5" />
-                        <span className="text-sm text-foreground">{obj}</span>
+                        <div className="size-4 rounded-full border-2 border-muted-foreground/30 shrink-0 mt-0.5" />
+                        <span className="text-sm text-muted-foreground">{obj}</span>
                       </div>
                     ))}
                   </CardContent>
@@ -698,13 +698,13 @@ export default function MeetingRoomPage() {
             <button
               onClick={() => setMeetingMode('TEXT')}
               className={cn(
-                'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer',
+                'inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium leading-none transition-colors cursor-pointer',
                 meetingMode === 'TEXT'
                   ? 'bg-brand-500 text-white'
                   : 'bg-background text-muted-foreground hover:bg-muted',
               )}
             >
-              <KeenIcon icon="message-text" style="duotone" className="size-3.5" />
+              <KeenIcon icon="message-text" style="duotone" className="text-sm leading-none" />
               Texte
             </button>
             <button
@@ -712,13 +712,13 @@ export default function MeetingRoomPage() {
                 if (meetingMode !== 'AUDIO') setShowAudioWarning(true);
               }}
               className={cn(
-                'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer',
+                'inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium leading-none transition-colors cursor-pointer',
                 meetingMode === 'AUDIO'
                   ? 'bg-brand-500 text-white'
                   : 'bg-background text-muted-foreground hover:bg-muted',
               )}
             >
-              <KeenIcon icon="microphone" style="duotone" className="size-3.5" />
+              <KeenIcon icon="speaker" style="duotone" className="text-sm leading-none" />
               Audio
             </button>
           </div>
@@ -728,7 +728,7 @@ export default function MeetingRoomPage() {
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle className="flex items-center gap-2">
-                  <KeenIcon icon="microphone" style="duotone" className="size-5 text-warning" />
+                  <KeenIcon icon="speaker" style="duotone" className="size-5 text-warning" />
                   Mode audio
                 </AlertDialogTitle>
                 <AlertDialogDescription className="space-y-2">
@@ -751,14 +751,14 @@ export default function MeetingRoomPage() {
           </AlertDialog>
 
           {/* Chronometer */}
-          <Badge variant="primary" appearance="light" size="sm" className="gap-1.5 tabular-nums">
-            <KeenIcon icon="time" style="duotone" className="text-xs" />
+          <Badge variant="primary" appearance="light" size="sm" className="inline-flex items-center gap-1.5 tabular-nums">
+            <KeenIcon icon="time" style="duotone" className="text-xs leading-none" />
             {formatElapsed(elapsed)}
           </Badge>
 
           <Button variant="ghost" size="sm" asChild>
-            <Link to={`/simulations/${meeting.simulationId}`}>
-              <KeenIcon icon="arrow-left" style="duotone" className="text-xs" />
+            <Link to={`/simulations/${meeting.simulationId}`} className="inline-flex items-center gap-1.5">
+              <KeenIcon icon="arrow-left" style="duotone" className="text-xs leading-none" />
               Retour
             </Link>
           </Button>

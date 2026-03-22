@@ -7,6 +7,9 @@ import {
   Query,
   Res,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
   ParseIntPipe,
   DefaultValuePipe,
 } from '@nestjs/common';
@@ -16,10 +19,13 @@ import {
   ApiOperation,
   ApiQuery,
   ApiParam,
+  ApiConsumes,
 } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { JwtAuthGuard, RolesGuard, CurrentUser, CurrentTenant, Auditable } from '@sim360/core';
 import { PmoService } from '../services/pmo.service';
+import { AiService } from '../../ai/ai.service';
 import { SendPmoMessageDto } from '../dto';
 
 @ApiTags('PMO')
@@ -27,7 +33,10 @@ import { SendPmoMessageDto } from '../dto';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('simulations/:simulationId/pmo')
 export class PmoController {
-  constructor(private readonly pmoService: PmoService) {}
+  constructor(
+    private readonly pmoService: PmoService,
+    private readonly aiService: AiService,
+  ) {}
 
   @Post('chat')
   @Auditable('PMO_CHAT', 'PmoConversation')
@@ -102,5 +111,25 @@ export class PmoController {
     @CurrentTenant() tenantId: string,
   ) {
     return this.pmoService.initConversation(simulationId, user.id, tenantId);
+  }
+
+  @Post('transcribe')
+  @Auditable('PMO_TRANSCRIBE', 'PmoConversation')
+  @ApiOperation({ summary: 'Transcrire un audio vocal pour le chat PMO (Whisper)' })
+  @ApiConsumes('multipart/form-data')
+  @ApiParam({ name: 'simulationId', description: 'ID de la simulation' })
+  @UseInterceptors(FileInterceptor('audio'))
+  async transcribeAudio(
+    @Param('simulationId') simulationId: string,
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser() user: any,
+    @CurrentTenant() tenantId: string,
+  ) {
+    if (!file) {
+      throw new BadRequestException('Fichier audio requis');
+    }
+
+    const text = await this.aiService.transcribe(file.buffer, file.originalname);
+    return { text };
   }
 }

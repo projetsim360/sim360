@@ -1,4 +1,4 @@
-import { PrismaClient, UserRole, TenantPlan, Difficulty, Sector, PhaseType, RandomEventType, Severity, ReferenceDocumentCategory } from '@prisma/client';
+import { PrismaClient, UserRole, TenantPlan, Difficulty, Sector, PhaseType, RandomEventType, Severity, ReferenceDocumentCategory, ScenarioType } from '@prisma/client';
 import bcryptjs from 'bcryptjs';
 import { seedDeliverableTemplates } from './seeds/deliverable-templates';
 const { hashSync } = bcryptjs;
@@ -887,8 +887,370 @@ async function main() {
     }
   }
 
+  // ─── Scenario 3: Brownfield — Reprise projet ERP (ADVANCED) ───
+
+  // Clean existing brownfield scenario phases for re-seed
+  await prisma.scenarioPhase.deleteMany({ where: { scenarioId: 'seed-scenario-brownfield-erp' } });
+
+  const scenario3 = await prisma.scenario.upsert({
+    where: { id: 'seed-scenario-brownfield-erp' },
+    update: {},
+    create: {
+      id: 'seed-scenario-brownfield-erp',
+      title: 'Reprise d\'un projet ERP en difficulte',
+      description: 'Le precedent chef de projet a quitte l\'entreprise en pleine phase d\'execution. Le projet de deploiement ERP accumule 3 semaines de retard, le budget est consomme a 65%, et le moral de l\'equipe est au plus bas. Le Sponsor menace d\'annuler le projet si la situation ne s\'ameliore pas rapidement. Vous etes appele en renfort pour sauver ce projet.',
+      objectives: [
+        'Redresser la trajectoire du projet en moins de 2 mois',
+        'Livrer le module Finance dans les delais restants',
+        'Restaurer la confiance du Sponsor et du Comite de Direction',
+        'Stabiliser l\'equipe et reduire le turnover',
+      ],
+      sector: Sector.FINANCE,
+      difficulty: Difficulty.ADVANCED,
+      scenarioType: ScenarioType.BROWNFIELD,
+      startingPhaseOrder: 2,
+      brownfieldContext: {
+        previousDecisions: [
+          { phase: 0, title: 'Choix de l\'integrateur ERP', outcome: 'Selection d\'un integrateur low-cost', impact: 'negative' },
+          { phase: 0, title: 'Perimetre fonctionnel', outcome: 'Tous les modules inclus d\'emblee', impact: 'negative' },
+          { phase: 1, title: 'Methode de deploiement', outcome: 'Big Bang (pas de pilote)', impact: 'negative' },
+          { phase: 1, title: 'Formation des utilisateurs', outcome: 'Reportee a plus tard', impact: 'negative' },
+        ],
+        completedDeliverables: [
+          { name: 'Charte de projet', score: 55, status: 'VALIDATED' },
+          { name: 'Plan de management', score: 45, status: 'VALIDATED' },
+          { name: 'Etude de faisabilite', score: 60, status: 'VALIDATED' },
+          { name: 'Specifications techniques', score: 40, status: 'REJECTED' },
+        ],
+        accumulatedDelays: 15,
+        budgetUsed: 0.65,
+        knownRisks: [
+          { title: 'Turnover equipe technique (2 departs)', severity: 'HIGH', status: 'ACTIVE' },
+          { title: 'Integrateur en sous-capacite', severity: 'HIGH', status: 'ACTIVE' },
+          { title: 'Specifications incompletes module Finance', severity: 'CRITICAL', status: 'ACTIVE' },
+          { title: 'Resistance au changement des utilisateurs', severity: 'MEDIUM', status: 'ACTIVE' },
+        ],
+        teamMorale: 'low',
+        previousPmNotes: 'Le precedent chef de projet a quitte l\'entreprise apres un conflit avec le Sponsor sur le budget. L\'equipe est demotivee et deux developpeurs seniors ont demissionne. L\'integrateur ERP ne respecte pas ses engagements de qualite. Les specifications du module Finance ont ete rejetees et doivent etre reprises.',
+      },
+      estimatedDurationHours: 5,
+      requiredPlan: TenantPlan.STARTER,
+      competencies: ['leadership', 'gestion-risques', 'communication', 'negociation', 'gestion-crise'],
+      isPublished: true,
+      createdById: systemUser.id,
+      projectTemplate: {
+        name: 'Deploiement ERP GlobalFinance',
+        client: 'GlobalFinance SA',
+        sector: 'FINANCE',
+        description: 'Deploiement d\'un ERP couvrant les modules Finance, RH et Achats pour une entreprise de 500 collaborateurs.',
+        teamSize: 7,
+        initialBudget: 350000,
+        deadlineDays: 120,
+        team: [
+          { name: 'Marc Dubois', role: 'Architecte Solution', expertise: 'SENIOR', personality: 'NEUTRAL', morale: 45 },
+          { name: 'Camille Fontaine', role: 'Consultant Fonctionnel Finance', expertise: 'SENIOR', personality: 'COOPERATIVE', morale: 50 },
+          { name: 'Romain Lefevre', role: 'Developpeur Integration', expertise: 'INTERMEDIATE', personality: 'RESISTANT', morale: 35 },
+          { name: 'Emma Girard', role: 'Analyste Metier RH', expertise: 'INTERMEDIATE', personality: 'COOPERATIVE', morale: 55 },
+          { name: 'Lucas Petit', role: 'Developpeur Backend', expertise: 'JUNIOR', personality: 'COOPERATIVE', morale: 40 },
+          { name: 'Sarah Benali', role: 'Testeuse QA', expertise: 'INTERMEDIATE', personality: 'NEUTRAL', morale: 60 },
+          { name: 'David Chang', role: 'Formateur Utilisateurs', expertise: 'SENIOR', personality: 'COOPERATIVE', morale: 65 },
+        ],
+        deliverables: [
+          { name: 'Charte de projet', description: 'Charte initiale (validee par le precedent CP)', phaseOrder: 0 },
+          { name: 'Plan de management', description: 'Plan de management (partiellement suivi)', phaseOrder: 1 },
+          { name: 'Specifications module Finance', description: 'A reprendre — rejetees par le client', phaseOrder: 2 },
+          { name: 'Plan de migration de donnees', description: 'Plan de migration vers le nouvel ERP', phaseOrder: 2 },
+          { name: 'Rapport de recette', description: 'Resultats des tests de recette', phaseOrder: 3 },
+          { name: 'Plan de formation', description: 'Programme de formation des utilisateurs', phaseOrder: 3 },
+          { name: 'Bilan de projet', description: 'Bilan final et retour d\'experience', phaseOrder: 4 },
+        ],
+      },
+      initialKpis: { budget: 100, schedule: 100, quality: 80, teamMorale: 75, riskLevel: 20 },
+    },
+  });
+
+  // Phases for Scenario 3 (Brownfield ERP)
+  const s3Phases = [
+    {
+      order: 0,
+      name: 'Cadrage Initial',
+      type: PhaseType.INITIATION,
+      durationDays: 10,
+      description: 'Phase initiale realisee par le precedent chef de projet.',
+      completionCriteria: { requiredMeetings: 1, requiredDecisions: 2 },
+    },
+    {
+      order: 1,
+      name: 'Planification',
+      type: PhaseType.PLANNING,
+      durationDays: 15,
+      description: 'Planification realisee par le precedent chef de projet.',
+      completionCriteria: { requiredMeetings: 1, requiredDecisions: 2 },
+    },
+    {
+      order: 2,
+      name: 'Execution & Redressement',
+      type: PhaseType.EXECUTION,
+      durationDays: 25,
+      description: 'Vous prenez le relais ici. L\'equipe est demotivee, les specifications du module Finance sont rejetees, et l\'integrateur ne tient pas ses promesses. A vous de redresser la barre.',
+      completionCriteria: { requiredMeetings: 2, requiredDecisions: 3 },
+    },
+    {
+      order: 3,
+      name: 'Suivi & Stabilisation',
+      type: PhaseType.MONITORING,
+      durationDays: 15,
+      description: 'Surveillez les progres, corrigez le tir et preparez la recette.',
+      completionCriteria: { requiredMeetings: 1, requiredDecisions: 1 },
+    },
+    {
+      order: 4,
+      name: 'Cloture & Bilan',
+      type: PhaseType.CLOSURE,
+      durationDays: 5,
+      description: 'Finalisez le deploiement, formez les utilisateurs et redigez le bilan.',
+      completionCriteria: { requiredMeetings: 1, requiredDecisions: 0 },
+    },
+  ];
+
+  for (const phaseData of s3Phases) {
+    const phase = await prisma.scenarioPhase.create({
+      data: {
+        scenarioId: scenario3.id,
+        ...phaseData,
+        completionCriteria: phaseData.completionCriteria as any,
+      },
+    });
+
+    // Templates for historical phases (0, 1) — will be auto-resolved by BrownfieldContextService
+    if (phaseData.order === 0) {
+      await prisma.decisionTemplate.createMany({
+        data: [
+          {
+            phaseId: phase.id,
+            title: 'Choix de l\'integrateur ERP',
+            context: 'Trois integrateurs repondent a l\'appel d\'offres. Lequel choisir pour le deploiement ERP ?',
+            options: [
+              { label: 'Selection d\'un integrateur low-cost', description: 'Moins cher mais moins d\'experience', kpiImpact: { budget: 5, quality: -10, riskLevel: 15 } },
+              { label: 'Selection de l\'integrateur reference', description: 'Plus cher, meilleure expertise', kpiImpact: { budget: -10, quality: 10, riskLevel: -5 } },
+              { label: 'Solution interne', description: 'Equipe interne avec consultant externe', kpiImpact: { budget: 0, schedule: -5, teamMorale: 5 } },
+            ] as any,
+          },
+          {
+            phaseId: phase.id,
+            title: 'Perimetre fonctionnel',
+            context: 'Faut-il deployer tous les modules ERP en une fois ou proceeder par lots ?',
+            options: [
+              { label: 'Tous les modules inclus d\'emblee', description: 'Deploiement complet (Big Bang)', kpiImpact: { schedule: -10, riskLevel: 20, quality: -5 } },
+              { label: 'Deploiement par lots', description: 'Module Finance d\'abord, puis RH, puis Achats', kpiImpact: { schedule: 5, riskLevel: -10, quality: 5 } },
+            ] as any,
+          },
+        ],
+      });
+
+      await prisma.meetingTemplate.create({
+        data: {
+          phaseId: phase.id,
+          title: 'Reunion de lancement (Kickoff)',
+          type: 'KICKOFF',
+          objectives: ['Presenter le projet', 'Definir les rôles', 'Valider le planning'],
+          durationMinutes: 60,
+          participants: [
+            { name: 'Jean-Paul Mercier', role: 'Sponsor / DG', personality: 'Exigeant et impatient', cooperationLevel: 2 },
+            { name: 'Marc Dubois', role: 'Architecte Solution', personality: 'Technique et pragmatique', cooperationLevel: 4 },
+          ] as any,
+        },
+      });
+    }
+
+    if (phaseData.order === 1) {
+      await prisma.decisionTemplate.createMany({
+        data: [
+          {
+            phaseId: phase.id,
+            title: 'Methode de deploiement',
+            context: 'Comment deployer l\'ERP ? Big Bang ou deploiement progressif avec pilote ?',
+            options: [
+              { label: 'Big Bang (pas de pilote)', description: 'Deploiement direct en production', kpiImpact: { schedule: 5, riskLevel: 20, quality: -15 } },
+              { label: 'Pilote sur un site', description: 'Test sur un site avant generalisation', kpiImpact: { schedule: -10, riskLevel: -10, quality: 10 } },
+            ] as any,
+          },
+          {
+            phaseId: phase.id,
+            title: 'Formation des utilisateurs',
+            context: 'Quand former les utilisateurs finaux ?',
+            options: [
+              { label: 'Reportee a plus tard', description: 'Se concentrer sur le technique d\'abord', kpiImpact: { schedule: 5, teamMorale: -10, quality: -10, riskLevel: 10 } },
+              { label: 'Formation immediate', description: 'Former des maintenant en parallele', kpiImpact: { budget: -5, teamMorale: 10, quality: 5, riskLevel: -5 } },
+            ] as any,
+          },
+        ],
+      });
+
+      await prisma.meetingTemplate.create({
+        data: {
+          phaseId: phase.id,
+          title: 'Comite de pilotage #1',
+          type: 'STEERING',
+          objectives: ['Valider le plan de deploiement', 'Presenter le budget previsionnel'],
+          durationMinutes: 45,
+          participants: [
+            { name: 'Jean-Paul Mercier', role: 'Sponsor / DG', personality: 'Exigeant et impatient', cooperationLevel: 2 },
+            { name: 'Camille Fontaine', role: 'Consultant Finance', personality: 'Rigoureuse et diplomate', cooperationLevel: 4 },
+          ] as any,
+        },
+      });
+    }
+
+    // Phase 2: Starting phase for learner — decisions and meetings to resolve
+    if (phaseData.order === 2) {
+      await prisma.decisionTemplate.createMany({
+        data: [
+          {
+            phaseId: phase.id,
+            title: 'Gestion de l\'integrateur defaillant',
+            context: 'L\'integrateur ERP ne respecte pas ses engagements de qualite. Les developpements livres sont bugges et incomplets. Que faites-vous ?',
+            options: [
+              { label: 'Ultimatum avec penalites contractuelles', description: 'Mettre la pression legale', kpiImpact: { quality: 5, teamMorale: -5, riskLevel: 5 } },
+              { label: 'Renforcer l\'equipe interne', description: 'Recruter 2 devs supplementaires pour compenser', kpiImpact: { budget: -15, quality: 10, schedule: 5, riskLevel: -10 } },
+              { label: 'Changer d\'integrateur', description: 'Risque mais gain qualite a terme', kpiImpact: { budget: -20, schedule: -15, quality: 15, riskLevel: 10 } },
+            ] as any,
+            timeLimitSeconds: 120,
+          },
+          {
+            phaseId: phase.id,
+            title: 'Reprendre les specifications Finance',
+            context: 'Les specifications du module Finance ont ete rejetees. L\'equipe est decouragee. Comment procedez-vous ?',
+            options: [
+              { label: 'Atelier de co-construction avec le metier', description: 'Reunir les utilisateurs cles pour redefinir ensemble', kpiImpact: { quality: 10, teamMorale: 10, schedule: -5 } },
+              { label: 'Reprendre en interne rapidement', description: 'L\'analyste metier reprend seule les specs', kpiImpact: { schedule: 5, quality: 5, teamMorale: -5 } },
+              { label: 'Faire appel a un consultant externe', description: 'Expert finance pour revoir les specs', kpiImpact: { budget: -10, quality: 15, riskLevel: -5 } },
+            ] as any,
+            timeLimitSeconds: 90,
+          },
+          {
+            phaseId: phase.id,
+            title: 'Moral de l\'equipe',
+            context: 'Le turnover menace. 2 developpeurs envisagent de partir. Comment stabiliser l\'equipe ?',
+            options: [
+              { label: 'Entretiens individuels et primes', description: 'Ecouter et motiver financierement', kpiImpact: { budget: -5, teamMorale: 15, riskLevel: -10 } },
+              { label: 'Reorganiser les responsabilites', description: 'Donner plus d\'autonomie et de visibilite', kpiImpact: { teamMorale: 10, quality: 5, riskLevel: -5 } },
+              { label: 'Ignorer et se concentrer sur les livrables', description: 'Le travail d\'abord', kpiImpact: { teamMorale: -15, riskLevel: 15, schedule: 5 } },
+            ] as any,
+          },
+        ],
+      });
+
+      await prisma.meetingTemplate.createMany({
+        data: [
+          {
+            phaseId: phase.id,
+            title: 'Reunion de crise avec le Sponsor',
+            type: 'CRISIS',
+            objectives: ['Presenter le plan de redressement', 'Negocier un delai supplementaire', 'Rassurer sur la faisabilite'],
+            durationMinutes: 60,
+            participants: [
+              { name: 'Jean-Paul Mercier', role: 'Sponsor / DG', personality: 'Tres mecontant, impatient, pret a annuler le projet', cooperationLevel: 1 },
+              { name: 'Isabelle Roux', role: 'DAF', personality: 'Analytique, veut des chiffres precis', cooperationLevel: 3 },
+            ] as any,
+          },
+          {
+            phaseId: phase.id,
+            title: 'Point d\'equipe — Remotivation',
+            type: 'STANDUP',
+            objectives: ['Ecouter les frustrations', 'Presenter la nouvelle organisation', 'Definir les priorites des 2 prochaines semaines'],
+            durationMinutes: 30,
+            participants: [
+              { name: 'Marc Dubois', role: 'Architecte Solution', personality: 'Fatigue mais competent', cooperationLevel: 3 },
+              { name: 'Romain Lefevre', role: 'Developpeur Integration', personality: 'Frustre et pret a partir', cooperationLevel: 1 },
+              { name: 'Camille Fontaine', role: 'Consultant Finance', personality: 'Positive et motrice', cooperationLevel: 5 },
+            ] as any,
+          },
+        ],
+      });
+
+      await prisma.randomEventTemplate.createMany({
+        data: [
+          {
+            phaseId: phase.id,
+            type: RandomEventType.RISK,
+            title: 'Depart imminent d\'un developpeur cle',
+            description: 'Romain Lefevre, le developpeur integration, vient de recevoir une offre concurrente. Il hesite a partir dans les 2 semaines.',
+            severity: Severity.HIGH,
+            probability: 0.7,
+            options: [
+              { label: 'Contre-offre salariale', description: '+15% de salaire et teletravail 3j/semaine', kpiImpact: { budget: -5, teamMorale: 10, riskLevel: -15 } },
+              { label: 'Le laisser partir', description: 'Accepter son depart et chercher un remplacant', kpiImpact: { schedule: -10, teamMorale: -10, riskLevel: 10 } },
+              { label: 'Negocier un preavis etendu', description: 'Lui demander de rester 1 mois de plus pour la transition', kpiImpact: { teamMorale: -5, riskLevel: -5, schedule: -3 } },
+            ] as any,
+          },
+          {
+            phaseId: phase.id,
+            type: RandomEventType.OPPORTUNITY,
+            title: 'Nouvel outil de test automatise',
+            description: 'L\'editeur ERP propose un nouvel outil de test automatise gratuit pendant 3 mois. Cela pourrait accelerer la recette.',
+            severity: Severity.LOW,
+            probability: 0.5,
+            options: [
+              { label: 'Adopter l\'outil immediatement', description: 'Former l\'equipe QA et integrer dans le workflow', kpiImpact: { quality: 10, schedule: 5, riskLevel: -5 } },
+              { label: 'Tester d\'abord sur un module', description: 'Pilote sur le module RH avant generalisation', kpiImpact: { quality: 5, riskLevel: -3 } },
+              { label: 'Decliner — trop de changements en cours', description: 'L\'equipe ne peut pas absorber un nouvel outil', kpiImpact: {} },
+            ] as any,
+          },
+        ],
+      });
+    }
+
+    // Phase 3 & 4: simplified templates
+    if (phaseData.order === 3) {
+      await prisma.decisionTemplate.create({
+        data: {
+          phaseId: phase.id,
+          title: 'Go/No-Go pour la mise en production',
+          context: 'La recette est terminee mais quelques bugs mineurs subsistent. Le Sponsor veut deployer au plus vite.',
+          options: [
+            { label: 'Go — deployer avec correctifs en parallele', description: 'Risque controle, gain de temps', kpiImpact: { schedule: 10, quality: -5, riskLevel: 5 } },
+            { label: 'No-Go — 1 semaine supplementaire', description: 'Corriger les bugs avant deploiement', kpiImpact: { schedule: -5, quality: 10, riskLevel: -10 } },
+          ] as any,
+        },
+      });
+
+      await prisma.meetingTemplate.create({
+        data: {
+          phaseId: phase.id,
+          title: 'Comite de pilotage — Bilan recette',
+          type: 'STEERING',
+          objectives: ['Presenter les resultats de recette', 'Decision Go/No-Go', 'Planifier la formation'],
+          durationMinutes: 45,
+          participants: [
+            { name: 'Jean-Paul Mercier', role: 'Sponsor / DG', personality: 'Impatient mais satisfait des progres', cooperationLevel: 3 },
+            { name: 'Sarah Benali', role: 'Testeuse QA', personality: 'Rigoureuse, presente les resultats', cooperationLevel: 5 },
+          ] as any,
+        },
+      });
+    }
+
+    if (phaseData.order === 4) {
+      await prisma.meetingTemplate.create({
+        data: {
+          phaseId: phase.id,
+          title: 'Retrospective et bilan de projet',
+          type: 'RETROSPECTIVE',
+          objectives: ['Retour d\'experience', 'Identifier les leçons apprises', 'Celebrer les succes'],
+          durationMinutes: 60,
+          participants: [
+            { name: 'Jean-Paul Mercier', role: 'Sponsor / DG', personality: 'Reconnaissant si le projet est sauve', cooperationLevel: 4 },
+            { name: 'Marc Dubois', role: 'Architecte Solution', personality: 'Soulage, partage ses apprentissages', cooperationLevel: 5 },
+            { name: 'Camille Fontaine', role: 'Consultant Finance', personality: 'Fiere du travail accompli', cooperationLevel: 5 },
+          ] as any,
+        },
+      });
+    }
+  }
+
   console.log(`Seeded: ${scenario1.title}`);
   console.log(`Seeded: ${scenario2.title}`);
+  console.log(`Seeded: ${scenario3.title} (Brownfield)`);
 
   // ─── Manager / Recruiter user ─────────────────────────────
 

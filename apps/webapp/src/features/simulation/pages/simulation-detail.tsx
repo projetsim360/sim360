@@ -14,19 +14,22 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { simulationApi } from '../api/simulation.api';
 import { PmoFab } from '@/features/pmo/components/pmo-fab';
+import { HandoverBanner } from '../components/handover-banner';
 import { useKpiSocket } from '../hooks/use-kpi-socket';
 import type { Simulation, TimelineEntry, KpiValues } from '../types/simulation.types';
 
 const STATUS_LABELS: Record<string, string> = {
   DRAFT: 'Brouillon',
+  ONBOARDING: 'Passation',
   IN_PROGRESS: 'En cours',
   PAUSED: 'En pause',
   COMPLETED: 'Terminee',
   ABANDONED: 'Abandonnee',
 };
 
-const STATUS_VARIANT: Record<string, 'secondary' | 'primary' | 'warning' | 'success' | 'destructive'> = {
+const STATUS_VARIANT: Record<string, 'secondary' | 'primary' | 'warning' | 'success' | 'destructive' | 'info'> = {
   DRAFT: 'secondary',
+  ONBOARDING: 'info',
   IN_PROGRESS: 'primary',
   PAUSED: 'warning',
   COMPLETED: 'success',
@@ -208,6 +211,7 @@ export default function SimulationDetailPage() {
     );
   }
 
+  const isOnboarding = sim.status === 'ONBOARDING';
   const pendingDecisions = sim.decisions.filter((d) => d.selectedOption === null);
   const pendingEvents = sim.randomEvents.filter((e) => e.selectedOption === null);
   const isActive = sim.status === 'IN_PROGRESS' || sim.status === 'PAUSED';
@@ -228,18 +232,22 @@ export default function SimulationDetailPage() {
       <Toolbar>
         <ToolbarHeading title={sim.project?.name || 'Simulation'} />
         <ToolbarActions>
-          <Button variant="outline" size="sm" asChild>
-            <Link to={`/simulations/${id}/emails`}>
-              <KeenIcon icon="sms" style="duotone" className="text-xs" />
-              Emails
-            </Link>
-          </Button>
-          <Button variant="outline" size="sm" asChild>
-            <Link to={`/simulations/${id}/deliverables`}>
-              <KeenIcon icon="document" style="duotone" className="text-xs" />
-              Livrables
-            </Link>
-          </Button>
+          {!isOnboarding && (
+            <>
+              <Button variant="outline" size="sm" asChild>
+                <Link to={`/simulations/${id}/emails`}>
+                  <KeenIcon icon="sms" style="duotone" className="text-xs" />
+                  Emails
+                </Link>
+              </Button>
+              <Button variant="outline" size="sm" asChild>
+                <Link to={`/simulations/${id}/deliverables`}>
+                  <KeenIcon icon="document" style="duotone" className="text-xs" />
+                  Livrables
+                </Link>
+              </Button>
+            </>
+          )}
           <Button variant="ghost" size="sm" asChild>
             <Link to="/simulations">
               <KeenIcon icon="arrow-left" style="duotone" className="text-xs" />
@@ -285,10 +293,15 @@ export default function SimulationDetailPage() {
                   {sim.scenario?.sector}
                 </Badge>
                 <Badge variant="secondary" size="sm" className="gap-1.5 font-normal">
-                  <KeenIcon icon="target" style="duotone" className="text-xs text-muted-foreground" />
+                  <KeenIcon icon="focus" style="duotone" className="text-xs text-muted-foreground" />
                   {sim.scenario?.difficulty}
                 </Badge>
-                {sim.project?.initialBudget && (
+                {sim.scenario?.scenarioType === 'BROWNFIELD' && (
+                  <Badge variant="warning" size="sm" className="gap-1.5 font-normal">
+                    Reprise en cours
+                  </Badge>
+                )}
+                {!isOnboarding && sim.project?.initialBudget && (
                   <Badge variant="secondary" size="sm" className="gap-1.5 font-normal">
                     <KeenIcon icon="dollar" style="duotone" className="text-xs text-muted-foreground" />
                     {sim.project.currentBudget.toLocaleString('fr-FR')} / {sim.project.initialBudget.toLocaleString('fr-FR')} EUR
@@ -318,6 +331,65 @@ export default function SimulationDetailPage() {
         </CardContent>
       </Card>
 
+      {/* Handover banner (ONBOARDING status) */}
+      {sim.status === 'ONBOARDING' && (
+        <HandoverBanner simulationId={sim.id} onHandoverComplete={loadData} />
+      )}
+
+      {/* Brownfield historical context */}
+      {sim.scenario?.scenarioType === 'BROWNFIELD' && sim.scenario?.brownfieldContext && (
+        <Card className="mb-5 border-amber-300 dark:border-amber-700 bg-amber-50/50 dark:bg-amber-950/20">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-amber-700 dark:text-amber-400">
+              Historique herite — Contexte de reprise
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {(sim.scenario.brownfieldContext as any).previousPmNotes && (
+              <p className="text-xs italic text-amber-800 dark:text-amber-300">
+                &laquo; {(sim.scenario.brownfieldContext as any).previousPmNotes} &raquo;
+              </p>
+            )}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <div className="text-center p-2 bg-white dark:bg-background rounded border">
+                <div className="font-bold text-destructive">{(sim.scenario.brownfieldContext as any).accumulatedDelays}j</div>
+                <div className="text-[10px] text-muted-foreground">Retard</div>
+              </div>
+              <div className="text-center p-2 bg-white dark:bg-background rounded border">
+                <div className="font-bold text-amber-600">{Math.round((sim.scenario.brownfieldContext as any).budgetUsed * 100)}%</div>
+                <div className="text-[10px] text-muted-foreground">Budget consomme</div>
+              </div>
+              <div className="text-center p-2 bg-white dark:bg-background rounded border">
+                <div className="font-bold text-amber-600">{((sim.scenario.brownfieldContext as any).knownRisks || []).filter((r: any) => r.status === 'ACTIVE').length}</div>
+                <div className="text-[10px] text-muted-foreground">Risques actifs</div>
+              </div>
+              <div className="text-center p-2 bg-white dark:bg-background rounded border">
+                <div className="font-bold text-amber-600 capitalize">{(sim.scenario.brownfieldContext as any).teamMorale}</div>
+                <div className="text-[10px] text-muted-foreground">Moral equipe</div>
+              </div>
+            </div>
+            {((sim.scenario.brownfieldContext as any).previousDecisions || []).length > 0 && (
+              <div>
+                <h5 className="text-xs font-semibold text-amber-700 dark:text-amber-400 mb-1">Decisions passees</h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
+                  {((sim.scenario.brownfieldContext as any).previousDecisions as any[]).map((d: any, i: number) => (
+                    <div key={i} className="flex items-center gap-2 text-xs p-1.5 bg-white dark:bg-background rounded border">
+                      <span className={`w-2 h-2 rounded-full shrink-0 ${
+                        d.impact === 'positive' ? 'bg-success' : d.impact === 'negative' ? 'bg-destructive' : 'bg-muted-foreground'
+                      }`} />
+                      <span className="truncate">{d.title} : {d.outcome}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Project content — hidden during ONBOARDING */}
+      {!isOnboarding && (
+      <>
       {/* KPI Alert */}
       {criticalKpis.length > 0 && (
         <div className="mb-5 p-3 rounded-lg bg-destructive/10 border border-destructive/30">
@@ -641,6 +713,8 @@ export default function SimulationDetailPage() {
           simulationId={id}
           pendingActionsCount={pendingDecisions.length + pendingEvents.length}
         />
+      )}
+      </>
       )}
     </div>
   );

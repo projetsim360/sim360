@@ -195,11 +195,11 @@ export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
       <Separator />
 
       <div className="flex items-center justify-between">
-        <Button variant="ghost" size="sm" onClick={onBack}>
+        <Button variant="ghost" className="min-h-[44px] px-4" onClick={onBack}>
           <ArrowLeft className="text-sm me-1" />
           Retour
         </Button>
-        <Button variant="primary" size="sm" onClick={onNext}>
+        <Button variant="primary" className="min-h-[44px] px-5" onClick={onNext}>
           Accepter et continuer
           <ArrowRight className="text-sm ms-1" />
         </Button>

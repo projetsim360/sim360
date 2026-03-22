@@ -176,9 +176,16 @@ export function ProfileImportStep({ onNext, profile }: ProfileImportStepProps) {
               {profile?.linkedinData ? 'Reimporter LinkedIn' : 'Connecter LinkedIn'}
             </Button>
             {profile?.linkedinData && (
-              <Badge variant="success" appearance="light" size="sm">
-                Donnees importees
-              </Badge>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center justify-center w-5 h-5 rounded-full bg-success">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                    <path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <Badge variant="success" appearance="light" size="sm">
+                  Donnees importees
+                </Badge>
+              </div>
             )}
           </CardContent>
         </Card>
@@ -198,8 +205,12 @@ export function ProfileImportStep({ onNext, profile }: ProfileImportStepProps) {
           </CardHeader>
           <CardContent className="space-y-4">
             <div
+              role="button"
+              tabIndex={0}
+              aria-label="Deposer ou parcourir un fichier CV au format PDF, maximum 5 Mo"
               className={cn(
-                'border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer',
+                'border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer outline-none',
+                'focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
                 isDragOver
                   ? 'border-primary bg-primary/5'
                   : 'border-muted-foreground/20 hover:border-primary/50',
@@ -209,6 +220,12 @@ export function ProfileImportStep({ onNext, profile }: ProfileImportStepProps) {
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
               onClick={() => document.getElementById('cv-file-input')?.click()}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  document.getElementById('cv-file-input')?.click();
+                }
+              }}
             >
               {uploadCv.isPending ? (
                 <div className="space-y-3">
@@ -234,13 +251,21 @@ export function ProfileImportStep({ onNext, profile }: ProfileImportStepProps) {
                 type="file"
                 accept=".pdf"
                 className="hidden"
+                aria-label="Selectionner un fichier CV au format PDF"
                 onChange={(e) => handleFileDrop(e.target.files)}
               />
             </div>
             {profile?.cvFileUrl && !uploadCv.isPending && (
-              <Badge variant="success" appearance="light" size="sm">
-                CV importe
-              </Badge>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center justify-center w-5 h-5 rounded-full bg-success">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                    <path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <Badge variant="success" appearance="light" size="sm">
+                  CV importe
+                </Badge>
+              </div>
             )}
           </CardContent>
         </Card>
@@ -298,10 +323,10 @@ export function ProfileImportStep({ onNext, profile }: ProfileImportStepProps) {
       <Separator />
 
       <div className="flex items-center justify-between">
-        <Button variant="ghost" size="sm" onClick={onNext}>
+        <Button variant="ghost" className="min-h-[44px] px-4" onClick={onNext}>
           Je n'ai ni CV ni LinkedIn
         </Button>
-        <Button variant="primary" size="sm" onClick={onNext}>
+        <Button variant="primary" className="min-h-[44px] px-5" onClick={onNext}>
           Continuer
           <ArrowRight className="text-sm ms-1" />
         </Button>

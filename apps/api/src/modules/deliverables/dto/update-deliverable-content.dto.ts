@@ -7,7 +7,6 @@ export class UpdateDeliverableContentDto {
     example: '# Charte de projet\n\n## Contexte\n...',
   })
   @IsString()
-  @IsNotEmpty()
   @MaxLength(100000)
   content!: string;
 }

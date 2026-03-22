@@ -19,3 +19,5 @@ export { valorizationRoutes, badgeVerifyRoute } from './valorization/config/valo
 export { valorizationMenuItems } from './valorization/config/valorization.menu';
 export { recruitmentRoutes, recruitmentJoinRoute } from './recruitment/config/recruitment.routes';
 export { recruitmentMenuItems } from './recruitment/config/recruitment.menu';
+export { mentoringRoutes } from './mentoring/config/mentoring.routes';
+export { mentoringMenuItems } from './mentoring/config/mentoring.menu';

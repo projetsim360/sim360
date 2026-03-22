@@ -1,6 +1,6 @@
-import { IsString, IsOptional, IsEnum, IsInt, IsObject, IsArray, MaxLength, Min } from 'class-validator';
+import { IsString, IsOptional, IsEnum, IsInt, IsObject, IsArray, MaxLength, Min, Max } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Difficulty, Sector } from '@prisma/client';
+import { Difficulty, Sector, ScenarioType } from '@prisma/client';
 
 export class CreateScenarioPhaseDto {
   @ApiProperty()
@@ -79,6 +79,23 @@ export class CreateScenarioDto {
   @IsArray()
   @IsString({ each: true })
   competencies?: string[];
+
+  @ApiPropertyOptional({ enum: ScenarioType, description: 'Type de scenario: GREENFIELD (nouveau) ou BROWNFIELD (reprise)' })
+  @IsOptional()
+  @IsEnum(ScenarioType)
+  scenarioType?: ScenarioType;
+
+  @ApiPropertyOptional({ description: 'Phase de depart pour les scenarios Brownfield (0 par defaut)', minimum: 0, maximum: 4 })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  @Max(4)
+  startingPhaseOrder?: number;
+
+  @ApiPropertyOptional({ description: 'Contexte historique pour les scenarios Brownfield (decisions passees, retards, risques)' })
+  @IsOptional()
+  @IsObject()
+  brownfieldContext?: Record<string, unknown>;
 
   @ApiProperty()
   @IsObject()

@@ -70,6 +70,9 @@ export enum EventType {
   DELIVERABLE_EVALUATED = 'deliverable.evaluated',
   DELIVERABLE_REVISED = 'deliverable.revised',
   DELIVERABLE_VALIDATED = 'deliverable.validated',
+  DELIVERABLE_ASSIGNED = 'deliverable.assigned',
+  DELIVERABLE_SUBMITTED_FOR_APPROVAL = 'deliverable.submitted_for_approval',
+  DELIVERABLE_REJECTED = 'deliverable.rejected',
 
   // Profile (EPIC 2)
   PROFILE_CV_UPLOADED = 'profile.cv_uploaded',
@@ -109,6 +112,13 @@ export enum EventType {
   INTERVIEW_GUIDE_GENERATED = 'recruitment.interview_guide_generated',
   CANDIDATE_COMPARED = 'recruitment.candidate_compared',
 
+  // Mentoring
+  MENTOR_REVIEW_CREATED = 'mentoring.review_created',
+  MENTOR_REVIEW_UPDATED = 'mentoring.review_updated',
+  MENTORING_SESSION_CREATED = 'mentoring.session_created',
+  MENTORING_SESSION_COMPLETED = 'mentoring.session_completed',
+  MENTORING_MESSAGE_SENT = 'mentoring.message_sent',
+
   // AI
   AI_MEETING_RESPONSE = 'ai.meeting_response',
   AI_DECISION_EVALUATED = 'ai.decision_evaluated',
@@ -136,6 +146,8 @@ export enum AggregateType {
   COMPETENCY_BADGE = 'CompetencyBadge',
   RECRUITMENT_CAMPAIGN = 'RecruitmentCampaign',
   CANDIDATE_RESULT = 'CandidateResult',
+  MENTOR_REVIEW = 'MentorReview',
+  MENTORING_SESSION = 'MentoringSession',
 }
 
 export type ChannelType = 'socket' | 'email';
@@ -502,6 +514,30 @@ export const EVENT_NOTIFICATION_CONFIG: Partial<Record<EventType, EventNotificat
     defaultChannels: ['socket'],
     defaultPriority: 2,
   },
+  [EventType.DELIVERABLE_ASSIGNED]: {
+    notificationType: 'deliverable',
+    category: 'simulation',
+    titleTemplate: 'Livrable delegue',
+    bodyTemplate: 'Le livrable "{{data.title}}" a ete assigne a {{data.assignedTo}} ({{data.role}}).',
+    defaultChannels: ['socket'],
+    defaultPriority: 2,
+  },
+  [EventType.DELIVERABLE_SUBMITTED_FOR_APPROVAL]: {
+    notificationType: 'deliverable',
+    category: 'simulation',
+    titleTemplate: 'Livrable en approbation',
+    bodyTemplate: 'Le livrable "{{data.title}}" a ete soumis pour approbation.',
+    defaultChannels: ['socket'],
+    defaultPriority: 2,
+  },
+  [EventType.DELIVERABLE_REJECTED]: {
+    notificationType: 'deliverable',
+    category: 'simulation',
+    titleTemplate: 'Livrable rejete',
+    bodyTemplate: 'Le livrable "{{data.title}}" a ete rejete.',
+    defaultChannels: ['socket'],
+    defaultPriority: 2,
+  },
   [EventType.PROJECT_TEAM_UPDATED]: {
     notificationType: 'project',
     category: 'simulation',
@@ -597,6 +633,46 @@ export const EVENT_NOTIFICATION_CONFIG: Partial<Record<EventType, EventNotificat
     bodyTemplate: 'La short-list de la campagne "{{data.campaignTitle}}" est prete.',
     defaultChannels: ['socket', 'email'],
     defaultPriority: 2,
+  },
+  [EventType.MENTOR_REVIEW_CREATED]: {
+    notificationType: 'mentoring',
+    category: 'mentoring',
+    titleTemplate: 'Revue mentor creee',
+    bodyTemplate: 'Une revue mentor a ete ajoutee a votre evaluation.',
+    defaultChannels: ['socket'],
+    defaultPriority: 2,
+  },
+  [EventType.MENTOR_REVIEW_UPDATED]: {
+    notificationType: 'mentoring',
+    category: 'mentoring',
+    titleTemplate: 'Revue mentor mise a jour',
+    bodyTemplate: 'La revue mentor de votre evaluation a ete mise a jour.',
+    defaultChannels: ['socket'],
+    defaultPriority: 1,
+  },
+  [EventType.MENTORING_SESSION_CREATED]: {
+    notificationType: 'mentoring',
+    category: 'mentoring',
+    titleTemplate: 'Session de mentorat creee',
+    bodyTemplate: 'Une session de mentorat a ete planifiee.',
+    defaultChannels: ['socket'],
+    defaultPriority: 2,
+  },
+  [EventType.MENTORING_SESSION_COMPLETED]: {
+    notificationType: 'mentoring',
+    category: 'mentoring',
+    titleTemplate: 'Session de mentorat terminee',
+    bodyTemplate: 'La session de mentorat est terminee.',
+    defaultChannels: ['socket'],
+    defaultPriority: 2,
+  },
+  [EventType.MENTORING_MESSAGE_SENT]: {
+    notificationType: 'mentoring',
+    category: 'mentoring',
+    titleTemplate: 'Nouveau message de mentorat',
+    bodyTemplate: 'Vous avez recu un nouveau message dans votre session de mentorat.',
+    defaultChannels: ['socket'],
+    defaultPriority: 1,
   },
 };
 

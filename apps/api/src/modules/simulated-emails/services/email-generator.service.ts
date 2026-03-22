@@ -39,6 +39,8 @@ export class EmailGeneratorService {
 
   /**
    * Generate a welcome email from DRH for the beginning of the simulation.
+   * The email serves as a "Project Handbook" with PMBOK/PMI methodology content,
+   * governance structure, standard procedures, and available tools.
    */
   async generateWelcomeEmail(
     simulation: SimulationWithScenario,
@@ -50,11 +52,34 @@ export class EmailGeneratorService {
       unknown
     >;
 
+    const isBrownfield = simulation.scenario.scenarioType === 'BROWNFIELD';
+    const brownfieldContext = isBrownfield
+      ? (simulation.scenario.brownfieldContext as Record<string, unknown> | null)
+      : null;
+
     const systemPrompt = `Tu es un generateur d'emails professionnels realistes pour une simulation de gestion de projet.
 Tu generes des emails en francais, avec un ton professionnel adapte au role de l'expediteur.
+Le contenu du body doit etre en format Markdown structure avec des titres (##), sous-titres (###), listes a puces, et mise en gras (**texte**).
 Tu dois retourner un JSON valide et rien d'autre.`;
 
-    const prompt = `Genere un email de bienvenue envoye par la DRH au nouveau chef de projet.
+    const brownfieldSection = brownfieldContext
+      ? `
+
+## SECTION SUPPLEMENTAIRE OBLIGATOIRE — Etat actuel du projet (BROWNFIELD)
+Comme il s'agit d'un projet en reprise (brownfield), tu DOIS ajouter une section "## Etat actuel du projet" apres la section Bienvenue, incluant :
+- Decisions precedentes prises : ${JSON.stringify(brownfieldContext.previousDecisions || [])}
+- Livrables deja completes : ${JSON.stringify(brownfieldContext.completedDeliverables || [])}
+- Retards accumules : ${brownfieldContext.accumulatedDelays || 'non communique'}
+- Budget consomme : ${brownfieldContext.budgetUsed || 'non communique'}
+- Risques connus : ${JSON.stringify(brownfieldContext.knownRisks || [])}
+- Moral de l'equipe : ${brownfieldContext.teamMorale || 'non communique'}
+- Notes du precedent chef de projet : ${brownfieldContext.previousPmNotes || 'aucune'}
+
+Cette section doit expliquer clairement la situation heritee, les defis en cours, et les points d'attention prioritaires pour le nouveau chef de projet.`
+      : '';
+
+    const prompt = `Genere un email de bienvenue complet envoye par la DRH au nouveau chef de projet.
+Cet email sert de "Guide du Projet" (Project Handbook) et doit etre un document de reference complet.
 
 Contexte du scenario :
 - Entreprise/Projet : ${projectTemplate.name || simulation.scenario.title}
@@ -62,28 +87,104 @@ Contexte du scenario :
 - Description : ${simulation.scenario.description || 'Projet de gestion'}
 - Culture d'entreprise : ${projectTemplate.culture || 'professionnelle'}
 - Objectifs : ${simulation.scenario.objectives?.join(', ') || 'Gestion de projet'}
+- Taille de l'equipe : ${projectTemplate.teamSize || 'non definie'}
+- Budget initial : ${projectTemplate.initialBudget || 'non defini'}
+- Deadline : ${projectTemplate.deadlineDays || 'non definie'} jours
+- Difficulte : ${simulation.scenario.difficulty}
+- Type de scenario : ${simulation.scenario.scenarioType}
+- Competences visees : ${simulation.scenario.competencies?.join(', ') || 'gestion de projet'}
 
-L'email doit contenir :
-1. Presentation de l'entreprise et du contexte
-2. Role et responsabilites du chef de projet
-3. Attentes de la direction
-4. Contacts cles et prochaines etapes
-5. Ton adapte a la culture d'entreprise (formel si culture formelle, decontracte si agile)
+Le body de l'email DOIT etre en Markdown et DOIT contenir les 7 sections suivantes dans cet ordre exact :
+
+## 1. Bienvenue
+- Accueil chaleureux et personnalise de la part de la DRH
+- Presentation de l'entreprise, son secteur, sa culture
+- Contexte du projet et pourquoi le chef de projet a ete choisi
+- Ton adapte a la culture d'entreprise (formel si culture formelle, decontracte si startup/agile)
+${isBrownfield ? '\n## 2. Etat actuel du projet\n- Synthese claire de la situation heritee (retards, budget, risques, moral equipe)\n- Points d\'attention prioritaires\n- Decisions precedentes a connaitre\n- Livrables deja completes et ceux en cours' : ''}
+
+## ${isBrownfield ? '3' : '2'}. Methodologie Projet (PMBOK/PMI)
+Presenter les 5 groupes de processus PMI que le chef de projet devra suivre :
+- **Initiation** : Definition du projet, identification des parties prenantes, charte de projet
+- **Planification** : Elaboration du plan de management (scope, echeancier, couts, qualite, ressources, communications, risques, approvisionnements)
+- **Execution** : Direction et gestion du travail, management de l'equipe, communication avec les parties prenantes
+- **Surveillance et Maitrise** : Suivi de l'avancement, controle des changements, gestion des ecarts (cout, delai, qualite)
+- **Cloture** : Recette finale, bilan de projet, lecons apprises, archivage, liberation des ressources
+
+## ${isBrownfield ? '4' : '3'}. Gouvernance
+Decrire la structure de gouvernance du projet :
+- **Sponsor** : Qui est-il, son role (validation budget, arbitrages strategiques)
+- **Chef de Projet (vous)** : Vos responsabilites (planification, coordination, reporting, gestion des risques)
+- **Equipe Projet** : Composition, roles attendus, regles de fonctionnement
+- **PMO** : Role d'accompagnement, support methodologique, suivi des KPIs
+- **Processus d'escalade** : Quand et comment escalader (niveaux de decision)
+- **Niveaux d'autorite** : Ce que le chef de projet peut decider seul vs. ce qui necessite validation
+
+## ${isBrownfield ? '5' : '4'}. Procedures Standards
+Detailler les 4 procedures cles :
+
+### Gestion des changements
+- Processus de demande de changement (change request)
+- Analyse d'impact obligatoire (scope, budget, delai, qualite)
+- Circuit de validation selon l'ampleur du changement
+
+### Gestion des risques
+- Identification continue des risques
+- Analyse qualitative et quantitative
+- Plan de reponse (eviter, transferer, attenuer, accepter)
+- Suivi dans le registre des risques
+
+### Gestion de la qualite
+- Criteres d'acceptation des livrables
+- Processus de revue et validation
+- Normes de qualite applicables au secteur
+
+### Communication
+- Frequence des reunions (comite de pilotage, stand-up, retrospective)
+- Rapports d'avancement attendus
+- Canaux de communication (email, reunions, messagerie)
+
+## ${isBrownfield ? '6' : '5'}. Outils a votre disposition
+Presenter les outils disponibles dans la plateforme :
+- **Agent PMO IA** : Assistant intelligent pour poser des questions methodologiques, obtenir des conseils, analyser vos decisions
+- **Editeur de livrables** : Outil pour rediger et soumettre vos livrables (charte projet, plan de management, rapports, etc.) avec evaluation automatique
+- **Reunions virtuelles** : Systeme de reunions avec des participants IA (client, equipe, sponsor) en mode texte ou audio
+- **Tableaux de bord KPIs** : Suivi en temps reel de vos indicateurs (budget, echeancier, qualite, moral equipe, niveau de risque)
+- **Boite de reception** : Emails simules de parties prenantes necessitant vos reponses et decisions
+
+## ${isBrownfield ? '7' : '6'}. Contacts cles
+Generer 4-5 contacts fictifs realistes avec :
+- Nom, role, email, et dans quel cas les contacter
+- Au minimum : Sponsor/DG, Client, Responsable technique, DRH, PMO
+
+## ${isBrownfield ? '8' : '7'}. Prochaines etapes
+Lister 5-6 actions concretes que le chef de projet doit accomplir en premier :
+- Consulter les documents du projet
+- Organiser une reunion de lancement (kick-off)
+- Identifier les parties prenantes
+- Rediger la charte de projet
+- Prendre connaissance des KPIs initiaux
+- Contacter l'equipe projet
+${isBrownfield ? '- Analyser la situation heritee et identifier les actions correctives prioritaires' : ''}
+${brownfieldSection}
+
+IMPORTANT : Le body doit etre long et detaille (environ 2000-3000 mots). C'est un document de reference que l'apprenant consultera tout au long de la simulation.
+Adapte le vocabulaire et les exemples au secteur "${simulation.scenario.sector}" et a la difficulte "${simulation.scenario.difficulty}".
 
 Retourne un JSON avec cette structure exacte :
 {
   "senderName": "Prenom Nom",
   "senderRole": "DRH",
   "senderEmail": "prenom.nom@entreprise.com",
-  "subject": "Objet de l'email",
-  "body": "Contenu complet de l'email en texte avec retours a la ligne",
+  "subject": "Bienvenue - Guide du Projet [nom du projet]",
+  "body": "Contenu complet en Markdown avec toutes les sections demandees",
   "priority": "NORMAL"
 }`;
 
     const result = await this.aiService.complete({
       prompt,
       systemPrompt,
-      maxTokens: 1500,
+      maxTokens: 8000,
       temperature: 0.7,
       trackingContext: {
         tenantId,
@@ -516,12 +617,12 @@ Retourne un JSON avec cette structure exacte :
 
   private fallbackEmail(): GeneratedEmail {
     return {
-      senderName: 'Systeme',
-      senderRole: 'Systeme',
-      senderEmail: 'noreply@simulation.com',
-      subject: 'Communication projet',
-      body: 'Un email n\'a pas pu etre genere automatiquement. Veuillez continuer votre simulation.',
-      priority: 'NORMAL',
+      senderName: 'Marie Laurent',
+      senderRole: 'DRH',
+      senderEmail: 'marie.laurent@entreprise.com',
+      subject: 'Bienvenue — Votre guide de demarrage projet',
+      body: `## Bienvenue dans l'equipe !\n\nNous sommes ravis de vous accueillir en tant que Chef de Projet.\n\n## Methodologie\n\nNous suivons le referentiel **PMBOK (PMI)** avec 5 phases :\n1. **Initiation** — Cadrage et charte\n2. **Planification** — Plan de management\n3. **Execution** — Realisation des livrables\n4. **Suivi & Controle** — Indicateurs et ajustements\n5. **Cloture** — Bilan et retour d'experience\n\n## Outils a disposition\n\n- **Agent PMO** pour les conseils methodologiques\n- **Editeur de livrables** avec evaluation IA\n- **Reunions virtuelles** avec les parties prenantes\n- **Tableaux de bord** KPIs en temps reel\n\n## Prochaines etapes\n\n1. Completez votre passation (RH + PMO)\n2. Consultez vos livrables a produire\n3. Participez a votre premiere reunion\n\nBonne simulation !`,
+      priority: 'HIGH',
     };
   }
 }

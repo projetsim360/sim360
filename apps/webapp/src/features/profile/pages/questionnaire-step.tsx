@@ -207,14 +207,14 @@ export function QuestionnaireStep({ onNext, onBack, defaultValues }: Questionnai
               />
 
               <div className="flex items-center justify-between pt-4">
-                <Button type="button" variant="ghost" size="sm" onClick={onBack}>
+                <Button type="button" variant="ghost" className="min-h-[44px] px-4" onClick={onBack}>
                   <ArrowLeft className="text-sm me-1" />
                   Retour
                 </Button>
                 <Button
                   type="submit"
                   variant="primary"
-                  size="sm"
+                  className="min-h-[44px] px-5"
                   disabled={submitQuestionnaire.isPending}
                 >
                   {submitQuestionnaire.isPending ? 'Enregistrement...' : 'Continuer'}
