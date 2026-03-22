@@ -79,7 +79,8 @@ export class AuthService {
     });
 
     // Send verification email
-    await this.mailService.sendVerificationEmail(user.email, user.firstName, emailVerificationToken);
+    // Fire and forget — don't block the HTTP response
+    this.mailService.sendVerificationEmail(user.email, user.firstName, emailVerificationToken);
 
     return { message: 'Inscription réussie. Vérifiez votre email pour activer votre compte.' };
   }
@@ -250,7 +251,8 @@ export class AuthService {
       data: { emailVerificationToken, emailVerificationExpiry },
     });
 
-    await this.mailService.sendVerificationEmail(user.email, user.firstName, emailVerificationToken);
+    // Fire and forget — don't block the HTTP response
+    this.mailService.sendVerificationEmail(user.email, user.firstName, emailVerificationToken);
 
     return { message: 'Si un compte existe avec cet email, un nouveau lien de vérification a été envoyé.' };
   }
@@ -270,7 +272,8 @@ export class AuthService {
         data: { passwordResetToken, passwordResetExpiry },
       });
 
-      await this.mailService.sendPasswordResetEmail(user.email, user.firstName, passwordResetToken);
+      // Fire and forget — don't block the HTTP response
+      this.mailService.sendPasswordResetEmail(user.email, user.firstName, passwordResetToken);
     }
 
     return { message: 'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.' };
@@ -308,7 +311,8 @@ export class AuthService {
       data: { revokedAt: new Date() },
     });
 
-    await this.mailService.sendPasswordResetConfirmation(user.email, user.firstName);
+    // Fire and forget — don't block the HTTP response
+    this.mailService.sendPasswordResetConfirmation(user.email, user.firstName);
 
     return { message: 'Mot de passe réinitialisé avec succès.' };
   }
