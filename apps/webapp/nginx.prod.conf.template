@@ -1,15 +1,17 @@
-# Map host → flags used by per-domain redirects below.
-# Using map at http level (file is included by /etc/nginx/conf.d/) so we can
-# combine without the if-evil pattern blowing up.
-map $host $is_apex {
-    default 0;
-    "simex-pro.com" 1;
+# Map host+uri → routing decision. Using a single map per concern is more
+# reliable than nginx's "if + set" combos at server level (well-known footgun).
+# Value semantics: empty string = no action (default), non-empty = take action.
+
+map $host:$uri $bounce_apex_non_root {
+    default "";
+    # simex-pro.com with anything other than "/" → bounce to app
+    "~^simex-pro\.com:/.+$" 1;
 }
 
-map $host $is_app {
-    default 0;
-    "app.simex-pro.com" 1;
-    "web.simex-pro.com" 1;
+map $host:$uri $bounce_app_root {
+    default "";
+    # app.simex-pro.com or web.simex-pro.com with exactly "/" → bounce to apex
+    "~^(app|web)\.simex-pro\.com:/$" 1;
 }
 
 server {
@@ -31,29 +33,13 @@ server {
     add_header X-XSS-Protection "1; mode=block" always;
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
 
-    # simex-pro.com (apex) only serves the landing at "/"; deeper paths bounce
-    # to the app subdomain. Two-step set/if is the standard nginx idiom for
-    # combining conditions safely.
-    set $redirect_to_app 0;
-    if ($is_apex = 1) {
-        set $redirect_to_app 1;
-    }
-    if ($uri = /) {
-        set $redirect_to_app 0;
-    }
-    if ($redirect_to_app = 1) {
+    # simex-pro.com (apex) — only "/" stays here; deeper paths go to app.
+    if ($bounce_apex_non_root) {
         return 301 https://app.simex-pro.com$request_uri;
     }
 
-    # app.simex-pro.com / web.simex-pro.com — bare "/" redirects to apex.
-    set $redirect_to_apex 0;
-    if ($is_app = 1) {
-        set $redirect_to_apex 1;
-    }
-    if ($uri != /) {
-        set $redirect_to_apex 0;
-    }
-    if ($redirect_to_apex = 1) {
+    # app./web.simex-pro.com — bare "/" goes back to apex landing.
+    if ($bounce_app_root) {
         return 301 https://simex-pro.com/;
     }
 
