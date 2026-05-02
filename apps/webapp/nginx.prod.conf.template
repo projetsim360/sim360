@@ -46,7 +46,14 @@ server {
     }
 
     # app.simex-pro.com / web.simex-pro.com — bare "/" redirects to apex.
-    if ($is_app$uri = "1/") {
+    set $redirect_to_apex 0;
+    if ($is_app = 1) {
+        set $redirect_to_apex 1;
+    }
+    if ($uri != /) {
+        set $redirect_to_apex 0;
+    }
+    if ($redirect_to_apex = 1) {
         return 301 https://simex-pro.com/;
     }
 
