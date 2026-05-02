@@ -1,3 +1,17 @@
+# Map host → flags used by per-domain redirects below.
+# Using map at http level (file is included by /etc/nginx/conf.d/) so we can
+# combine without the if-evil pattern blowing up.
+map $host $is_apex {
+    default 0;
+    "simex-pro.com" 1;
+}
+
+map $host $is_app {
+    default 0;
+    "app.simex-pro.com" 1;
+    "web.simex-pro.com" 1;
+}
+
 server {
     listen ${PORT};
     server_name _;
@@ -17,9 +31,23 @@ server {
     add_header X-XSS-Protection "1; mode=block" always;
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
 
-    # SPA routing — all non-file requests go to index.html
-    location / {
-        try_files $uri $uri/ /index.html;
+    # simex-pro.com (apex) only serves the landing at "/"; deeper paths bounce
+    # to the app subdomain. Two-step set/if is the standard nginx idiom for
+    # combining conditions safely.
+    set $redirect_to_app 0;
+    if ($is_apex = 1) {
+        set $redirect_to_app 1;
+    }
+    if ($uri = /) {
+        set $redirect_to_app 0;
+    }
+    if ($redirect_to_app = 1) {
+        return 301 https://app.simex-pro.com$request_uri;
+    }
+
+    # app.simex-pro.com / web.simex-pro.com — bare "/" redirects to apex.
+    if ($is_app$uri = "1/") {
+        return 301 https://simex-pro.com/;
     }
 
     # Proxy API calls to the internal Kapapra API service (Docker Swarm overlay DNS).
@@ -33,6 +61,11 @@ server {
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
+    }
+
+    # SPA routing — all non-file requests go to index.html
+    location / {
+        try_files $uri $uri/ /index.html;
     }
 
     # Static assets — long cache with immutable
