@@ -4,7 +4,16 @@
 
 map $host:$uri $bounce_apex_non_root {
     default "";
-    # simex-pro.com with anything other than "/" → bounce to app
+
+    # Exclusions evaluated first (nginx walks regexes in order, stops on first hit).
+    # Static assets and API calls must be served from the same origin to avoid
+    # CORS on the bundled JS/CSS the SPA loads.
+    "~^simex-pro\.com:/assets/" "";
+    "~^simex-pro\.com:/api/" "";
+    "~^simex-pro\.com:/health$" "";
+    "~^simex-pro\.com:[^?]+\.(js|css|map|json|png|jpg|jpeg|gif|ico|svg|webp|avif|woff|woff2|ttf|eot|txt|xml|webmanifest)$" "";
+
+    # Anything else under apex (real "page" routes) → bounce to app subdomain.
     "~^simex-pro\.com:/.+$" 1;
 }
 
