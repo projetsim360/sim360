@@ -3,8 +3,8 @@ import { ChevronDown } from '@/components/keenicons/icons';
 import { KeenIcon } from '@/components/keenicons';
 import { Link, useLocation } from 'react-router-dom';
 import { MENU_ROOT } from '@/config/layout-6.config';
-import { toAbsoluteUrl } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
+import { Logo } from '@/components/logo';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,9 +35,7 @@ export function SidebarHeader() {
     <div className="mb-3.5">
       <div className="flex items-center justify-between gap-2.5 px-3.5 h-[70px]">
         <Link to="/">
-          <div className="flex items-center justify-center w-[42px] h-[42px] rounded-full bg-[#4b2f95] dark:bg-white/15 text-white font-bold text-lg">
-            S
-          </div>
+          <Logo />
         </Link>
 
         <DropdownMenu>
