@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<style>
+  body { margin:0; padding:24px; background:#FAFAF9; font-family:Inter,sans-serif; }
+  .grid { display:grid; grid-template-columns: repeat(10,1fr); gap:12px; margin-bottom:14px; }
+  .ic { display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .ic i { width:22px; height:22px; }
+  .ic .lb { font-size:10px; color:#78716C; }
+  .label { font-size:11px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:#78716C; margin-bottom:10px; }
+  .hint { font-size:11px; color:#78716C; line-height:1.5; background:#F0F4FA; padding:10px 12px; border-radius:6px; border-left:3px solid #1A2B48; }
+  [data-color=accent] i { color:#EE7A3A; }
+  [data-color=brand] i { color:#1A2B48; }
+  [data-color=neutral] i { color:#78716C; }
+</style></head>
+<body>
+<div class="label">Lucide · menus & navigation (outline, 1.75)</div>
+<div class="grid">
+  <div class="ic" data-color=brand><i data-lucide="layout-dashboard"></i><span class="lb">dashboard</span></div>
+  <div class="ic" data-color=brand><i data-lucide="play"></i><span class="lb">simulation</span></div>
+  <div class="ic" data-color=brand><i data-lucide="users"></i><span class="lb">équipe</span></div>
+  <div class="ic" data-color=brand><i data-lucide="inbox"></i><span class="lb">inbox</span></div>
+  <div class="ic" data-color=brand><i data-lucide="file-text"></i><span class="lb">livrable</span></div>
+  <div class="ic" data-color=brand><i data-lucide="message-square"></i><span class="lb">pmo</span></div>
+  <div class="ic" data-color=brand><i data-lucide="bar-chart-3"></i><span class="lb">analytics</span></div>
+  <div class="ic" data-color=brand><i data-lucide="briefcase"></i><span class="lb">portfolio</span></div>
+  <div class="ic" data-color=brand><i data-lucide="settings"></i><span class="lb">réglages</span></div>
+  <div class="ic" data-color=brand><i data-lucide="log-out"></i><span class="lb">sortie</span></div>
+</div>
+<div class="label">États / couleurs</div>
+<div class="grid" style="grid-template-columns:repeat(6,1fr)">
+  <div class="ic" data-color=accent><i data-lucide="check-circle-2"></i><span class="lb">actif</span></div>
+  <div class="ic" data-color=neutral><i data-lucide="circle"></i><span class="lb">décoratif</span></div>
+  <div class="ic" style="color:#10B981"><i data-lucide="trending-up" style="color:#10B981"></i><span class="lb" style="color:#047857">success</span></div>
+  <div class="ic" style="color:#F59E0B"><i data-lucide="alert-triangle" style="color:#F59E0B"></i><span class="lb" style="color:#B45309">warning</span></div>
+  <div class="ic" style="color:#EF4444"><i data-lucide="x-circle" style="color:#EF4444"></i><span class="lb" style="color:#B91C1C">error</span></div>
+  <div class="ic" style="color:#3B82F6"><i data-lucide="info" style="color:#3B82F6"></i><span class="lb" style="color:#1D4ED8">info</span></div>
+</div>
+<div class="hint">
+  <b>Produit cible :</b> KeenIcon pour UI app (outline/solid/duotone/filled) + Lucide pour menus uniquement.
+  <b>Stand-in ici :</b> Lucide partout (KeenIcon indisponible dans ce sandbox) — à substituer lors de l'implémentation.
+</div>
+<script>lucide.createIcons()</script>
+</body></html>

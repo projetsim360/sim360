@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin:0; padding:24px; background:#FAFAF9; font-family:Inter,sans-serif; }
+  .grid { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+  .row { display:flex; gap:10px; align-items:flex-start; padding:10px 14px; border-radius:8px; }
+  .ok { background:#ECFDF5; color:#047857; }
+  .ko { background:#FEF2F2; color:#7F1D1D; }
+  .row .ic { font-size:16px; font-weight:900; flex-shrink:0; line-height:1.3; }
+  .row .txt { font-size:13px; line-height:1.45; }
+  .row .txt b { display:block; font-weight:600; margin-bottom:2px; color:inherit; }
+  .row .txt span { color:inherit; opacity:.85; }
+</style></head>
+<body>
+<div class="grid">
+  <div class="row ok"><span class="ic">✓</span><div class="txt"><b>Lancer la simulation</b><span>Verbe d'action, direct</span></div></div>
+  <div class="row ko"><span class="ic">✗</span><div class="txt"><b>Cliquez ici pour lancer</b><span>« Cliquez ici » interdit</span></div></div>
+
+  <div class="row ok"><span class="ic">✓</span><div class="txt"><b>Connexion perdue. Vos données sont sauvegardées.</b><span>Factuel + solution</span></div></div>
+  <div class="row ko"><span class="ic">✗</span><div class="txt"><b>Oups ! Quelque chose s'est mal passé</b><span>Interjection, vague</span></div></div>
+
+  <div class="row ok"><span class="ic">✓</span><div class="txt"><b>Simulation démarrée.</b><span>Confirmation neutre</span></div></div>
+  <div class="row ko"><span class="ic">✗</span><div class="txt"><b>Super ! 🎉</b><span>Emoji + enthousiasme forcé</span></div></div>
+
+  <div class="row ok"><span class="ic">✓</span><div class="txt"><b>Lancez votre première simulation.</b><span>Empty state = invitation</span></div></div>
+  <div class="row ko"><span class="ic">✗</span><div class="txt"><b>Aucun résultat trouvé</b><span>Négation, dead-end</span></div></div>
+</div>
+</body></html>

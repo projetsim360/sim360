@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin:0; padding:24px; background:#FAFAF9; font-family:'Inter',sans-serif; }
+  .grid { display:grid; grid-template-columns: repeat(2, 1fr); gap:12px; }
+  .surface { padding:16px; border-radius:8px; font-size:12px; color:#292524; min-height:60px; position:relative; }
+  .tag { font-size:10px; color:#78716C; font-weight:600; letter-spacing:.5px; text-transform:uppercase; margin-bottom:6px; }
+  .val { font-family:ui-monospace,monospace; font-size:11px; color:inherit; opacity:.7; margin-top:4px; }
+  .card-def { background:#fff; box-shadow:0 2px 4px rgba(15,26,46,.06), 0 4px 12px rgba(15,26,46,.08); }
+  .outlined { background:#fff; border:1px solid #D6D3D1; }
+  .filled { background:#F5F5F4; }
+  .info { background:#F0F4FA; }
+</style></head>
+<body>
+<div class="grid">
+  <div class="surface" style="background:#FAFAF9; border:1px dashed #D6D3D1">
+    <div class="tag">Page</div><b>Background neutre</b>
+    <div class="val">neutral-0 · #FAFAF9</div>
+  </div>
+  <div class="surface card-def">
+    <div class="tag">Card default</div><b>white + elevation-md</b>
+    <div class="val">#FFFFFF · shadow-md</div>
+  </div>
+  <div class="surface outlined">
+    <div class="tag">Card outlined</div><b>white + border</b>
+    <div class="val">border neutral-200</div>
+  </div>
+  <div class="surface filled">
+    <div class="tag">Card filled</div><b>Zone interne</b>
+    <div class="val">neutral-50 · #F5F5F4</div>
+  </div>
+  <div class="surface info" style="color:#1A2B48">
+    <div class="tag" style="color:#3D5478">Surface info</div><b>Bandeau contextuel brand</b>
+    <div class="val">brand-50 · #F0F4FA</div>
+  </div>
+  <div class="surface" style="background:#FFF4ED; color:#7A3A15">
+    <div class="tag" style="color:#9C4718">Surface warning soft</div><b>Alerte légère</b>
+    <div class="val">accent-50 · #FFF4ED</div>
+  </div>
+</div>
+</body></html>

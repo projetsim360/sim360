@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin:0; padding:24px; background:#FAFAF9; font-family:Inter,sans-serif; }
+  .grid { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px; }
+  .tile { background:#fff; border-radius:8px; padding:16px; box-shadow:0 2px 4px rgba(15,26,46,.06), 0 4px 12px rgba(15,26,46,.08); min-height:130px; }
+  .ov { font-size:11px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:#78716C; margin-bottom:10px; }
+  .val { font-family:Montserrat; font-weight:800; font-size:36px; line-height:1; color:#1A2B48; letter-spacing:-.02em; }
+  .delta { font-size:12px; font-weight:600; margin-top:8px; display:inline-flex; align-items:center; gap:4px; }
+  .up { color:#047857; }
+  .down { color:#B91C1C; }
+  .neutral { color:#78716C; }
+  .spark { height:28px; width:100%; margin-top:8px; }
+</style></head>
+<body>
+<div class="grid">
+  <div class="tile">
+    <div class="ov">Simulations</div>
+    <div class="val">12</div>
+    <div class="delta up">↑ 3 vs. S-1</div>
+    <svg class="spark" viewBox="0 0 120 28"><path d="M 0 22 L 20 18 L 40 20 L 60 14 L 80 10 L 100 8 L 120 4" stroke="#10B981" stroke-width="1.5" fill="none"/></svg>
+  </div>
+  <div class="tile">
+    <div class="ov">Score moyen</div>
+    <div class="val">78<span style="color:#A8A29E;font-size:20px">/100</span></div>
+    <div class="delta up">↑ 12 pts ce mois</div>
+    <svg class="spark" viewBox="0 0 120 28"><path d="M 0 18 L 20 20 L 40 16 L 60 12 L 80 14 L 100 8 L 120 6" stroke="#10B981" stroke-width="1.5" fill="none"/></svg>
+  </div>
+  <div class="tile">
+    <div class="ov">Candidats évalués</div>
+    <div class="val">34</div>
+    <div class="delta neutral">→ Stable</div>
+    <svg class="spark" viewBox="0 0 120 28"><path d="M 0 14 L 20 12 L 40 16 L 60 14 L 80 13 L 100 14 L 120 14" stroke="#78716C" stroke-width="1.5" fill="none"/></svg>
+  </div>
+</div>
+</body></html>

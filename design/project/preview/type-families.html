@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin:0; padding:24px; background:#FAFAF9; font-family:Inter,sans-serif; color:#1A2B48; }
+  .card { background:#fff; border-radius:8px; padding:20px; box-shadow:0 1px 2px rgba(15,26,46,.05); border:1px solid #E7E5E4; margin-bottom:12px; }
+  .name { font-family:Inter; font-size:11px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:#78716C; margin-bottom:10px; }
+  .big { font-size:56px; line-height:1; margin-bottom:14px; letter-spacing:-.02em; }
+  .big.m { font-family:Montserrat; font-weight:800; }
+  .big.i { font-family:Inter; font-weight:700; }
+  .weights { display:grid; grid-template-columns: repeat(9, 1fr); gap:8px; font-family:Montserrat; color:#1A2B48; }
+  .w { text-align:center; padding:6px 2px; border-radius:6px; background:#F5F5F4; }
+  .w .aa { font-size:22px; line-height:1.1; }
+  .w .lbl { font-size:9px; font-weight:600; color:#78716C; margin-top:3px; letter-spacing:.3px; }
+  .role { font-size:11px; color:#78716C; margin-top:12px; line-height:1.5; }
+  .tag { display:inline-block; font-size:9px; font-weight:700; letter-spacing:.6px; text-transform:uppercase; color:#047857; background:#ECFDF5; padding:2px 7px; border-radius:99px; margin-left:8px; vertical-align:middle; }
+  .tag.cdn { color:#B45309; background:#FFFBEB; }
+  .inter-w { display:flex; gap:14px; font-size:18px; color:#292524; flex-wrap:wrap; font-family:Inter; }
+  .inter-w div { text-align:center; }
+  .inter-w b { display:block; font-size:24px; margin-bottom:2px; line-height:1; }
+  .inter-w span { font-size:10px; font-weight:600; color:#78716C; letter-spacing:.3px; }
+</style></head>
+<body>
+  <div class="card">
+    <div class="name">Display & headings <span class="tag">Self-hosted</span></div>
+    <div class="big m">Montserrat</div>
+    <div class="weights">
+      <div class="w"><div class="aa" style="font-weight:100">Aa</div><div class="lbl">100 Thin</div></div>
+      <div class="w"><div class="aa" style="font-weight:200">Aa</div><div class="lbl">200 ExLt</div></div>
+      <div class="w"><div class="aa" style="font-weight:300">Aa</div><div class="lbl">300 Light</div></div>
+      <div class="w"><div class="aa" style="font-weight:400">Aa</div><div class="lbl">400 Reg</div></div>
+      <div class="w"><div class="aa" style="font-weight:500">Aa</div><div class="lbl">500 Med</div></div>
+      <div class="w"><div class="aa" style="font-weight:600">Aa</div><div class="lbl">600 SemiB</div></div>
+      <div class="w" style="background:#FFE4D1"><div class="aa" style="font-weight:700">Aa</div><div class="lbl" style="color:#9C4718">700 Bold ★</div></div>
+      <div class="w" style="background:#FFE4D1"><div class="aa" style="font-weight:800">Aa</div><div class="lbl" style="color:#9C4718">800 ExBd ★</div></div>
+      <div class="w"><div class="aa" style="font-weight:900">Aa</div><div class="lbl">900 Black</div></div>
+    </div>
+    <div class="role">Logo, h1–h4, display marketing. Italic variants disponibles sur tous les poids. <b>Poids utilisés par la charte : 700 & 800.</b> Jamais en body.</div>
+  </div>
+  <div class="card">
+    <div class="name">Body & UI <span class="tag cdn">CDN · Google Fonts</span></div>
+    <div class="big i">Inter</div>
+    <div class="inter-w">
+      <div style="font-weight:400"><b>Aa</b><span>400 Reg</span></div>
+      <div style="font-weight:500"><b>Aa</b><span>500 Med</span></div>
+      <div style="font-weight:600"><b>Aa</b><span>600 SemiB</span></div>
+      <div style="font-weight:700"><b>Aa</b><span>700 Bold</span></div>
+    </div>
+    <div class="role">Body, h5–h6, boutons, inputs. <code style="font-family:ui-monospace;background:#F5F5F4;padding:1px 4px;border-radius:3px;font-size:11px">ss01</code> + <code style="font-family:ui-monospace;background:#F5F5F4;padding:1px 4px;border-radius:3px;font-size:11px">cv11</code> activés. Self-host recommandé en production — aucun fichier fourni pour l'instant.</div>
+  </div>
+</body></html>

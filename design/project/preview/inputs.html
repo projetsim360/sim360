@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin:0; padding:24px; background:#FAFAF9; font-family:Inter,sans-serif; color:#292524; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .field { }
+  label { display:block; font-size:13px; font-weight:500; color:#292524; margin-bottom:6px; }
+  .asterisk { color:#EE7A3A; }
+  input, textarea, select { width:100%; font-family:Inter; font-size:14px; color:#292524; border:1px solid #D6D3D1; background:#fff; border-radius:6px; height:40px; padding:0 12px; box-sizing:border-box; outline:none; transition:all 150ms; }
+  input:focus { border-color:#EE7A3A; box-shadow:0 0 0 3px rgba(238,122,58,.2); }
+  input::placeholder { color:#A8A29E; }
+  .helper { font-size:13px; color:#78716C; margin-top:4px; }
+  .error-in { border-color:#EF4444 !important; box-shadow:0 0 0 3px rgba(239,68,68,.15); }
+  .error-msg { font-size:13px; color:#B91C1C; margin-top:4px; }
+  .switch { display:inline-flex; align-items:center; gap:10px; }
+  .track { width:36px; height:20px; background:#EE7A3A; border-radius:999px; position:relative; }
+  .track::after { content:''; position:absolute; top:2px; right:2px; width:16px; height:16px; background:#fff; border-radius:99px; }
+  .chk { width:18px; height:18px; border:1.5px solid #1A2B48; border-radius:4px; background:#1A2B48; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-size:12px; font-weight:900; }
+</style></head>
+<body>
+<div class="grid">
+  <div class="field">
+    <label>Nom du projet <span class="asterisk">*</span></label>
+    <input value="Lancement app Q3" />
+    <div class="helper">Utilisé dans le nom du dossier et les exports.</div>
+  </div>
+  <div class="field">
+    <label>Budget alloué</label>
+    <input placeholder="Ex : 85 000 €" />
+  </div>
+  <div class="field">
+    <label>Email du candidat</label>
+    <input class="error-in" value="alex.martin@" />
+    <div class="error-msg">Adresse email invalide. Vérifiez le format.</div>
+  </div>
+  <div class="field">
+    <label>Champ désactivé</label>
+    <input value="Défini par l'admin" disabled style="background:#F5F5F4;color:#78716C" />
+  </div>
+  <div class="field">
+    <label>Activer le feedback coach IA</label>
+    <div class="switch"><div class="track"></div><span style="font-size:13px">Activé</span></div>
+  </div>
+  <div class="field">
+    <label>Options</label>
+    <div class="switch"><span class="chk">✓</span><span style="font-size:13px">Envoyer un rapport 360</span></div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin:0; padding:24px; background:#FAFAF9; font-family:Inter,sans-serif; }
+  .grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+  .toast { background:#fff; border-radius:8px; padding:14px; display:flex; gap:12px; align-items:flex-start; box-shadow:0 8px 24px rgba(15,26,46,.12); border-left:3px solid transparent; }
+  .t-success { border-left-color:#10B981; }
+  .t-error { border-left-color:#EF4444; }
+  .t-warn { border-left-color:#F59E0B; }
+  .t-info { border-left-color:#3B82F6; }
+  .icon { width:20px; height:20px; border-radius:99px; flex-shrink:0; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:13px; font-weight:900; }
+  .title { font-size:14px; font-weight:600; color:#1C1917; margin:0 0 2px; }
+  .desc { font-size:13px; color:#57534E; margin:0; line-height:1.4; }
+  .act { font-size:13px; color:#EE7A3A; font-weight:600; margin-left:auto; white-space:nowrap; text-decoration:none; }
+</style></head>
+<body>
+<div class="grid">
+  <div class="toast t-success">
+    <span class="icon" style="background:#10B981">✓</span>
+    <div><p class="title">Simulation démarrée.</p><p class="desc">Le brief vous attend.</p></div>
+  </div>
+  <div class="toast t-error">
+    <span class="icon" style="background:#EF4444">!</span>
+    <div><p class="title">Connexion perdue.</p><p class="desc">Vos données sont sauvegardées.</p></div>
+  </div>
+  <div class="toast t-warn">
+    <span class="icon" style="background:#F59E0B">!</span>
+    <div><p class="title">Livrable en retard.</p><p class="desc">Échéance dépassée depuis 2 jours.</p></div>
+    <a class="act">Voir</a>
+  </div>
+  <div class="toast t-info">
+    <span class="icon" style="background:#3B82F6">i</span>
+    <div><p class="title">Nouveau message du PMO.</p><p class="desc">Alex vous a partagé un retour.</p></div>
+  </div>
+</div>
+</body></html>

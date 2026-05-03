@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pragma360 — Phases d'évaluation</title>
+<link rel="icon" href="assets/favicon.svg">
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FFFFFF; height: 100%; }
+  * { box-sizing: border-box; }
+  button:focus-visible { outline: 2px solid #EE7A3A; outline-offset: 2px; }
+  ::placeholder { color: #A8A29E; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+const C = {
+  brand50:'#F0F4FA', brand100:'#D6E0EF', brand200:'#B8C7DF', brand300:'#A8B9D4', brand400:'#7E94BB', brand500:'#5A7099', brand600:'#3D5478', brand700:'#1A2B48', brand800:'#14223A', brand900:'#0F1A2E', brand950:'#08111F',
+  accent50:'#FFF4ED', accent100:'#FFE4D1', accent200:'#FFCBA8', accent300:'#FFB685', accent400:'#F59763', accent500:'#EE7A3A', accent600:'#D9652D', accent700:'#C45C24', accent800:'#9C4718',
+  n0:'#FAFAF9', n50:'#F5F5F4', n100:'#E7E5E4', n200:'#D6D3D1', n300:'#A8A29E', n400:'#78716C', n500:'#57534E', n600:'#44403C', n700:'#292524', n800:'#1C1917', n900:'#0C0A09',
+  success50:'#ECFDF5', success500:'#10B981', success700:'#047857',
+  warning50:'#FFFBEB', warning500:'#F59E0B', warning700:'#B45309',
+  error50:'#FEF2F2', error500:'#EF4444', error700:'#B91C1C',
+  info50:'#EFF6FF', info500:'#3B82F6', info700:'#1D4ED8',
+  white:'#FFFFFF',
+};
+const F = { display: "'Montserrat', system-ui, sans-serif", body: "'Inter', system-ui, sans-serif" };
+
+function Icon({ name, size = 16, color = 'currentColor', style: sx }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!ref.current || !window.lucide) return;
+    ref.current.innerHTML = '';
+    const el = document.createElement('i');
+    el.setAttribute('data-lucide', name);
+    ref.current.appendChild(el);
+    window.lucide.createIcons({ attrs: { width: size, height: size, 'stroke-width': 1.75, color } });
+  }, [name, size, color]);
+  return <span ref={ref} style={{ display:'inline-flex', alignItems:'center', color, flexShrink:0, ...sx }} />;
+}
+
+function Av({ initials, color = C.brand700, size = 32 }) {
+  return <span style={{ width:size, height:size, borderRadius:99, background:color, color:'#fff', fontFamily:F.body, fontWeight:700, fontSize:size*.36, display:'inline-flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>{initials}</span>;
+}
+function AvGroup({ items, size = 28 }) {
+  return <div style={{ display:'flex' }}>{items.map((it,i) => <div key={i} style={{ marginLeft: i>0?-8:0, border:'2px solid #fff', borderRadius:99 }}><Av initials={it.initials} color={it.color} size={size} /></div>)}{items.length > 3 && <div style={{ marginLeft:-8, border:'2px solid #fff', borderRadius:99 }}><Av initials={'+' + (items.length - 3)} color={C.n100} size={size} /></div>}</div>;
+}
+function Badge({ tone='neutral', dot, children, style:sx }) {
+  const tones = { success:{bg:C.success50,c:C.success700,d:C.success500}, warning:{bg:C.warning50,c:C.warning700,d:C.warning500}, error:{bg:C.error50,c:C.error700,d:C.error500}, info:{bg:C.info50,c:C.info700,d:C.info500}, brand:{bg:C.brand50,c:C.brand700,d:C.brand500}, accent:{bg:C.accent100,c:C.accent800,d:C.accent500}, neutral:{bg:C.n50,c:C.n600,d:C.n400} };
+  const t = tones[tone];
+  return <span style={{ display:'inline-flex', alignItems:'center', gap:6, fontFamily:F.body, fontSize:12, fontWeight:600, padding:'3px 9px', borderRadius:4, background:t.bg, color:t.c, whiteSpace:'nowrap', ...sx }}>{dot && <span style={{ width:6, height:6, borderRadius:99, background:t.d }} />}{children}</span>;
+}
+function Btn({ variant='primary', size='md', icon, iconRight, children, onClick, style:sx, ...rest }) {
+  const [h, setH] = useState(false);
+  const base = { fontFamily:F.body, fontWeight:600, display:'inline-flex', alignItems:'center', justifyContent:'center', gap:8, borderRadius:8, border:0, cursor:'pointer', whiteSpace:'nowrap', transition:'all 200ms cubic-bezier(.16,1,.3,1)' };
+  const sizes = { sm:{height:32,padding:'0 12px',fontSize:13}, md:{height:40,padding:'0 16px',fontSize:14} };
+  const vars = { primary:{background:C.accent500,color:'#fff'}, secondary:{background:'transparent',color:C.brand700,border:'1.5px solid '+C.brand700}, ghost:{background:'transparent',color:C.brand700} };
+  const hvs = { primary:{background:C.accent600}, secondary:{background:C.brand50}, ghost:{background:C.n50} };
+  return <button style={{ ...base, ...sizes[size], ...vars[variant], ...(h ? hvs[variant]||{} : {}), ...sx }} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} onClick={onClick} {...rest}>{icon}{children}{iconRight}</button>;
+}
+function Overline({ children, style:sx }) {
+  return <div style={{ fontFamily:F.body, fontSize:11, fontWeight:600, letterSpacing:'1px', textTransform:'uppercase', color:C.n400, ...sx }}>{children}</div>;
+}
+
+/* ======================================================================
+   TOP BAR — logo before search
+   ====================================================================== */
+function TopBar() {
+  return (
+    <header style={{ height:56, borderBottom:'1px solid '+C.n100, background:'#fff', display:'flex', alignItems:'center', padding:'0 20px', gap:8, position:'sticky', top:0, zIndex:20 }}>
+      {/* Back/forward */}
+      <div style={{ display:'flex', gap:2, marginRight:6 }}>
+        <button style={{ border:0, background:'transparent', cursor:'pointer', padding:4, borderRadius:6, color:C.n400 }}><Icon name="chevron-left" size={18} /></button>
+        <button style={{ border:0, background:'transparent', cursor:'pointer', padding:4, borderRadius:6, color:C.n400 }}><Icon name="chevron-right" size={18} /></button>
+      </div>
+      {/* Logo */}
+      <img src="assets/logo-pragma360-wordmark.svg" style={{ height:18, marginRight:12 }} alt="Pragma360" />
+      {/* Search */}
+      <button style={{ display:'flex', alignItems:'center', gap:8, border:'1px solid '+C.n200, background:'#fff', borderRadius:6, padding:'6px 14px', cursor:'pointer', color:C.n400, fontFamily:F.body, fontSize:13 }}><Icon name="search" size={15} color={C.n300} />Rechercher</button>
+      <button style={{ display:'flex', alignItems:'center', gap:6, border:0, background:'transparent', cursor:'pointer', padding:'6px 10px', borderRadius:6, fontFamily:F.body, fontSize:13, color:C.n600 }}><Icon name="user-plus" size={15} />Ajouter</button>
+      <button style={{ display:'flex', alignItems:'center', gap:6, border:0, background:'transparent', cursor:'pointer', padding:'6px 10px', borderRadius:6, fontFamily:F.body, fontSize:13, color:C.n600 }}><Icon name="bell" size={15} />Notifications</button>
+      <button style={{ border:0, background:'transparent', cursor:'pointer', padding:6, borderRadius:6, color:C.n400 }}><Icon name="more-horizontal" size={18} /></button>
+      <div style={{ flex:1 }} />
+      <span style={{ fontFamily:F.body, fontSize:13, color:C.n500, display:'flex', alignItems:'center', gap:6 }}><Icon name="calendar" size={14} color={C.n400} />24 avril 2026</span>
+      <Btn variant="primary" size="sm" style={{ marginLeft:12 }} iconRight={<Icon name="arrow-right" size={14} color="#fff" />}>Créer</Btn>
+    </header>
+  );
+}
+
+/* ======================================================================
+   LEFT SIDEBAR
+   ====================================================================== */
+function LeftSidebar({ active }) {
+  const [hov, setHov] = useState(null);
+  const navItems = [
+    { id:'dashboard', icon:'layout-dashboard', label:'Tableau de bord' },
+    { id:'interviews', icon:'video', label:'Entretiens' },
+    { id:'candidates', icon:'users', label:'Candidats' },
+    { id:'settings', icon:'settings', label:'Paramètres' },
+  ];
+  const departments = [
+    { label:'Département Design', color:C.accent500 },
+    { label:'Département Engineering', color:C.error500 },
+  ];
+  return (
+    <aside style={{ width:220, background:'#fff', display:'flex', flexDirection:'column', height:'100%', flexShrink:0, overflow:'auto' }}>
+      <div style={{ padding:'20px 16px 8px' }}>
+        <h2 style={{ fontFamily:F.display, fontWeight:800, fontSize:20, color:C.brand700, margin:0 }}>Phases</h2>
+      </div>
+      <nav style={{ padding:'8px 10px', flex:1 }}>
+        {navItems.map(it => {
+          const isActive = it.id === active;
+          const isHov = hov === it.id;
+          return (
+            <button key={it.id} onMouseEnter={()=>setHov(it.id)} onMouseLeave={()=>setHov(null)} style={{ width:'100%', display:'flex', alignItems:'center', gap:10, padding:'8px 12px', borderRadius:8, border:0, background: isActive ? C.accent500 : isHov ? C.n50 : 'transparent', color: isActive ? '#fff' : C.n700, cursor:'pointer', fontFamily:F.body, fontSize:13, fontWeight: isActive?600:500, textAlign:'left', transition:'all 150ms', marginBottom:2 }}>
+              <Icon name={it.icon} size={17} color={isActive?'#fff':C.n400} />{it.label}
+            </button>
+          );
+        })}
+        <div style={{ padding:'16px 12px 6px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+          <Overline>Départements</Overline>
+          <button style={{ border:0, background:'transparent', cursor:'pointer', padding:2, color:C.n400 }}><Icon name="plus" size={14} /></button>
+        </div>
+        {departments.map((d,i) => (
+          <button key={i} style={{ width:'100%', display:'flex', alignItems:'center', gap:10, padding:'7px 12px', borderRadius:6, border:0, background:'transparent', cursor:'pointer', fontFamily:F.body, fontSize:13, color:C.accent800, textAlign:'left' }}>
+            <span style={{ width:8, height:8, borderRadius:99, background:d.color, flexShrink:0 }} />{d.label}
+          </button>
+        ))}
+      </nav>
+
+      {/* Promo card */}
+      <div style={{ margin:'0 12px 12px', padding:16, borderRadius:12, background:'linear-gradient(135deg, '+C.brand700+' 0%, '+C.brand900+' 100%)', color:'#fff', position:'relative', overflow:'hidden' }}>
+        <div style={{ position:'absolute', top:-20, right:-20, width:80, height:80, borderRadius:99, background:C.accent500, opacity:.25 }} />
+        <div style={{ position:'absolute', bottom:-10, left:-10, width:50, height:50, borderRadius:99, background:C.accent400, opacity:.15 }} />
+        <div style={{ fontFamily:F.body, fontWeight:700, fontSize:14, marginBottom:4, position:'relative' }}>Mode Avancé activé</div>
+        <div style={{ fontFamily:F.body, fontSize:12, color:C.brand200, lineHeight:1.4, marginBottom:10, position:'relative' }}>Accédez aux analytics avancés et aux exports détaillés.</div>
+        <div style={{ display:'flex', alignItems:'center', gap:6, fontFamily:F.body, fontSize:12, fontWeight:600, color:C.accent300, marginBottom:12, position:'relative' }}><Icon name="sparkles" size={14} color={C.accent300} />-50% le premier mois</div>
+        <Btn variant="primary" size="sm" style={{ width:'100%', position:'relative' }}>Explorer les outils</Btn>
+      </div>
+
+      {/* User */}
+      <div style={{ padding:'12px 16px', borderTop:'1px solid '+C.n100, display:'flex', alignItems:'center', gap:10 }}>
+        <Av initials="CK" color={C.accent500} size={34} />
+        <div style={{ flex:1, minWidth:0 }}>
+          <div style={{ fontFamily:F.body, fontSize:13, fontWeight:600, color:C.n700, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>Claire Kahn</div>
+          <div style={{ fontFamily:F.body, fontSize:11, color:C.n400 }}>claire.kahn@fellows.fr</div>
+        </div>
+        <button style={{ border:0, background:'transparent', cursor:'pointer', padding:4, color:C.n400 }}><Icon name="external-link" size={14} /></button>
+      </div>
+    </aside>
+  );
+}
+
+/* ======================================================================
+   RIGHT SIDEBAR — notifications + evaluators + sections with left bar
+   ====================================================================== */
+function RightSidebar() {
+  const notifs = [
+    { icon:'zap', iconBg:C.accent50, iconColor:C.accent500, title:"Mode avancé activé", desc:"Toutes les fonctionnalités premium so..." },
+    { icon:'user-plus', iconBg:C.info50, iconColor:C.info500, title:"Nouveau candidat ajouté", desc:"Alex Martin a rejoint la phase 3..." },
+    { icon:'clock', iconBg:C.warning50, iconColor:C.warning500, title:"Échéance proche", desc:"Phase 3 se termine dans 2 jours..." },
+  ];
+  const sections = [
+    { title:'Introduction', meta:'5m · 7 questions', color:C.accent500 },
+    { title:'Revue portfolio', meta:'4m · 4 questions', color:C.brand500 },
+    { title:'Vérification parcours', meta:'6m · 5 questions', color:C.success500 },
+    { title:'Mise en situation', meta:'30m · 7 questions', color:C.warning500 },
+  ];
+  const evaluators = [
+    { initials:'CK', color:C.accent500 }, { initials:'JB', color:C.brand600 }, { initials:'AM', color:C.brand700 },
+  ];
+  return (
+    <div style={{ width:260, flexShrink:0, overflow:'auto', padding:'0 16px 24px' }}>
+      {/* Notifications */}
+      <div style={{ display:'flex', flexDirection:'column', gap:8, marginBottom:16 }}>
+        {notifs.map((n,i) => (
+          <button key={i} style={{ display:'flex', alignItems:'flex-start', gap:10, padding:'10px 12px', borderRadius:8, border:0, background:'#fff', cursor:'pointer', textAlign:'left', width:'100%', transition:'background 150ms' }}>
+            <span style={{ width:32, height:32, borderRadius:8, background:n.iconBg, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><Icon name={n.icon} size={16} color={n.iconColor} /></span>
+            <div style={{ flex:1, minWidth:0 }}>
+              <div style={{ fontFamily:F.body, fontSize:13, fontWeight:600, color:C.n700 }}>{n.title}</div>
+              <div style={{ fontFamily:F.body, fontSize:12, color:C.n400, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{n.desc}</div>
+            </div>
+            <Icon name="chevron-right" size={14} color={C.n300} style={{ marginTop:4 }} />
+          </button>
+        ))}
+      </div>
+      <div style={{ display:'flex', gap:8, marginBottom:24 }}>
+        <Btn variant="primary" size="sm" style={{ flex:1 }} iconRight={<Icon name="arrow-right" size={14} color="#fff" />}>Notifications</Btn>
+        <Btn variant="ghost" size="sm" icon={<Icon name="file-text" size={14} />}>Notes</Btn>
+      </div>
+
+      {/* Evaluators */}
+      <div style={{ marginBottom:24 }}>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:4 }}>
+          <div style={{ fontFamily:F.body, fontSize:14, fontWeight:700, color:C.brand700 }}>Évaluateurs assignés</div>
+          <button style={{ border:0, background:'transparent', cursor:'pointer', padding:2, color:C.n400 }}><Icon name="settings" size={14} /></button>
+        </div>
+        <div style={{ fontFamily:F.body, fontSize:12, color:C.n400, marginBottom:10 }}>Panel pour ce poste</div>
+        <div style={{ display:'flex' }}>
+          {evaluators.map((e,i) => <div key={i} style={{ marginLeft:i>0?-6:0, border:'2px solid '+C.n0, borderRadius:99 }}><Av initials={e.initials} color={e.color} size={30} /></div>)}
+          <div style={{ marginLeft:-6, border:'2px solid '+C.n0, borderRadius:99 }}><Av initials="+5" color={C.n100} size={30} /></div>
+        </div>
+      </div>
+
+      {/* Sections — left color bar like image */}
+      <div>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
+          <div style={{ fontFamily:F.body, fontSize:14, fontWeight:700, color:C.brand700 }}>Sections</div>
+          <button style={{ display:'flex', alignItems:'center', gap:4, border:0, background:'transparent', cursor:'pointer', fontFamily:F.body, fontSize:12, fontWeight:600, color:C.accent500 }}><Icon name="plus" size={13} color={C.accent500} />Ajouter</button>
+        </div>
+        {sections.map((s,i) => (
+          <div key={i} style={{ display:'flex', alignItems:'center', padding:'10px 12px', borderRadius:8, background:'#fff', marginBottom:6, borderLeft:'3px solid '+s.color }}>
+            <div style={{ flex:1 }}>
+              <div style={{ fontFamily:F.body, fontSize:13, fontWeight:600, color:C.n700 }}>{s.title}</div>
+              <div style={{ fontFamily:F.body, fontSize:11, color:C.n400 }}>{s.meta}</div>
+            </div>
+            <button style={{ border:0, background:'transparent', cursor:'pointer', padding:4, color:C.n300 }}><Icon name="more-vertical" size={14} /></button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ======================================================================
+   MAIN CONTENT — on gray rounded container, cards without borders
+   ====================================================================== */
+function MainContent() {
+  const rounds = [
+    { name:'Phase 1', subtitle:'Revue initiale', dates:'12 juin - 15 juin', candidates:10, status:'completed' },
+    { name:'Phase 2', subtitle:'Revue initiale', dates:'12 juin - 15 juin', candidates:10, status:'progress' },
+  ];
+  const avatars = [
+    { initials:'CK', color:C.accent500 }, { initials:'JB', color:C.brand600 }, { initials:'AM', color:C.brand700 },
+  ];
+  return (
+    <div style={{ flex:1, overflow:'auto', padding:'0 32px 60px' }}>
+      {/* Breadcrumb */}
+      <div style={{ padding:'16px 0 4px', fontFamily:F.body, fontSize:12, color:C.n400, display:'flex', gap:6, alignItems:'center' }}>
+        <span>Candidats</span><span style={{ color:C.n200 }}>/</span>
+        <span>Chef de projet junior</span><span style={{ color:C.n200 }}>/</span>
+        <span style={{ color:C.brand700, fontWeight:600 }}>Phase 3</span>
+      </div>
+
+      {/* Title + filters — full width, right sidebar below this */}
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', paddingBottom:20 }}>
+        <h1 style={{ fontFamily:F.display, fontWeight:800, fontSize:32, color:C.brand700, margin:0, letterSpacing:'-.015em' }}>Phase</h1>
+        <div style={{ display:'flex', gap:6, alignItems:'center' }}>
+          <Btn variant="ghost" size="sm" icon={<Icon name="layers" size={14} />}>Tous les départements</Btn>
+          <Btn variant="ghost" size="sm" icon={<Icon name="download" size={14} />}>Exporter</Btn>
+          <Btn variant="ghost" size="sm" icon={<Icon name="filter" size={14} />}>Filtrer</Btn>
+        </div>
+      </div>
+
+      {/* Round cards — NO border, white bg on gray container */}
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:32 }}>
+        {rounds.map((r,i) => (
+          <div key={i} style={{ borderRadius:12, padding:20, background:'#fff', display:'flex', flexDirection:'column', gap:12 }}>
+            <div style={{ display:'flex', gap:8, flexWrap:'wrap', fontFamily:F.body, fontSize:12, color:C.n500, alignItems:'center' }}>
+              <span>{r.dates}</span>
+              <span style={{ display:'flex', alignItems:'center', gap:4 }}><Icon name="users" size={13} color={C.n400} />{r.candidates} candidats</span>
+              <Badge tone={r.status==='completed'?'success':'accent'} dot>{r.status==='completed'?'Terminé':'En cours'}</Badge>
+            </div>
+            <div>
+              <div style={{ fontFamily:F.display, fontWeight:700, fontSize:18, color:C.brand700 }}>{r.name}</div>
+              <div style={{ fontFamily:F.body, fontSize:13, color:C.n500 }}>{r.subtitle}</div>
+            </div>
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginTop:4 }}>
+              <AvGroup items={avatars} size={26} />
+              <Btn variant="secondary" size="sm" iconRight={<Icon name="arrow-right" size={14} />}>Voir les candidats</Btn>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Interview Overview */}
+      <div style={{ borderBottom:'1px solid '+C.n100, paddingBottom:16, marginBottom:24, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+        <h2 style={{ fontFamily:F.display, fontWeight:800, fontSize:24, color:C.brand700, margin:0 }}>Aperçu de l'entretien</h2>
+        <div style={{ display:'flex', gap:6 }}>
+          <button style={{ border:0, background:'transparent', cursor:'pointer', padding:6, borderRadius:6, color:C.n400 }}><Icon name="plus" size={18} /></button>
+          <button style={{ border:0, background:'transparent', cursor:'pointer', padding:6, borderRadius:6, color:C.n400 }}><Icon name="more-horizontal" size={18} /></button>
+        </div>
+      </div>
+
+      {/* Section: Previous Background */}
+      <div style={{ marginBottom:32 }}>
+        <h3 style={{ fontFamily:F.display, fontWeight:700, fontSize:18, color:C.brand700, margin:'0 0 16px' }}>Parcours antérieur</h3>
+
+        {/* Question 1 — collapsed */}
+        <div style={{ padding:16, borderRadius:8, marginBottom:12, background:'#fff' }}>
+          <div style={{ display:'flex', alignItems:'flex-start', gap:12 }}>
+            <span style={{ width:28, height:28, borderRadius:99, background:C.n50, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:F.body, fontSize:13, fontWeight:700, color:C.brand700, flexShrink:0 }}>1</span>
+            <div style={{ flex:1 }}>
+              <div style={{ fontFamily:F.body, fontSize:14, fontWeight:600, color:C.n700, marginBottom:4 }}>En quoi la gestion de projet agile diffère-t-elle du cycle en V ?</div>
+              <div style={{ fontFamily:F.body, fontSize:12, color:C.n400 }}>3m · 4 questions</div>
+            </div>
+            <button style={{ border:0, background:'transparent', cursor:'pointer', padding:4, color:C.n300 }}><Icon name="chevron-down" size={16} /></button>
+          </div>
+        </div>
+
+        {/* Question 2 — expanded */}
+        <div style={{ padding:20, borderRadius:8, background:'#fff' }}>
+          <div style={{ display:'flex', alignItems:'flex-start', gap:12, marginBottom:20 }}>
+            <span style={{ width:28, height:28, borderRadius:99, background:C.accent50, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:F.body, fontSize:13, fontWeight:700, color:C.accent500, flexShrink:0 }}>2</span>
+            <div style={{ flex:1 }}>
+              <div style={{ fontFamily:F.body, fontSize:14, fontWeight:600, color:C.n700 }}>Rédaction</div>
+            </div>
+          </div>
+
+          <div style={{ marginBottom:20 }}>
+            <label style={{ display:'block', fontFamily:F.body, fontSize:13, fontWeight:600, color:C.n600, marginBottom:6 }}>Consigne</label>
+            <div style={{ fontFamily:F.body, fontSize:14, color:C.n500, lineHeight:1.5, padding:'10px 14px', background:C.n50, borderRadius:6, border:'1px solid '+C.n100 }}>Comment évalueriez-vous la capacité d'un candidat à gérer un budget contraint ?</div>
+          </div>
+
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 100px 1fr', gap:16, marginBottom:20 }}>
+            <div>
+              <label style={{ display:'block', fontFamily:F.body, fontSize:13, fontWeight:600, color:C.n600, marginBottom:6 }}>Compétences</label>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', border:'1px solid '+C.n200, borderRadius:6, height:40, padding:'0 12px', fontFamily:F.body, fontSize:13, color:C.n700, background:'#fff' }}>Gestion budgétaire<Icon name="chevron-down" size={14} color={C.n300} /></div>
+            </div>
+            <div>
+              <label style={{ display:'block', fontFamily:F.body, fontSize:13, fontWeight:600, color:C.n600, marginBottom:6 }}>Temps</label>
+              <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+                <div style={{ border:'1px solid '+C.n200, borderRadius:6, height:40, padding:'0 12px', fontFamily:F.body, fontSize:13, color:C.n700, display:'flex', alignItems:'center', background:'#fff', flex:1 }}>10</div>
+                <span style={{ fontFamily:F.body, fontSize:12, color:C.n400 }}>min</span>
+              </div>
+            </div>
+            <div>
+              <label style={{ display:'block', fontFamily:F.body, fontSize:13, fontWeight:600, color:C.n600, marginBottom:6 }}>Niveau</label>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', border:'1px solid '+C.n200, borderRadius:6, height:40, padding:'0 12px', fontFamily:F.body, fontSize:13, color:C.n400, background:'#fff' }}>En attente<Icon name="chevron-down" size={14} color={C.n300} /></div>
+            </div>
+          </div>
+
+          <div>
+            <label style={{ display:'block', fontFamily:F.body, fontSize:13, fontWeight:600, color:C.n600, marginBottom:8 }}>Consignes d'évaluation</label>
+            <div style={{ fontFamily:F.body, fontSize:14, color:C.n700, lineHeight:1.65 }}>
+              <p style={{ margin:'0 0 6px' }}>Les critères d'évaluation principaux sont :</p>
+              <ul style={{ paddingLeft:20, margin:0 }}>
+                <li>La capacité à reformuler la contrainte budgétaire avant de proposer une solution</li>
+                <li>L'identification des arbitrages nécessaires (coût d'opportunité, priorisation)</li>
+                <li>La clarté de la communication chiffrée auprès des parties prenantes</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ======================================================================
+   APP SHELL — gray rounded container below topbar
+   ====================================================================== */
+function App() {
+  return (
+    <div style={{ display:'flex', flexDirection:'column', height:'100vh', background:'#fff' }}>
+      <TopBar />
+      <div style={{ display:'flex', flex:1, overflow:'hidden' }}>
+        {/* Left sidebar — white bg, no border */}
+        <LeftSidebar active="candidates" />
+        {/* Gray rounded container with main + right sidebar */}
+        <div style={{ flex:1, display:'flex', overflow:'hidden', background:C.n50, borderRadius:'16px 0 0 0', margin:0 }}>
+          {/* Main content + right sidebar share the breadcrumb/title area */}
+          <div style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden' }}>
+            <MainContent />
+          </div>
+          <RightSidebar />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>

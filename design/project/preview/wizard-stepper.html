@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin:0; padding:24px; background:#FAFAF9; font-family:Inter,sans-serif; }
+  .stepper { display:flex; align-items:center; gap:0; }
+  .step { display:flex; align-items:center; gap:10px; flex:1; }
+  .step-num { width:28px; height:28px; border-radius:99px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex-shrink:0; border:1.5px solid transparent; }
+  .done { background:#10B981; color:#fff; }
+  .current { background:#EE7A3A; color:#fff; box-shadow:0 0 0 4px rgba(238,122,58,.18); }
+  .pending { background:#fff; border-color:#D6D3D1; color:#A8A29E; }
+  .label { font-size:13px; color:#292524; font-weight:500; white-space:nowrap; }
+  .label.muted { color:#A8A29E; }
+  .bar { flex:1; height:2px; background:#E7E5E4; margin:0 12px; }
+  .bar.filled { background:#10B981; }
+  .progress-section { margin-top:20px; }
+  .progress-label { display:flex; justify-content:space-between; font-size:12px; color:#57534E; margin-bottom:6px; }
+  .progress { height:6px; background:#E7E5E4; border-radius:99px; overflow:hidden; }
+  .progress .fill { background:#EE7A3A; width:40%; height:100%; border-radius:99px; }
+</style></head>
+<body>
+<div class="stepper">
+  <div class="step"><span class="step-num done">✓</span><span class="label">Profil</span></div>
+  <div class="bar filled"></div>
+  <div class="step"><span class="step-num done">✓</span><span class="label">Scénario</span></div>
+  <div class="bar filled"></div>
+  <div class="step"><span class="step-num current">3</span><span class="label" style="color:#1A2B48;font-weight:700">Équipe</span></div>
+  <div class="bar"></div>
+  <div class="step"><span class="step-num pending">4</span><span class="label muted">Calendrier</span></div>
+  <div class="bar"></div>
+  <div class="step"><span class="step-num pending">5</span><span class="label muted">Récap</span></div>
+</div>
+<div class="progress-section">
+  <div class="progress-label"><span>Étape 3 sur 5</span><span>40%</span></div>
+  <div class="progress"><div class="fill"></div></div>
+</div>
+</body></html>
