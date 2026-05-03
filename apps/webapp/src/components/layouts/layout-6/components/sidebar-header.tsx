@@ -40,7 +40,7 @@ export function SidebarHeader() {
 
         <DropdownMenu>
           <DropdownMenuTrigger className="cursor-pointer text-[#4b2f95] dark:text-white font-medium flex items-center justify-between gap-2 w-[150px]">
-            Sim360
+            Simex pro
             <ChevronDown className="size-3.5! text-[#8a7daa] dark:text-white/50" />
           </DropdownMenuTrigger>
           <DropdownMenuContent sideOffset={10} side="bottom" align="start">

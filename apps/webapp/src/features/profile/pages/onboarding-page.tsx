@@ -98,7 +98,7 @@ const OnboardingPage = () => {
                 <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <h1 className="text-lg font-bold text-foreground">ProjectSim360</h1>
+            <h1 className="text-lg font-bold text-foreground">Simex pro</h1>
             <p className="text-sm text-muted-foreground mt-0.5">
               Configuration du profil — Etape {steps.indexOf(currentStep) + 1}/{steps.length}
             </p>

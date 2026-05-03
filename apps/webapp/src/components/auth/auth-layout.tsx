@@ -28,7 +28,7 @@ export function AuthLayout() {
             <Link to="/">
               <img
                 src="/media/app/mini-logo.svg"
-                alt="Sim360"
+                alt="Simex pro"
                 className="h-7 max-w-none brightness-0 invert"
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none';

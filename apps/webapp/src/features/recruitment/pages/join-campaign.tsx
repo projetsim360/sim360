@@ -235,7 +235,7 @@ export default function JoinCampaignPage() {
         {/* Footer with recruiter note (US-8.1) */}
         <div className="text-center space-y-2">
           <p className="text-sm text-muted-foreground">
-            Propulse par ProjectSim360 - Evaluation par simulation de gestion de projet
+            Propulse par Simex pro - Evaluation par simulation de gestion de projet
           </p>
           <p className="text-sm text-muted-foreground">
             Vous etes recruteur ?{' '}

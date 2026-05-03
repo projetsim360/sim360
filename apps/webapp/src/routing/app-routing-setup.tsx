@@ -68,7 +68,7 @@ export function AppRoutingSetup() {
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/settings/layout" element={<SettingsPage />} />
 
-          {/* Feature routes (Sim360 domaine) */}
+          {/* Feature routes (Simex pro domaine) */}
           {dashboardRoutes}
           {simulationRoutes}
           {meetingRoutes}

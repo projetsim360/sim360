@@ -20,7 +20,7 @@ import { recruitmentMenuItems } from '@/features/recruitment/config/recruitment.
 import { mentoringMenuItems } from '@/features/mentoring/config/mentoring.menu';
 
 // ---------------------------------------------------------------------------
-// Source de vérité unique pour tous les menus de l'application Sim360.
+// Source de vérité unique pour tous les menus de l'application Simex pro.
 // Chaque layout-N.config.tsx importe depuis ce fichier.
 // ---------------------------------------------------------------------------
 

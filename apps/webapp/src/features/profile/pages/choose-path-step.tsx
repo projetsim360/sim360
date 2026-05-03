@@ -132,7 +132,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
 
     completeOnboarding.mutate(undefined, {
       onSuccess: () => {
-        toast.success('Onboarding termine. Bienvenue sur ProjectSim360 !');
+        toast.success('Onboarding termine. Bienvenue sur Simex pro !');
         navigate('/simulations');
       },
       onError: () => {
