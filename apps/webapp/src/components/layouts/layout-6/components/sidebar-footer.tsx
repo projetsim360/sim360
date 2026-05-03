@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { UserDropdownMenu } from '../../layout-1/shared/topbar/user-dropdown-menu';
 import { NotificationsSheet } from '../../layout-1/shared/topbar/notifications-sheet';
 import { ChatSheet } from '../../layout-1/shared/topbar/chat-sheet';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { useAuth } from '@/providers/auth-provider';
 
 export function SidebarFooter() {
@@ -19,7 +20,7 @@ export function SidebarFooter() {
     <div className="flex flex-center justify-between shrink-0 ps-4 pe-3.5 h-14">
       <UserDropdownMenu
         trigger={
-          <Avatar className="size-9 cursor-pointer border-2 border-[#eae8ee] dark:border-white/20 shrink-0">
+          <Avatar className="size-9 cursor-pointer border-2 border-border dark:border-white/20 shrink-0">
             {user?.avatar ? (
               <AvatarImage
                 src={`${apiBase}${user.avatar}`}
@@ -27,19 +28,20 @@ export function SidebarFooter() {
                 className="size-9"
               />
             ) : null}
-            <AvatarFallback className="text-xs font-semibold bg-[#4b2f95] dark:bg-white/15 text-white">{initials}</AvatarFallback>
+            <AvatarFallback className="text-xs font-semibold bg-primary text-primary-foreground dark:bg-white/15">{initials}</AvatarFallback>
           </Avatar>
         }
       />
 
       <div className="flex flex-center gap-1.5">
+        <ThemeToggle className="text-muted-foreground hover:text-foreground hover:bg-muted dark:text-white/70 dark:hover:text-white dark:hover:bg-white/10" />
         <NotificationsSheet
           trigger={
             <Button
               variant="ghost"
               mode="icon"
               aria-label="Notifications"
-              className="text-[#8a7daa] dark:text-white/70 hover:text-[#4b2f95] dark:hover:text-white hover:bg-white dark:hover:bg-white/10 rounded-lg hover:[&_svg]:text-[#4b2f95] dark:hover:[&_svg]:text-white [&_i]:text-[#8a7daa] dark:[&_i]:text-white/70"
+              className="text-muted-foreground hover:text-foreground hover:bg-muted dark:text-white/70 dark:hover:text-white dark:hover:bg-white/10 rounded-lg [&_i]:text-muted-foreground"
             >
               <MessageSquareDot className="size-4.5!" />
             </Button>
@@ -51,7 +53,7 @@ export function SidebarFooter() {
               variant="ghost"
               mode="icon"
               aria-label="Messages"
-              className="text-[#8a7daa] dark:text-white/70 hover:text-[#4b2f95] dark:hover:text-white hover:bg-white dark:hover:bg-white/10 rounded-lg hover:[&_svg]:text-[#4b2f95] dark:hover:[&_svg]:text-white [&_i]:text-[#8a7daa] dark:[&_i]:text-white/70"
+              className="text-muted-foreground hover:text-foreground hover:bg-muted dark:text-white/70 dark:hover:text-white dark:hover:bg-white/10 rounded-lg [&_i]:text-muted-foreground"
             >
               <MessageCircleMore className="size-4.5!" />
             </Button>
