@@ -2,6 +2,9 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
+/* Inter (body) — Google Fonts CDN. MUST come before any non-import rule per CSS spec. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
 /* Typography plugin (prose classes for markdown rendering) */
 @plugin "@tailwindcss/typography";
 
@@ -37,9 +40,6 @@ i[class*="ki-"] {
 @font-face { font-family: "Montserrat"; font-style: italic; font-weight: 800; src: url("/fonts/montserrat/Montserrat-ExtraBoldItalic.ttf") format("truetype"); font-display: swap; }
 @font-face { font-family: "Montserrat"; font-style: normal; font-weight: 900; src: url("/fonts/montserrat/Montserrat-Black.ttf") format("truetype"); font-display: swap; }
 @font-face { font-family: "Montserrat"; font-style: italic; font-weight: 900; src: url("/fonts/montserrat/Montserrat-BlackItalic.ttf") format("truetype"); font-display: swap; }
-
-/* Inter (body) — Google Fonts CDN until self-hosted version is provided */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 /* ==========================================================================
    Simex pro — Design tokens (light)
