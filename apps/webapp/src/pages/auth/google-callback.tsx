@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { setTokens } from '@/lib/auth';
-import { Loader2 } from '@/components/keenicons/icons';
+import { AuthCard } from '@/components/auth/auth-card';
+import { Link } from 'react-router-dom';
 
 export function GoogleCallbackPage() {
   const [searchParams] = useSearchParams();
@@ -39,21 +40,28 @@ export function GoogleCallbackPage() {
 
   if (error) {
     return (
-      <div className="text-center">
-        <p className="text-destructive mb-4">{error}</p>
-        <a href="/auth/sign-in" className="text-primary hover:underline">
-          Retour à la connexion
-        </a>
-      </div>
+      <AuthCard
+        title="Connexion en cours…"
+        subtitle="Vous serez redirigé automatiquement."
+        bottomSlot={
+          <Link to="/auth/sign-in" className="font-medium text-[var(--accent-600)] hover:underline">
+            Retour à la connexion
+          </Link>
+        }
+      >
+        <p className="text-destructive text-sm">{error}</p>
+      </AuthCard>
     );
   }
 
   return (
-    <div className="flex items-center justify-center min-h-[200px]">
-      <div className="text-center space-y-4">
-        <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
-        <p className="text-muted-foreground">Connexion en cours...</p>
+    <AuthCard
+      title="Connexion en cours…"
+      subtitle="Vous serez redirigé automatiquement."
+    >
+      <div className="flex justify-center py-4">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--brand-700)] border-t-transparent" />
       </div>
-    </div>
+    </AuthCard>
   );
 }

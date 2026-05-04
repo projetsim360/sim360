@@ -6,7 +6,7 @@ export function Layout6() {
   return (
     <>
       <Helmet>
-        <title>Sim360 - Dashboard</title>
+        <title>Simex pro — Tableau de bord</title>
       </Helmet>
 
       <LayoutProvider>

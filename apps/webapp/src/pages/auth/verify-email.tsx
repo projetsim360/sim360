@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { api } from '@/lib/api-client';
-import { CheckCircle, XCircle, Loader2 } from '@/components/keenicons/icons';
 import { Button } from '@/components/ui/button';
+import { AuthCard } from '@/components/auth/auth-card';
 
 export function VerifyEmailPage() {
   const [searchParams] = useSearchParams();
@@ -27,53 +27,64 @@ export function VerifyEmailPage() {
       });
   }, [token]);
 
+  if (status === 'loading') {
+    return (
+      <AuthCard
+        title="Vérification en cours…"
+        subtitle="Patientez quelques instants."
+      >
+        <div className="flex justify-center py-4">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--brand-700)] border-t-transparent" />
+        </div>
+      </AuthCard>
+    );
+  }
+
+  if (status === 'success') {
+    return (
+      <AuthCard
+        title="Email vérifié."
+        subtitle="Votre compte est maintenant actif. Vous pouvez vous connecter."
+      >
+        <Button asChild className="w-full">
+          <Link to="/auth/sign-in">Se connecter</Link>
+        </Button>
+      </AuthCard>
+    );
+  }
+
+  if (status === 'expired') {
+    return (
+      <AuthCard
+        title="Lien expiré."
+        subtitle="Le lien de vérification a expiré. Demandez un nouveau lien."
+        bottomSlot={
+          <Link to="/auth/sign-in" className="font-medium text-[var(--accent-600)] hover:underline">
+            Retour à la connexion
+          </Link>
+        }
+      >
+        <Button asChild className="w-full">
+          <Link to="/auth/sign-in">Retour à la connexion</Link>
+        </Button>
+      </AuthCard>
+    );
+  }
+
+  // status === 'error'
   return (
-    <>
-      {status === 'loading' && (
-        <div className="flex flex-col items-center text-center space-y-5">
-          <Loader2 className="size-12 animate-spin text-primary" />
-          <h3 className="text-lg font-medium text-mono">Vérification en cours...</h3>
-        </div>
-      )}
-
-      {status === 'success' && (
-        <div className="flex flex-col items-center text-center space-y-5">
-          <CheckCircle className="size-12 text-green-500" />
-          <h3 className="text-lg font-medium text-mono">Email vérifié !</h3>
-          <div className="text-sm text-secondary-foreground">
-            Votre compte est maintenant actif. Vous pouvez vous connecter.
-          </div>
-          <Button asChild className="w-full">
-            <Link to="/auth/sign-in">Se connecter</Link>
-          </Button>
-        </div>
-      )}
-
-      {status === 'expired' && (
-        <div className="flex flex-col items-center text-center space-y-5">
-          <XCircle className="size-12 text-yellow-500" />
-          <h3 className="text-lg font-medium text-mono">Lien expiré</h3>
-          <div className="text-sm text-secondary-foreground">
-            Le lien de vérification a expiré. Demandez un nouveau lien.
-          </div>
-          <Button asChild className="w-full">
-            <Link to="/auth/sign-in">Retour à la connexion</Link>
-          </Button>
-        </div>
-      )}
-
-      {status === 'error' && (
-        <div className="flex flex-col items-center text-center space-y-5">
-          <XCircle className="size-12 text-destructive" />
-          <h3 className="text-lg font-medium text-mono">Erreur de vérification</h3>
-          <div className="text-sm text-secondary-foreground">
-            Le lien de vérification est invalide ou a déjà été utilisé.
-          </div>
-          <Button asChild className="w-full">
-            <Link to="/auth/sign-in">Retour à la connexion</Link>
-          </Button>
-        </div>
-      )}
-    </>
+    <AuthCard
+      title="Erreur de vérification."
+      subtitle="Le lien de vérification est invalide ou a déjà été utilisé."
+      bottomSlot={
+        <Link to="/auth/sign-in" className="font-medium text-[var(--accent-600)] hover:underline">
+          Retour à la connexion
+        </Link>
+      }
+    >
+      <Button asChild className="w-full">
+        <Link to="/auth/sign-in">Retour à la connexion</Link>
+      </Button>
+    </AuthCard>
   );
 }

@@ -10,7 +10,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-brand-100 text-primary font-bold hover:bg-brand-200 data-[state=open]:bg-brand-200 dark:bg-brand-800 dark:text-brand-300 dark:hover:bg-brand-700 dark:data-[state=open]:bg-brand-700',
+        primary: 'bg-primary text-primary-foreground font-semibold shadow-xs hover:bg-[var(--primary-hover)] data-[state=open]:bg-[var(--primary-hover)] focus-visible:ring-ring',
         mono: 'bg-zinc-100 text-zinc-900 font-bold hover:bg-zinc-200 data-[state=open]:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700 dark:data-[state=open]:bg-zinc-700',
         destructive:
           'bg-[var(--color-success-soft,#fef2f2)] text-destructive font-bold hover:bg-destructive/15 data-[state=open]:bg-destructive/15 dark:bg-destructive/15 dark:text-[#f0a0a0] dark:hover:bg-destructive/25 dark:data-[state=open]:bg-destructive/25',

@@ -196,7 +196,7 @@ export function QuestionnaireStep({ onNext, onBack, defaultValues }: Questionnai
                     <FormLabel>Quelle est votre motivation principale ?</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Decrivez ce qui vous motive a utiliser ProjectSim360..."
+                        placeholder="Decrivez ce qui vous motive a utiliser Simex pro..."
                         rows={4}
                         {...field}
                       />

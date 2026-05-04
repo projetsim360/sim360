@@ -196,20 +196,20 @@ const PLANS = [
 ];
 
 const TESTIMONIALS = [
-  { name: 'Sophie Martin', role: 'Chef de projet, Capgemini', content: 'ProjectSim360 a transforme notre formation interne. Nos chefs de projet progressent 3x plus vite.' },
+  { name: 'Sophie Martin', role: 'Chef de projet, Capgemini', content: 'Simex pro a transforme notre formation interne. Nos chefs de projet progressent 3x plus vite.' },
   { name: 'Thomas Durand', role: 'DRH, BNP Paribas', content: 'Le mode recrutement nous a permis d\'identifier des talents exceptionnels que les entretiens classiques auraient manques.' },
   { name: 'Marie Leclerc', role: 'PMO Senior, Bouygues', content: 'Les scenarios BTP sont incroyablement realistes. Mes equipes adorent les simulations de crise.' },
   { name: 'Lucas Bernard', role: 'Directeur IT, Societe Generale', content: 'L\'agent PMO intelligent est bluffant. Il s\'adapte vraiment au niveau de chaque utilisateur.' },
   { name: 'Emma Petit', role: 'Formatrice, CNAM', content: 'Un outil pedagogique revolutionnaire. Mes etudiants sont beaucoup plus engages.' },
   { name: 'Pierre Moreau', role: 'CTO, Alan', content: 'La certification est reconnue par nos partenaires. Un vrai plus pour les candidats.' },
   { name: 'Julie Rousseau', role: 'VP Engineering, Doctolib', content: 'L\'analyse 360 nous donne des insights qu\'aucun autre outil ne fournit.' },
-  { name: 'Antoine Lefevre', role: 'Manager, Accenture', content: 'Nous avons reduit notre temps de formation de 40% grace a ProjectSim360.' },
+  { name: 'Antoine Lefevre', role: 'Manager, Accenture', content: 'Nous avons reduit notre temps de formation de 40% grace a Simex pro.' },
   { name: 'Claire Dubois', role: 'Scrum Master, Thales', content: 'Les reunions avec participants IA sont etonnamment realistes et pedagogiques.' },
   { name: 'Marc Fontaine', role: 'CEO, StartupStudio', content: 'Le meilleur investissement formation que nous ayons fait cette annee.' },
 ];
 
 const FAQ_ITEMS = [
-  { question: "Qu'est-ce que ProjectSim360 exactement ?", answer: "ProjectSim360 est une plateforme SaaS de simulation de gestion de projet alimentee par l'intelligence artificielle. Vous etes immerge dans des scenarios realistes ou vous prenez des decisions strategiques, animez des reunions avec des participants IA et gerez un projet de bout en bout." },
+  { question: "Qu'est-ce que Simex pro exactement ?", answer: "Simex pro est une plateforme SaaS de simulation de gestion de projet alimentee par l'intelligence artificielle. Vous etes immerge dans des scenarios realistes ou vous prenez des decisions strategiques, animez des reunions avec des participants IA et gerez un projet de bout en bout." },
   { question: 'Ai-je besoin de connaissances en gestion de projet ?', answer: "Non, la plateforme s'adapte a votre niveau grace au profilage initial. Que vous soyez debutant ou chef de projet confirme, l'IA ajuste la complexite des scenarios, le vocabulaire et les attentes." },
   { question: 'Comment fonctionne le systeme de credits ?', answer: "Chaque action consommant des ressources IA (reunions, decisions, feedback) utilise des credits. Votre plan definit le nombre de credits quotidiens. Les credits non utilises ne sont pas reportes." },
   { question: 'Les certifications sont-elles reconnues ?', answer: "Oui, nos certifications sont basees sur les referentiels PMI et PRINCE2. Elles incluent un portfolio detaille de vos performances et sont partageables sur LinkedIn." },
@@ -230,7 +230,7 @@ function Logo() {
           <path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
-      <span className="text-lg font-bold text-foreground">ProjectSim360</span>
+      <span className="text-lg font-bold text-foreground">Simex pro</span>
     </Link>
   );
 }
@@ -561,7 +561,7 @@ function HeroSection() {
               animationStyle="from-center"
               videoSrc="https://www.youtube.com/embed/dQw4w9WgXcQ"
               thumbnailSrc="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=675&fit=crop"
-              thumbnailAlt="ProjectSim360 Demo"
+              thumbnailAlt="Simex pro Demo"
             />
           </div>
         </div>
@@ -770,7 +770,7 @@ function TestimonialsSection() {
           <CustomBadge>Temoignages</CustomBadge>
           <CustomTitle>Ils nous font confiance</CustomTitle>
           <CustomSubtitle>
-            Decouvrez pourquoi des milliers de professionnels utilisent ProjectSim360 pour developper leurs competences.
+            Decouvrez pourquoi des milliers de professionnels utilisent Simex pro pour developper leurs competences.
           </CustomSubtitle>
         </div>
       </div>
@@ -1087,7 +1087,7 @@ function FooterSection() {
 
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-muted-foreground text-sm">
-            &copy; 2026 ProjectSim360. Tous droits reserves.
+            &copy; 2026 Simex pro. Tous droits reserves.
           </p>
           <p className="text-muted-foreground text-sm mt-4 md:mt-0">
             Propulse par{' '}

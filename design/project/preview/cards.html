@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin:0; padding:24px; background:#FAFAF9; font-family:Inter,sans-serif; }
+  .grid { display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+  .card { border-radius:8px; padding:18px; }
+  .default { background:#fff; box-shadow:0 2px 4px rgba(15,26,46,.06), 0 4px 12px rgba(15,26,46,.08); }
+  .interactive { background:#fff; box-shadow:0 8px 24px rgba(15,26,46,.12); cursor:pointer; border:1px solid transparent; }
+  .outlined { background:#fff; border:1px solid #D6D3D1; }
+  .filled { background:#F5F5F4; }
+  .h { font-family:Montserrat; font-weight:700; font-size:18px; color:#1A2B48; margin:0 0 4px; }
+  .ov { font-size:10px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:#78716C; margin-bottom:10px; }
+  .p { font-size:13px; color:#57534E; line-height:1.6; margin:0; }
+  .tag { display:inline-block; background:#F0F4FA; color:#1A2B48; font-size:11px; font-weight:600; padding:3px 8px; border-radius:4px; margin-top:10px; }
+</style></head>
+<body>
+<div class="grid">
+  <div class="card default">
+    <div class="ov">Default</div>
+    <h4 class="h">Sprint 2 — Kickoff</h4>
+    <p class="p">Cadrage de l'équipe avec le Product Owner. 45 min.</p>
+    <span class="tag">En cours</span>
+  </div>
+  <div class="card interactive">
+    <div class="ov">Interactive · hover</div>
+    <h4 class="h">Meeting stakeholders</h4>
+    <p class="p">Présentez vos arbitrages au comité. Décision à prendre.</p>
+    <span class="tag" style="background:#FFE4D1;color:#9C4718">À démarrer</span>
+  </div>
+  <div class="card outlined">
+    <div class="ov">Outlined</div>
+    <h4 class="h">Score leadership</h4>
+    <p class="p">84 / 100 — en progression depuis la semaine dernière.</p>
+  </div>
+  <div class="card filled">
+    <div class="ov">Filled · zone interne</div>
+    <h4 class="h">Sous-section</h4>
+    <p class="p">Sans ombre, sans border — pour regrouper un bloc à l'intérieur d'une card.</p>
+  </div>
+</div>
+</body></html>

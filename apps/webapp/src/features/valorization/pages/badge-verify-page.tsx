@@ -46,7 +46,7 @@ export default function BadgeVerifyPage() {
             <div className="flex items-center justify-center gap-2 text-success">
               <KeenIcon icon="shield-tick" style="duotone" className="text-2xl" />
               <span className="text-sm font-semibold uppercase tracking-wide">
-                Badge verifie par ProjectSim360
+                Badge verifie par Simex pro
               </span>
             </div>
 
@@ -97,7 +97,7 @@ export default function BadgeVerifyPage() {
 
         {/* Footer */}
         <p className="text-center text-sm text-muted-foreground">
-          Ce badge a ete genere par la plateforme ProjectSim360.
+          Ce badge a ete genere par la plateforme Simex pro.
           Il atteste des competences en gestion de projet evaluees lors d'une simulation.
         </p>
       </div>

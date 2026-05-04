@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Menu } from '@/components/keenicons/icons';
 import { Link, useLocation } from 'react-router-dom';
-import { toAbsoluteUrl } from '@/lib/helpers';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -29,16 +29,7 @@ const Header = () => {
     <header className="flex lg:hidden items-center fixed z-10 top-0 start-0 end-0 shrink-0 bg-muted h-(--header-height)">
       <div className="container flex items-center justify-between flex-wrap gap-3">
         <Link to="/layout-6">
-          <img
-            src={toAbsoluteUrl('/media/app/mini-logo-gray.svg')}
-            className="dark:hidden min-h-[30px]"
-            alt="image"
-          />
-          <img
-            src={toAbsoluteUrl('/media/app/mini-logo-gray-dark.svg')}
-            className="hidden dark:block min-h-[30px]"
-            alt="image"
-          />
+          <Logo />
         </Link>
 
         {isMobile && (

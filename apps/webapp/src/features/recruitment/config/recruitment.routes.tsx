@@ -10,7 +10,7 @@ const ComparePage = lazy(() => import('../pages/compare-page'));
 const InterviewGuidePage = lazy(() => import('../pages/interview-guide-page'));
 const JoinCampaignPage = lazy(() => import('../pages/join-campaign'));
 
-/** Protected recruiter routes (inside DynamicLayout) */
+/** Protected recruiter routes (inside SimexShell) */
 export const recruitmentRoutes = (
   <>
     <Route path="/recruitment/campaigns" element={<Suspense><CampaignsListPage /></Suspense>} />

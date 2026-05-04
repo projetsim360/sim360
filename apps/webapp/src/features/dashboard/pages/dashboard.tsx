@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/providers/auth-provider';
-import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/layout-6/components/toolbar';
+import { PageHeader } from '@/components/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -86,17 +86,19 @@ export default function DashboardPage() {
     <>
       <GuidedTour steps={ONBOARDING_TOUR_STEPS} storageKey="onboarding_tour_completed" />
 
-      <Toolbar>
-        <ToolbarHeading title="Tableau de bord" />
-        <ToolbarActions>
+      <PageHeader
+        breadcrumbs={[{ label: 'Tableau de bord' }]}
+        title="Tableau de bord"
+        subtitle="Suivi de vos simulations en cours et progression globale."
+        actions={
           <Button variant="primary" size="sm" asChild>
             <Link to="/simulations/new">
               <KeenIcon icon="plus" style="duotone" className="text-xs" />
               Nouvelle simulation
             </Link>
           </Button>
-        </ToolbarActions>
-      </Toolbar>
+        }
+      />
 
       <div className="container-fixed">
         <div className="grid gap-5 lg:gap-7.5">
@@ -563,9 +565,11 @@ function SkeletonCard() {
 function LegacyDashboard({ data }: { data: GlobalDashboard }) {
   return (
     <>
-      <Toolbar>
-        <ToolbarHeading title="Tableau de bord" />
-      </Toolbar>
+      <PageHeader
+        breadcrumbs={[{ label: 'Tableau de bord' }]}
+        title="Tableau de bord"
+        subtitle="Suivi de vos simulations en cours et progression globale."
+      />
 
       <div className="container-fixed">
         <div className="grid gap-5 lg:gap-7.5">

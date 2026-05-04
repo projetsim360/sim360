@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin:0; padding:30px 24px; background:#F5F5F4; font-family:Inter,sans-serif; }
+  .grid { display:grid; grid-template-columns: repeat(5,1fr); gap:16px; }
+  .cell { text-align:center; }
+  .box { height:72px; background:#fff; border-radius:8px; margin-bottom:12px; }
+  .e0 { border:1px solid #D6D3D1; }
+  .e-sm { box-shadow: 0 1px 2px rgba(15,26,46,.05), 0 1px 3px rgba(15,26,46,.08); }
+  .e-md { box-shadow: 0 2px 4px rgba(15,26,46,.06), 0 4px 12px rgba(15,26,46,.08); }
+  .e-lg { box-shadow: 0 8px 24px rgba(15,26,46,.12); }
+  .e-xl { box-shadow: 0 16px 40px rgba(15,26,46,.18); }
+  .name { font-size:11px; font-weight:700; color:#1A2B48; letter-spacing:.3px; text-transform:uppercase; }
+  .val { font-size:10px; color:#78716C; margin-top:2px; }
+</style></head>
+<body>
+<div class="grid">
+  <div class="cell"><div class="box e0"></div><div class="name">elevation-0</div><div class="val">flat + border</div></div>
+  <div class="cell"><div class="box e-sm"></div><div class="name">elevation-sm</div><div class="val">inputs, chips</div></div>
+  <div class="cell"><div class="box e-md"></div><div class="name">elevation-md ★</div><div class="val">cards</div></div>
+  <div class="cell"><div class="box e-lg"></div><div class="name">elevation-lg</div><div class="val">popovers</div></div>
+  <div class="cell"><div class="box e-xl"></div><div class="name">elevation-xl</div><div class="val">modales, drawers</div></div>
+</div>
+<div style="margin-top:14px; font-size:11px; color:#78716C; line-height:1.6;">Teinte d'ombre = <code style="font-family:ui-monospace;background:#fff;padding:1px 4px;border-radius:3px">rgba(15,26,46,…)</code> — bleu brand sombre, pas noir pur.</div>
+</body></html>

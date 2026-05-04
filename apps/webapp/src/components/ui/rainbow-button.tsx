@@ -1,3 +1,8 @@
+/**
+ * @deprecated Uses removed --color-1..5 rainbow tokens (legacy palette).
+ * Will be removed in Phase 5 or rewritten in Phase 2 of the Simex pro
+ * design migration. Do not use in new code.
+ */
 import { cn } from '@/lib/utils';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';

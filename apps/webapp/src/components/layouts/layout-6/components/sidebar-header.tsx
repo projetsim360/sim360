@@ -3,8 +3,8 @@ import { ChevronDown } from '@/components/keenicons/icons';
 import { KeenIcon } from '@/components/keenicons';
 import { Link, useLocation } from 'react-router-dom';
 import { MENU_ROOT } from '@/config/layout-6.config';
-import { toAbsoluteUrl } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
+import { Logo } from '@/components/logo';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,14 +35,12 @@ export function SidebarHeader() {
     <div className="mb-3.5">
       <div className="flex items-center justify-between gap-2.5 px-3.5 h-[70px]">
         <Link to="/">
-          <div className="flex items-center justify-center w-[42px] h-[42px] rounded-full bg-[#4b2f95] dark:bg-white/15 text-white font-bold text-lg">
-            S
-          </div>
+          <Logo />
         </Link>
 
         <DropdownMenu>
           <DropdownMenuTrigger className="cursor-pointer text-[#4b2f95] dark:text-white font-medium flex items-center justify-between gap-2 w-[150px]">
-            Sim360
+            Simex pro
             <ChevronDown className="size-3.5! text-[#8a7daa] dark:text-white/50" />
           </DropdownMenuTrigger>
           <DropdownMenuContent sideOffset={10} side="bottom" align="start">

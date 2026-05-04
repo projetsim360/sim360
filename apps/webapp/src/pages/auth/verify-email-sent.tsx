@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { api } from '@/lib/api-client';
-import { Mail } from '@/components/keenicons/icons';
-import { Button } from '@/components/ui/button';
+import { AuthCard } from '@/components/auth/auth-card';
 
 export function VerifyEmailSentPage() {
   const location = useLocation();
@@ -25,24 +24,41 @@ export function VerifyEmailSentPage() {
   };
 
   return (
-    <div className="flex flex-col items-center text-center space-y-5">
-      <Mail className="size-12 text-primary" />
-      <h3 className="text-lg font-medium text-mono">Vérifiez votre email</h3>
-      <div className="text-sm text-secondary-foreground">
-        Nous avons envoyé un lien de vérification à{' '}
-        {email ? <span className="text-sm font-medium text-mono">{email}</span> : 'votre adresse email'}
-        . Cliquez sur le lien pour activer votre compte.
-      </div>
-      {email && (
-        <Button variant="outline" className="w-full" onClick={handleResend} disabled={resending || resent}>
-          {resent ? 'Email renvoyé !' : resending ? 'Envoi...' : 'Renvoyer le lien'}
-        </Button>
-      )}
-      <div className="text-center text-sm">
-        <Link to="/auth/sign-in" className="text-sm font-semibold text-foreground hover:text-primary">
-          Retour à la connexion
-        </Link>
-      </div>
-    </div>
+    <AuthCard
+      title="Vérifiez votre boîte mail."
+      subtitle={
+        email ? (
+          <>
+            Un lien de vérification a été envoyé à{' '}
+            <strong>{email}</strong>.
+          </>
+        ) : (
+          'Un lien de vérification a été envoyé à votre adresse email.'
+        )
+      }
+      bottomSlot={
+        <div className="flex flex-col items-center gap-2">
+          {email && (
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={resending || resent}
+              className="font-medium text-[var(--accent-600)] hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {resent ? 'Email renvoyé !' : resending ? 'Envoi...' : (
+                <>Vous n&apos;avez rien reçu ? <strong>Renvoyer</strong></>
+              )}
+            </button>
+          )}
+          <Link to="/auth/sign-in" className="font-medium text-[var(--accent-600)] hover:underline">
+            Se connecter
+          </Link>
+        </div>
+      }
+    >
+      <p className="text-sm text-muted-foreground">
+        Cliquez sur le lien pour activer votre compte.
+      </p>
+    </AuthCard>
   );
 }
