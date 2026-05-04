@@ -26,22 +26,11 @@ export function AuthCard({
   return (
     <div
       className={cn(
-        'relative w-full overflow-hidden rounded-2xl bg-card',
+        'relative w-full rounded-2xl bg-card',
         'p-8 sm:p-10 lg:p-12',
         className,
       )}
-      style={{ boxShadow: 'var(--elevation-md)' }}
     >
-      {/* Decorative accent strip — signature 4px gradient at top */}
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-1"
-        style={{
-          background:
-            'linear-gradient(90deg, var(--accent-500) 0%, var(--accent-400) 50%, var(--accent-300) 100%)',
-        }}
-      />
-
       <div className="flex flex-col gap-8">
         {/* Header */}
         <header className="flex flex-col gap-2">
