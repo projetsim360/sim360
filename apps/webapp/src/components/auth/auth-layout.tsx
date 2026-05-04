@@ -6,8 +6,14 @@ export function AuthLayout() {
     <div className="flex flex-col min-h-screen w-full">
       <div className="grid lg:grid-cols-2 grow">
         {/* Form panel — left on desktop, second (below branding) on mobile */}
-        <div className="flex justify-center items-center p-6 lg:p-10 order-2 lg:order-1 bg-background min-h-[60vh] lg:min-h-screen">
-          <div className="w-full max-w-[420px]">
+        <div
+          className="relative flex justify-center items-center p-6 lg:p-12 order-2 lg:order-1 bg-background min-h-[60vh] lg:min-h-screen"
+          style={{
+            backgroundImage:
+              'radial-gradient(ellipse 80% 60% at 50% 30%, rgba(238,122,58,0.06) 0%, transparent 60%)',
+          }}
+        >
+          <div className="relative w-full max-w-[460px]">
             <Outlet />
           </div>
         </div>

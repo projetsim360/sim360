@@ -24,36 +24,55 @@ export function AuthCard({
   className,
 }: AuthCardProps) {
   return (
-    <div className={cn('flex flex-col gap-8', className)}>
-      {/* Header */}
-      <header className="flex flex-col gap-2">
-        <h1 className="font-display font-extrabold text-[32px] leading-[1.15] tracking-[-0.015em] text-[var(--brand-700)] dark:text-[var(--neutral-50)] text-balance">
-          {title}
-        </h1>
-        {subtitle ? (
-          <p className="font-body text-[14px] text-[var(--muted-foreground)] leading-relaxed">
-            {subtitle}
-          </p>
+    <div
+      className={cn(
+        'relative w-full overflow-hidden rounded-2xl bg-card',
+        'p-8 sm:p-10 lg:p-12',
+        className,
+      )}
+      style={{ boxShadow: 'var(--elevation-md)' }}
+    >
+      {/* Decorative accent strip — signature 4px gradient at top */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-1"
+        style={{
+          background:
+            'linear-gradient(90deg, var(--accent-500) 0%, var(--accent-400) 50%, var(--accent-300) 100%)',
+        }}
+      />
+
+      <div className="flex flex-col gap-8">
+        {/* Header */}
+        <header className="flex flex-col gap-2">
+          <h1 className="font-display font-extrabold text-[32px] leading-[1.15] tracking-[-0.015em] text-[var(--brand-700)] dark:text-[var(--neutral-50)] text-balance">
+            {title}
+          </h1>
+          {subtitle ? (
+            <p className="font-body text-[14px] text-[var(--muted-foreground)] leading-relaxed">
+              {subtitle}
+            </p>
+          ) : null}
+        </header>
+
+        {/* Top slot (e.g., social login) */}
+        {topSlot ? (
+          <div className="flex flex-col gap-6">
+            {topSlot}
+            <Divider label="ou" />
+          </div>
         ) : null}
-      </header>
 
-      {/* Top slot (e.g., social login) */}
-      {topSlot ? (
-        <div className="flex flex-col gap-6">
-          {topSlot}
-          <Divider label="ou" />
-        </div>
-      ) : null}
+        {/* Form content */}
+        <div className="flex flex-col gap-5">{children}</div>
 
-      {/* Form content */}
-      <div className="flex flex-col gap-5">{children}</div>
-
-      {/* Bottom slot (e.g., links) */}
-      {bottomSlot ? (
-        <div className="text-[14px] text-[var(--muted-foreground)] text-center">
-          {bottomSlot}
-        </div>
-      ) : null}
+        {/* Bottom slot (e.g., links) */}
+        {bottomSlot ? (
+          <div className="text-[14px] text-[var(--muted-foreground)] text-center pt-2">
+            {bottomSlot}
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }
