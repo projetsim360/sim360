@@ -116,9 +116,10 @@ interface NavItemProps {
   sidebarCollapsed: boolean;
   accordionState: Record<string, boolean>;
   onToggleAccordion: (title: string) => void;
+  onLinkClick?: () => void;
 }
 
-function NavItem({ item, pathname, sidebarCollapsed, accordionState, onToggleAccordion }: NavItemProps) {
+function NavItem({ item, pathname, sidebarCollapsed, accordionState, onToggleAccordion, onLinkClick }: NavItemProps) {
   const active = isItemActive(item, pathname);
   const hasChildren = Boolean(item.children && item.children.length > 0);
   const isOpen = hasChildren && item.title ? (accordionState[item.title] ?? false) : false;
@@ -208,6 +209,7 @@ function NavItem({ item, pathname, sidebarCollapsed, accordionState, onToggleAcc
                   key={child.title ?? child.path}
                   to={child.path!}
                   className={childClasses}
+                  onClick={onLinkClick}
                 >
                   {child.title}
                 </Link>
@@ -254,6 +256,7 @@ function NavItem({ item, pathname, sidebarCollapsed, accordionState, onToggleAcc
       to={item.path!}
       data-tip={item.title}
       className={itemClasses}
+      onClick={onLinkClick}
     >
       {innerContent}
     </Link>
@@ -269,7 +272,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ className }: SidebarProps) {
-  const { sidebarCollapsed } = useShellState();
+  const { sidebarCollapsed, sidebarMobileOpen, setSidebarMobileOpen } = useShellState();
   const { user } = useAuth();
   const { pathname } = useLocation();
 
@@ -299,18 +302,41 @@ export function Sidebar({ className }: SidebarProps) {
     setAccordionState((prev) => ({ ...prev, [title]: !prev[title] }));
   }
 
+  // Close drawer when clicking a nav link on mobile
+  function handleNavLinkClick() {
+    if (window.matchMedia('(max-width: 1023px)').matches) {
+      setSidebarMobileOpen(false);
+    }
+  }
+
   return (
+    <>
+      {/* Mobile backdrop — below sidebar (z-30), above topbar (z-30, same level but rendered after) */}
+      {sidebarMobileOpen && (
+        <div
+          role="presentation"
+          aria-hidden="true"
+          onClick={() => setSidebarMobileOpen(false)}
+          className="fixed inset-0 z-30 bg-black/40 backdrop-blur-sm lg:hidden"
+        />
+      )}
+
     <aside
       aria-expanded={!sidebarCollapsed}
       className={cn(
-        'simex-sidebar fixed left-0 z-20 flex flex-col overflow-y-auto',
+        'simex-sidebar fixed left-0 z-40 flex flex-col overflow-y-auto',
+        // Mobile: slide in/out with translate; Desktop: always visible
+        'transition-transform duration-[220ms] ease-out',
+        sidebarMobileOpen ? 'translate-x-0' : '-translate-x-full',
+        'lg:translate-x-0',
+        // Width as a class so body.is-sidebar-collapsed can override it (inline style would block that)
+        'w-[260px]',
         'text-[var(--shell-fg)] px-3.5 py-4',
         className,
       )}
       style={{
         top: '64px',
         height: 'calc(100vh - 64px)',
-        width: sidebarCollapsed ? '72px' : '260px',
       }}
     >
       {/* Workspace switcher */}
@@ -319,6 +345,7 @@ export function Sidebar({ className }: SidebarProps) {
       {/* CTA: Lancer une simulation */}
       <Link
         to="/simulations/new"
+        onClick={handleNavLinkClick}
         className={cn(
           'simex-cta-launch flex w-full items-center gap-2.5 overflow-hidden',
           'rounded-md border-0 bg-[var(--accent-500)] text-white',
@@ -353,6 +380,7 @@ export function Sidebar({ className }: SidebarProps) {
               sidebarCollapsed={sidebarCollapsed}
               accordionState={accordionState}
               onToggleAccordion={handleToggleAccordion}
+              onLinkClick={handleNavLinkClick}
             />
           );
         })}
@@ -400,5 +428,6 @@ export function Sidebar({ className }: SidebarProps) {
         </div>
       )}
     </aside>
+    </>
   );
 }

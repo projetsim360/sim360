@@ -48,7 +48,7 @@ export function UserMenu({ className }: UserMenuProps) {
       role="menu"
       aria-label="Menu utilisateur"
       className={cn(
-        'fixed right-4 z-60 min-w-[240px] rounded-md border border-border bg-card p-2',
+        'fixed right-4 z-60 min-w-[240px] max-w-[calc(100vw-2rem)] rounded-md border border-border bg-card p-2',
         className,
       )}
       style={{

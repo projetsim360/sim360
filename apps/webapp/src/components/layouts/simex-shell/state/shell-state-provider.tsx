@@ -16,9 +16,14 @@ export type ShellVariant = 'brand' | 'neutre';
 export type ContentMode = 'fluide' | 'centre';
 
 export interface ShellState {
-  // Sidebar
+  // Sidebar (desktop collapse)
   sidebarCollapsed: boolean;
   toggleSidebar: () => void;
+
+  // Sidebar (mobile drawer)
+  sidebarMobileOpen: boolean;
+  setSidebarMobileOpen: (v: boolean) => void;
+  toggleSidebarMobile: () => void;
 
   // PMO drawer
   pmoOpen: boolean;
@@ -109,6 +114,7 @@ export function ShellStateProvider({ children }: ShellStateProviderProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() =>
     readBool(LS_SIDEBAR, false),
   );
+  const [sidebarMobileOpen, setSidebarMobileOpenRaw] = useState(false);
   const [pmoOpen, setPmoOpenRaw] = useState(false);
   const [searchOpen, setSearchOpenRaw] = useState(false);
   const [notifOpen, setNotifOpenRaw] = useState(false);
@@ -145,6 +151,9 @@ export function ShellStateProvider({ children }: ShellStateProviderProps) {
   /* ---- Convenience actions ---- */
 
   const toggleSidebar = useCallback(() => setSidebarCollapsed((v) => !v), []);
+
+  const setSidebarMobileOpen = useCallback((v: boolean) => setSidebarMobileOpenRaw(v), []);
+  const toggleSidebarMobile = useCallback(() => setSidebarMobileOpenRaw((v) => !v), []);
 
   const setPmoOpen = useCallback((v: boolean) => setPmoOpenRaw(v), []);
   const togglePmo = useCallback(() => setPmoOpenRaw((v) => !v), []);
@@ -245,6 +254,9 @@ export function ShellStateProvider({ children }: ShellStateProviderProps) {
   const value: ShellState = {
     sidebarCollapsed,
     toggleSidebar,
+    sidebarMobileOpen,
+    setSidebarMobileOpen,
+    toggleSidebarMobile,
     pmoOpen,
     setPmoOpen,
     togglePmo,

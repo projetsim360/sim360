@@ -49,7 +49,7 @@ export function PageHeader({
       {breadcrumbs && breadcrumbs.length > 0 && (
         <nav
           aria-label="Fil d'Ariane"
-          className="flex items-center flex-wrap gap-x-2.5 gap-y-1 text-sm mb-3"
+          className="flex items-center flex-wrap gap-x-2.5 gap-y-1 text-xs sm:text-sm mb-3"
         >
           {breadcrumbs.map((crumb, index) => {
             const isLast = index === breadcrumbs.length - 1;
@@ -90,7 +90,7 @@ export function PageHeader({
         >
           <h1
             className={cn(
-              'font-display font-extrabold text-[40px] leading-[1.1] tracking-[-0.02em]',
+              'font-display font-extrabold text-[28px] sm:text-[32px] lg:text-[40px] leading-[1.1] tracking-[-0.02em]',
               'text-[var(--brand-700)] text-wrap-balance m-0',
             )}
           >
@@ -111,9 +111,11 @@ export function PageHeader({
         )}
       </div>
 
-      {/* ── Mode contenu toggle ── */}
+      {/* ── Mode contenu toggle — hidden on mobile (power-user feature) ── */}
       {!hideContentMode && (
-        <ModeBar contentMode={contentMode} setContentMode={setContentMode} />
+        <div className="hidden md:block">
+          <ModeBar contentMode={contentMode} setContentMode={setContentMode} />
+        </div>
       )}
     </div>
   );

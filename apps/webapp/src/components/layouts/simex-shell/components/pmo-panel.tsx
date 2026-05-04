@@ -84,20 +84,18 @@ export function PmoPanel({ className }: PmoPanelProps) {
   return (
     <aside
       className={cn(
-        'sticky flex shrink-0 flex-col overflow-hidden rounded-lg bg-card',
+        'flex shrink-0 flex-col overflow-hidden bg-card',
+        // Mobile: full-screen overlay that slides from right
+        'fixed inset-0 z-50',
+        pmoOpen ? 'translate-x-0' : 'translate-x-full',
+        'transition-transform duration-[280ms] ease-[cubic-bezier(0.16,1,0.3,1)]',
+        // Desktop: sticky inline panel beside main content
+        'lg:sticky lg:inset-auto lg:z-auto lg:translate-x-0 lg:rounded-lg lg:self-start lg:my-4 lg:mr-4',
+        'lg:top-4 lg:h-[calc(100vh-96px)]',
+        pmoOpen ? 'lg:w-[460px] lg:opacity-100' : 'lg:w-0 lg:opacity-0',
+        'lg:transition-[width,opacity,margin-right] lg:duration-[280ms]',
         className,
       )}
-      style={{
-        top: '16px',
-        alignSelf: 'flex-start',
-        height: 'calc(100vh - 64px - 32px)',
-        margin: pmoOpen ? '16px 0' : '16px 0',
-        marginRight: pmoOpen ? '16px' : '0',
-        width: pmoOpen ? '460px' : '0',
-        opacity: pmoOpen ? 1 : 0,
-        transition:
-          'width 280ms cubic-bezier(0.16,1,0.3,1), margin-right 280ms cubic-bezier(0.16,1,0.3,1), opacity 200ms cubic-bezier(0.16,1,0.3,1)',
-      }}
     >
       {/* Header */}
       <header className="flex shrink-0 items-center gap-3 border-b border-border px-[18px] py-4">
