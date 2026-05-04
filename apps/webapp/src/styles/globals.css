@@ -2,8 +2,10 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-/* Inter (body) — Google Fonts CDN. MUST come before any non-import rule per CSS spec. */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+/* Inter (body) loaded via <link> in apps/webapp/index.html — preconnect + display=swap.
+   Tailwind v4 + PostCSS reorder @import url() statements after their generated rules,
+   which violates the CSS spec (@import must precede non-import statements). The HTML
+   <link> avoids the issue entirely and is more performant. */
 
 /* Typography plugin (prose classes for markdown rendering) */
 @plugin "@tailwindcss/typography";
@@ -400,7 +402,13 @@ body {
   font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Reveal SimexShell rounded corners — the area behind <main> shows --shell-bg */
+}
+
+/* Reveal SimexShell rounded top-left corner.
+   Higher specificity than Tailwind's body.bg-background (0,1,0) thanks to
+   the [data-shell] attribute (0,1,1). Auth pages without data-shell keep
+   their default Tailwind background. */
+body[data-shell] {
   background: var(--shell-bg, var(--brand-700));
   transition: background 200ms var(--ease-out);
 }
