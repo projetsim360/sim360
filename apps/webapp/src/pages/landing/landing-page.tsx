@@ -165,75 +165,40 @@ function HeroSection() {
         {/* Right — Browser mockup */}
         <div className="relative">
           <div
-            className="relative w-full aspect-[4/3] rounded-2xl border border-[var(--brand-700)]/20 bg-[var(--brand-900)] overflow-hidden"
+            className="relative w-full aspect-[16/10] rounded-2xl border border-[var(--brand-700)]/20 bg-[var(--brand-900)] overflow-hidden flex flex-col"
             style={{
               boxShadow:
                 '0 30px 80px rgba(15,26,46,0.2), 0 12px 24px rgba(15,26,46,0.1)',
             }}
           >
-            {/* Traffic lights */}
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-white/10">
+            {/* Traffic lights + URL bar */}
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-white/10 shrink-0 bg-[var(--brand-900)] z-10">
               <span className="size-3 rounded-full" style={{ background: '#ff5f56' }} />
               <span className="size-3 rounded-full" style={{ background: '#ffbd2e' }} />
               <span className="size-3 rounded-full" style={{ background: '#27c93f' }} />
               <span className="ml-4 flex-1 bg-white/10 rounded text-[10px] text-white/40 px-3 py-0.5 text-center">
-                app.simexpro.io/simulation/erp-globalfinance
+                app.simexpro.io/dashboard
               </span>
             </div>
 
-            {/* Dashboard interior */}
-            <div className="p-5 flex flex-col gap-4">
-              <p className="text-white/70 text-sm font-medium">Déploiement ERP GlobalFinance</p>
-
-              {/* KPI tiles */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-                  <p className="text-[10px] uppercase tracking-widest text-white/50 mb-1">Budget</p>
-                  <p className="font-display font-extrabold text-2xl text-[var(--accent-500)]">65%</p>
-                  <div className="mt-2 h-1.5 rounded-full bg-white/10 overflow-hidden">
-                    <div className="h-full w-[65%] rounded-full bg-[var(--accent-500)]" />
-                  </div>
-                </div>
-                <div className="bg-white/10 rounded-xl p-4 border border-white/10">
-                  <p className="text-[10px] uppercase tracking-widest text-white/50 mb-1">Risques</p>
-                  <p className="font-display font-extrabold text-2xl text-white">4</p>
-                  <p className="text-[10px] text-white/50 mt-1">actifs · 2 critiques</p>
-                </div>
-              </div>
-
-              {/* AI analysis bar */}
-              <div className="bg-white/5 rounded-xl p-4 border border-[var(--accent-500)]/30">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-[10px] uppercase tracking-widest text-[var(--accent-400)] font-bold">
-                    Analyse IA en cours
-                  </p>
-                  <span className="text-[10px] text-white/50">75%</span>
-                </div>
-                <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                  <div
-                    className="h-full w-[75%] rounded-full"
-                    style={{
-                      background:
-                        'linear-gradient(90deg, var(--accent-500), var(--accent-400))',
-                      boxShadow: '0 0 8px rgba(238,122,58,0.5)',
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Skeleton lines */}
-              <div className="space-y-2">
-                <div className="h-2 rounded bg-white/10 w-4/5" />
-                <div className="h-2 rounded bg-white/10 w-3/5" />
-                <div className="h-2 rounded bg-white/10 w-2/3" />
-              </div>
+            {/* Real product screenshot fills remaining frame area */}
+            <div className="relative flex-1 overflow-hidden">
+              <img
+                src="/media/landing/hero-dashboard.png"
+                alt="Aperçu du tableau de bord Simex pro"
+                className="absolute inset-0 w-full h-full object-cover object-top"
+                loading="eager"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).style.display = 'none';
+                }}
+              />
             </div>
 
-            {/* Float badge */}
+            {/* Float badge — overlay above screenshot */}
             <div
-              className="absolute top-16 right-4 bg-[var(--accent-500)]/20 border border-[var(--accent-500)]/40 rounded-full px-3 py-1 text-[11px] font-semibold text-[var(--accent-300)]"
+              className="absolute top-16 right-4 bg-[var(--accent-500)]/90 backdrop-blur-sm rounded-full px-3 py-1 text-[11px] font-semibold text-white shadow-lg z-20"
             >
-              En cours · Tour 4
+              En direct · Tour 4
             </div>
           </div>
         </div>
