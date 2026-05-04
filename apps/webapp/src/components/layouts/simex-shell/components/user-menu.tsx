@@ -1,14 +1,20 @@
 import { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { User, Settings, Briefcase, LifeBuoy, Keyboard, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/providers/auth-provider';
 import { useShellState } from '../state/shell-state-provider';
 
 interface UserMenuProps {
   className?: string;
 }
 
+const ITEM_BASE =
+  'flex cursor-pointer items-center gap-2.5 rounded-sm px-3 py-2.5 text-[13.5px] font-medium no-underline transition-colors hover:bg-muted';
+
 export function UserMenu({ className }: UserMenuProps) {
   const { userMenuOpen, setUserMenuOpen } = useShellState();
+  const { logout } = useAuth();
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Outside-click handler: close when clicking outside this menu
@@ -31,6 +37,11 @@ export function UserMenu({ className }: UserMenuProps) {
     setUserMenuOpen(false);
   }
 
+  async function handleLogout() {
+    close();
+    await logout();
+  }
+
   return (
     <div
       ref={menuRef}
@@ -45,68 +56,71 @@ export function UserMenu({ className }: UserMenuProps) {
         boxShadow: 'var(--elevation-lg)',
       }}
     >
-      <a
-        href="#"
+      <Link
+        to="/profile/edit"
         role="menuitem"
         onClick={close}
-        className="flex cursor-pointer items-center gap-2.5 rounded-sm px-3 py-2.5 text-[13.5px] font-medium text-foreground no-underline transition-colors hover:bg-muted"
+        className={cn(ITEM_BASE, 'text-foreground')}
       >
         <User className="size-4 shrink-0 text-muted-foreground" />
         Mon profil
-      </a>
-      <a
-        href="#"
+      </Link>
+      <Link
+        to="/settings"
         role="menuitem"
         onClick={close}
-        className="flex cursor-pointer items-center gap-2.5 rounded-sm px-3 py-2.5 text-[13.5px] font-medium text-foreground no-underline transition-colors hover:bg-muted"
+        className={cn(ITEM_BASE, 'text-foreground')}
       >
         <Settings className="size-4 shrink-0 text-muted-foreground" />
         Paramètres
-      </a>
-      <a
-        href="#"
+      </Link>
+      <button
+        type="button"
         role="menuitem"
         onClick={close}
-        className="flex cursor-pointer items-center gap-2.5 rounded-sm px-3 py-2.5 text-[13.5px] font-medium text-foreground no-underline transition-colors hover:bg-muted"
+        disabled
+        className={cn(ITEM_BASE, 'text-foreground w-full text-left bg-transparent border-0 disabled:opacity-50 disabled:cursor-not-allowed')}
       >
         <Briefcase className="size-4 shrink-0 text-muted-foreground" />
         Mon organisation
-      </a>
+      </button>
 
       {/* Separator */}
       <div className="mx-1 my-1.5 h-px bg-border" />
 
-      <a
-        href="#"
+      <button
+        type="button"
         role="menuitem"
         onClick={close}
-        className="flex cursor-pointer items-center gap-2.5 rounded-sm px-3 py-2.5 text-[13.5px] font-medium text-foreground no-underline transition-colors hover:bg-muted"
+        disabled
+        className={cn(ITEM_BASE, 'text-foreground w-full text-left bg-transparent border-0 disabled:opacity-50 disabled:cursor-not-allowed')}
       >
         <LifeBuoy className="size-4 shrink-0 text-muted-foreground" />
         Aide &amp; support
-      </a>
-      <a
-        href="#"
+      </button>
+      <button
+        type="button"
         role="menuitem"
         onClick={close}
-        className="flex cursor-pointer items-center gap-2.5 rounded-sm px-3 py-2.5 text-[13.5px] font-medium text-foreground no-underline transition-colors hover:bg-muted"
+        disabled
+        className={cn(ITEM_BASE, 'text-foreground w-full text-left bg-transparent border-0 disabled:opacity-50 disabled:cursor-not-allowed')}
       >
         <Keyboard className="size-4 shrink-0 text-muted-foreground" />
         Raccourcis clavier
-      </a>
+      </button>
 
       {/* Separator */}
       <div className="mx-1 my-1.5 h-px bg-border" />
 
-      <a
-        href="#"
+      <button
+        type="button"
         role="menuitem"
-        onClick={close}
-        className="flex cursor-pointer items-center gap-2.5 rounded-sm px-3 py-2.5 text-[13.5px] font-medium text-[var(--error-700)] no-underline transition-colors hover:bg-muted"
+        onClick={handleLogout}
+        className={cn(ITEM_BASE, 'text-[var(--error-700)] w-full text-left bg-transparent border-0')}
       >
         <LogOut className="size-4 shrink-0 text-[var(--error-500)]" />
         Se déconnecter
-      </a>
+      </button>
     </div>
   );
 }
