@@ -129,10 +129,10 @@ function StickyNav() {
 
         {/* Desktop CTAs */}
         <div className="hidden md:flex items-center gap-3">
-          <Link to="/auth/login">
+          <Link to="/auth/sign-in">
             <Button variant="outline" size="sm">Connexion</Button>
           </Link>
-          <Link to="/auth/register">
+          <Link to="/auth/sign-up">
             <Button variant="primary" size="sm">Essai gratuit</Button>
           </Link>
         </div>
@@ -161,10 +161,10 @@ function StickyNav() {
             </a>
           ))}
           <div className="flex flex-col gap-3 pt-2 border-t border-border">
-            <Link to="/auth/login" onClick={() => setMobileOpen(false)}>
+            <Link to="/auth/sign-in" onClick={() => setMobileOpen(false)}>
               <Button variant="outline" size="sm" className="w-full">Connexion</Button>
             </Link>
-            <Link to="/auth/register" onClick={() => setMobileOpen(false)}>
+            <Link to="/auth/sign-up" onClick={() => setMobileOpen(false)}>
               <Button variant="primary" size="sm" className="w-full">Essai gratuit</Button>
             </Link>
           </div>
@@ -219,7 +219,7 @@ function HeroSection() {
           </p>
 
           <div className="flex flex-wrap gap-4 mt-10">
-            <Link to="/auth/register">
+            <Link to="/auth/sign-up">
               <Button variant="primary" size="lg">
                 Lancer ma première simulation
               </Button>
@@ -1057,7 +1057,7 @@ function PricingSection() {
                 ))}
               </ul>
 
-              <Link to="/auth/register">
+              <Link to="/auth/sign-up">
                 <Button variant={plan.ctaVariant} size="sm" className="w-full">
                   {plan.cta}
                 </Button>
@@ -1182,7 +1182,7 @@ function FinalCTA() {
         <p className="text-white/80 text-lg max-w-2xl mx-auto mb-10">
           Rejoignez 12 000+ apprenants qui transforment leur carrière sans risquer une vraie mission.
         </p>
-        <Link to="/auth/register">
+        <Link to="/auth/sign-up">
           <Button variant="primary" size="lg">
             Commencer mon essai gratuit
           </Button>
