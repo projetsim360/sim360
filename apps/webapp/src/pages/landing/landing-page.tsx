@@ -126,12 +126,12 @@ function HeroSection() {
       <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-7xl mx-auto">
         {/* Left */}
         <div>
-          <span className="inline-flex bg-[var(--accent-50)] text-[var(--accent-700)] text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
+          <span className="inline-flex bg-[var(--accent-500)]/15 text-[var(--accent-300)] text-xs font-semibold px-3 py-1.5 rounded-full mb-6 border border-[var(--accent-500)]/20">
             🎯 Beta — gratuit jusqu&apos;au 31 juillet
           </span>
 
           <h1
-            className="font-display font-extrabold text-[40px] sm:text-[52px] lg:text-[64px] leading-[1.05] tracking-[-0.02em] text-balance text-[var(--brand-700)]"
+            className="font-display font-extrabold text-[40px] sm:text-[52px] lg:text-[64px] leading-[1.05] tracking-[-0.02em] text-balance text-foreground"
           >
             La gestion de projet n&apos;est pas une théorie.{' '}
             <span className="text-[var(--accent-500)]">Vivez-la.</span>
@@ -247,7 +247,7 @@ function TrustBand() {
   const logos = ['BOUYGUES', 'BNP PARIBAS', 'SNCF', 'KPMG', 'ESSEC', 'POLYTECHNIQUE'];
 
   return (
-    <section className="py-10 px-6 lg:px-8 bg-[var(--neutral-100)]/50">
+    <section className="py-10 px-6 lg:px-8 bg-card/40 border-y border-border">
       <div className="max-w-7xl mx-auto">
         <p className="text-xs uppercase tracking-widest text-muted-foreground text-center mb-6">
           Ils nous font confiance
@@ -394,7 +394,7 @@ function DomainsSection() {
     >
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="font-display font-extrabold text-4xl text-[var(--brand-700)]">
+          <h2 className="font-display font-extrabold text-4xl text-foreground">
             Choisissez votre univers
           </h2>
           <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
@@ -407,10 +407,10 @@ function DomainsSection() {
               key={title}
               className="bg-card rounded-2xl p-8 border border-border hover:border-[var(--accent-500)] hover:-translate-y-1 transition-all duration-300 cursor-default"
             >
-              <div className="size-12 rounded-lg bg-[var(--accent-50)] text-[var(--accent-600)] flex items-center justify-center mb-5">
+              <div className="size-12 rounded-lg bg-[var(--accent-500)]/15 text-[var(--accent-400)] flex items-center justify-center mb-5">
                 <Icon size={22} />
               </div>
-              <h3 className="font-display font-bold text-xl mb-2 text-[var(--brand-700)]">
+              <h3 className="font-display font-bold text-xl mb-2 text-foreground">
                 {title}
               </h3>
               <p className="text-muted-foreground">{desc}</p>
@@ -447,17 +447,17 @@ function WhySection() {
     <section className="py-24 px-6 lg:px-8 bg-card">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="font-display font-extrabold text-4xl text-[var(--brand-700)]">
+          <h2 className="font-display font-extrabold text-4xl text-foreground">
             La méthode qui change la donne
           </h2>
         </div>
         <div className="grid md:grid-cols-3 gap-12">
           {pillars.map(({ Icon, title, desc }) => (
             <div key={title} className="text-center">
-              <div className="size-16 rounded-full bg-[var(--accent-100)] text-[var(--accent-600)] flex items-center justify-center mx-auto mb-6">
+              <div className="size-16 rounded-full bg-[var(--accent-500)]/20 text-[var(--accent-400)] flex items-center justify-center mx-auto mb-6 border border-[var(--accent-500)]/30">
                 <Icon size={28} />
               </div>
-              <h3 className="font-display font-bold text-xl mb-3 text-[var(--brand-700)]">
+              <h3 className="font-display font-bold text-xl mb-3 text-foreground">
                 {title}
               </h3>
               <p className="text-muted-foreground leading-relaxed">{desc}</p>
@@ -500,10 +500,10 @@ function TestimonialsSection() {
     <section
       id="temoignages"
       className="py-24 px-6 lg:px-8 scroll-mt-20"
-      style={{ background: 'rgba(231,229,228,0.5)' }}
+      style={{ background: 'rgba(255, 255, 255, 0.02)' }}
     >
       <div className="max-w-6xl mx-auto">
-        <h2 className="font-display font-extrabold text-4xl text-[var(--brand-700)] text-center mb-16">
+        <h2 className="font-display font-extrabold text-4xl text-foreground text-center mb-16">
           Ils ont fait le saut
         </h2>
         <div className="grid md:grid-cols-3 gap-6">
@@ -525,7 +525,7 @@ function TestimonialsSection() {
                     target.style.display = 'none';
                     const fallback = document.createElement('div');
                     fallback.className =
-                      'size-12 rounded-full bg-[var(--accent-100)] flex items-center justify-center text-[var(--accent-600)] font-bold text-sm';
+                      'size-12 rounded-full bg-[var(--accent-500)]/20 flex items-center justify-center text-[var(--accent-300)] font-bold text-sm border border-[var(--accent-500)]/30';
                     fallback.textContent = name.charAt(0);
                     target.parentNode?.insertBefore(fallback, target);
                   }}
@@ -599,7 +599,7 @@ function PricingSection() {
     >
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="font-display font-extrabold text-4xl text-[var(--brand-700)]">
+          <h2 className="font-display font-extrabold text-4xl text-foreground">
             Choisissez votre plan
           </h2>
           <p className="text-muted-foreground mt-3">
@@ -628,7 +628,7 @@ function PricingSection() {
               </p>
 
               <div className="mb-6">
-                <span className="font-display font-extrabold text-5xl text-[var(--brand-700)]">
+                <span className="font-display font-extrabold text-5xl text-foreground">
                   {plan.price}
                 </span>
                 {plan.period && (
@@ -787,8 +787,12 @@ function Footer() {
 /* ─── Main export ───────────────────────────────────────────────────── */
 
 export default function LandingPage() {
+  // Force dark mode on the landing page regardless of the user's
+  // app-wide theme preference. The `dark` class flips all CSS var
+  // aliases (--background, --card, --foreground…) to their dark
+  // values via the `.dark { … }` block in globals.css.
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <div className="dark min-h-screen bg-background text-foreground overflow-x-hidden">
       <StickyNav />
       <HeroSection />
       <TrustBand />
