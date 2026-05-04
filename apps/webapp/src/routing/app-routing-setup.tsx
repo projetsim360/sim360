@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { Route, Routes, Navigate } from 'react-router';
-import { DynamicLayout } from '@/components/layouts/dynamic-layout';
+import { SimexShell } from '@/components/layouts/simex-shell';
 import { AuthLayout } from '@/components/auth/auth-layout';
 import { ProtectedRoute } from '@/components/auth/protected-route';
 import { SignUpPage } from '@/pages/auth/sign-up';
@@ -60,9 +60,9 @@ export function AppRoutingSetup() {
         {profileRoutes}
       </Route>
 
-      {/* Protected routes with dynamic layout */}
+      {/* Protected routes with SimexShell */}
       <Route element={<ProtectedRoute />}>
-        <Route element={<DynamicLayout />}>
+        <Route element={<SimexShell />}>
           {/* SaaS core routes */}
           <Route path="/profile/edit" element={<EditProfilePage />} />
           <Route path="/settings" element={<SettingsPage />} />
