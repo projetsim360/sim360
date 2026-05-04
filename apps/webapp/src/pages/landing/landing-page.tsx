@@ -1,5 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { Link } from 'react-router';
+import {
+  motion,
+  useInView,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  useReducedMotion,
+} from 'framer-motion';
 import {
   Code2,
   Building2,
@@ -20,6 +28,60 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/logo';
+
+/* ─── Animation primitives — sober per design system rules ──────────────
+   - duration 300ms max for UI motion
+   - entrance = translateY 8–16px + fade
+   - no bounce, no scale > 1.02
+   - prefers-reduced-motion respected (only fades remain)
+   ──────────────────────────────────────────────────────────────────── */
+
+interface RevealProps {
+  children: ReactNode;
+  className?: string;
+  delay?: number;
+  /** y-translate distance in px (default 16). */
+  offset?: number;
+  as?: 'div' | 'section' | 'header' | 'span';
+}
+
+/** Fade + translate-up when entering the viewport. Single-shot. */
+function Reveal({ children, className, delay = 0, offset = 16, as = 'div' }: RevealProps) {
+  const reduced = useReducedMotion();
+  const Component = motion[as] as typeof motion.div;
+  return (
+    <Component
+      className={className}
+      initial={{ opacity: 0, y: reduced ? 0 : offset }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.5, delay, ease: [0.16, 1, 0.3, 1] }}
+    >
+      {children}
+    </Component>
+  );
+}
+
+/** Count-up number animation when in view. */
+function CountUp({ value, suffix = '', prefix = '' }: { value: number; suffix?: string; prefix?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-40px' });
+  const reduced = useReducedMotion();
+  const motionValue = useMotionValue(0);
+  const spring = useSpring(motionValue, { duration: 1200, bounce: 0 });
+  const display = useTransform(spring, (latest) =>
+    `${prefix}${Math.round(latest).toLocaleString('fr-FR')}${suffix}`,
+  );
+
+  useEffect(() => {
+    if (inView) {
+      if (reduced) motionValue.set(value);
+      else motionValue.set(value);
+    }
+  }, [inView, value, motionValue, reduced]);
+
+  return <motion.span ref={ref}>{reduced ? `${prefix}${value.toLocaleString('fr-FR')}${suffix}` : display}</motion.span>;
+}
 
 /* ─── Nav ──────────────────────────────────────────────────────────── */
 
@@ -126,10 +188,24 @@ function HeroSection() {
     >
       <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-7xl mx-auto">
         {/* Left */}
-        <div>
-          <span className="inline-flex bg-[var(--accent-500)]/15 text-[var(--accent-300)] text-xs font-semibold px-3 py-1.5 rounded-full mb-6 border border-[var(--accent-500)]/20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <motion.span
+            className="inline-flex bg-[var(--accent-500)]/15 text-[var(--accent-300)] text-xs font-semibold px-3 py-1.5 rounded-full mb-6 border border-[var(--accent-500)]/20"
+            animate={{
+              boxShadow: [
+                '0 0 0 0 rgba(238,122,58,0.0)',
+                '0 0 0 6px rgba(238,122,58,0.12)',
+                '0 0 0 0 rgba(238,122,58,0.0)',
+              ],
+            }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+          >
             🎯 Beta — gratuit jusqu&apos;au 31 juillet
-          </span>
+          </motion.span>
 
           <h1
             className="font-display font-extrabold text-[40px] sm:text-[52px] lg:text-[64px] leading-[1.05] tracking-[-0.02em] text-balance text-foreground"
@@ -160,10 +236,15 @@ function HeroSection() {
               Voir la démo · 2 min
             </a>
           </div>
-        </div>
+        </motion.div>
 
         {/* Right — Browser mockup */}
-        <div className="relative">
+        <motion.div
+          className="relative"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+        >
           <div
             className="relative w-full aspect-[16/10] rounded-2xl border border-[var(--brand-700)]/20 bg-[var(--brand-900)] overflow-hidden flex flex-col"
             style={{
@@ -194,14 +275,21 @@ function HeroSection() {
               />
             </div>
 
-            {/* Float badge — overlay above screenshot */}
-            <div
-              className="absolute top-16 right-4 bg-[var(--accent-500)]/90 backdrop-blur-sm rounded-full px-3 py-1 text-[11px] font-semibold text-white shadow-lg z-20"
+            {/* Float badge — animated, overlays the screenshot */}
+            <motion.div
+              className="absolute top-16 right-4 bg-[var(--accent-500)]/95 backdrop-blur-sm rounded-full px-3 py-1 text-[11px] font-semibold text-white shadow-lg z-20 inline-flex items-center gap-1.5"
+              animate={{ y: [0, -3, 0] }}
+              transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
             >
+              <motion.span
+                className="size-1.5 rounded-full bg-white"
+                animate={{ opacity: [1, 0.4, 1] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
+              />
               En direct · Tour 4
-            </div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -238,24 +326,24 @@ function TrustBand() {
 
 function StatsBand() {
   const stats = [
-    { value: '+12 000', label: 'simulations complétées' },
-    { value: '98%', label: 'satisfaction apprenants' },
-    { value: '650+', label: 'entreprises partenaires' },
+    { count: 12000, prefix: '+', suffix: '', label: 'simulations complétées' },
+    { count: 98, prefix: '', suffix: '%', label: 'satisfaction apprenants' },
+    { count: 650, prefix: '', suffix: '+', label: 'entreprises partenaires' },
   ];
 
   return (
     <section className="py-20 border-y border-border bg-background" id="stats">
       <div className="max-w-6xl mx-auto px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {stats.map((s) => (
-            <div key={s.label} className="text-center">
+          {stats.map((s, i) => (
+            <Reveal key={s.label} delay={i * 0.1} className="text-center">
               <h3 className="font-display font-extrabold text-5xl text-[var(--accent-500)]">
-                {s.value}
+                <CountUp value={s.count} prefix={s.prefix} suffix={s.suffix} />
               </h3>
               <p className="text-sm text-muted-foreground tracking-wide uppercase mt-2">
                 {s.label}
               </p>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -689,19 +777,23 @@ function DomainsSection() {
       className="py-24 px-6 lg:px-8 bg-background scroll-mt-20"
     >
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
+        <Reveal className="text-center mb-16">
           <h2 className="font-display font-extrabold text-4xl text-foreground">
             Choisissez votre univers
           </h2>
           <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
             12 scénarios calqués sur de vrais cabinets et entreprises. Mis à jour chaque trimestre.
           </p>
-        </div>
+        </Reveal>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {DOMAINS.map(({ icon: Icon, title, description, image }) => (
-            <a
+          {DOMAINS.map(({ icon: Icon, title, description, image }, i) => (
+            <motion.a
               key={title}
               href="#"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.5, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
               className="group bg-card rounded-2xl overflow-hidden border border-border hover:border-[var(--accent-500)] hover:-translate-y-1 transition-all duration-300 block"
             >
               {/* Image header */}
@@ -728,7 +820,7 @@ function DomainsSection() {
                   {description}
                 </p>
               </div>
-            </a>
+            </motion.a>
           ))}
         </div>
       </div>
@@ -817,13 +909,19 @@ function TestimonialsSection() {
       style={{ background: 'rgba(255, 255, 255, 0.02)' }}
     >
       <div className="max-w-6xl mx-auto">
-        <h2 className="font-display font-extrabold text-4xl text-foreground text-center mb-16">
-          Ils ont fait le saut
-        </h2>
+        <Reveal as="header" className="text-center mb-16">
+          <h2 className="font-display font-extrabold text-4xl text-foreground">
+            Ils ont fait le saut
+          </h2>
+        </Reveal>
         <div className="grid md:grid-cols-3 gap-6">
-          {testimonials.map(({ quote, name, role, photo }) => (
-            <div
+          {testimonials.map(({ quote, name, role, photo }, i) => (
+            <motion.div
               key={name}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.5, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="bg-card rounded-2xl p-8 border border-border flex flex-col"
             >
               <p className="italic text-[15px] leading-relaxed text-foreground flex-1">
@@ -849,7 +947,7 @@ function TestimonialsSection() {
                   <p className="text-xs text-muted-foreground">{role}</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
