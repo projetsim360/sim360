@@ -36,8 +36,8 @@ export function NotifPopover({ className }: NotifPopoverProps) {
       role="dialog"
       aria-label="Notifications"
       className={cn(
-        'fixed z-60 min-w-[320px] rounded-md border border-border bg-card p-2',
-        'right-[280px]',
+        'fixed z-60 min-w-[320px] max-w-[calc(100vw-2rem)] rounded-md border border-border bg-card p-2',
+        'right-4 lg:right-[280px]',
         className,
       )}
       style={{

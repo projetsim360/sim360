@@ -91,10 +91,10 @@ function DemoControlsInner() {
         </DemoBtn>
       </span>
 
-      <DemoSep />
+      <span className="hidden sm:inline-flex"><DemoSep /></span>
 
-      {/* Group: Shell */}
-      <span className="inline-flex items-center gap-0.5">
+      {/* Group: Shell — hidden on mobile (env-only feature) */}
+      <span className="hidden sm:inline-flex items-center gap-0.5">
         <DemoBtn
           active={shellVariant === 'brand'}
           onClick={() => setShellVariant('brand' as ShellVariant)}
@@ -111,7 +111,7 @@ function DemoControlsInner() {
         </DemoBtn>
       </span>
 
-      <DemoSep />
+      <span className="hidden sm:inline-flex"><DemoSep /></span>
 
       {/* Group: Contenu */}
       <span className="inline-flex items-center gap-0.5">

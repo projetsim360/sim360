@@ -11,7 +11,7 @@ import { DemoControls } from './components/demo-controls';
 
 /* Inner shell — needs access to ShellState context */
 function SimexShellInner() {
-  const { sidebarCollapsed, contentMode } = useShellState();
+  const { contentMode } = useShellState();
 
   useEffect(() => {
     document.title = 'Simex pro';
@@ -34,15 +34,11 @@ function SimexShellInner() {
 
       {/* Main content area */}
       <main
-        className="simex-main fixed bottom-0 right-0 overflow-y-auto overflow-x-hidden bg-background flex items-start"
-        style={{
-          top: '64px',
-          left: sidebarCollapsed ? '72px' : '260px',
-          borderRadius: '18px 0 0 0',
-        }}
+        className="simex-main fixed bottom-0 right-0 left-0 lg:left-[260px] overflow-y-auto overflow-x-hidden bg-background flex items-start lg:rounded-tl-[18px]"
+        style={{ top: '64px' }}
       >
         {/* Page content column */}
-        <div className="min-w-0 flex-1 px-8 py-7 pb-16">
+        <div className="min-w-0 flex-1 px-4 sm:px-6 lg:px-8 py-5 lg:py-7 pb-16">
           <div
             className="simex-main-inner mx-auto"
             style={{ maxWidth: contentMode === 'centre' ? '1080px' : '1280px' }}

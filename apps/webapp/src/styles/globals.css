@@ -468,86 +468,89 @@ body[data-shell="neutre"].dark {
   --logo-text:        #ffffff;
 }
 
-/* Sidebar collapse: topbar left block */
-body.is-sidebar-collapsed .simex-topbar-left {
-  width: 72px;
-}
+/* Sidebar collapse rules — desktop only (sidebar is a drawer on mobile) */
+@media (min-width: 1024px) {
+  /* Sidebar collapse: topbar left block */
+  body.is-sidebar-collapsed .simex-topbar-left {
+    width: 72px;
+  }
 
-/* Sidebar collapse: hide logo text, keep dot */
-body.is-sidebar-collapsed .simex-logo-text {
-  display: none;
-}
+  /* Sidebar collapse: hide logo text, keep dot */
+  body.is-sidebar-collapsed .simex-logo-text {
+    display: none;
+  }
 
-/* Sidebar: animate width */
-body.is-sidebar-collapsed .simex-sidebar {
-  width: 72px;
-  padding-left: 10px;
-  padding-right: 10px;
-}
+  /* Sidebar: animate width */
+  body.is-sidebar-collapsed .simex-sidebar {
+    width: 72px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 
-/* Sidebar collapse: workspace-switcher hide label/chevron */
-body.is-sidebar-collapsed .simex-workspace-label,
-body.is-sidebar-collapsed .simex-workspace-chev {
-  display: none;
-}
-body.is-sidebar-collapsed .simex-workspace-switch {
-  padding: 10px;
-  justify-content: center;
-}
+  /* Sidebar collapse: workspace-switcher hide label/chevron */
+  body.is-sidebar-collapsed .simex-workspace-label,
+  body.is-sidebar-collapsed .simex-workspace-chev {
+    display: none;
+  }
+  body.is-sidebar-collapsed .simex-workspace-switch {
+    padding: 10px;
+    justify-content: center;
+  }
 
-/* Sidebar collapse: CTA launch hide label, center icon */
-body.is-sidebar-collapsed .simex-cta-label {
-  display: none;
-}
-body.is-sidebar-collapsed .simex-cta-launch {
-  padding: 12px;
-  justify-content: center;
-}
+  /* Sidebar collapse: CTA launch hide label, center icon */
+  body.is-sidebar-collapsed .simex-cta-label {
+    display: none;
+  }
+  body.is-sidebar-collapsed .simex-cta-launch {
+    padding: 12px;
+    justify-content: center;
+  }
 
-/* Sidebar collapse: nav items hide label + badge */
-body.is-sidebar-collapsed .simex-nav-item .simex-nav-label,
-body.is-sidebar-collapsed .simex-nav-item .simex-nav-badge {
-  display: none;
-}
-body.is-sidebar-collapsed .simex-nav-item {
-  justify-content: center;
-  padding: 10px;
-}
+  /* Sidebar collapse: nav items hide label + badge */
+  body.is-sidebar-collapsed .simex-nav-item .simex-nav-label,
+  body.is-sidebar-collapsed .simex-nav-item .simex-nav-badge {
+    display: none;
+  }
+  body.is-sidebar-collapsed .simex-nav-item {
+    justify-content: center;
+    padding: 10px;
+  }
 
-/* Sidebar collapse: section titles */
-body.is-sidebar-collapsed .simex-nav-title {
-  text-align: center;
-  font-size: 9px;
-  padding-left: 0;
-  padding-right: 0;
-}
+  /* Sidebar collapse: section titles */
+  body.is-sidebar-collapsed .simex-nav-title {
+    text-align: center;
+    font-size: 9px;
+    padding-left: 0;
+    padding-right: 0;
+  }
 
-/* Sidebar collapse: hide bottom card */
-body.is-sidebar-collapsed .simex-sidebar-card {
-  display: none;
-}
+  /* Sidebar collapse: hide bottom card */
+  body.is-sidebar-collapsed .simex-sidebar-card {
+    display: none;
+  }
 
-/* Tooltip on collapsed nav items via data-tip */
-body.is-sidebar-collapsed .simex-nav-item[data-tip]:hover::after {
-  content: attr(data-tip);
-  position: absolute;
-  left: calc(100% + 12px);
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--brand-900);
-  color: #fff;
-  padding: 6px 10px;
-  border-radius: 4px;
-  font-size: 12px;
-  white-space: nowrap;
-  pointer-events: none;
-  box-shadow: 0 4px 12px rgba(0,0,0,.2);
-  z-index: 200;
-}
+  /* Tooltip on collapsed nav items via data-tip */
+  body.is-sidebar-collapsed .simex-nav-item[data-tip]:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    left: calc(100% + 12px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--brand-900);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,.2);
+    z-index: 200;
+  }
 
-/* Main content offset for sidebar collapse */
-body.is-sidebar-collapsed .simex-main {
-  left: 72px;
+  /* Main content offset for sidebar collapse */
+  body.is-sidebar-collapsed .simex-main {
+    left: 72px;
+  }
 }
 
 /* Content mode: centre constrains main-inner to 1080px */

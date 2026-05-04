@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { PanelLeft, Search, Moon, Sun, Bell, Sparkles, ChevronDown } from 'lucide-react';
+import { PanelLeft, Menu, Search, Moon, Sun, Bell, Sparkles, ChevronDown } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -12,10 +12,10 @@ interface TopbarProps {
 export function Topbar({ className }: TopbarProps) {
   const {
     toggleSidebar,
+    toggleSidebarMobile,
     openSearch,
     toggleNotif,
     toggleUserMenu,
-    setPmoOpen,
     togglePmo,
     notifOpen,
     userMenuOpen,
@@ -31,26 +31,37 @@ export function Topbar({ className }: TopbarProps) {
   return (
     <header
       className={cn(
-        'simex-topbar fixed inset-x-0 top-0 z-30 flex h-16 items-center gap-4 px-5',
+        'simex-topbar fixed inset-x-0 top-0 z-30 flex h-16 items-center gap-2 sm:gap-3 lg:gap-4 px-3 sm:px-4 lg:px-5',
         'text-[var(--shell-fg,rgba(255,255,255,.78))]',
         className,
       )}
     >
       {/* Left: sidebar toggle + logo */}
       <div
-        className="simex-topbar-left flex shrink-0 items-center gap-4 overflow-hidden"
-        style={{ width: '260px', transition: 'width 220ms var(--ease-out)' }}
+        className="simex-topbar-left flex shrink-0 items-center gap-3 sm:gap-4 overflow-hidden lg:w-[260px]"
+        style={{ transition: 'width 220ms var(--ease-out)' }}
       >
+        {/* Mobile hamburger — only on < lg */}
+        <button
+          type="button"
+          aria-label="Ouvrir la barre latérale"
+          onClick={toggleSidebarMobile}
+          className="lg:hidden inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-md border-0 bg-transparent text-[var(--shell-fg)] transition-colors duration-150 hover:bg-[var(--shell-hover)] hover:text-[var(--shell-fg-strong)]"
+        >
+          <Menu className="size-[18px]" />
+        </button>
+
+        {/* Desktop panel-left — only on lg+ */}
         <button
           type="button"
           aria-label="Replier la barre latérale"
           onClick={toggleSidebar}
-          className="inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-md border-0 bg-transparent text-[var(--shell-fg)] transition-colors duration-150 hover:bg-[var(--shell-hover)] hover:text-[var(--shell-fg-strong)]"
+          className="hidden lg:inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-md border-0 bg-transparent text-[var(--shell-fg)] transition-colors duration-150 hover:bg-[var(--shell-hover)] hover:text-[var(--shell-fg-strong)]"
         >
           <PanelLeft className="size-[18px]" />
         </button>
 
-        {/* Logo — Simex + dot + pro */}
+        {/* Logo — Simex + dot + pro — visible at all breakpoints */}
         <div className="flex shrink-0 items-center gap-1.5 select-none overflow-hidden">
           <span
             className="simex-logo-text font-display text-[22px] font-extrabold tracking-[-0.01em] text-[var(--shell-fg-strong,#fff)]"
@@ -68,13 +79,24 @@ export function Topbar({ className }: TopbarProps) {
         </div>
       </div>
 
-      {/* Search pill trigger */}
+      {/* Search — full pill on md+, icon-only on < md */}
+      {/* Icon-only button: mobile/tablet < md */}
+      <button
+        type="button"
+        aria-label="Ouvrir la recherche"
+        onClick={openSearch}
+        className="md:hidden inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-md border border-[var(--shell-border)] bg-[var(--shell-input)] text-[var(--shell-fg-muted)] transition-colors duration-150 hover:border-[var(--accent-500)]"
+      >
+        <Search className="size-4" />
+      </button>
+
+      {/* Full pill: md+ */}
       <button
         type="button"
         aria-label="Ouvrir la recherche (⌘K)"
         onClick={openSearch}
         className={cn(
-          'flex flex-1 max-w-[760px] h-10 cursor-pointer items-center gap-2.5',
+          'hidden md:flex flex-1 max-w-[760px] h-10 cursor-pointer items-center gap-2.5',
           'rounded-md border border-[var(--shell-border)] bg-[var(--shell-input)]',
           'px-3.5 text-sm transition-colors duration-150',
           'hover:border-[var(--accent-500)]',
@@ -96,7 +118,7 @@ export function Topbar({ className }: TopbarProps) {
       </button>
 
       {/* Right actions cluster */}
-      <div className="ml-auto flex items-center gap-1.5">
+      <div className="ml-auto flex items-center gap-1 sm:gap-1.5">
         {/* Theme toggle */}
         <button
           type="button"
@@ -137,16 +159,16 @@ export function Topbar({ className }: TopbarProps) {
             togglePmo();
           }}
           className={cn(
-            'ml-1.5 inline-flex cursor-pointer items-center gap-2',
+            'ml-1 sm:ml-1.5 inline-flex cursor-pointer items-center gap-1.5 sm:gap-2',
             'rounded-full border border-[var(--neutral-100)] bg-white',
-            'px-3.5 py-2 text-[13px] font-semibold text-[var(--brand-700)]',
+            'px-2.5 sm:px-3.5 py-2 text-[13px] font-semibold text-[var(--brand-700)]',
             'transition-transform duration-150 hover:-translate-y-px',
             'hover:shadow-[0_4px_8px_rgba(15,26,46,.08)]',
             pmoOpen && 'shadow-[0_4px_8px_rgba(15,26,46,.12)]',
           )}
         >
           <Sparkles className="size-4 shrink-0 text-[var(--accent-500)]" />
-          Agent PMO
+          <span className="hidden sm:inline">Agent PMO</span>
         </button>
 
         {/* User chip */}
@@ -160,13 +182,13 @@ export function Topbar({ className }: TopbarProps) {
             toggleUserMenu();
           }}
           className={cn(
-            'ml-1 flex cursor-pointer items-center gap-2.5',
-            'rounded-md border-0 bg-transparent px-1.5 py-1',
+            'ml-0.5 sm:ml-1 flex cursor-pointer items-center gap-2 sm:gap-2.5',
+            'rounded-md border-0 bg-transparent px-1 sm:px-1.5 py-1',
             'transition-colors duration-150 hover:bg-[var(--shell-hover)]',
           )}
         >
-          {/* Meta column */}
-          <div className="flex flex-col items-end gap-px leading-none">
+          {/* Meta column — hidden on < sm */}
+          <div className="hidden sm:flex flex-col items-end gap-px leading-none">
             <span className="text-[13px] font-semibold text-[var(--shell-fg-strong)]">Admin Sim360</span>
             <span className="text-[10px] font-semibold uppercase tracking-[1px] text-[var(--accent-400)]">
               Mentor
@@ -185,7 +207,7 @@ export function Topbar({ className }: TopbarProps) {
             </AvatarFallback>
           </Avatar>
 
-          <ChevronDown className="size-3.5 shrink-0 text-[var(--shell-fg-muted)]" />
+          <ChevronDown className="size-3.5 shrink-0 text-[var(--shell-fg-muted)] hidden sm:block" />
         </button>
       </div>
     </header>
