@@ -1,18 +1,16 @@
 import { Link } from 'react-router-dom';
-import { CheckCircle } from '@/components/keenicons/icons';
 import { Button } from '@/components/ui/button';
+import { AuthCard } from '@/components/auth/auth-card';
 
 export function ResetPasswordSuccessPage() {
   return (
-    <div className="flex flex-col items-center text-center space-y-5">
-      <CheckCircle className="size-12 text-green-500" />
-      <h3 className="text-lg font-medium text-mono">Mot de passe réinitialisé !</h3>
-      <div className="text-sm text-secondary-foreground">
-        Votre mot de passe a été modifié avec succès. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.
-      </div>
+    <AuthCard
+      title="C'est fait."
+      subtitle="Votre mot de passe a été mis à jour."
+    >
       <Button asChild className="w-full">
         <Link to="/auth/sign-in">Se connecter</Link>
       </Button>
-    </div>
+    </AuthCard>
   );
 }

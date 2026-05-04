@@ -1,24 +1,48 @@
 import { useLocation, Link } from 'react-router-dom';
-import { Mail } from '@/components/keenicons/icons';
 import { Button } from '@/components/ui/button';
+import { AuthCard } from '@/components/auth/auth-card';
 
 export function CheckEmailPage() {
   const location = useLocation();
   const email = (location.state as any)?.email || '';
 
   return (
-    <div className="flex flex-col items-center text-center space-y-5">
-      <Mail className="size-12 text-primary" />
-      <h3 className="text-lg font-medium text-mono">Vérifiez votre email</h3>
-      <div className="text-sm text-secondary-foreground">
-        Si un compte existe pour{' '}
-        {email ? <span className="text-sm font-medium text-mono">{email}</span> : 'cette adresse'}
-        , vous recevrez un lien de réinitialisation dans quelques minutes.
+    <AuthCard
+      title="Vérifiez votre boîte mail."
+      subtitle={
+        email ? (
+          <>
+            Un lien de réinitialisation a été envoyé à{' '}
+            <strong>{email}</strong>.
+          </>
+        ) : (
+          'Un lien de réinitialisation a été envoyé à votre adresse.'
+        )
+      }
+      bottomSlot={
+        <Link
+          to="/auth/sign-in"
+          className="font-medium text-[var(--accent-600)] hover:underline"
+        >
+          Retour à la connexion
+        </Link>
+      }
+    >
+      <div className="text-sm text-muted-foreground">
+        {email ? (
+          <>
+            Si un compte existe pour{' '}
+            <span className="font-medium text-foreground">{email}</span>
+            , vous recevrez un lien de réinitialisation dans quelques minutes.
+          </>
+        ) : (
+          'Si un compte existe pour cette adresse, vous recevrez un lien de réinitialisation dans quelques minutes.'
+        )}
         <br />Pensez à vérifier vos spams.
       </div>
       <Button asChild className="w-full">
         <Link to="/auth/sign-in">Retour à la connexion</Link>
       </Button>
-    </div>
+    </AuthCard>
   );
 }
