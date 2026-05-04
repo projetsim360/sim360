@@ -16,6 +16,7 @@ import {
   Menu,
   X,
   Check,
+  ChevronDown,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/logo';
@@ -35,7 +36,7 @@ function StickyNav() {
   const navLinks = [
     { label: 'Fonctionnalités', href: '#fonctionnalites' },
     { label: 'Tarifs', href: '#tarifs' },
-    { label: 'FAQ', href: '#comment-ca-marche' },
+    { label: 'FAQ', href: '#faq' },
     { label: 'Témoignages', href: '#temoignages' },
   ];
 
@@ -299,52 +300,376 @@ function StatsBand() {
 
 /* ─── Comment ça marche ─────────────────────────────────────────────── */
 
-function HowItWorksSection() {
-  const steps = [
-    {
-      n: '01',
-      title: 'Choisissez',
-      desc: 'Sélectionnez votre secteur et votre rôle. Chaque scénario est généré par l\'IA sur la base de vrais cas d\'entreprise.',
-    },
-    {
-      n: '02',
-      title: 'Agissez',
-      desc: 'Prenez des décisions stratégiques, animez des réunions avec des acteurs IA, gérez votre budget et vos équipes.',
-    },
-    {
-      n: '03',
-      title: 'Analysez',
-      desc: 'Recevez un feedback comportemental détaillé et un bilan de compétences exportable sur LinkedIn.',
-    },
+function MockupStep01() {
+  return (
+    <div className="relative w-full aspect-[4/3] rounded-2xl border border-white/10 bg-[var(--brand-900)] overflow-hidden shadow-2xl">
+      {/* Traffic light header */}
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-white/10">
+        <span className="size-3 rounded-full" style={{ background: '#ff5f56' }} />
+        <span className="size-3 rounded-full" style={{ background: '#ffbd2e' }} />
+        <span className="size-3 rounded-full" style={{ background: '#27c93f' }} />
+        <span className="ml-4 flex-1 bg-white/10 rounded text-[10px] text-white/40 px-3 py-0.5 text-center">
+          app.simexpro.io/scenarios
+        </span>
+      </div>
+      {/* Scenario picker grid */}
+      <div className="p-4 grid grid-cols-2 gap-3 h-[calc(100%-44px)]">
+        {/* Card 1 — selected */}
+        <div className="bg-white/5 rounded-xl p-3 border-2 border-[var(--accent-500)] flex flex-col gap-2 relative"
+          style={{ boxShadow: '0 0 12px rgba(238,122,58,0.2)' }}>
+          <span className="text-[9px] font-bold uppercase tracking-widest text-[var(--accent-400)] bg-[var(--accent-500)]/15 rounded px-1.5 py-0.5 self-start">
+            IT
+          </span>
+          <div className="h-2 bg-white/30 rounded w-4/5" />
+          <div className="h-2 bg-white/20 rounded w-3/5" />
+          <div className="mt-auto h-1 rounded-full bg-white/10 overflow-hidden">
+            <div className="h-full w-[72%] rounded-full bg-[var(--accent-500)]" />
+          </div>
+          <div className="absolute top-2 right-2 size-4 rounded-full bg-[var(--accent-500)] flex items-center justify-center">
+            <Check size={10} className="text-white" />
+          </div>
+        </div>
+        {/* Card 2 */}
+        <div className="bg-white/5 rounded-xl p-3 border border-white/10 flex flex-col gap-2">
+          <span className="text-[9px] font-bold uppercase tracking-widest text-blue-400 bg-blue-400/15 rounded px-1.5 py-0.5 self-start">
+            BTP
+          </span>
+          <div className="h-2 bg-white/20 rounded w-4/5" />
+          <div className="h-2 bg-white/10 rounded w-3/5" />
+          <div className="mt-auto h-1 rounded-full bg-white/10 overflow-hidden">
+            <div className="h-full w-[45%] rounded-full bg-blue-400/60" />
+          </div>
+        </div>
+        {/* Card 3 */}
+        <div className="bg-white/5 rounded-xl p-3 border border-white/10 flex flex-col gap-2">
+          <span className="text-[9px] font-bold uppercase tracking-widest text-emerald-400 bg-emerald-400/15 rounded px-1.5 py-0.5 self-start">
+            ECO
+          </span>
+          <div className="h-2 bg-white/20 rounded w-4/5" />
+          <div className="h-2 bg-white/10 rounded w-2/3" />
+          <div className="mt-auto h-1 rounded-full bg-white/10 overflow-hidden">
+            <div className="h-full w-[30%] rounded-full bg-emerald-400/60" />
+          </div>
+        </div>
+        {/* Card 4 */}
+        <div className="bg-white/5 rounded-xl p-3 border border-white/10 flex flex-col gap-2">
+          <span className="text-[9px] font-bold uppercase tracking-widest text-violet-400 bg-violet-400/15 rounded px-1.5 py-0.5 self-start">
+            FIN
+          </span>
+          <div className="h-2 bg-white/20 rounded w-4/5" />
+          <div className="h-2 bg-white/10 rounded w-1/2" />
+          <div className="mt-auto h-1 rounded-full bg-white/10 overflow-hidden">
+            <div className="h-full w-[58%] rounded-full bg-violet-400/60" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MockupStep02() {
+  return (
+    <div className="relative w-full aspect-[4/3] rounded-2xl border border-white/10 bg-[var(--brand-900)] overflow-hidden shadow-2xl">
+      {/* Traffic light header */}
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-white/10">
+        <span className="size-3 rounded-full" style={{ background: '#ff5f56' }} />
+        <span className="size-3 rounded-full" style={{ background: '#ffbd2e' }} />
+        <span className="size-3 rounded-full" style={{ background: '#27c93f' }} />
+        <span className="ml-4 flex-1 bg-white/10 rounded text-[10px] text-white/40 px-3 py-0.5 text-center">
+          app.simexpro.io/simulation/tour-4
+        </span>
+      </div>
+      {/* Decision interface */}
+      <div className="p-4 flex flex-col gap-3 h-[calc(100%-44px)]">
+        {/* Top row: actors + KPIs */}
+        <div className="flex gap-3 flex-1">
+          {/* Actors column */}
+          <div className="flex flex-col gap-2 w-2/5">
+            <p className="text-[9px] uppercase tracking-widest text-white/50 font-bold">Acteurs</p>
+            {[
+              { initials: 'MS', name: 'Marc', role: 'Sponsor', color: 'bg-blue-500' },
+              { initials: 'ND', name: 'Nina', role: 'DevLead', color: 'bg-violet-500' },
+              { initials: 'TC', name: 'Tom', role: 'PMO', color: 'bg-emerald-500' },
+            ].map((actor) => (
+              <div key={actor.name} className="flex items-center gap-2">
+                <span className={`size-6 rounded-full ${actor.color} flex items-center justify-center text-[8px] font-bold text-white shrink-0`}>
+                  {actor.initials}
+                </span>
+                <div>
+                  <p className="text-[10px] text-white/80 font-medium leading-none">{actor.name}</p>
+                  <p className="text-[9px] text-white/40 leading-none mt-0.5">{actor.role}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* KPI column */}
+          <div className="flex flex-col gap-2 flex-1">
+            <p className="text-[9px] uppercase tracking-widest text-white/50 font-bold">KPIs</p>
+            <div className="bg-white/5 rounded-lg p-2.5 border border-white/10">
+              <p className="text-[9px] text-white/50 mb-0.5">Budget consommé</p>
+              <p className="text-base font-display font-extrabold text-[var(--accent-500)]">65%</p>
+            </div>
+            <div className="bg-white/5 rounded-lg p-2.5 border border-red-500/30">
+              <p className="text-[9px] text-white/50 mb-0.5">Moral équipe</p>
+              <p className="text-base font-display font-extrabold text-red-400">Low</p>
+            </div>
+          </div>
+        </div>
+        {/* Decision options */}
+        <div className="grid grid-cols-3 gap-2">
+          <div className="bg-white/5 rounded-lg p-2 border border-white/10 text-center">
+            <p className="text-[9px] text-white/50 leading-snug">Reporter le sprint</p>
+          </div>
+          <div className="bg-white/5 rounded-lg p-2 border-2 border-[var(--accent-500)] text-center"
+            style={{ boxShadow: '0 0 8px rgba(238,122,58,0.2)' }}>
+            <p className="text-[9px] text-[var(--accent-300)] font-semibold leading-snug">Renforcer l&apos;équipe</p>
+          </div>
+          <div className="bg-white/5 rounded-lg p-2 border border-white/10 text-center">
+            <p className="text-[9px] text-white/50 leading-snug">Réduire le scope</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MockupStep03() {
+  // SVG pentagon radar — 5 vertices
+  // Pentagon points (cx=80, cy=70, r=52) starting from top, clockwise
+  const cx = 80;
+  const cy = 70;
+  const r = 52;
+  const axes = [
+    { label: 'Communication', value: 82, angle: -90 },
+    { label: 'Délai', value: 88, angle: -18 },
+    { label: 'Équipe', value: 74, angle: 54 },
+    { label: 'Budget', value: 71, angle: 126 },
+    { label: 'Risque', value: 65, angle: 198 },
   ];
 
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const outerPts = axes.map((a) => ({
+    x: cx + r * Math.cos(toRad(a.angle)),
+    y: cy + r * Math.sin(toRad(a.angle)),
+  }));
+  const innerPts = axes.map((a) => ({
+    x: cx + (r * a.value / 100) * Math.cos(toRad(a.angle)),
+    y: cy + (r * a.value / 100) * Math.sin(toRad(a.angle)),
+  }));
+  const outerPath = outerPts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ') + ' Z';
+  const innerPath = innerPts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ') + ' Z';
+
+  // Label positions — offset outward from vertex
+  const labelOffset = 14;
+  const labelPts = axes.map((a) => ({
+    x: cx + (r + labelOffset) * Math.cos(toRad(a.angle)),
+    y: cy + (r + labelOffset) * Math.sin(toRad(a.angle)),
+    label: a.label,
+    value: a.value,
+  }));
+
+  return (
+    <div className="relative w-full aspect-[4/3] rounded-2xl border border-white/10 bg-[var(--brand-900)] overflow-hidden shadow-2xl">
+      {/* Traffic light header */}
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-white/10">
+        <span className="size-3 rounded-full" style={{ background: '#ff5f56' }} />
+        <span className="size-3 rounded-full" style={{ background: '#ffbd2e' }} />
+        <span className="size-3 rounded-full" style={{ background: '#27c93f' }} />
+        <span className="ml-4 flex-1 bg-white/10 rounded text-[10px] text-white/40 px-3 py-0.5 text-center">
+          app.simexpro.io/rapport/erp-globalfinance
+        </span>
+      </div>
+      {/* Report content */}
+      <div className="p-4 flex flex-col gap-3 h-[calc(100%-44px)]">
+        {/* Score global */}
+        <div className="flex items-center gap-3">
+          <div>
+            <p className="text-[9px] uppercase tracking-widest text-white/50 font-bold">Score global</p>
+            <p className="font-display font-extrabold text-3xl text-[var(--accent-500)] leading-none">78<span className="text-base text-white/40">/100</span></p>
+          </div>
+          {/* SVG Radar */}
+          <div className="flex-1">
+            <svg viewBox="0 0 160 140" className="w-full h-full" style={{ maxHeight: '90px' }}>
+              {/* Background pentagon */}
+              <path d={outerPath} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+              {/* Mid pentagon */}
+              <path
+                d={axes.map((a, i) => {
+                  const pt = { x: cx + (r * 0.5) * Math.cos(toRad(a.angle)), y: cy + (r * 0.5) * Math.sin(toRad(a.angle)) };
+                  return `${i === 0 ? 'M' : 'L'}${pt.x.toFixed(1)},${pt.y.toFixed(1)}`;
+                }).join(' ') + ' Z'}
+                fill="none"
+                stroke="rgba(255,255,255,0.07)"
+                strokeWidth="1"
+              />
+              {/* Axis lines */}
+              {outerPts.map((p, i) => (
+                <line key={i} x1={cx} y1={cy} x2={p.x.toFixed(1)} y2={p.y.toFixed(1)} stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+              ))}
+              {/* Data polygon */}
+              <path d={innerPath} fill="rgba(238,122,58,0.25)" stroke="var(--accent-500)" strokeWidth="1.5" />
+              {/* Data dots */}
+              {innerPts.map((p, i) => (
+                <circle key={i} cx={p.x.toFixed(1)} cy={p.y.toFixed(1)} r="2.5" fill="var(--accent-500)" />
+              ))}
+              {/* Labels */}
+              {labelPts.map((p) => (
+                <text
+                  key={p.label}
+                  x={p.x.toFixed(1)}
+                  y={p.y.toFixed(1)}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fontSize="7"
+                  fill="rgba(255,255,255,0.55)"
+                >
+                  {p.value}
+                </text>
+              ))}
+            </svg>
+          </div>
+        </div>
+        {/* Recommendation card */}
+        <div className="flex-1 bg-white/5 rounded-lg p-3 border border-[var(--accent-500)]/30 flex flex-col gap-1.5">
+          <p className="text-[9px] uppercase tracking-widest text-[var(--accent-400)] font-bold">Recommandation #1</p>
+          <p className="text-[11px] text-white/70 leading-snug">
+            Votre gestion des risques humains est en-dessous du seuil PMI. Renforcez la communication hebdomadaire avec les parties prenantes pour améliorer le score Équipe.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HowItWorksSection() {
   return (
     <section
       id="comment-ca-marche"
-      className="py-24 px-6 lg:px-8 bg-[var(--brand-700)] text-white scroll-mt-20"
+      className="py-24 px-6 lg:px-8 bg-[var(--brand-700)] scroll-mt-20"
     >
       <div className="max-w-6xl mx-auto">
-        <h2 className="font-display font-extrabold text-4xl lg:text-5xl text-center mb-4">
-          3 étapes vers la maîtrise
-        </h2>
-        <p className="text-lg text-white/70 max-w-2xl mx-auto text-center mb-16">
-          De la première décision au feedback IA, en moins d&apos;une heure par scénario.
-        </p>
-        <div className="grid md:grid-cols-3 gap-6">
-          {steps.map((step) => (
-            <div
-              key={step.n}
-              className="bg-white/5 border-t-2 border-[var(--accent-500)] rounded-xl p-8 backdrop-blur-sm"
-            >
-              <p className="text-[var(--accent-500)] font-bold text-sm tracking-widest">
-                ÉTAPE {step.n}
-              </p>
-              <h3 className="font-display font-bold text-2xl mt-3 mb-3 text-white">
-                {step.title}
+        {/* Header */}
+        <div className="text-center mb-20">
+          <h2 className="font-display font-extrabold text-4xl lg:text-5xl text-white mb-4">
+            3 étapes vers la maîtrise
+          </h2>
+          <p className="text-lg text-white/70 max-w-2xl mx-auto">
+            De la première décision au feedback IA, en moins d&apos;une heure par scénario.
+          </p>
+        </div>
+
+        {/* Steps */}
+        <div className="flex flex-col gap-20">
+          {/* Step 01 — text LEFT, mockup RIGHT */}
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            {/* Text — order-2 on mobile (below mockup), order-1 on desktop (left) */}
+            <div className="space-y-5 order-2 lg:order-1">
+              <span
+                className="font-display font-extrabold text-[80px] leading-none tracking-tighter text-transparent block"
+                style={{ WebkitTextStroke: '1px var(--accent-500)' }}
+              >
+                01
+              </span>
+              <h3 className="font-display font-bold text-3xl lg:text-4xl text-white">
+                Choisissez votre scénario
               </h3>
-              <p className="text-white/70 leading-relaxed">{step.desc}</p>
+              <p className="text-white/70 text-lg leading-relaxed">
+                Sélectionnez parmi 12 scénarios calqués sur de vrais cabinets : BTP, IT, transition éco, hyper-croissance. Chaque scénario démarre avec un brief sponsor et un contexte d&apos;équipe réaliste.
+              </p>
+              <ul className="space-y-2.5 text-white/85 text-[15px]">
+                <li className="flex items-start gap-3">
+                  <Check size={18} className="text-[var(--accent-400)] mt-0.5 shrink-0" />
+                  Brief sponsor et contraintes budgétaires définies
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check size={18} className="text-[var(--accent-400)] mt-0.5 shrink-0" />
+                  Équipe virtuelle de 5 à 8 personnes
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check size={18} className="text-[var(--accent-400)] mt-0.5 shrink-0" />
+                  Calendrier réaliste : 8 à 12 semaines de simulation
+                </li>
+              </ul>
             </div>
-          ))}
+            {/* Mockup — order-1 on mobile (above text), order-2 on desktop (right) */}
+            <div className="order-1 lg:order-2">
+              <MockupStep01 />
+            </div>
+          </div>
+
+          {/* Step 02 — mockup LEFT, text RIGHT */}
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            {/* Mockup — order-1 both mobile and desktop (left) */}
+            <div className="order-1">
+              <MockupStep02 />
+            </div>
+            {/* Text — order-2 both mobile and desktop (right) */}
+            <div className="space-y-5 order-2">
+              <span
+                className="font-display font-extrabold text-[80px] leading-none tracking-tighter text-transparent block"
+                style={{ WebkitTextStroke: '1px var(--accent-500)' }}
+              >
+                02
+              </span>
+              <h3 className="font-display font-bold text-3xl lg:text-4xl text-white">
+                Pilotez les décisions en temps réel
+              </h3>
+              <p className="text-white/70 text-lg leading-relaxed">
+                Tour par tour, négociez avec les acteurs IA, arbitrez budget vs qualité, gérez les imprévus. Chaque choix impacte les KPIs en direct.
+              </p>
+              <ul className="space-y-2.5 text-white/85 text-[15px]">
+                <li className="flex items-start gap-3">
+                  <Check size={18} className="text-[var(--accent-400)] mt-0.5 shrink-0" />
+                  Acteurs IA qui réagissent et négocient
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check size={18} className="text-[var(--accent-400)] mt-0.5 shrink-0" />
+                  Imprévus aléatoires (démissions, retards, audits)
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check size={18} className="text-[var(--accent-400)] mt-0.5 shrink-0" />
+                  KPIs mis à jour à chaque décision
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Step 03 — text LEFT, mockup RIGHT */}
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            {/* Text — order-2 on mobile (below mockup), order-1 on desktop (left) */}
+            <div className="space-y-5 order-2 lg:order-1">
+              <span
+                className="font-display font-extrabold text-[80px] leading-none tracking-tighter text-transparent block"
+                style={{ WebkitTextStroke: '1px var(--accent-500)' }}
+              >
+                03
+              </span>
+              <h3 className="font-display font-bold text-3xl lg:text-4xl text-white">
+                Recevez un feedback senior
+              </h3>
+              <p className="text-white/70 text-lg leading-relaxed">
+                L&apos;IA analyse vos décisions, identifie les patterns et vous livre un rapport calibré sur le standard PMI. Personnalisable par mentor.
+              </p>
+              <ul className="space-y-2.5 text-white/85 text-[15px]">
+                <li className="flex items-start gap-3">
+                  <Check size={18} className="text-[var(--accent-400)] mt-0.5 shrink-0" />
+                  Score global + scores par dimension (5 axes)
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check size={18} className="text-[var(--accent-400)] mt-0.5 shrink-0" />
+                  3 recommandations actionnables minimum
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check size={18} className="text-[var(--accent-400)] mt-0.5 shrink-0" />
+                  Comparaison avec votre cohorte (anonymisée)
+                </li>
+              </ul>
+            </div>
+            {/* Mockup — order-1 on mobile (above text), order-2 on desktop (right) */}
+            <div className="order-1 lg:order-2">
+              <MockupStep03 />
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -353,40 +678,46 @@ function HowItWorksSection() {
 
 /* ─── Domaines d'immersion ──────────────────────────────────────────── */
 
-function DomainsSection() {
-  const domains = [
-    {
-      Icon: Code2,
-      title: 'IT & Cloud Scaling',
-      desc: 'Sprints, déploiements critiques, équipes distantes.',
-    },
-    {
-      Icon: Building2,
-      title: 'Infrastructure & BTP',
-      desc: 'Logistique chantier, sous-traitants, aléas terrain.',
-    },
-    {
-      Icon: Rocket,
-      title: 'Hyper-croissance',
-      desc: 'Time-to-Market et scalabilité humaine d\'une licorne.',
-    },
-    {
-      Icon: Leaf,
-      title: 'Transition écologique',
-      desc: 'Projets ESG sous contraintes carbone strictes.',
-    },
-    {
-      Icon: Banknote,
-      title: 'Finance & Banque',
-      desc: 'Conformité, audits, reporting, KPIs réglementaires.',
-    },
-    {
-      Icon: Heart,
-      title: 'Santé & Pharma',
-      desc: 'Essais cliniques, validation, mise sur le marché.',
-    },
-  ];
+const DOMAINS = [
+  {
+    icon: Code2,
+    title: 'IT & Cloud Scaling',
+    description: 'Sprints, déploiements critiques, équipes distantes.',
+    image: '/media/landing/domain-it.png',
+  },
+  {
+    icon: Building2,
+    title: 'Infrastructure & BTP',
+    description: 'Logistique chantier, sous-traitants, aléas terrain.',
+    image: '/media/landing/domain-btp.jpg',
+  },
+  {
+    icon: Rocket,
+    title: 'Hyper-croissance',
+    description: 'Time-to-Market et scalabilité humaine d\'une licorne.',
+    image: '/media/landing/domain-startup.jpg',
+  },
+  {
+    icon: Leaf,
+    title: 'Transition écologique',
+    description: 'Projets ESG sous contraintes carbone strictes.',
+    image: '/media/landing/domain-eco.jpg',
+  },
+  {
+    icon: Banknote,
+    title: 'Finance & Banque',
+    description: 'Conformité, audits, reporting, KPIs réglementaires.',
+    image: '/media/landing/domain-finance.jpg',
+  },
+  {
+    icon: Heart,
+    title: 'Santé & Pharma',
+    description: 'Essais cliniques, validation, mise sur le marché.',
+    image: '/media/landing/domain-health.jpg',
+  },
+];
 
+function DomainsSection() {
   return (
     <section
       id="fonctionnalites"
@@ -402,19 +733,37 @@ function DomainsSection() {
           </p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {domains.map(({ Icon, title, desc }) => (
-            <div
+          {DOMAINS.map(({ icon: Icon, title, description, image }) => (
+            <a
               key={title}
-              className="bg-card rounded-2xl p-8 border border-border hover:border-[var(--accent-500)] hover:-translate-y-1 transition-all duration-300 cursor-default"
+              href="#"
+              className="group bg-card rounded-2xl overflow-hidden border border-border hover:border-[var(--accent-500)] hover:-translate-y-1 transition-all duration-300 block"
             >
-              <div className="size-12 rounded-lg bg-[var(--accent-500)]/15 text-[var(--accent-400)] flex items-center justify-center mb-5">
-                <Icon size={22} />
+              {/* Image header */}
+              <div className="relative aspect-[16/10] overflow-hidden bg-[var(--brand-900)]">
+                <img
+                  src={image}
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--brand-900)] via-[var(--brand-900)]/40 to-transparent" />
+                {/* Icon badge */}
+                <div className="absolute top-4 left-4 size-11 rounded-lg bg-[var(--accent-500)]/90 backdrop-blur-sm text-white flex items-center justify-center">
+                  <Icon size={22} />
+                </div>
               </div>
-              <h3 className="font-display font-bold text-xl mb-2 text-foreground">
-                {title}
-              </h3>
-              <p className="text-muted-foreground">{desc}</p>
-            </div>
+              {/* Content */}
+              <div className="p-6">
+                <h3 className="font-display font-bold text-xl mb-2 text-foreground">
+                  {title}
+                </h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {description}
+                </p>
+              </div>
+            </a>
           ))}
         </div>
       </div>
@@ -658,6 +1007,89 @@ function PricingSection() {
   );
 }
 
+/* ─── FAQ ───────────────────────────────────────────────────────────── */
+
+function FaqSection() {
+  const FAQS = [
+    {
+      q: 'Combien de temps prend une simulation ?',
+      a: 'Entre 45 minutes et 2 heures selon le scénario. Vous pouvez la mettre en pause à tout moment et reprendre plus tard — votre progression est sauvegardée.',
+    },
+    {
+      q: 'La certification est-elle reconnue par les recruteurs ?',
+      a: 'Oui. Notre certification est calibrée sur le référentiel PMI et reconnue par 650+ entreprises partenaires (Bouygues, BNP Paribas, KPMG…). Le badge est exportable directement sur LinkedIn.',
+    },
+    {
+      q: 'Puis-je utiliser Simex pro en équipe ou avec des collègues ?',
+      a: 'Le mode multi-joueur est inclus dans le plan Professionnel. Vous pouvez inviter jusqu\'à 4 collègues sur une même simulation et débriefer ensemble grâce au rapport partagé.',
+    },
+    {
+      q: 'Mes données et décisions sont-elles confidentielles ?',
+      a: 'Vos décisions de simulation sont strictement privées. Les données agrégées (anonymisées) servent uniquement à améliorer les scénarios et à vous comparer à votre cohorte. Conformité RGPD complète, hébergement en Europe.',
+    },
+    {
+      q: 'Comment fonctionne l\'IA d\'évaluation ?',
+      a: 'L\'IA observe vos décisions, vos arbitrages budget/qualité, votre style de communication avec les acteurs virtuels. Elle compare ensuite votre profil aux best practices PMI et à 12 000+ sessions historiques pour produire un feedback contextualisé.',
+    },
+    {
+      q: 'Puis-je annuler à tout moment ?',
+      a: 'Oui. Annulation en un clic depuis votre tableau de bord, sans frais. Si vous annulez en cours de mois, vous gardez accès jusqu\'à la fin de la période payée.',
+    },
+    {
+      q: 'Quelle différence entre Simex pro et un MOOC classique ?',
+      a: 'Un MOOC vous explique la théorie. Simex pro vous fait vivre la pratique. Vous ne regardez pas une vidéo : vous prenez des décisions sous pression, vous négociez avec un sponsor mécontent, vous gérez une démission imprévue. Le feedback est sur vos actions réelles, pas sur des QCM.',
+    },
+    {
+      q: 'Les scénarios sont-ils mis à jour régulièrement ?',
+      a: 'Oui. 1 à 2 nouveaux scénarios par trimestre, mise à jour des contextes existants à chaque release. Tous les abonnés Professionnel et Entreprise reçoivent les nouveautés sans surcoût.',
+    },
+  ];
+
+  return (
+    <section id="faq" className="py-24 px-6 lg:px-8 scroll-mt-20">
+      <div className="max-w-3xl mx-auto">
+        <div className="text-center mb-16">
+          <p className="text-[var(--accent-400)] font-bold text-xs tracking-widest uppercase mb-3">
+            Vos questions
+          </p>
+          <h2 className="font-display font-extrabold text-4xl lg:text-5xl text-foreground mb-4">
+            Tout ce que vous voulez savoir
+          </h2>
+          <p className="text-muted-foreground text-lg">
+            Si votre question n&apos;est pas listée, écrivez-nous à{' '}
+            <a href="mailto:hello@simex.pro" className="text-[var(--accent-400)] hover:underline">
+              hello@simex.pro
+            </a>
+            .
+          </p>
+        </div>
+
+        <div className="space-y-3">
+          {FAQS.map((faq) => (
+            <details
+              key={faq.q}
+              className="group bg-card border border-border rounded-xl overflow-hidden transition-colors hover:border-[var(--accent-500)]/40"
+            >
+              <summary className="flex items-center justify-between gap-6 px-6 py-5 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <span className="font-semibold text-foreground text-[15px] lg:text-base">
+                  {faq.q}
+                </span>
+                <ChevronDown
+                  size={20}
+                  className="text-muted-foreground shrink-0 transition-transform duration-200 group-open:rotate-180"
+                />
+              </summary>
+              <div className="px-6 pb-5 text-muted-foreground text-[15px] leading-relaxed">
+                {faq.a}
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ─── Final CTA ─────────────────────────────────────────────────────── */
 
 function FinalCTA() {
@@ -802,6 +1234,7 @@ export default function LandingPage() {
       <WhySection />
       <TestimonialsSection />
       <PricingSection />
+      <FaqSection />
       <FinalCTA />
       <Footer />
     </div>
