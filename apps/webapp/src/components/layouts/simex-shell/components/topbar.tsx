@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PanelLeft, Search, Moon, Sun, Bell, Sparkles, ChevronDown } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -27,10 +27,6 @@ export function Topbar({ className }: TopbarProps) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
   const isDark = mounted && resolvedTheme === 'dark';
-
-  // Refs for the topbar icon buttons — used to avoid closing popover when clicking the trigger
-  const notifBtnRef = useRef<HTMLButtonElement>(null);
-  const userBtnRef = useRef<HTMLButtonElement>(null);
 
   return (
     <header
@@ -113,11 +109,11 @@ export function Topbar({ className }: TopbarProps) {
 
         {/* Notification bell */}
         <button
-          ref={notifBtnRef}
           type="button"
           aria-label="Notifications"
           aria-expanded={notifOpen}
           aria-haspopup="true"
+          onMouseDown={(e) => e.stopPropagation()}
           onClick={(e) => {
             e.stopPropagation();
             toggleNotif();
@@ -155,10 +151,10 @@ export function Topbar({ className }: TopbarProps) {
 
         {/* User chip */}
         <button
-          ref={userBtnRef}
           type="button"
           aria-haspopup="true"
           aria-expanded={userMenuOpen}
+          onMouseDown={(e) => e.stopPropagation()}
           onClick={(e) => {
             e.stopPropagation();
             toggleUserMenu();

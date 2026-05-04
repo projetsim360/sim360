@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { Sun, Moon, PanelLeft, Sparkles, Maximize2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -64,7 +65,9 @@ function DemoControlsInner() {
   } = useShellState();
 
   const { resolvedTheme, setTheme } = useTheme();
-  const isDark = resolvedTheme === 'dark';
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  const isDark = mounted && resolvedTheme === 'dark';
 
   return (
     <div
