@@ -400,6 +400,9 @@ body {
   font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Reveal SimexShell rounded corners — the area behind <main> shows --shell-bg */
+  background: var(--shell-bg, var(--brand-700));
+  transition: background 200ms var(--ease-out);
 }
 
 /* Metronic Configs */
