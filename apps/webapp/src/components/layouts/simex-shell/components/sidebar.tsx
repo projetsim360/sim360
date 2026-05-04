@@ -1,11 +1,268 @@
-import { Play, Sparkles } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Play, Sparkles, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { WorkspaceSwitcher } from './workspace-switcher';
-import { SIMEX_SHELL_MENU } from '../config/menu';
 import { useShellState } from '../state/shell-state-provider';
+import { useAuth } from '@/providers/auth-provider';
+import { APP_SIDEBAR_MENU } from '@/config/menu.config';
+import type { MenuItem, MenuConfig, UserRole } from '@/config/types';
 
-// Hardcoded active item for LOT A/B — wired via useLocation() in LOT D
-const ACTIVE_PATH = '/simulations';
+// ---------------------------------------------------------------------------
+// Active state helpers
+// ---------------------------------------------------------------------------
+
+function isItemActive(item: MenuItem, pathname: string): boolean {
+  if (item.path && item.path !== '#' && item.path === pathname) return true;
+  if (item.rootPath && pathname.startsWith(item.rootPath)) return true;
+  if (item.children?.some((child) => isItemActive(child, pathname))) return true;
+  return false;
+}
+
+// ---------------------------------------------------------------------------
+// Role-based filtering
+// ---------------------------------------------------------------------------
+
+function filterByRole(items: MenuConfig, userRole: string | undefined): MenuConfig {
+  const result: MenuItem[] = [];
+  let i = 0;
+
+  while (i < items.length) {
+    const item = items[i];
+
+    if (item.heading !== undefined) {
+      // Collect everything until the next heading
+      const headingItem = item;
+      const sectionItems: MenuItem[] = [];
+      i++;
+      while (i < items.length && items[i].heading === undefined) {
+        sectionItems.push(items[i]);
+        i++;
+      }
+
+      // Skip the heading+section entirely if heading has roles and user isn't authorized
+      if (headingItem.roles && headingItem.roles.length > 0) {
+        if (!userRole || !headingItem.roles.includes(userRole as UserRole)) {
+          continue;
+        }
+      }
+
+      // Filter items within the section by their own roles
+      const visibleItems = sectionItems.filter((si) => {
+        if (!si.roles || si.roles.length === 0) return true;
+        return userRole && si.roles.includes(userRole as UserRole);
+      });
+
+      // Only add heading if there are visible items under it
+      if (visibleItems.length > 0) {
+        result.push(headingItem);
+        result.push(...visibleItems);
+      }
+    } else {
+      // Regular item (no heading)
+      if (!item.roles || item.roles.length === 0) {
+        result.push(item);
+      } else if (userRole && item.roles.includes(userRole as UserRole)) {
+        result.push(item);
+      }
+      i++;
+    }
+  }
+
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// Accordion state initialization
+// ---------------------------------------------------------------------------
+
+function buildInitialAccordionState(
+  items: MenuConfig,
+  pathname: string,
+): Record<string, boolean> {
+  const state: Record<string, boolean> = {};
+  for (const item of items) {
+    if (item.children && item.title) {
+      state[item.title] = isItemActive(item, pathname);
+    }
+  }
+  return state;
+}
+
+// ---------------------------------------------------------------------------
+// Sub-components
+// ---------------------------------------------------------------------------
+
+interface SectionHeadingProps {
+  label: string;
+}
+
+function SectionHeading({ label }: SectionHeadingProps) {
+  return (
+    <div
+      className={cn(
+        'simex-nav-title px-3 pb-2 pt-4 text-[10px] font-semibold uppercase tracking-[1.2px]',
+        'text-[var(--shell-fg-faint)] whitespace-nowrap overflow-hidden',
+      )}
+    >
+      {label}
+    </div>
+  );
+}
+
+interface NavItemProps {
+  item: MenuItem;
+  pathname: string;
+  sidebarCollapsed: boolean;
+  accordionState: Record<string, boolean>;
+  onToggleAccordion: (title: string) => void;
+}
+
+function NavItem({ item, pathname, sidebarCollapsed, accordionState, onToggleAccordion }: NavItemProps) {
+  const active = isItemActive(item, pathname);
+  const hasChildren = Boolean(item.children && item.children.length > 0);
+  const isOpen = hasChildren && item.title ? (accordionState[item.title] ?? false) : false;
+  const Icon = item.icon;
+
+  const itemClasses = cn(
+    'simex-nav-item relative mb-0.5 flex items-center gap-3 overflow-hidden',
+    'rounded-md px-3 py-2.5',
+    'text-sm font-medium no-underline',
+    'cursor-pointer transition-colors duration-150',
+    sidebarCollapsed && 'justify-center px-[10px]',
+    active
+      ? 'bg-[var(--accent-500)] text-white'
+      : 'text-[var(--shell-fg)] hover:bg-[var(--shell-hover)] hover:text-[var(--shell-fg-strong)]',
+  );
+
+  const iconClasses = cn(
+    'size-[18px] shrink-0',
+    active ? 'text-white' : 'text-[var(--shell-fg-muted)]',
+  );
+
+  const badgeClasses = cn(
+    'simex-nav-badge shrink-0 rounded-full px-[7px] py-0.5 text-[11px] font-bold leading-none',
+    active
+      ? 'bg-black/18 text-white'
+      : 'bg-[var(--shell-soft)] text-[var(--shell-fg)]',
+  );
+
+  // Accordion parent — click toggles open/closed
+  if (hasChildren && item.title) {
+    return (
+      <div>
+        <button
+          type="button"
+          data-tip={item.title}
+          onClick={() => onToggleAccordion(item.title!)}
+          className={cn(itemClasses, 'w-full text-left')}
+        >
+          {Icon && <Icon className={iconClasses} />}
+          {!sidebarCollapsed && (
+            <>
+              <span className="simex-nav-label flex-1 whitespace-nowrap">{item.title}</span>
+              {item.badge !== undefined && (
+                <span className={badgeClasses}>{item.badge}</span>
+              )}
+              <ChevronRight
+                className={cn(
+                  'size-3.5 shrink-0 transition-transform duration-200',
+                  active ? 'text-white/70' : 'text-[var(--shell-fg-faint)]',
+                  isOpen && 'rotate-90',
+                )}
+              />
+            </>
+          )}
+        </button>
+
+        {/* Children — only shown when expanded and sidebar is not collapsed */}
+        {!sidebarCollapsed && isOpen && (
+          <div className="ml-8 mt-0.5 flex flex-col gap-0.5 pb-1">
+            {item.children!.map((child) => {
+              const childActive = isItemActive(child, pathname);
+              const isHashLink = !child.path || child.path === '#';
+
+              const childClasses = cn(
+                'block rounded-md px-3 py-2 text-xs font-medium no-underline',
+                'cursor-pointer transition-colors duration-150 whitespace-nowrap',
+                childActive
+                  ? 'bg-[var(--accent-500)]/15 text-[var(--accent-500)]'
+                  : 'text-[var(--shell-fg-muted)] hover:bg-[var(--shell-hover)] hover:text-[var(--shell-fg-strong)]',
+              );
+
+              if (isHashLink) {
+                return (
+                  <a
+                    key={child.title ?? child.path}
+                    href="#"
+                    onClick={(e) => e.preventDefault()}
+                    className={childClasses}
+                  >
+                    {child.title}
+                  </a>
+                );
+              }
+
+              return (
+                <Link
+                  key={child.title ?? child.path}
+                  to={child.path!}
+                  className={childClasses}
+                >
+                  {child.title}
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Regular leaf item
+  const isHashLink = !item.path || item.path === '#';
+
+  const innerContent = (
+    <>
+      {Icon && <Icon className={iconClasses} />}
+      {!sidebarCollapsed && (
+        <>
+          <span className="simex-nav-label flex-1 whitespace-nowrap">{item.title}</span>
+          {item.badge !== undefined && (
+            <span className={badgeClasses}>{item.badge}</span>
+          )}
+        </>
+      )}
+    </>
+  );
+
+  if (isHashLink) {
+    return (
+      <a
+        href="#"
+        data-tip={item.title}
+        onClick={(e) => e.preventDefault()}
+        className={itemClasses}
+      >
+        {innerContent}
+      </a>
+    );
+  }
+
+  return (
+    <Link
+      to={item.path!}
+      data-tip={item.title}
+      className={itemClasses}
+    >
+      {innerContent}
+    </Link>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Sidebar
+// ---------------------------------------------------------------------------
 
 interface SidebarProps {
   className?: string;
@@ -13,6 +270,34 @@ interface SidebarProps {
 
 export function Sidebar({ className }: SidebarProps) {
   const { sidebarCollapsed } = useShellState();
+  const { user } = useAuth();
+  const { pathname } = useLocation();
+
+  // Filter menu by role
+  const visibleItems = filterByRole(APP_SIDEBAR_MENU, user?.role);
+
+  // Accordion open/close state — keyed by item title
+  const [accordionState, setAccordionState] = useState<Record<string, boolean>>(() =>
+    buildInitialAccordionState(visibleItems, pathname),
+  );
+
+  // Auto-expand accordion parents when the active route changes (never auto-closes)
+  useEffect(() => {
+    setAccordionState((prev) => {
+      const next = { ...prev };
+      for (const item of visibleItems) {
+        if (item.children && item.title && isItemActive(item, pathname)) {
+          next[item.title] = true;
+        }
+      }
+      return next;
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, user?.role]);
+
+  function handleToggleAccordion(title: string) {
+    setAccordionState((prev) => ({ ...prev, [title]: !prev[title] }));
+  }
 
   return (
     <aside
@@ -32,13 +317,13 @@ export function Sidebar({ className }: SidebarProps) {
       <WorkspaceSwitcher collapsed={sidebarCollapsed} />
 
       {/* CTA: Lancer une simulation */}
-      <button
-        type="button"
+      <Link
+        to="/simulations/new"
         className={cn(
           'simex-cta-launch flex w-full items-center gap-2.5 overflow-hidden',
           'rounded-md border-0 bg-[var(--accent-500)] text-white',
           'px-3.5 py-3 mb-[18px]',
-          'text-sm font-semibold cursor-pointer',
+          'text-sm font-semibold no-underline',
           'transition-colors duration-200 hover:bg-[var(--accent-600)]',
           sidebarCollapsed && 'px-3 justify-center',
         )}
@@ -49,76 +334,28 @@ export function Sidebar({ className }: SidebarProps) {
         {!sidebarCollapsed && (
           <span className="simex-cta-label">Lancer une simulation</span>
         )}
-      </button>
+      </Link>
 
-      {/* Navigation sections */}
+      {/* Navigation */}
       <nav className="flex flex-col gap-0">
-        {SIMEX_SHELL_MENU.map((section) => (
-          <div key={section.title} className="mb-3.5">
-            {/* Section title */}
-            <div
-              className={cn(
-                'simex-nav-title px-3 pb-2 pt-1.5 text-[10px] font-semibold uppercase tracking-[1.2px] text-[var(--shell-fg-faint)] whitespace-nowrap overflow-hidden',
-                sidebarCollapsed && 'text-center text-[9px] px-0',
-              )}
-            >
-              {section.title}
-            </div>
+        {visibleItems.map((item, idx) => {
+          if (item.heading) {
+            // Hide section titles when collapsed
+            if (sidebarCollapsed) return null;
+            return <SectionHeading key={`heading-${idx}`} label={item.heading} />;
+          }
 
-            {/* Items */}
-            {section.items.map((item) => {
-              const Icon = item.icon;
-              const isActive = item.path === ACTIVE_PATH;
-              const isAgentPmo = item.path === '/pmo';
-
-              return (
-                <a
-                  key={item.label}
-                  href={item.path}
-                  data-tip={item.label}
-                  className={cn(
-                    'simex-nav-item relative mb-0.5 flex items-center gap-3 overflow-hidden',
-                    'rounded-md px-3 py-2.5',
-                    'text-sm font-medium no-underline',
-                    'cursor-pointer transition-colors duration-150',
-                    sidebarCollapsed && 'justify-center px-[10px]',
-                    isActive
-                      ? 'bg-[var(--accent-500)] text-white'
-                      : 'text-[var(--shell-fg)] hover:bg-[var(--shell-hover)] hover:text-[var(--shell-fg-strong)]',
-                  )}
-                >
-                  <Icon
-                    className={cn(
-                      'size-[18px] shrink-0',
-                      isActive
-                        ? 'text-white'
-                        : isAgentPmo
-                        ? 'text-[var(--accent-400)]'
-                        : 'text-[var(--shell-fg-muted)]',
-                    )}
-                  />
-                  {!sidebarCollapsed && (
-                    <>
-                      <span className="simex-nav-label flex-1 whitespace-nowrap">{item.label}</span>
-                      {item.badge !== undefined && (
-                        <span
-                          className={cn(
-                            'simex-nav-badge shrink-0 rounded-full px-[7px] py-0.5 text-[11px] font-bold leading-none',
-                            isActive
-                              ? 'bg-black/18 text-white'
-                              : 'bg-[var(--shell-soft)] text-[var(--shell-fg)]',
-                          )}
-                        >
-                          {item.badge}
-                        </span>
-                      )}
-                    </>
-                  )}
-                </a>
-              );
-            })}
-          </div>
-        ))}
+          return (
+            <NavItem
+              key={item.title ?? item.path ?? idx}
+              item={item}
+              pathname={pathname}
+              sidebarCollapsed={sidebarCollapsed}
+              accordionState={accordionState}
+              onToggleAccordion={handleToggleAccordion}
+            />
+          );
+        })}
       </nav>
 
       {/* Sidebar footer card — hidden when collapsed */}
