@@ -7,7 +7,8 @@ import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from '@/comp
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, ShieldCheck } from '@/components/keenicons/icons';
+import { Loader2 } from '@/components/keenicons/icons';
+import { AuthCard } from '@/components/auth/auth-card';
 
 export function VerifyTwoFactorPage() {
   const navigate = useNavigate();
@@ -79,25 +80,35 @@ export function VerifyTwoFactorPage() {
   }
 
   return (
-    <div className="w-full max-w-[400px] mx-auto">
-      <div className="text-center mb-8">
-        <div className="flex justify-center mb-4">
-          <div className="flex items-center justify-center size-16 rounded-2xl bg-primary/10">
-            <ShieldCheck className="size-8 text-primary" />
-          </div>
-        </div>
-        <h1 className="text-2xl font-semibold text-foreground mb-2">
-          Vérification en deux étapes
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          {mode === 'totp'
-            ? 'Entrez le code à 6 chiffres de votre application d\'authentification'
-            : 'Entrez un de vos codes de secours'}
-        </p>
-      </div>
-
+    <AuthCard
+      title="Code de sécurité."
+      subtitle={
+        mode === 'totp'
+          ? 'Saisissez le code à 6 chiffres de votre application d\'authentification.'
+          : 'Saisissez un de vos codes de récupération.'
+      }
+      bottomSlot={
+        mode === 'totp' ? (
+          <button
+            type="button"
+            className="font-medium text-[var(--accent-600)] hover:underline"
+            onClick={() => { setMode('backup'); setError(''); }}
+          >
+            Utiliser un code de récupération
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="font-medium text-[var(--accent-600)] hover:underline"
+            onClick={() => { setMode('totp'); setError(''); }}
+          >
+            Utiliser l'application d'authentification
+          </button>
+        )
+      }
+    >
       {error && (
-        <Alert variant="destructive" className="mb-6">
+        <Alert variant="destructive">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
@@ -129,14 +140,6 @@ export function VerifyTwoFactorPage() {
               <span className="text-sm">Vérification...</span>
             </div>
           )}
-
-          <button
-            type="button"
-            className="text-sm text-primary hover:underline"
-            onClick={() => { setMode('backup'); setError(''); }}
-          >
-            Utiliser un code de secours
-          </button>
         </div>
       ) : (
         <form onSubmit={handleBackupSubmit} className="flex flex-col gap-4">
@@ -157,21 +160,8 @@ export function VerifyTwoFactorPage() {
               'Vérifier'
             )}
           </Button>
-          <button
-            type="button"
-            className="text-sm text-primary hover:underline text-center"
-            onClick={() => { setMode('totp'); setError(''); }}
-          >
-            Utiliser l'application d'authentification
-          </button>
         </form>
       )}
-
-      <div className="text-center mt-8">
-        <a href="/auth/sign-in" className="text-sm text-muted-foreground hover:text-foreground">
-          Retour à la connexion
-        </a>
-      </div>
-    </div>
+    </AuthCard>
   );
 }
