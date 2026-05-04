@@ -792,7 +792,7 @@ export default function LandingPage() {
   // aliases (--background, --card, --foreground…) to their dark
   // values via the `.dark { … }` block in globals.css.
   return (
-    <div className="dark min-h-screen bg-background text-foreground overflow-x-hidden">
+    <div className="dark min-h-screen w-full flex-1 bg-background text-foreground overflow-x-hidden">
       <StickyNav />
       <HeroSection />
       <TrustBand />
