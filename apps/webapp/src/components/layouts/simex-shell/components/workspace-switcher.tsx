@@ -3,18 +3,20 @@ import { cn } from '@/lib/utils';
 
 interface WorkspaceSwitcherProps {
   className?: string;
+  collapsed?: boolean;
 }
 
-export function WorkspaceSwitcher({ className }: WorkspaceSwitcherProps) {
+export function WorkspaceSwitcher({ className, collapsed = false }: WorkspaceSwitcherProps) {
   return (
     <button
       type="button"
       className={cn(
-        'flex w-full items-center gap-2.5 overflow-hidden',
-        'rounded-md border border-white/10 bg-white/6',
+        'simex-workspace-switch flex w-full items-center gap-2.5 overflow-hidden',
+        'rounded-md border border-[var(--shell-border)] bg-[var(--shell-soft)]',
         'px-3 py-2.5 mb-3',
         'cursor-pointer transition-colors duration-150',
-        'hover:bg-white/10',
+        'hover:bg-[var(--shell-hover)]',
+        collapsed && 'justify-center px-[10px]',
         className,
       )}
     >
@@ -25,14 +27,18 @@ export function WorkspaceSwitcher({ className }: WorkspaceSwitcherProps) {
       />
 
       {/* Label */}
-      <span className="flex-1 whitespace-nowrap text-left">
-        <span className="block text-[11px] font-semibold uppercase tracking-[1px] text-white/55">
-          Espace&nbsp;<strong className="font-bold tracking-[0.5px] text-white">Apprenant</strong>
+      {!collapsed && (
+        <span className="simex-workspace-label flex-1 whitespace-nowrap text-left">
+          <span className="block text-[11px] font-semibold uppercase tracking-[1px] text-[var(--shell-fg-muted)]">
+            Espace&nbsp;<strong className="font-bold tracking-[0.5px] text-[var(--shell-fg-strong)]">Apprenant</strong>
+          </span>
         </span>
-      </span>
+      )}
 
       {/* Chevron */}
-      <ChevronsUpDown className="ml-auto size-3.5 shrink-0 text-white/55" />
+      {!collapsed && (
+        <ChevronsUpDown className="simex-workspace-chev ml-auto size-3.5 shrink-0 text-[var(--shell-fg-muted)]" />
+      )}
     </button>
   );
 }

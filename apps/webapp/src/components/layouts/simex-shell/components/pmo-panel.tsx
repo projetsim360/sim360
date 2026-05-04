@@ -1,15 +1,89 @@
+import { useRef, useState, useCallback, useEffect } from 'react';
 import { Sparkles, X, MessageCircle, Layers, ArrowUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useShellState } from '../state/shell-state-provider';
+
+type Tab = 'chat' | 'contexte';
+
+interface Message {
+  id: number;
+  role: 'bot' | 'user';
+  text: string;
+}
+
+const INITIAL_MESSAGES: Message[] = [
+  {
+    id: 1,
+    role: 'bot',
+    text: 'Bonjour Alex. Vous êtes en phase Initiation, tour 4. Votre dernière décision (cadrage périmètre) a réduit le risque de 18%. Quelle question voulez-vous explorer ?',
+  },
+  {
+    id: 2,
+    role: 'user',
+    text: 'Comment justifier mon choix de méthodologie auprès du sponsor ?',
+  },
+  {
+    id: 3,
+    role: 'bot',
+    text: "Trois leviers concrets : 1) cadre PMI auquel le sponsor est habitué, 2) métriques quantitatives sur les 3 derniers projets similaires, 3) plan de mitigation des risques. Voulez-vous un script d'argumentation ?",
+  },
+];
+
+const BOT_REPLY = 'Démo : la réponse IA arrivera ici en streaming dans la version connectée.';
+
+let nextId = 4;
 
 interface PmoPanelProps {
   className?: string;
 }
 
 export function PmoPanel({ className }: PmoPanelProps) {
+  const { pmoOpen, setPmoOpen } = useShellState();
+
+  const [activeTab, setActiveTab] = useState<Tab>('chat');
+  const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
+  const [inputValue, setInputValue] = useState('');
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Scroll body to bottom when new messages arrive
+  useEffect(() => {
+    if (bodyRef.current) {
+      bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  // Focus input when panel opens
+  useEffect(() => {
+    if (pmoOpen) {
+      setTimeout(() => inputRef.current?.focus(), 280);
+    }
+  }, [pmoOpen]);
+
+  const sendMessage = useCallback(() => {
+    const v = inputValue.trim();
+    if (!v) return;
+
+    const userMsg: Message = { id: nextId++, role: 'user', text: v };
+    setMessages((prev) => [...prev, userMsg]);
+    setInputValue('');
+
+    setTimeout(() => {
+      const botMsg: Message = { id: nextId++, role: 'bot', text: BOT_REPLY };
+      setMessages((prev) => [...prev, botMsg]);
+    }, 600);
+  }, [inputValue]);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') sendMessage();
+    },
+    [sendMessage],
+  );
+
   return (
     <aside
       className={cn(
-        // LOT A: collapsed — width 0, opacity 0. LOT B will toggle.
         'sticky flex shrink-0 flex-col overflow-hidden rounded-lg bg-card',
         className,
       )}
@@ -17,10 +91,12 @@ export function PmoPanel({ className }: PmoPanelProps) {
         top: '16px',
         alignSelf: 'flex-start',
         height: 'calc(100vh - 64px - 32px)',
-        margin: '16px 0',
-        width: 0,
-        opacity: 0,
-        transition: 'width 280ms cubic-bezier(0.16,1,0.3,1), margin-right 280ms cubic-bezier(0.16,1,0.3,1), opacity 200ms cubic-bezier(0.16,1,0.3,1)',
+        margin: pmoOpen ? '16px 0' : '16px 0',
+        marginRight: pmoOpen ? '16px' : '0',
+        width: pmoOpen ? '460px' : '0',
+        opacity: pmoOpen ? 1 : 0,
+        transition:
+          'width 280ms cubic-bezier(0.16,1,0.3,1), margin-right 280ms cubic-bezier(0.16,1,0.3,1), opacity 200ms cubic-bezier(0.16,1,0.3,1)',
       }}
     >
       {/* Header */}
@@ -41,7 +117,8 @@ export function PmoPanel({ className }: PmoPanelProps) {
         <button
           type="button"
           aria-label="Fermer"
-          className="inline-flex size-8 items-center justify-center rounded-sm border-0 bg-transparent text-muted-foreground cursor-pointer transition-colors hover:bg-muted hover:text-foreground"
+          onClick={() => setPmoOpen(false)}
+          className="inline-flex size-8 cursor-pointer items-center justify-center rounded-sm border-0 bg-transparent text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
           <X className="size-4" />
         </button>
@@ -51,14 +128,26 @@ export function PmoPanel({ className }: PmoPanelProps) {
       <div className="flex shrink-0 gap-1 border-b border-border px-[18px] py-3">
         <button
           type="button"
-          className="inline-flex cursor-pointer items-center gap-1.5 rounded-sm border-0 bg-[var(--info-50)] px-3 py-2 text-[13px] font-semibold text-[var(--brand-700)] transition-colors duration-150"
+          onClick={() => setActiveTab('chat')}
+          className={cn(
+            'inline-flex cursor-pointer items-center gap-1.5 rounded-sm border-0 px-3 py-2 text-[13px] font-semibold transition-colors duration-150',
+            activeTab === 'chat'
+              ? 'bg-[var(--info-50)] text-[var(--brand-700)]'
+              : 'bg-transparent font-medium text-muted-foreground hover:bg-muted hover:text-foreground',
+          )}
         >
           <MessageCircle className="size-3.5" />
           Chat
         </button>
         <button
           type="button"
-          className="inline-flex cursor-pointer items-center gap-1.5 rounded-sm border-0 bg-transparent px-3 py-2 text-[13px] font-medium text-muted-foreground transition-colors duration-150 hover:bg-muted hover:text-foreground"
+          onClick={() => setActiveTab('contexte')}
+          className={cn(
+            'inline-flex cursor-pointer items-center gap-1.5 rounded-sm border-0 px-3 py-2 text-[13px] font-semibold transition-colors duration-150',
+            activeTab === 'contexte'
+              ? 'bg-[var(--info-50)] text-[var(--brand-700)]'
+              : 'bg-transparent font-medium text-muted-foreground hover:bg-muted hover:text-foreground',
+          )}
         >
           <Layers className="size-3.5" />
           Contexte
@@ -66,26 +155,33 @@ export function PmoPanel({ className }: PmoPanelProps) {
       </div>
 
       {/* Message body */}
-      <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-[18px]">
-        {/* Bot message */}
-        <div className="max-w-[85%] self-start rounded-md rounded-bl-xs bg-muted px-3.5 py-3 text-sm leading-[1.55] text-foreground">
-          Bonjour Alex. Vous êtes en phase Initiation, tour 4. Votre dernière décision (cadrage périmètre) a réduit le risque de 18%. Quelle question voulez-vous explorer ?
-        </div>
-
-        {/* User message */}
-        <div className="max-w-[85%] self-end rounded-md rounded-br-xs bg-[var(--accent-500)] px-3.5 py-3 text-sm leading-[1.55] text-white">
-          Comment justifier mon choix de méthodologie auprès du sponsor ?
-        </div>
-
-        {/* Bot message */}
-        <div className="max-w-[85%] self-start rounded-md rounded-bl-xs bg-muted px-3.5 py-3 text-sm leading-[1.55] text-foreground">
-          Trois leviers concrets : 1) cadre PMI auquel le sponsor est habitué, 2) métriques quantitatives sur les 3 derniers projets similaires, 3) plan de mitigation des risques. Voulez-vous un script d'argumentation ?
-        </div>
+      <div ref={bodyRef} className="flex flex-1 flex-col gap-3 overflow-y-auto p-[18px]">
+        {messages.map((msg) =>
+          msg.role === 'bot' ? (
+            <div
+              key={msg.id}
+              className="max-w-[85%] self-start rounded-md rounded-bl-xs bg-muted px-3.5 py-3 text-sm leading-[1.55] text-foreground"
+            >
+              {msg.text}
+            </div>
+          ) : (
+            <div
+              key={msg.id}
+              className="max-w-[85%] self-end rounded-md rounded-br-xs bg-[var(--accent-500)] px-3.5 py-3 text-sm leading-[1.55] text-white"
+            >
+              {msg.text}
+            </div>
+          ),
+        )}
       </div>
 
       {/* Footer input */}
       <footer className="flex shrink-0 items-center gap-2.5 border-t border-border px-4 py-3.5">
         <input
+          ref={inputRef}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={handleKeyDown}
           className={cn(
             'h-11 flex-1 rounded-md border border-border bg-card px-3.5',
             'text-sm text-foreground placeholder:text-muted-foreground',
@@ -93,11 +189,12 @@ export function PmoPanel({ className }: PmoPanelProps) {
             'focus:border-[var(--accent-500)] focus:shadow-[0_0_0_3px_rgba(238,122,58,.15)]',
           )}
           placeholder="Demandez au PMO…"
-          readOnly
+          autoComplete="off"
         />
         <button
           type="button"
           aria-label="Envoyer"
+          onClick={sendMessage}
           className={cn(
             'inline-flex size-11 shrink-0 cursor-pointer items-center justify-center',
             'rounded-md border-0 bg-[var(--accent-500)] text-white',

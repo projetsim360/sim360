@@ -1,19 +1,38 @@
+import { useEffect, useRef } from 'react';
 import { Search, LayoutDashboard, MonitorPlay, FileText, Briefcase } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useShellState } from '../state/shell-state-provider';
 
 interface SearchModalProps {
   className?: string;
 }
 
 export function SearchModal({ className }: SearchModalProps) {
+  const { searchOpen, closeSearch } = useShellState();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Auto-focus the input when the modal opens
+  useEffect(() => {
+    if (searchOpen) {
+      setTimeout(() => inputRef.current?.focus(), 50);
+    }
+  }, [searchOpen]);
+
+  if (!searchOpen) return null;
+
   return (
-    // LOT A: hidden — LOT B will toggle visibility
+    // Backdrop — click on it (not on card) to close
     <div
-      className={cn('hidden', className)}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Recherche"
+      className={cn(className)}
+      onClick={closeSearch}
       style={{
         position: 'fixed',
         inset: 0,
         zIndex: 200,
+        display: 'flex',
         alignItems: 'flex-start',
         justifyContent: 'center',
         paddingTop: '12vh',
@@ -22,6 +41,7 @@ export function SearchModal({ className }: SearchModalProps) {
         WebkitBackdropFilter: 'blur(6px) saturate(120%)',
       }}
     >
+      {/* Card — stop propagation so clicks inside don't close */}
       <div
         className="w-[min(640px,92vw)] overflow-hidden rounded-lg border border-border bg-card"
         style={{ boxShadow: 'var(--elevation-xl)' }}
@@ -31,6 +51,8 @@ export function SearchModal({ className }: SearchModalProps) {
         <div className="flex items-center gap-2.5 border-b border-border px-[18px] py-3.5">
           <Search className="size-[18px] shrink-0 text-muted-foreground" />
           <input
+            ref={inputRef}
+            autoComplete="off"
             placeholder="Rechercher pages, livrables, candidats…"
             className="flex-1 border-0 bg-transparent text-[15px] text-foreground placeholder:text-muted-foreground outline-none"
           />
@@ -45,19 +67,28 @@ export function SearchModal({ className }: SearchModalProps) {
             Pages
           </div>
 
-          <div className="flex cursor-pointer items-center gap-3 rounded-sm bg-[var(--accent-50)] px-3 py-2.5 text-sm text-[var(--accent-700)]">
+          <div
+            className="flex cursor-pointer items-center gap-3 rounded-sm bg-[var(--accent-50)] px-3 py-2.5 text-sm text-[var(--accent-700)]"
+            onClick={closeSearch}
+          >
             <LayoutDashboard className="size-4 shrink-0 text-[var(--accent-600)]" />
             Tableau de bord
             <span className="ml-auto text-xs text-muted-foreground">Apprentissage</span>
           </div>
 
-          <div className="flex cursor-pointer items-center gap-3 rounded-sm px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-[var(--accent-50)] hover:text-[var(--accent-700)]">
+          <div
+            className="flex cursor-pointer items-center gap-3 rounded-sm px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-[var(--accent-50)] hover:text-[var(--accent-700)]"
+            onClick={closeSearch}
+          >
             <MonitorPlay className="size-4 shrink-0 text-muted-foreground" />
             Simulations
             <span className="ml-auto text-xs text-muted-foreground">Apprentissage</span>
           </div>
 
-          <div className="flex cursor-pointer items-center gap-3 rounded-sm px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-[var(--accent-50)] hover:text-[var(--accent-700)]">
+          <div
+            className="flex cursor-pointer items-center gap-3 rounded-sm px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-[var(--accent-50)] hover:text-[var(--accent-700)]"
+            onClick={closeSearch}
+          >
             <FileText className="size-4 shrink-0 text-muted-foreground" />
             Livrables
             <span className="ml-auto text-xs text-muted-foreground">Apprentissage</span>
@@ -70,13 +101,19 @@ export function SearchModal({ className }: SearchModalProps) {
             Simulations récentes
           </div>
 
-          <div className="flex cursor-pointer items-center gap-3 rounded-sm px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-[var(--accent-50)] hover:text-[var(--accent-700)]">
+          <div
+            className="flex cursor-pointer items-center gap-3 rounded-sm px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-[var(--accent-50)] hover:text-[var(--accent-700)]"
+            onClick={closeSearch}
+          >
             <Briefcase className="size-4 shrink-0 text-muted-foreground" />
             Déploiement ERP GlobalFinance
             <span className="ml-auto text-xs text-muted-foreground">En cours</span>
           </div>
 
-          <div className="flex cursor-pointer items-center gap-3 rounded-sm px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-[var(--accent-50)] hover:text-[var(--accent-700)]">
+          <div
+            className="flex cursor-pointer items-center gap-3 rounded-sm px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-[var(--accent-50)] hover:text-[var(--accent-700)]"
+            onClick={closeSearch}
+          >
             <Briefcase className="size-4 shrink-0 text-muted-foreground" />
             Lancement produit Q3
             <span className="ml-auto text-xs text-muted-foreground">Brouillon</span>
