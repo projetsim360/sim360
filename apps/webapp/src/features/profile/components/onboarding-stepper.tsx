@@ -82,7 +82,7 @@ export function OnboardingStepper({ items, orientation, onStepClick }: Onboardin
                 aria-hidden
                 className={cn(
                   'h-0.5 w-5 rounded-full',
-                  item.isCompleted ? 'bg-[var(--success-500)]' : 'bg-white/16',
+                  item.isCompleted ? 'bg-[var(--success-500)]' : 'bg-white/[0.13]',
                 )}
               />
             )}
