@@ -1,37 +1,39 @@
-import { useRef, useState, useCallback, useEffect } from 'react';
-import { Sparkles, X, MessageCircle, Layers, ArrowUp } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Sparkles, X, MessageCircle, Layers } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { EmptyState } from '@/components/ui/empty-state';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useShellState } from '../state/shell-state-provider';
+import { simulationApi } from '@/features/simulation/api/simulation.api';
+import { usePmoHistory, usePmoContext } from '@/features/pmo/api/pmo.api';
+import { useProfileAdaptation } from '@/features/profile/api/profile.api';
+import { PmoChat } from '@/features/pmo/components/pmo-chat';
+import { PmoContextPanel } from '@/features/pmo/components/pmo-context-panel';
 
 type Tab = 'chat' | 'contexte';
 
-interface Message {
-  id: number;
-  role: 'bot' | 'user';
-  text: string;
+const SIM_STATUS_LABELS: Record<string, string> = {
+  DRAFT: 'Brouillon',
+  ONBOARDING: 'Passation',
+  IN_PROGRESS: 'En cours',
+  PAUSED: 'En pause',
+  COMPLETED: 'Terminée',
+  ABANDONED: 'Abandonnée',
+};
+
+function simulationLabel(s: any): string {
+  const name = s.project?.name || s.scenario?.title || 'Simulation';
+  const status = SIM_STATUS_LABELS[s.status];
+  return status ? `${name} · ${status}` : name;
 }
-
-const INITIAL_MESSAGES: Message[] = [
-  {
-    id: 1,
-    role: 'bot',
-    text: 'Bonjour Alex. Vous êtes en phase Initiation, tour 4. Votre dernière décision (cadrage périmètre) a réduit le risque de 18%. Quelle question voulez-vous explorer ?',
-  },
-  {
-    id: 2,
-    role: 'user',
-    text: 'Comment justifier mon choix de méthodologie auprès du sponsor ?',
-  },
-  {
-    id: 3,
-    role: 'bot',
-    text: "Trois leviers concrets : 1) cadre PMI auquel le sponsor est habitué, 2) métriques quantitatives sur les 3 derniers projets similaires, 3) plan de mitigation des risques. Voulez-vous un script d'argumentation ?",
-  },
-];
-
-const BOT_REPLY = 'Démo : la réponse IA arrivera ici en streaming dans la version connectée.';
-
-let nextId = 4;
 
 interface PmoPanelProps {
   className?: string;
@@ -39,46 +41,58 @@ interface PmoPanelProps {
 
 export function PmoPanel({ className }: PmoPanelProps) {
   const { pmoOpen, setPmoOpen } = useShellState();
-
   const [activeTab, setActiveTab] = useState<Tab>('chat');
-  const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
-  const [inputValue, setInputValue] = useState('');
-  const bodyRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [overrideSimId, setOverrideSimId] = useState<string | null>(null);
 
-  // Scroll body to bottom when new messages arrive
-  useEffect(() => {
-    if (bodyRef.current) {
-      bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
-    }
-  }, [messages]);
+  // Resolve the user's active simulation (only fetch while the panel is open)
+  const { data: simulations } = useQuery({
+    queryKey: ['simulations'],
+    queryFn: () => simulationApi.getSimulations(),
+    enabled: pmoOpen,
+  });
 
-  // Focus input when panel opens
-  useEffect(() => {
-    if (pmoOpen) {
-      setTimeout(() => inputRef.current?.focus(), 280);
-    }
-  }, [pmoOpen]);
+  // The PMO assists during a live simulation — both the handover (ONBOARDING)
+  // and the running project (IN_PROGRESS). Drafts and finished runs are excluded.
+  const activeSimulations = useMemo(
+    () =>
+      (simulations ?? []).filter(
+        (s: any) =>
+          s.status === 'IN_PROGRESS' ||
+          s.status === 'ACTIVE' ||
+          s.status === 'ONBOARDING',
+      ),
+    [simulations],
+  );
 
-  const sendMessage = useCallback(() => {
-    const v = inputValue.trim();
-    if (!v) return;
+  // Default to a fully running simulation when there is one, otherwise the
+  // first active simulation (e.g. one still in handover).
+  const autoSimulationId =
+    activeSimulations.find(
+      (s: any) => s.status === 'IN_PROGRESS' || s.status === 'ACTIVE',
+    )?.id ??
+    activeSimulations[0]?.id ??
+    null;
 
-    const userMsg: Message = { id: nextId++, role: 'user', text: v };
-    setMessages((prev) => [...prev, userMsg]);
-    setInputValue('');
+  // An explicit pick in the simulation selector overrides auto-resolution.
+  // Falls back to auto if the picked simulation is no longer in-progress.
+  const simulationId =
+    overrideSimId && activeSimulations.some((s: any) => s.id === overrideSimId)
+      ? overrideSimId
+      : autoSimulationId;
 
-    setTimeout(() => {
-      const botMsg: Message = { id: nextId++, role: 'bot', text: BOT_REPLY };
-      setMessages((prev) => [...prev, botMsg]);
-    }, 600);
-  }, [inputValue]);
+  const { data: historyData, isLoading: isLoadingHistory } = usePmoHistory(
+    simulationId ?? '',
+    pmoOpen,
+  );
+  const { data: context, isLoading: isLoadingContext } = usePmoContext(
+    simulationId ?? '',
+    pmoOpen,
+  );
+  const { data: adaptation } = useProfileAdaptation();
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter') sendMessage();
-    },
-    [sendMessage],
+  const pendingDeliverables = useMemo(
+    () => context?.deliverables.pending ?? [],
+    [context],
   );
 
   return (
@@ -106,10 +120,15 @@ export function PmoPanel({ className }: PmoPanelProps) {
           <span className="font-display text-[15px] font-bold text-foreground">Agent PMO</span>
           <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
             <span
-              className="size-[7px] rounded-full bg-[var(--success-500)]"
-              style={{ boxShadow: '0 0 0 3px rgba(16,185,129,.18)' }}
+              className={cn(
+                'size-[7px] rounded-full',
+                simulationId ? 'bg-[var(--success-500)]' : 'bg-[var(--neutral-300)]',
+              )}
+              style={
+                simulationId ? { boxShadow: '0 0 0 3px rgba(16,185,129,.18)' } : undefined
+              }
             />
-            En ligne · contexte chargé
+            {simulationId ? 'En ligne · contexte chargé' : 'Aucune simulation active'}
           </span>
         </div>
         <button
@@ -152,56 +171,69 @@ export function PmoPanel({ className }: PmoPanelProps) {
         </button>
       </div>
 
-      {/* Message body */}
-      <div ref={bodyRef} className="flex flex-1 flex-col gap-3 overflow-y-auto p-[18px]">
-        {messages.map((msg) =>
-          msg.role === 'bot' ? (
-            <div
-              key={msg.id}
-              className="max-w-[85%] self-start rounded-md rounded-bl-xs bg-muted px-3.5 py-3 text-sm leading-[1.55] text-foreground"
-            >
-              {msg.text}
-            </div>
-          ) : (
-            <div
-              key={msg.id}
-              className="max-w-[85%] self-end rounded-md rounded-br-xs bg-[var(--accent-500)] px-3.5 py-3 text-sm leading-[1.55] text-white"
-            >
-              {msg.text}
-            </div>
-          ),
+      {/* Simulation selector — only when more than one is in progress */}
+      {activeSimulations.length > 1 && (
+        <div className="shrink-0 border-b border-border px-[18px] py-2.5">
+          <Select
+            value={simulationId ?? undefined}
+            onValueChange={(val) => setOverrideSimId(val)}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Choisir une simulation" />
+            </SelectTrigger>
+            <SelectContent>
+              {activeSimulations.map((s: any) => (
+                <SelectItem key={s.id} value={s.id}>
+                  {simulationLabel(s)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+      {/* Body */}
+      <div className="flex flex-1 min-h-0 flex-col overflow-hidden">
+        {!simulationId ? (
+          <div className="flex flex-1 items-center justify-center">
+            <EmptyState
+              icon="abstract-26"
+              title="Aucune simulation active"
+              description="Lancez ou ouvrez une simulation pour discuter avec votre agent PMO."
+              action={{ label: 'Voir mes simulations', href: '/simulations' }}
+            />
+          </div>
+        ) : activeTab === 'chat' ? (
+          <div className="flex-1 min-h-0">
+            <PmoChat
+              simulationId={simulationId}
+              initialMessages={historyData?.data || []}
+              isLoadingHistory={isLoadingHistory}
+              enableGlossaryTooltips={adaptation?.showGlossaryTooltips ?? false}
+              pendingDeliverables={pendingDeliverables}
+              scenarioInfo={
+                context
+                  ? {
+                      companyName: context.scenario.title,
+                      sector: context.scenario.sector,
+                      objectives: context.scenario.objectives,
+                    }
+                  : undefined
+              }
+            />
+          </div>
+        ) : (
+          <ScrollArea className="flex-1 min-h-0">
+            <PmoContextPanel
+              context={context}
+              isLoading={isLoadingContext}
+              collapsed={false}
+              onToggle={() => {}}
+              adaptation={adaptation}
+            />
+          </ScrollArea>
         )}
       </div>
-
-      {/* Footer input */}
-      <footer className="flex shrink-0 items-center gap-2.5 border-t border-border px-4 py-3.5">
-        <input
-          ref={inputRef}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className={cn(
-            'h-11 flex-1 rounded-md border border-border bg-card px-3.5',
-            'text-sm text-foreground placeholder:text-muted-foreground',
-            'outline-none transition-colors',
-            'focus:border-[var(--accent-500)] focus:shadow-[0_0_0_3px_rgba(238,122,58,.15)]',
-          )}
-          placeholder="Demandez au PMO…"
-          autoComplete="off"
-        />
-        <button
-          type="button"
-          aria-label="Envoyer"
-          onClick={sendMessage}
-          className={cn(
-            'inline-flex size-11 shrink-0 cursor-pointer items-center justify-center',
-            'rounded-md border-0 bg-[var(--accent-500)] text-white',
-            'transition-colors duration-150 hover:bg-[var(--accent-600)]',
-          )}
-        >
-          <ArrowUp className="size-[18px]" />
-        </button>
-      </footer>
     </aside>
   );
 }

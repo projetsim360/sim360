@@ -13,7 +13,6 @@ import { ContextualHelp } from '@/components/ui/contextual-help';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { simulationApi } from '../api/simulation.api';
-import { PmoFab } from '@/features/pmo/components/pmo-fab';
 import { HandoverBanner } from '../components/handover-banner';
 import { useKpiSocket } from '../hooks/use-kpi-socket';
 import type { Simulation, TimelineEntry, KpiValues } from '../types/simulation.types';
@@ -706,14 +705,6 @@ export default function SimulationDetailPage() {
           )}
         </CardContent>
       </Card>
-
-      {/* PMO Agent FAB */}
-      {id && (
-        <PmoFab
-          simulationId={id}
-          pendingActionsCount={pendingDecisions.length + pendingEvents.length}
-        />
-      )}
       </>
       )}
     </div>
