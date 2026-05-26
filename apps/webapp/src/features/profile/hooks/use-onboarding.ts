@@ -1,51 +1,32 @@
 import { useState, useCallback, useMemo } from 'react';
 import type { QuestionnaireData } from '../types/profile.types';
+import { STEP_ORDER, STEP_META } from '../config/onboarding.config';
+import type { OnboardingStep, StepperItem } from '../config/onboarding.config';
 
-export type OnboardingStep = 'import' | 'questionnaire' | 'aptitude-test' | 'diagnostic' | 'choose-path';
-
-const STEP_ORDER: OnboardingStep[] = [
-  'import',
-  'questionnaire',
-  'aptitude-test',
-  'diagnostic',
-  'choose-path',
-];
-
-const STEP_LABELS: Record<OnboardingStep, string> = {
-  'import': 'Import CV',
-  'questionnaire': 'Questionnaire',
-  'aptitude-test': 'Test d\'aptitude',
-  'diagnostic': 'Diagnostic',
-  'choose-path': 'Parcours',
-};
+export type { OnboardingStep } from '../config/onboarding.config';
 
 interface UseOnboardingOptions {
   initialStep?: OnboardingStep;
 }
 
 export function useOnboarding(options: UseOnboardingOptions = {}) {
-  const [currentStep, setCurrentStep] = useState<OnboardingStep>(
-    options.initialStep ?? 'import',
-  );
+  const [currentStep, setCurrentStep] = useState<OnboardingStep>(options.initialStep ?? 'profil');
   const [questionnaireData, setQuestionnaireData] = useState<QuestionnaireData | null>(null);
   const [completedSteps, setCompletedSteps] = useState<Set<OnboardingStep>>(new Set());
 
-  const needsAptitudeTest = useMemo(() => {
-    return questionnaireData?.experienceLevel === 'none';
-  }, [questionnaireData]);
+  const needsAptitudeTest = useMemo(
+    () => questionnaireData?.experienceLevel === 'none',
+    [questionnaireData],
+  );
 
-  const steps = useMemo(() => {
-    return STEP_ORDER.filter((step) => {
-      if (step === 'aptitude-test' && !needsAptitudeTest) return false;
-      return true;
-    });
-  }, [needsAptitudeTest]);
+  const steps = useMemo(
+    () => STEP_ORDER.filter((s) => s !== 'aptitude-test' || needsAptitudeTest),
+    [needsAptitudeTest],
+  );
 
-  const currentStepIndex = useMemo(() => {
-    return steps.indexOf(currentStep);
-  }, [steps, currentStep]);
-
+  const currentStepIndex = useMemo(() => steps.indexOf(currentStep), [steps, currentStep]);
   const totalSteps = steps.length;
+  const currentNumber = currentStepIndex + 1;
 
   const progress = useMemo(() => {
     if (totalSteps <= 1) return 100;
@@ -56,21 +37,19 @@ export function useOnboarding(options: UseOnboardingOptions = {}) {
   const canGoBack = currentStepIndex > 0;
 
   const goToNext = useCallback(() => {
-    if (!canGoNext) return;
+    if (currentStepIndex >= steps.length - 1) return;
     setCompletedSteps((prev) => new Set(prev).add(currentStep));
     setCurrentStep(steps[currentStepIndex + 1]);
-  }, [canGoNext, currentStep, steps, currentStepIndex]);
+  }, [currentStep, steps, currentStepIndex]);
 
   const goToBack = useCallback(() => {
-    if (!canGoBack) return;
+    if (currentStepIndex <= 0) return;
     setCurrentStep(steps[currentStepIndex - 1]);
-  }, [canGoBack, steps, currentStepIndex]);
+  }, [steps, currentStepIndex]);
 
   const goToStep = useCallback(
     (step: OnboardingStep) => {
-      if (steps.includes(step)) {
-        setCurrentStep(step);
-      }
+      if (steps.includes(step)) setCurrentStep(step);
     },
     [steps],
   );
@@ -84,9 +63,29 @@ export function useOnboarding(options: UseOnboardingOptions = {}) {
     [completedSteps],
   );
 
+  const stepperItems: StepperItem[] = useMemo(
+    () =>
+      STEP_ORDER.map((key) => {
+        const isActive = steps.includes(key);
+        const activeIdx = steps.indexOf(key);
+        return {
+          key,
+          shortLabel: STEP_META[key].shortLabel,
+          railSubtitle: STEP_META[key].railSubtitle,
+          isConditional: key === 'aptitude-test',
+          isActive,
+          displayNumber: isActive ? activeIdx + 1 : null,
+          isCurrent: key === currentStep,
+          isCompleted: completedSteps.has(key),
+        };
+      }),
+    [steps, currentStep, completedSteps],
+  );
+
   return {
     currentStep,
     currentStepIndex,
+    currentNumber,
     steps,
     totalSteps,
     progress,
@@ -100,6 +99,6 @@ export function useOnboarding(options: UseOnboardingOptions = {}) {
     questionnaireData,
     setQuestionnaireData,
     needsAptitudeTest,
-    stepLabels: STEP_LABELS,
+    stepperItems,
   };
 }

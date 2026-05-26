@@ -1,61 +1,53 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { Progress } from '@/components/ui/progress';
+import { useCallback, useState } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { useOnboarding } from '../hooks/use-onboarding';
 import { useProfile } from '../api/profile.api';
-import { OnboardingStepper } from '../components/onboarding-stepper';
-import { ProfileSummaryCard } from '../components/profile-summary-card';
-import { ProfileImportStep } from './profile-import-step';
-import { QuestionnaireStep } from './questionnaire-step';
+import { STEP_META } from '../config/onboarding.config';
+import type { OnboardingLiveState } from '../config/onboarding.config';
+import { OnboardingRail } from '../components/onboarding-rail';
+import { OnboardingTopbar } from '../components/onboarding-topbar';
+import { ProfilStep } from './profil-step';
 import { AptitudeTestStep } from './aptitude-test-step';
 import { DiagnosticStep } from './diagnostic-step';
 import { ChoosePathStep } from './choose-path-step';
 
-const stepVariants = {
-  enter: { opacity: 0, x: 30 },
-  center: { opacity: 1, x: 0 },
-  exit: { opacity: 0, x: -30 },
-};
-
 const OnboardingPage = () => {
   const { data: profile } = useProfile();
+  const [live, setLive] = useState<OnboardingLiveState>({});
+  const handleLive = useCallback(
+    (p: Partial<OnboardingLiveState>) => setLive((prev) => ({ ...prev, ...p })),
+    [],
+  );
+  const reduce = useReducedMotion();
 
   const {
     currentStep,
-    steps,
-    progress,
-    canGoBack,
+    currentNumber,
+    totalSteps,
+    stepperItems,
     goToNext,
     goToBack,
     goToStep,
-    isStepCompleted,
     markCompleted,
     setQuestionnaireData,
     questionnaireData,
-    stepLabels,
   } = useOnboarding();
 
-  const renderStep = () => {
+  const meta = STEP_META[currentStep];
+
+  const renderBody = () => {
     switch (currentStep) {
-      case 'import':
+      case 'profil':
         return (
-          <ProfileImportStep
-            onNext={() => {
-              markCompleted('import');
-              goToNext();
-            }}
+          <ProfilStep
             profile={profile}
-          />
-        );
-      case 'questionnaire':
-        return (
-          <QuestionnaireStep
+            defaultValues={questionnaireData}
+            onLiveChange={handleLive}
             onNext={(data) => {
               setQuestionnaireData(data);
-              markCompleted('questionnaire');
+              markCompleted('profil');
               goToNext();
             }}
-            onBack={goToBack}
-            defaultValues={questionnaireData}
           />
         );
       case 'aptitude-test':
@@ -86,76 +78,46 @@ const OnboardingPage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-muted/40 flex flex-col">
-      {/* Header compact */}
-      <div className="border-b bg-background shadow-sm shrink-0 w-full">
-        <div className="w-full max-w-4xl mx-auto px-4 sm:px-8 py-5 sm:py-6">
-          <div className="flex flex-col items-center mb-5">
-            <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-primary text-primary-foreground font-bold text-base mb-2">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor" opacity="0.8" />
-                <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-            <h1 className="text-lg font-bold text-foreground">Simex pro</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">
-              Configuration du profil — Etape {steps.indexOf(currentStep) + 1}/{steps.length}
-            </p>
-          </div>
-
-          <OnboardingStepper
-            steps={steps}
-            currentStep={currentStep}
-            isStepCompleted={isStepCompleted}
-            stepLabels={stepLabels}
-            onStepClick={goToStep}
-          />
-
-          <Progress value={progress} className="mt-4 h-2" />
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 w-full">
-        <div className="w-full max-w-4xl mx-auto px-4 sm:px-8 py-6 sm:py-8">
-          <div className="grid lg:grid-cols-[1fr_280px] gap-8 items-start">
-            {/* Main step content */}
-            <div>
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentStep}
-                  variants={stepVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{ duration: 0.25, ease: 'easeInOut' }}
-                >
-                  {renderStep()}
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            {/* Sidebar summary — desktop */}
-            <div className="hidden lg:block">
-              {profile && (
-                <ProfileSummaryCard
-                  profile={profile}
-                  className="sticky top-4"
-                />
-              )}
-            </div>
-          </div>
-
-          {/* Mobile profile summary — compact inline */}
-          <div className="lg:hidden mt-6">
-            {profile && (
-              <div className="rounded-lg border bg-background p-3">
-                <ProfileSummaryCard profile={profile} compact />
-              </div>
-            )}
-          </div>
-        </div>
+    <div className="flex min-h-screen w-full bg-[var(--neutral-0)]">
+      <OnboardingRail
+        items={stepperItems}
+        currentStep={currentStep}
+        profile={profile}
+        live={live}
+        onStepClick={goToStep}
+      />
+      <div className="flex min-w-0 flex-1 flex-col">
+        <OnboardingTopbar
+          items={stepperItems}
+          currentStep={currentStep}
+          currentNumber={currentNumber}
+          totalSteps={totalSteps}
+          profile={profile}
+          live={live}
+          onStepClick={goToStep}
+        />
+        <main className="mx-auto w-full max-w-2xl flex-1 px-5 py-9 sm:px-8 sm:py-12">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentStep}
+              initial={reduce ? false : { opacity: 0, x: 24 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={reduce ? { opacity: 0 } : { opacity: 0, x: -24 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <span className="text-[11.5px] font-bold uppercase tracking-wider text-[var(--accent-700)]">
+                Étape {currentNumber} sur {totalSteps}
+              </span>
+              <h1 className="mt-2 font-display text-[25px] font-extrabold tracking-tight text-[var(--brand-700)]">
+                {meta.title}
+              </h1>
+              <p className="mt-1.5 max-w-[46ch] text-sm leading-relaxed text-[var(--neutral-500)]">
+                {meta.lead}
+              </p>
+              <div className="mt-7">{renderBody()}</div>
+            </motion.div>
+          </AnimatePresence>
+        </main>
       </div>
     </div>
   );
