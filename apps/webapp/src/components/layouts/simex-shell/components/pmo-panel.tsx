@@ -106,6 +106,8 @@ export function PmoPanel({ className }: PmoPanelProps) {
       ? `Phase ${context.simulation.currentPhaseOrder} · ${context.currentPhase.name}`
       : 'En ligne';
 
+  const currentSim = activeSimulations.find((s: any) => s.id === simulationId);
+
   return (
     <aside
       className={cn(
@@ -148,12 +150,13 @@ export function PmoPanel({ className }: PmoPanelProps) {
                   size="sm"
                   className="max-w-[150px] shrink-0 gap-1.5 rounded-full border-border bg-[var(--brand-50)] px-3 text-xs font-semibold text-[var(--brand-700)]"
                 >
-                  <SelectValue placeholder="Choisir une simulation" />
+                  <SelectValue placeholder="Choisir une simulation">
+                    {currentSim?.project?.name ?? currentSim?.scenario?.title ?? 'Choisir une simulation'}
+                  </SelectValue>
                 </SelectTrigger>
               </TooltipTrigger>
               <TooltipContent>
-                {activeSimulations.find((s: any) => s.id === simulationId)?.project?.name ??
-                  'Choisir une simulation'}
+                {currentSim ? simulationLabel(currentSim) : 'Choisir une simulation'}
               </TooltipContent>
             </Tooltip>
             <SelectContent>
