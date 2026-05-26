@@ -1,6 +1,7 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '@sim360/core';
 import { Cacheable } from '@sim360/core';
+import { buildKpiTrends } from './dashboard.trends';
 
 @Injectable()
 export class DashboardService {
@@ -259,6 +260,25 @@ export class DashboardService {
         : 0,
     }));
 
+    // 9b. KPI trends (weekly series + deltas)
+    const allSimsForTrends = await this.prisma.simulation.findMany({
+      where: { userId, tenantId },
+      select: { createdAt: true, completedAt: true },
+    });
+    const trends = buildKpiTrends({
+      now: new Date(),
+      sims: allSimsForTrends.map((s) => ({ createdAt: s.createdAt, completedAt: s.completedAt })),
+      completedScores: scoreEvolution
+        .filter((s): s is typeof s & { completedAt: Date } => s.completedAt != null)
+        .map((s) => ({ completedAt: new Date(s.completedAt), score: s.score })),
+      pendingTotal:
+        pendingActions.decisions +
+        pendingActions.events +
+        pendingActions.meetings +
+        pendingActions.emails +
+        pendingActions.deliverables,
+    });
+
     return {
       user: {
         firstName: user?.firstName ?? '',
@@ -276,6 +296,7 @@ export class DashboardService {
       pendingActions,
       recentActivity,
       scoreEvolution,
+      trends,
     };
   }
 
