@@ -51,21 +51,21 @@ interface ChoosePathStepProps {
 const customProjectSchema = z.object({
   projectName: z
     .string()
-    .min(3, 'Le nom du projet doit contenir au moins 3 caracteres.')
-    .max(100, 'Le nom du projet ne doit pas depasser 100 caracteres.'),
+    .min(3, 'Le nom du projet doit contenir au moins 3 caractères.')
+    .max(100, 'Le nom du projet ne doit pas dépasser 100 caractères.'),
   description: z
     .string()
-    .min(20, 'La description doit contenir au moins 20 caracteres.')
-    .max(1000, 'La description ne doit pas depasser 1000 caracteres.'),
-  sector: z.string().min(1, 'Veuillez selectionner un secteur.'),
+    .min(20, 'La description doit contenir au moins 20 caractères.')
+    .max(1000, 'La description ne doit pas dépasser 1000 caractères.'),
+  sector: z.string().min(1, 'Veuillez sélectionner un secteur.'),
   teamSize: z
     .number({ invalid_type_error: 'Veuillez saisir un nombre.' })
-    .min(1, 'L\'equipe doit avoir au moins 1 membre.')
-    .max(100, 'L\'equipe ne peut pas depasser 100 membres.'),
+    .min(1, 'L\'équipe doit avoir au moins 1 membre.')
+    .max(100, 'L\'équipe ne peut pas dépasser 100 membres.'),
   duration: z
     .number({ invalid_type_error: 'Veuillez saisir un nombre.' })
-    .min(1, 'La duree doit etre d\'au moins 1 mois.')
-    .max(36, 'La duree ne peut pas depasser 36 mois.'),
+    .min(1, 'La durée doit être d\'au moins 1 mois.')
+    .max(36, 'La durée ne peut pas dépasser 36 mois.'),
 });
 
 type CustomProjectFormValues = z.infer<typeof customProjectSchema>;
@@ -116,7 +116,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
 
     submitCustomProject.mutate(data, {
       onSuccess: () => {
-        toast.success('Projet personnalise enregistre avec succes.');
+        toast.success('Projet personnalisé enregistré avec succès.');
         setSubmittedProject(data);
         setShowCustomDialog(false);
         form.reset();
@@ -129,7 +129,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
 
   const handleComplete = () => {
     if (!selectedSector && !submittedProject) {
-      toast.error('Veuillez selectionner un secteur ou proposer un projet.');
+      toast.error('Veuillez sélectionner un secteur ou proposer un projet.');
       return;
     }
 
@@ -220,7 +220,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
                 Projet soumis
               </CardTitle>
               <Badge variant="success" appearance="light" size="sm">
-                Enregistre
+                Enregistré
               </Badge>
             </div>
           </CardHeader>
@@ -270,7 +270,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
         </div>
         {!selectedSector && !submittedProject && (
           <p className="text-xs text-muted-foreground text-right">
-            Selectionnez un secteur ou proposez un projet pour continuer.
+            Sélectionnez un secteur ou proposez un projet pour continuer.
           </p>
         )}
       </div>
@@ -281,7 +281,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <KeenIcon icon="notepad-edit" style="duotone" className="text-lg text-primary" />
-              Proposer un projet personnalise
+              Proposer un projet personnalisé
             </DialogTitle>
           </DialogHeader>
           <Form {...form}>
@@ -293,7 +293,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
                   <FormItem>
                     <FormLabel>Nom du projet</FormLabel>
                     <FormControl>
-                      <Input placeholder="Ex: Migration CRM pour PME" aria-label="Titre du projet personnalise" {...field} />
+                      <Input placeholder="Ex: Migration CRM pour PME" aria-label="Titre du projet personnalisé" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -308,7 +308,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
                     <FormLabel>Description</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Decrivez votre projet, ses objectifs et contraintes..."
+                        placeholder="Décrivez votre projet, ses objectifs et contraintes..."
                         rows={4}
                         {...field}
                       />
@@ -327,7 +327,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selectionnez un secteur" />
+                          <SelectValue placeholder="Sélectionnez un secteur" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -349,7 +349,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
                   name="teamSize"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Taille de l'equipe</FormLabel>
+                      <FormLabel>Taille de l'équipe</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -370,7 +370,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
                   name="duration"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Duree (mois)</FormLabel>
+                      <FormLabel>Durée (mois)</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
