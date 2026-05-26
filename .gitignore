@@ -43,3 +43,6 @@ redis-data/
 # Misc
 *.tgz
 .cache/
+
+# Brainstorming visual companion artifacts
+.superpowers/
