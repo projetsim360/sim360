@@ -66,12 +66,6 @@ export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
   if (isProfileLoading || isAnalyzing) {
     return (
       <div className="space-y-6">
-        <div className="text-center space-y-2">
-          <h2 className="text-xl font-semibold text-foreground">Analyse en cours...</h2>
-          <p className="text-sm text-muted-foreground">
-            Notre IA analyse votre profil pour generer un diagnostic personnalise.
-          </p>
-        </div>
         <Card>
           <CardContent className="p-6 space-y-4">
             <Skeleton className="h-8 w-48" />
@@ -86,13 +80,6 @@ export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
 
   return (
     <div className="space-y-6">
-      <div className="text-center space-y-2">
-        <h2 className="text-xl font-semibold text-foreground">Votre diagnostic</h2>
-        <p className="text-sm text-muted-foreground">
-          Voici le resultat de l'analyse de votre profil par notre IA.
-        </p>
-      </div>
-
       {/* Profile Type & Summary */}
       <Card>
         <CardHeader>
@@ -115,7 +102,7 @@ export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           {diagnostic?.personalizedMessage && (
-            <div className="p-4 rounded-lg bg-primary/5 border border-primary/10">
+            <div className="p-4 rounded-lg bg-[var(--brand-50)] border border-[var(--brand-100)]">
               <p className="text-sm text-foreground leading-relaxed">
                 {diagnostic.personalizedMessage}
               </p>
