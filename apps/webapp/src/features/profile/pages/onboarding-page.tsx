@@ -53,6 +53,7 @@ const OnboardingPage = () => {
       case 'aptitude-test':
         return (
           <AptitudeTestStep
+            onLiveChange={handleLive}
             onNext={() => {
               markCompleted('aptitude-test');
               goToNext();

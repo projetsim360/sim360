@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -12,10 +12,12 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { useSubmitAptitudeTest } from '../api/profile.api';
 import type { AptitudeTestData } from '../types/profile.types';
+import type { OnboardingLiveState } from '../config/onboarding.config';
 
 interface AptitudeTestStepProps {
   onNext: () => void;
   onBack: () => void;
+  onLiveChange?: (live: Partial<OnboardingLiveState>) => void;
 }
 
 interface TestScenario {
@@ -132,7 +134,7 @@ const CATEGORY_ICONS: Record<TestScenario['category'], string> = {
   budget: 'chart-simple',
 };
 
-export function AptitudeTestStep({ onNext, onBack }: AptitudeTestStepProps) {
+export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestStepProps) {
   const [isStarted, setIsStarted] = useState(false);
   const [currentScenario, setCurrentScenario] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -147,6 +149,17 @@ export function AptitudeTestStep({ onNext, onBack }: AptitudeTestStepProps) {
   const scenario = SCENARIOS[currentScenario];
   const progress = ((currentScenario + 1) / SCENARIOS.length) * 100;
   const allAnswered = Object.keys(answers).length === SCENARIOS.length;
+
+  useEffect(() => {
+    if (!isStarted || showResults) return;
+    onLiveChange?.({
+      aptitudeProgress: {
+        current: currentScenario + 1,
+        total: SCENARIOS.length,
+        answeredCategories: SCENARIOS.filter((s) => answers[s.id]).map((s) => s.category),
+      },
+    });
+  }, [isStarted, showResults, currentScenario, answers, onLiveChange]);
 
   const handleAnswer = (value: string) => {
     setAnswers((prev) => ({ ...prev, [scenario.id]: value }));
@@ -183,14 +196,6 @@ export function AptitudeTestStep({ onNext, onBack }: AptitudeTestStepProps) {
     const scores = results ?? { logic: 0, prioritization: 0, organization: 0 };
     return (
       <div className="space-y-6">
-        <div className="text-center space-y-2">
-          <h2 className="text-xl font-semibold text-foreground">Resultats du test</h2>
-          <p className="text-sm text-muted-foreground">
-            Voici vos scores par categorie. Ces resultats seront utilises pour personnaliser votre
-            simulation.
-          </p>
-        </div>
-
         <div className="grid gap-4">
           <Card>
             <CardContent className="p-4">
@@ -254,14 +259,6 @@ export function AptitudeTestStep({ onNext, onBack }: AptitudeTestStepProps) {
   if (!isStarted) {
     return (
       <div className="space-y-6">
-        <div className="text-center space-y-2">
-          <h2 className="text-xl font-semibold text-foreground">Test d'aptitude</h2>
-          <p className="text-sm text-muted-foreground">
-            Ce mini-test evalue vos reflexes en gestion de projet a travers 3 mises en situation
-            realistes.
-          </p>
-        </div>
-
         <Card>
           <CardContent className="p-8 text-center space-y-6">
             <KeenIcon icon="notepad" style="duotone" className="text-5xl text-primary mx-auto" />
@@ -308,12 +305,9 @@ export function AptitudeTestStep({ onNext, onBack }: AptitudeTestStepProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div className="space-y-1">
-          <h2 className="text-xl font-semibold text-foreground">Test d'aptitude</h2>
-          <p className="text-sm text-muted-foreground">
-            Scenario {currentScenario + 1} sur {SCENARIOS.length}
-          </p>
-        </div>
+        <p className="text-sm font-medium text-muted-foreground">
+          Scénario {currentScenario + 1} sur {SCENARIOS.length}
+        </p>
         <Badge variant="info" appearance="light" size="lg">
           <KeenIcon icon={CATEGORY_ICONS[scenario.category]} style="duotone" className="text-sm me-1" />
           {CATEGORY_LABELS[scenario.category]}
