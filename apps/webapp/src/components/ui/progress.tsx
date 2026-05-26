@@ -12,6 +12,15 @@ function Progress({
 }: React.ComponentProps<typeof ProgressPrimitive.Root> & {
   indicatorClassName?: string;
 }) {
+  // Start at 0 and animate to `value` after mount so the fill is animated
+  // everywhere the component is used. Reduced motion users get it instantly
+  // (transition disabled via `motion-reduce`).
+  const [display, setDisplay] = React.useState(0);
+  React.useEffect(() => {
+    const id = requestAnimationFrame(() => setDisplay(value || 0));
+    return () => cancelAnimationFrame(id);
+  }, [value]);
+
   return (
     <ProgressPrimitive.Root
       data-slot="progress"
@@ -20,8 +29,11 @@ function Progress({
     >
       <ProgressPrimitive.Indicator
         data-slot="progress-indicator"
-        className={cn('h-full w-full flex-1 bg-primary transition-all', indicatorClassName)}
-        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+        className={cn(
+          'h-full w-full flex-1 bg-primary transition-transform duration-700 ease-out motion-reduce:transition-none',
+          indicatorClassName,
+        )}
+        style={{ transform: `translateX(-${100 - display}%)` }}
       />
     </ProgressPrimitive.Root>
   );
