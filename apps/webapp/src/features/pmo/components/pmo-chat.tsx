@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback, type MutableRefObject } from 'react';
+import { Mic, Square, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -351,9 +352,11 @@ export function PmoChat({
               className={`shrink-0 size-8 rounded-lg ${isRecording ? 'animate-pulse' : ''}`}
             >
               {isTranscribing ? (
-                <span className="animate-spin size-3.5">⏳</span>
+                <Loader2 className="size-3.5 animate-spin" />
+              ) : isRecording ? (
+                <Square className="size-3.5" />
               ) : (
-                <KeenIcon icon={isRecording ? 'cross-circle' : 'speaker'} style="duotone" className="size-3.5" />
+                <Mic className="size-3.5" />
               )}
             </Button>
           )}
