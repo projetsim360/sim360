@@ -168,7 +168,12 @@ export class DashboardService {
     const activeSims = await this.prisma.simulation.findMany({
       where: { userId, tenantId, status: 'IN_PROGRESS' },
       include: {
-        project: { select: { name: true } },
+        project: {
+          select: {
+            name: true,
+            teamMembers: { select: { name: true }, take: 6 },
+          },
+        },
         scenario: { select: { title: true } },
         kpis: true,
         phases: { orderBy: { order: 'asc' }, select: { order: true, name: true, status: true } },
@@ -176,6 +181,14 @@ export class DashboardService {
       orderBy: { updatedAt: 'desc' },
       take: 5,
     });
+
+    const toInitials = (name: string): string =>
+      name
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2)
+        .map((part) => part.charAt(0).toUpperCase())
+        .join('');
 
     const activeSimulationsList = activeSims.map((sim) => {
       const currentPhase = sim.phases.find((p) => p.status === 'ACTIVE');
@@ -185,6 +198,10 @@ export class DashboardService {
         scenarioTitle: sim.scenario.title,
         currentPhase: sim.currentPhaseOrder,
         phaseName: currentPhase?.name ?? 'Inconnue',
+        teamMembers: sim.project.teamMembers.map((m) => ({
+          name: m.name,
+          initials: toInitials(m.name),
+        })),
         kpis: sim.kpis
           ? {
               budget: Math.round(sim.kpis.budget),
