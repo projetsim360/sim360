@@ -83,8 +83,8 @@ export const PMO_TONE_LABELS: Record<ProfileAdaptation['pmoTone'], string> = {
 };
 
 export const PROFILE_TYPE_LABELS: Record<ProfileType, string> = {
-  ZERO_EXPERIENCE: 'Debutant absolu',
-  BEGINNER: 'Debutant',
+  ZERO_EXPERIENCE: 'Débutant absolu',
+  BEGINNER: 'Débutant',
   RECONVERSION: 'Reconversion',
   REINFORCEMENT: 'Renforcement',
 };
@@ -92,26 +92,26 @@ export const PROFILE_TYPE_LABELS: Record<ProfileType, string> = {
 export const SKILL_LEVEL_LABELS: Record<SkillLevel, string> = {
   none: 'Aucun',
   basic: 'Basique',
-  intermediate: 'Intermediaire',
-  advanced: 'Avance',
+  intermediate: 'Intermédiaire',
+  advanced: 'Avancé',
 };
 
 export const SECTORS = [
   { value: 'it', label: 'IT / Digital', icon: 'technology-2' },
   { value: 'btp', label: 'BTP / Construction', icon: 'home-2' },
-  { value: 'sante', label: 'Sante', icon: 'heart' },
+  { value: 'sante', label: 'Santé', icon: 'heart' },
   { value: 'marketing', label: 'Marketing', icon: 'graph-up' },
   { value: 'finance', label: 'Finance', icon: 'chart-simple' },
-  { value: 'evenementiel', label: 'Evenementiel', icon: 'calendar' },
+  { value: 'evenementiel', label: 'Événementiel', icon: 'calendar' },
   { value: 'autre', label: 'Autre', icon: 'element-11' },
 ] as const;
 
 export const DOMAINS = [
   { value: 'it', label: 'IT / Digital' },
   { value: 'btp', label: 'BTP / Construction' },
-  { value: 'sante', label: 'Sante' },
+  { value: 'sante', label: 'Santé' },
   { value: 'marketing', label: 'Marketing' },
   { value: 'finance', label: 'Finance' },
-  { value: 'evenementiel', label: 'Evenementiel' },
+  { value: 'evenementiel', label: 'Événementiel' },
   { value: 'autre', label: 'Autre' },
 ] as const;
