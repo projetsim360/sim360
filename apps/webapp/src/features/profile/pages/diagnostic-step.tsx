@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { useProfile, useAnalyzeProfile, useCustomizeSkills } from '../api/profile.api';
 import { SkillEditor } from '../components/skill-editor';
 import { SkillDeltaBar } from '../components/skill-delta-bar';
-import { PROFILE_TYPE_LABELS } from '../types/profile.types';
+import { PROFILE_TYPE_LABELS, formatDifficulty } from '../types/profile.types';
 import type { SkillGap } from '../types/profile.types';
 
 interface DiagnosticStepProps {
@@ -106,8 +106,8 @@ export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
               </p>
             )}
             {diagnostic?.suggestedDifficulty && (
-              <span className="mt-3 inline-block rounded-full bg-[var(--accent-500)] px-3 py-1 text-[10.5px] font-bold capitalize">
-                Difficulté suggérée : {diagnostic.suggestedDifficulty}
+              <span className="mt-3 inline-block rounded-full bg-[var(--accent-500)] px-3 py-1 text-[10.5px] font-bold">
+                Difficulté suggérée : {formatDifficulty(diagnostic.suggestedDifficulty)}
               </span>
             )}
           </div>

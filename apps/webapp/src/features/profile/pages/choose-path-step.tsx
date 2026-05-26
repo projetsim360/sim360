@@ -41,7 +41,7 @@ import {
   useSubmitCustomProject,
   useCompleteOnboarding,
 } from '../api/profile.api';
-import { SECTORS, PROFILE_TYPE_LABELS } from '../types/profile.types';
+import { SECTORS, PROFILE_TYPE_LABELS, formatDifficulty } from '../types/profile.types';
 import type { CustomProjectData } from '../types/profile.types';
 
 interface ChoosePathStepProps {
@@ -161,9 +161,9 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
             </span>
           )}
           {suggestedDifficulty && (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--brand-100)] bg-white px-3 py-1 text-xs font-semibold capitalize text-[var(--brand-700)]">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--brand-100)] bg-white px-3 py-1 text-xs font-semibold text-[var(--brand-700)]">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--success-500)]" />
-              Difficulté : {suggestedDifficulty}
+              Difficulté : {formatDifficulty(suggestedDifficulty)}
             </span>
           )}
           {(profile?.skills?.length ?? 0) > 0 && (

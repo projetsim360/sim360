@@ -106,6 +106,18 @@ export const SECTORS = [
   { value: 'autre', label: 'Autre', icon: 'element-11' },
 ] as const;
 
+export const DIFFICULTY_LABELS: Record<string, string> = {
+  EASY: 'Facile',
+  MEDIUM: 'Intermédiaire',
+  HARD: 'Difficile',
+  EXPERT: 'Expert',
+};
+
+export function formatDifficulty(value?: string | null): string {
+  if (!value) return '';
+  return DIFFICULTY_LABELS[value.toUpperCase()] ?? value;
+}
+
 export const DOMAINS = [
   { value: 'it', label: 'IT / Digital' },
   { value: 'btp', label: 'BTP / Construction' },

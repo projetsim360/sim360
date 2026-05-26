@@ -8,7 +8,7 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import type { UserProfile } from '../types/profile.types';
-import { PROFILE_TYPE_LABELS, DOMAINS, SECTORS } from '../types/profile.types';
+import { PROFILE_TYPE_LABELS, DOMAINS, SECTORS, formatDifficulty } from '../types/profile.types';
 import type { OnboardingStep, OnboardingLiveState } from '../config/onboarding.config';
 
 type LineState = 'done' | 'active' | 'todo';
@@ -118,7 +118,7 @@ function buildModel(
         title: 'Prêt à démarrer',
         lines: [
           { state: sectorLabel ? 'done' : 'todo', label: sectorLabel ? `Secteur : ${sectorLabel}` : 'Secteur à choisir' },
-          { state: diff ? 'done' : 'todo', label: diff ? `Difficulté : ${diff}` : 'Difficulté' },
+          { state: diff ? 'done' : 'todo', label: diff ? `Difficulté : ${formatDifficulty(diff)}` : 'Difficulté' },
           { state: 'active', label: 'Lancement' },
         ],
       };
