@@ -13,6 +13,7 @@ import {
 } from '@/components/keenicons/icons';
 import { type MenuConfig } from './types';
 import { simulationMenuItems } from '@/features/simulation/config/simulation.menu';
+import { simulatedEmailMenuItems } from '@/features/simulated-emails/config/simulated-emails.menu';
 import { reportMenuItems } from '@/features/report/config/report.menu';
 import { adminReferenceMenuItems } from '@/features/admin-reference/config/admin-reference.menu';
 import { valorizationMenuItems } from '@/features/valorization/config/valorization.menu';
@@ -33,6 +34,7 @@ export const APP_SIDEBAR_MENU: MenuConfig = [
   },
   { heading: 'Application' },
   ...simulationMenuItems,
+  ...simulatedEmailMenuItems,
   ...reportMenuItems,
   ...valorizationMenuItems,
   ...recruitmentMenuItems,
