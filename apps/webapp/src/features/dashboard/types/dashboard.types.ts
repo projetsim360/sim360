@@ -121,6 +121,7 @@ export interface ActiveSimulationSummary {
   scenarioTitle: string;
   currentPhase: number;
   phaseName: string;
+  teamMembers: { name: string; initials: string }[];
   kpis: {
     budget: number;
     schedule: number;
@@ -143,6 +144,18 @@ export interface ScoreEvolutionItem {
   completedAt: string;
 }
 
+export interface KpiTrend {
+  series: number[];
+  delta: number | null;
+}
+
+export interface DashboardTrends {
+  activeSimulations: KpiTrend;
+  averageScore: KpiTrend;
+  completedSimulations: KpiTrend;
+  pendingActions: KpiTrend;
+}
+
 export interface DashboardSummary {
   user: { firstName: string; profileCompleted: boolean };
   stats: {
@@ -157,6 +170,7 @@ export interface DashboardSummary {
   pendingActions: PendingActions;
   recentActivity: RecentActivityItem[];
   scoreEvolution: ScoreEvolutionItem[];
+  trends: DashboardTrends;
 }
 
 export interface LearnerSummary {
