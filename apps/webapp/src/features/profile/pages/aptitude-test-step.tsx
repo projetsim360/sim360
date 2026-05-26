@@ -32,30 +32,30 @@ interface TestScenario {
 const SCENARIOS: TestScenario[] = [
   {
     id: 'scenario-1',
-    title: 'Gestion des priorites',
+    title: 'Gestion des priorités',
     context:
-      'Vous avez 3 taches urgentes et seulement 2 heures disponibles : corriger un bug critique en production, preparer la presentation pour le comite de pilotage de demain, et repondre a un appel d\'offre dont la deadline est ce soir.',
-    question: 'Classez ces taches par ordre de priorite. Quelle approche adoptez-vous ?',
+      'Vous avez 3 tâches urgentes et seulement 2 heures disponibles : corriger un bug critique en production, préparer la présentation pour le comité de pilotage de demain, et répondre à un appel d\'offre dont la deadline est ce soir.',
+    question: 'Classez ces tâches par ordre de priorité. Quelle approche adoptez-vous ?',
     options: [
       {
         value: '1',
         label:
-          'Bug critique d\'abord (impact immediat), puis appel d\'offre (deadline), puis presentation (demain)',
+          'Bug critique d\'abord (impact immédiat), puis appel d\'offre (deadline), puis présentation (demain)',
       },
       {
         value: '2',
         label:
-          'Appel d\'offre d\'abord (deadline ce soir), puis bug critique, puis presentation',
+          'Appel d\'offre d\'abord (deadline ce soir), puis bug critique, puis présentation',
       },
       {
         value: '3',
         label:
-          'Deleguer le bug a l\'equipe technique, traiter l\'appel d\'offre soi-meme, et reporter la presentation',
+          'Déléguer le bug à l\'équipe technique, traiter l\'appel d\'offre soi-même, et reporter la présentation',
       },
       {
         value: '4',
         label:
-          'Traiter les 3 en parallele en y consacrant 40 minutes chacune',
+          'Traiter les 3 en parallèle en y consacrant 40 minutes chacune',
       },
     ],
     category: 'prioritization',
@@ -64,58 +64,58 @@ const SCENARIOS: TestScenario[] = [
     id: 'scenario-2',
     title: 'Gestion de conflit',
     context:
-      'Un membre de votre equipe est en conflit ouvert avec le client. Lors de la derniere reunion, il a contredit publiquement les exigences du client en affirmant qu\'elles etaient irrealistes. Le client menace d\'escalader au sponsor du projet.',
-    question: 'Que faites-vous en priorite ?',
+      'Un membre de votre équipe est en conflit ouvert avec le client. Lors de la dernière réunion, il a contredit publiquement les exigences du client en affirmant qu\'elles étaient irréalistes. Le client menace d\'escalader au sponsor du projet.',
+    question: 'Que faites-vous en priorité ?',
     options: [
       {
         value: '1',
         label:
-          'Organiser un entretien individuel avec le membre de l\'equipe pour comprendre ses frustrations, puis une mediation avec le client',
+          'Organiser un entretien individuel avec le membre de l\'équipe pour comprendre ses frustrations, puis une médiation avec le client',
       },
       {
         value: '2',
         label:
-          'Contacter immediatement le client pour s\'excuser et retirer le collaborateur du projet',
+          'Contacter immédiatement le client pour s\'excuser et retirer le collaborateur du projet',
       },
       {
         value: '3',
         label:
-          'Envoyer un email au client et au collaborateur pour recadrer les regles de communication',
+          'Envoyer un email au client et au collaborateur pour recadrer les règles de communication',
       },
       {
         value: '4',
         label:
-          'Laisser la situation se calmer d\'elle-meme et intervenir uniquement si le client escalade vraiment',
+          'Laisser la situation se calmer d\'elle-même et intervenir uniquement si le client escalade vraiment',
       },
     ],
     category: 'communication',
   },
   {
     id: 'scenario-3',
-    title: 'Depassement budgetaire',
+    title: 'Dépassement budgétaire',
     context:
-      'Votre projet a depasse le budget initial de 20%. Les causes identifiees sont : des changements de perimetre non formalises (+12%), des retards fournisseur ayant entraine des penalites (+5%), et une sous-estimation initiale (+3%). Le sponsor demande un plan d\'action.',
+      'Votre projet a dépassé le budget initial de 20%. Les causes identifiées sont : des changements de périmètre non formalisés (+12%), des retards fournisseur ayant entraîné des pénalités (+5%), et une sous-estimation initiale (+3%). Le sponsor demande un plan d\'action.',
     question: 'Quelle action prenez-vous ?',
     options: [
       {
         value: '1',
         label:
-          'Mettre en place un processus de change control strict, renegocier avec le fournisseur, et presenter une re-estimation au sponsor',
+          'Mettre en place un processus de change control strict, renégocier avec le fournisseur, et présenter une ré-estimation au sponsor',
       },
       {
         value: '2',
         label:
-          'Reduire le perimetre du projet pour revenir dans le budget initial',
+          'Réduire le périmètre du projet pour revenir dans le budget initial',
       },
       {
         value: '3',
         label:
-          'Demander un budget supplementaire au sponsor en justifiant chaque depassement',
+          'Demander un budget supplémentaire au sponsor en justifiant chaque dépassement',
       },
       {
         value: '4',
         label:
-          'Absorber le surcout en reduisant la qualite des livrables restants',
+          'Absorber le surcoût en réduisant la qualité des livrables restants',
       },
     ],
     category: 'budget',
@@ -125,7 +125,7 @@ const SCENARIOS: TestScenario[] = [
 const CATEGORY_LABELS: Record<TestScenario['category'], string> = {
   prioritization: 'Priorisation',
   communication: 'Communication',
-  budget: 'Gestion budgetaire',
+  budget: 'Gestion budgétaire',
 };
 
 const CATEGORY_ICONS: Record<TestScenario['category'], string> = {
@@ -183,7 +183,7 @@ export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestS
           setResults(aptitudeData.scores);
         }
         setShowResults(true);
-        toast.success("Test d'aptitude soumis avec succes.");
+        toast.success("Test d'aptitude soumis avec succès.");
       },
       onError: () => {
         toast.error('Erreur lors de la soumission du test.');
@@ -263,10 +263,10 @@ export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestS
           <CardContent className="p-8 text-center space-y-6">
             <KeenIcon icon="notepad" style="duotone" className="text-5xl text-primary mx-auto" />
             <div className="space-y-2">
-              <h3 className="text-lg font-medium text-foreground">3 scenarios de gestion de projet</h3>
+              <h3 className="text-lg font-medium text-foreground">3 scénarios de gestion de projet</h3>
               <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                Vous serez confronte a des situations courantes : gestion des priorites, resolution de
-                conflits et maitrise budgetaire. Il n'y a pas de mauvaise reponse.
+                Vous serez confronté à des situations courantes : gestion des priorités, résolution de
+                conflits et maîtrise budgétaire. Il n'y a pas de mauvaise réponse.
               </p>
             </div>
 
@@ -379,7 +379,7 @@ export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestS
           }}
         >
           <ArrowLeft className="text-sm me-1" />
-          {currentScenario === 0 ? 'Retour' : 'Precedent'}
+          {currentScenario === 0 ? 'Retour' : 'Précédent'}
         </Button>
 
         {currentScenario < SCENARIOS.length - 1 ? (
