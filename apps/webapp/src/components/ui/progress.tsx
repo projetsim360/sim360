@@ -4,17 +4,26 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { Progress as ProgressPrimitive } from 'radix-ui';
 
+const PROGRESS_VARIANTS = {
+  default: 'bg-primary',
+  brand: 'bg-[var(--brand-500)]',
+  accent: 'bg-[var(--accent-500)]',
+  success: 'bg-[var(--success-500)]',
+  warning: 'bg-[var(--warning-500)]',
+} as const;
+
 function Progress({
   className,
   indicatorClassName,
   value,
+  variant = 'default',
   ...props
 }: React.ComponentProps<typeof ProgressPrimitive.Root> & {
   indicatorClassName?: string;
+  variant?: keyof typeof PROGRESS_VARIANTS;
 }) {
   // Start at 0 and animate to `value` after mount so the fill is animated
-  // everywhere the component is used. Reduced motion users get it instantly
-  // (transition disabled via `motion-reduce`).
+  // everywhere the component is used. Reduced motion users get it instantly.
   const [display, setDisplay] = React.useState(0);
   React.useEffect(() => {
     const id = requestAnimationFrame(() => setDisplay(value || 0));
@@ -30,7 +39,8 @@ function Progress({
       <ProgressPrimitive.Indicator
         data-slot="progress-indicator"
         className={cn(
-          'h-full w-full flex-1 bg-primary transition-transform duration-700 ease-out motion-reduce:transition-none',
+          'h-full w-full flex-1 transition-transform duration-700 ease-out motion-reduce:transition-none',
+          PROGRESS_VARIANTS[variant],
           indicatorClassName,
         )}
         style={{ transform: `translateX(-${100 - display}%)` }}
