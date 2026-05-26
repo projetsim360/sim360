@@ -14,10 +14,10 @@ import { pmoApi, PMO_QUERY_KEYS } from '../api/pmo.api';
 import type { PmoMessage } from '../types/pmo.types';
 
 const QUICK_REPLIES: Array<{ icon: string; tone: string; text: string }> = [
-  { icon: 'chart-line', tone: 'text-brand-600 bg-brand-50', text: 'Quel est l\'état de mon projet ?' },
+  { icon: 'chart-line', tone: 'text-[var(--brand-600)] bg-[var(--brand-50)]', text: 'Quel est l\'état de mon projet ?' },
   { icon: 'notepad', tone: 'text-[var(--accent-600)] bg-[var(--accent-50)]', text: 'Aide-moi sur un livrable' },
-  { icon: 'check-circle', tone: 'text-success bg-[#ECFDF5]', text: 'Quelle décision dois-je prendre ?' },
-  { icon: 'shield-cross', tone: 'text-destructive bg-[#FEF2F2]', text: 'Quels sont mes risques ?' },
+  { icon: 'check-circle', tone: 'text-[var(--success-700)] bg-[var(--success-50)]', text: 'Quelle décision dois-je prendre ?' },
+  { icon: 'shield-cross', tone: 'text-[var(--error-700)] bg-[var(--error-50)]', text: 'Quels sont mes risques ?' },
 ];
 
 interface PendingDeliverable {
