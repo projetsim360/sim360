@@ -22,8 +22,8 @@ const KPI_CONFIG: Record<
   { label: string; icon: string; good: 'high' | 'low' }
 > = {
   budget: { label: 'Budget', icon: 'dollar', good: 'high' },
-  schedule: { label: 'Delais', icon: 'time', good: 'high' },
-  quality: { label: 'Qualite', icon: 'verify', good: 'high' },
+  schedule: { label: 'Délais', icon: 'time', good: 'high' },
+  quality: { label: 'Qualité', icon: 'verify', good: 'high' },
   teamMorale: { label: 'Moral', icon: 'people', good: 'high' },
   riskLevel: { label: 'Risque', icon: 'shield-cross', good: 'low' },
 };
@@ -40,6 +40,19 @@ function kpiColor(key: string, value: number): string {
   if (value <= 30) return 'text-success';
   if (value <= 60) return 'text-warning';
   return 'text-destructive';
+}
+
+function kpiBarVar(key: string, value: number): string {
+  const config = KPI_CONFIG[key];
+  if (!config) return 'var(--neutral-300)';
+  if (config.good === 'high') {
+    if (value >= 70) return 'var(--success-500)';
+    if (value >= 40) return 'var(--warning-500)';
+    return 'var(--error-500)';
+  }
+  if (value <= 30) return 'var(--success-500)';
+  if (value <= 60) return 'var(--warning-500)';
+  return 'var(--error-500)';
 }
 
 const TONE_BADGE_VARIANT: Record<ProfileAdaptation['pmoTone'], 'info' | 'success' | 'primary' | 'warning'> = {
@@ -102,8 +115,8 @@ export function PmoContextPanel({
           <Card className="shadow-none">
             <CardContent className="p-3">
               <div className="flex items-center gap-2.5">
-                <div className="size-8 rounded-lg bg-brand-500 flex items-center justify-center shrink-0">
-                  <KeenIcon icon="chart-line" style="duotone" className="size-4 text-white" />
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[var(--brand-700)] text-white">
+                  <KeenIcon icon="chart-line" style="duotone" className="size-4" />
                 </div>
                 <div className="min-w-0">
                   <Badge variant="primary" appearance="light" size="xs">
@@ -121,37 +134,39 @@ export function PmoContextPanel({
 
           {/* KPIs */}
           {context.kpis && (
-            <Card className="shadow-none">
-              <CardHeader className="p-3 pb-2">
-                <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">KPIs</CardTitle>
-              </CardHeader>
-              <CardContent className="p-3 pt-1 space-y-3">
+            <div>
+              <p className="px-1 pb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Indicateurs clés
+              </p>
+              <div className="grid grid-cols-2 gap-2">
                 {Object.entries(context.kpis).map(([key, value]) => {
                   const config = KPI_CONFIG[key];
                   if (!config) return null;
                   return (
-                    <div key={key} className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground flex items-center gap-2.5">
-                        <KeenIcon
-                          icon={config.icon}
-                          style="duotone"
-                          className="text-base shrink-0"
+                    <div
+                      key={key}
+                      className={cn(
+                        'flex flex-col gap-2 rounded-xl border border-border bg-card p-3',
+                        key === 'riskLevel' && 'col-span-2',
+                      )}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-medium text-muted-foreground">{config.label}</span>
+                        <span className={cn('text-xl font-extrabold leading-none', kpiColor(key, value))}>
+                          {value}%
+                        </span>
+                      </div>
+                      <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${value}%`, background: kpiBarVar(key, value) }}
                         />
-                        {config.label}
-                      </span>
-                      <span
-                        className={cn(
-                          'text-sm font-semibold',
-                          kpiColor(key, value),
-                        )}
-                      >
-                        {value}%
-                      </span>
+                      </div>
                     </div>
                   );
                 })}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           )}
 
           {/* Pending deliverables */}
