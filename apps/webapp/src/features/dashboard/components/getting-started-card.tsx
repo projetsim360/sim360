@@ -42,7 +42,7 @@ function CircularProgress({ value, size = 52 }: { value: number; size?: number }
           fill="none"
           stroke="currentColor"
           strokeWidth={strokeWidth}
-          className="text-border dark:text-white/10"
+          className="text-[var(--neutral-200)]"
         />
         <circle
           cx={size / 2}
@@ -54,10 +54,10 @@ function CircularProgress({ value, size = 52 }: { value: number; size?: number }
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
-          className="text-[#4b2f95] dark:text-brand-400 transition-all duration-700 ease-out"
+          className="text-[var(--brand-600)] transition-all duration-700 ease-out"
         />
       </svg>
-      <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-[#4b2f95] dark:text-brand-400">
+      <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-[var(--brand-700)]">
         {value}%
       </span>
     </div>
@@ -76,8 +76,8 @@ export function GettingStartedCard({ data }: GettingStartedCardProps) {
       <Card className="overflow-hidden shadow-none">
         <CardContent className="flex items-center justify-between py-4">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center size-10 rounded-xl bg-brand-50 dark:bg-brand-800/30">
-              <KeenIcon icon="check-circle" style="duotone" className="text-xl text-[#4b2f95] dark:text-brand-400" />
+            <div className="flex items-center justify-center size-10 rounded-xl bg-[var(--brand-50)]">
+              <KeenIcon icon="check-circle" style="duotone" className="text-xl text-[var(--brand-600)]" />
             </div>
             <div>
               <p className="text-sm font-semibold text-foreground">Bravo ! Vous avez tout explore</p>
@@ -98,8 +98,8 @@ export function GettingStartedCard({ data }: GettingStartedCardProps) {
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-3.5">
-            <div className="flex items-center justify-center size-11 rounded-xl bg-brand-50 dark:bg-brand-800/30">
-              <KeenIcon icon="rocket" style="duotone" className="text-xl text-[#4b2f95] dark:text-brand-400" />
+            <div className="flex items-center justify-center size-11 rounded-xl bg-[var(--brand-50)]">
+              <KeenIcon icon="rocket" style="duotone" className="text-xl text-[var(--brand-600)]" />
             </div>
             <div>
               <h3 className="text-sm font-bold text-foreground">Premiers pas</h3>
@@ -130,7 +130,7 @@ export function GettingStartedCard({ data }: GettingStartedCardProps) {
                     <div
                       className={cn(
                         'h-0.5 w-full rounded-full transition-colors',
-                        completed ? 'bg-[#4b2f95]/30 dark:bg-brand-400/40' : 'bg-border dark:bg-white/10',
+                        completed ? 'bg-[var(--success-200)]' : 'bg-[var(--neutral-200)]',
                       )}
                     />
                   </div>
@@ -152,7 +152,7 @@ export function GettingStartedCard({ data }: GettingStartedCardProps) {
                   'flex items-center gap-3 p-2.5 rounded-xl transition-all',
                   '',
                   isNext
-                    ? 'bg-brand-50/60 dark:bg-brand-800/20'
+                    ? 'bg-[var(--accent-50)]'
                     : 'hover:bg-muted/50 dark:hover:bg-white/5',
                 )}
               >
@@ -160,16 +160,16 @@ export function GettingStartedCard({ data }: GettingStartedCardProps) {
                   className={cn(
                     'flex items-center justify-center size-8 rounded-lg shrink-0 transition-colors',
                     completed
-                      ? 'bg-brand-500 dark:bg-brand-400'
+                      ? 'bg-[var(--success-500)]'
                       : isNext
-                        ? 'bg-brand-50 dark:bg-brand-800/20'
+                        ? 'bg-[var(--accent-50)]'
                         : 'bg-muted dark:bg-white/5',
                   )}
                 >
                   {completed ? (
                     <KeenIcon icon="check" style="duotone" className="text-sm text-white dark:text-brand-900" />
                   ) : (
-                    <KeenIcon icon={step.icon} style="duotone" className={cn('text-sm', isNext ? 'text-[#4b2f95] dark:text-brand-400' : 'text-muted-foreground')} />
+                    <KeenIcon icon={step.icon} style="duotone" className={cn('text-sm', isNext ? 'text-[var(--accent-600)]' : 'text-muted-foreground')} />
                   )}
                 </div>
                 <span
@@ -223,9 +223,9 @@ function StepNode({
         className={cn(
           'flex items-center justify-center size-8 rounded-xl transition-all',
           completed
-            ? 'bg-brand-500 dark:bg-brand-400'
+            ? 'bg-[var(--success-500)]'
             : isNext
-              ? 'bg-brand-50 dark:bg-brand-800/20 ring-1 ring-[#4b2f95]/20 dark:ring-brand-400/30'
+              ? 'bg-[var(--accent-50)] ring-1 ring-[var(--accent-200)]'
               : 'bg-muted dark:bg-white/5',
         )}
       >
@@ -235,7 +235,7 @@ function StepNode({
           <KeenIcon
             icon={step.icon}
             style="duotone"
-            className={cn('text-sm', isNext ? 'text-[#4b2f95] dark:text-brand-400' : 'text-muted-foreground/60')}
+            className={cn('text-sm', isNext ? 'text-[var(--accent-600)]' : 'text-muted-foreground/60')}
           />
         )}
       </div>
