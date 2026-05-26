@@ -11,6 +11,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { PmoMessageBubble, StreamingBubble } from './pmo-message-bubble';
 import { usePmoStream } from '../hooks/use-pmo-stream';
 import { pmoApi, PMO_QUERY_KEYS } from '../api/pmo.api';
+import { useAuth } from '@/providers/auth-provider';
 import type { PmoMessage } from '../types/pmo.types';
 
 const QUICK_REPLIES: Array<{ icon: string; tone: string; text: string }> = [
@@ -60,6 +61,7 @@ export function PmoChat({
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const { sendMessage, isStreaming, streamedContent, cancelStream } =
     usePmoStream(simulationId);
@@ -238,9 +240,12 @@ export function PmoChat({
                         </div>
                         <div className="min-w-0">
                           <h3 className="text-sm font-bold text-foreground">
-                            Bienvenue dans votre simulation
+                            {user?.firstName ? `Bonjour ${user.firstName}` : 'Bonjour'}
                           </h3>
                           <p className="text-sm text-muted-foreground mt-0.5">
+                            Je vous accompagne sur vos décisions, vos livrables et le pilotage du projet.
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-1.5">
                             {scenarioInfo.companyName} — {scenarioInfo.sector}
                           </p>
                           {scenarioInfo.objectives.length > 0 && (
