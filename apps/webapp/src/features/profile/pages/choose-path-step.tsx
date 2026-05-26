@@ -41,7 +41,7 @@ import {
   useSubmitCustomProject,
   useCompleteOnboarding,
 } from '../api/profile.api';
-import { SECTORS } from '../types/profile.types';
+import { SECTORS, PROFILE_TYPE_LABELS } from '../types/profile.types';
 import type { CustomProjectData } from '../types/profile.types';
 
 interface ChoosePathStepProps {
@@ -78,7 +78,10 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
   const completeOnboarding = useCompleteOnboarding();
 
   const [selectedSector, setSelectedSector] = useState<string>(
-    profile?.selectedSector ?? profile?.suggestedSector ?? '',
+    profile?.selectedSector ??
+      profile?.suggestedSector ??
+      profile?.questionnaireData?.targetDomain ??
+      '',
   );
   const [showCustomDialog, setShowCustomDialog] = useState(false);
   const [submittedProject, setSubmittedProject] = useState<CustomProjectData | null>(null);
@@ -145,54 +148,67 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
 
   return (
     <div className="space-y-6">
-      {/* Difficulty indicator */}
-      {suggestedDifficulty && (
-        <Card>
-          <CardContent className="p-4 flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-foreground">Difficulte suggeree</p>
-              <p className="text-sm text-muted-foreground">
-                Basee sur votre profil et vos competences
-              </p>
-            </div>
-            <Badge variant="primary" appearance="light" size="lg" className="capitalize">
-              {suggestedDifficulty}
-            </Badge>
-          </CardContent>
-        </Card>
+      {/* Recap strip */}
+      {(profile?.profileType || suggestedDifficulty || (profile?.skills?.length ?? 0) > 0) && (
+        <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--brand-100)] bg-[var(--brand-50)] px-4 py-3">
+          <span className="me-1 text-[11px] font-bold uppercase tracking-wide text-[var(--brand-600)]">
+            Votre parcours
+          </span>
+          {profile?.profileType && (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--brand-100)] bg-white px-3 py-1 text-xs font-semibold text-[var(--brand-700)]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--success-500)]" />
+              Profil : {PROFILE_TYPE_LABELS[profile.profileType]}
+            </span>
+          )}
+          {suggestedDifficulty && (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--brand-100)] bg-white px-3 py-1 text-xs font-semibold capitalize text-[var(--brand-700)]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--success-500)]" />
+              Difficulté : {suggestedDifficulty}
+            </span>
+          )}
+          {(profile?.skills?.length ?? 0) > 0 && (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--brand-100)] bg-white px-3 py-1 text-xs font-semibold text-[var(--brand-700)]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--success-500)]" />
+              {profile!.skills!.length} compétences ciblées
+            </span>
+          )}
+        </div>
       )}
 
       {/* Sector Selection */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Secteur de simulation</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <SectorSelector
-            value={selectedSector}
-            suggestedSector={
-              profile?.diagnosticData?.suggestedSector ?? profile?.suggestedSector
-            }
-            onChange={handleSectorChange}
-          />
-        </CardContent>
-      </Card>
+      <div>
+        <h3 className="font-display text-[14.5px] font-bold text-[var(--brand-700)]">Secteur de votre simulation</h3>
+        <p className="mb-3 mt-0.5 text-xs text-muted-foreground">
+          Basé sur votre domaine et l'analyse IA — modifiable.
+        </p>
+        <SectorSelector
+          value={selectedSector}
+          suggestedSector={profile?.diagnosticData?.suggestedSector ?? profile?.suggestedSector}
+          onChange={handleSectorChange}
+        />
+      </div>
 
-      {/* Custom Project Option */}
-      <Card>
-        <CardContent className="p-4 flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-foreground">Projet personnalise</p>
-            <p className="text-sm text-muted-foreground">
-              Vous avez un projet specifique ? Decrivez-le et notre IA generera un scenario adapte.
-            </p>
-          </div>
-          <Button variant="outline" size="sm" onClick={() => setShowCustomDialog(true)}>
-            <KeenIcon icon="plus" style="duotone" className="text-sm me-1" />
-            Proposer un projet
-          </Button>
-        </CardContent>
-      </Card>
+      {/* Custom project alternative */}
+      <div className="flex items-center gap-3 text-xs font-semibold text-muted-foreground">
+        <span className="h-px flex-1 bg-border" />
+        ou
+        <span className="h-px flex-1 bg-border" />
+      </div>
+      <div className="flex flex-col gap-3 rounded-xl border border-dashed border-[var(--brand-200)] bg-muted/40 p-4 sm:flex-row sm:items-center">
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-[10px] border border-[var(--brand-100)] bg-white">
+          <KeenIcon icon="notepad-edit" style="duotone" className="text-lg text-[var(--brand-600)]" />
+        </div>
+        <div className="flex-1">
+          <p className="text-sm font-bold text-[var(--brand-700)]">Proposer un projet personnalisé</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            Décrivez votre propre projet, notre IA génère un scénario sur mesure.
+          </p>
+        </div>
+        <Button variant="outline" size="sm" onClick={() => setShowCustomDialog(true)}>
+          <KeenIcon icon="plus" style="duotone" className="text-sm me-1" />
+          Décrire mon projet
+        </Button>
+      </div>
 
       {/* Submitted Project Preview */}
       {submittedProject && (
@@ -244,12 +260,12 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
           </Button>
           <Button
             variant="primary"
-            className="min-h-[44px] px-5"
+            className="min-h-[48px] px-6 text-base font-bold"
             onClick={handleComplete}
             disabled={(!selectedSector && !submittedProject) || completeOnboarding.isPending}
           >
-            {completeOnboarding.isPending ? 'Finalisation...' : 'Commencer la simulation'}
-            <Play className="text-sm ms-1" />
+            <Play className="text-sm me-1.5" />
+            {completeOnboarding.isPending ? 'Finalisation…' : 'Lancer ma simulation'}
           </Button>
         </div>
         {!selectedSector && !submittedProject && (
