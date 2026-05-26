@@ -28,32 +28,34 @@ const KPI_CONFIG: Record<
   riskLevel: { label: 'Risque', icon: 'shield-cross', good: 'low' },
 };
 
-function kpiColor(key: string, value: number): string {
+function kpiStatus(key: string, value: number): 'good' | 'warn' | 'bad' | 'none' {
   const config = KPI_CONFIG[key];
-  if (!config) return 'text-foreground';
+  if (!config) return 'none';
   if (config.good === 'high') {
-    if (value >= 70) return 'text-success';
-    if (value >= 40) return 'text-warning';
-    return 'text-destructive';
+    if (value >= 70) return 'good';
+    if (value >= 40) return 'warn';
+    return 'bad';
   }
   // good = low (risk)
-  if (value <= 30) return 'text-success';
-  if (value <= 60) return 'text-warning';
-  return 'text-destructive';
+  if (value <= 30) return 'good';
+  if (value <= 60) return 'warn';
+  return 'bad';
 }
 
-function kpiBarVar(key: string, value: number): string {
-  const config = KPI_CONFIG[key];
-  if (!config) return 'var(--neutral-300)';
-  if (config.good === 'high') {
-    if (value >= 70) return 'var(--success-500)';
-    if (value >= 40) return 'var(--warning-500)';
-    return 'var(--error-500)';
-  }
-  if (value <= 30) return 'var(--success-500)';
-  if (value <= 60) return 'var(--warning-500)';
-  return 'var(--error-500)';
-}
+const KPI_TEXT_CLASS: Record<string, string> = {
+  good: 'text-success',
+  warn: 'text-warning',
+  bad: 'text-destructive',
+  none: 'text-foreground',
+};
+
+// Same semantic, dark-aware tokens as the text class so chiffre + barre match.
+const KPI_BAR_VAR: Record<string, string> = {
+  good: 'var(--color-success)',
+  warn: 'var(--color-warning)',
+  bad: 'var(--destructive)',
+  none: 'var(--muted-foreground)',
+};
 
 const TONE_BADGE_VARIANT: Record<ProfileAdaptation['pmoTone'], 'info' | 'success' | 'primary' | 'warning'> = {
   patient: 'info',
@@ -142,6 +144,7 @@ export function PmoContextPanel({
                 {Object.entries(context.kpis).map(([key, value]) => {
                   const config = KPI_CONFIG[key];
                   if (!config) return null;
+                  const status = kpiStatus(key, value);
                   return (
                     <div
                       key={key}
@@ -152,14 +155,14 @@ export function PmoContextPanel({
                     >
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-medium text-muted-foreground">{config.label}</span>
-                        <span className={cn('text-xl font-extrabold leading-none', kpiColor(key, value))}>
+                        <span className={cn('text-xl font-extrabold leading-none', KPI_TEXT_CLASS[status])}>
                           {value}%
                         </span>
                       </div>
                       <div className="h-1.5 overflow-hidden rounded-full bg-muted">
                         <div
                           className="h-full rounded-full"
-                          style={{ width: `${value}%`, background: kpiBarVar(key, value) }}
+                          style={{ width: `${value}%`, background: KPI_BAR_VAR[status] }}
                         />
                       </div>
                     </div>
