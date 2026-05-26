@@ -145,13 +145,6 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
 
   return (
     <div className="space-y-6">
-      <div className="text-center space-y-2">
-        <h2 className="text-xl font-semibold text-foreground">Choisissez votre parcours</h2>
-        <p className="text-sm text-muted-foreground">
-          Selectionnez le secteur dans lequel vous souhaitez realiser votre simulation.
-        </p>
-      </div>
-
       {/* Difficulty indicator */}
       {suggestedDifficulty && (
         <Card>
