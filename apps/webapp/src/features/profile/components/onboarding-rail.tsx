@@ -14,7 +14,7 @@ interface OnboardingRailProps {
 export function OnboardingRail({ items, currentStep, profile, live, onStepClick }: OnboardingRailProps) {
   return (
     <aside
-      className="hidden w-[300px] shrink-0 flex-col p-6 text-white lg:sticky lg:top-0 lg:flex lg:h-screen lg:overflow-y-auto"
+      className="hidden w-[300px] shrink-0 flex-col p-6 text-white lg:flex lg:h-screen lg:overflow-y-auto"
       style={{ background: 'linear-gradient(165deg, var(--brand-700), var(--brand-900))' }}
     >
       <div className="mb-9 flex items-center gap-2.5">

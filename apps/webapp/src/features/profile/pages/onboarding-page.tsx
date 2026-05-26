@@ -75,7 +75,7 @@ const OnboardingPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-[var(--neutral-0)]">
+    <div className="flex min-h-screen w-full bg-[var(--neutral-0)] lg:h-screen lg:overflow-hidden">
       <OnboardingRail
         items={stepperItems}
         currentStep={currentStep}
@@ -83,7 +83,7 @@ const OnboardingPage = () => {
         live={live}
         onStepClick={goToStep}
       />
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col lg:h-screen lg:overflow-y-auto">
         <OnboardingTopbar
           items={stepperItems}
           currentStep={currentStep}
