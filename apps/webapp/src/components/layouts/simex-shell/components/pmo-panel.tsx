@@ -95,6 +95,12 @@ export function PmoPanel({ className }: PmoPanelProps) {
     [context],
   );
 
+  const headerSubtitle = !simulationId
+    ? 'Aucune simulation active'
+    : context?.currentPhase
+      ? `Phase ${context.simulation.currentPhaseOrder} · ${context.currentPhase.name}`
+      : 'En ligne';
+
   return (
     <aside
       className={cn(
@@ -116,26 +122,41 @@ export function PmoPanel({ className }: PmoPanelProps) {
         <div className="inline-flex size-10 shrink-0 items-center justify-center rounded-md bg-[var(--accent-50)] text-[var(--accent-500)]">
           <Sparkles className="size-[18px]" />
         </div>
-        <div className="flex flex-1 flex-col gap-0.5">
+        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
           <span className="font-display text-[15px] font-bold text-foreground">Agent PMO</span>
-          <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5 truncate text-xs text-muted-foreground">
             <span
               className={cn(
-                'size-[7px] rounded-full',
+                'size-[7px] shrink-0 rounded-full',
                 simulationId ? 'bg-[var(--success-500)]' : 'bg-[var(--neutral-300)]',
               )}
-              style={
-                simulationId ? { boxShadow: '0 0 0 3px rgba(16,185,129,.18)' } : undefined
-              }
+              style={simulationId ? { boxShadow: '0 0 0 3px rgba(16,185,129,.18)' } : undefined}
             />
-            {simulationId ? 'En ligne · contexte chargé' : 'Aucune simulation active'}
+            <span className="truncate">{headerSubtitle}</span>
           </span>
         </div>
+        {activeSimulations.length > 1 && (
+          <Select value={simulationId ?? undefined} onValueChange={(val) => setOverrideSimId(val)}>
+            <SelectTrigger
+              className="h-8 max-w-[150px] shrink-0 gap-1.5 rounded-full border-border bg-[var(--brand-50)] px-3 text-xs font-semibold text-[var(--brand-700)]"
+              title={activeSimulations.find((s: any) => s.id === simulationId)?.project?.name ?? undefined}
+            >
+              <SelectValue placeholder="Simulation" />
+            </SelectTrigger>
+            <SelectContent>
+              {activeSimulations.map((s: any) => (
+                <SelectItem key={s.id} value={s.id}>
+                  {simulationLabel(s)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
         <button
           type="button"
           aria-label="Fermer"
           onClick={() => setPmoOpen(false)}
-          className="inline-flex size-8 cursor-pointer items-center justify-center rounded-sm border-0 bg-transparent text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          className="inline-flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-sm border-0 bg-transparent text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
           <X className="size-4" />
         </button>
@@ -149,7 +170,7 @@ export function PmoPanel({ className }: PmoPanelProps) {
           className={cn(
             'inline-flex cursor-pointer items-center gap-1.5 rounded-sm border-0 px-3 py-2 text-[13px] font-semibold transition-colors duration-150',
             activeTab === 'chat'
-              ? 'bg-[var(--info-50)] text-[var(--brand-700)]'
+              ? 'bg-[var(--brand-50)] text-[var(--brand-700)]'
               : 'bg-transparent font-medium text-muted-foreground hover:bg-muted hover:text-foreground',
           )}
         >
@@ -162,7 +183,7 @@ export function PmoPanel({ className }: PmoPanelProps) {
           className={cn(
             'inline-flex cursor-pointer items-center gap-1.5 rounded-sm border-0 px-3 py-2 text-[13px] font-semibold transition-colors duration-150',
             activeTab === 'contexte'
-              ? 'bg-[var(--info-50)] text-[var(--brand-700)]'
+              ? 'bg-[var(--brand-50)] text-[var(--brand-700)]'
               : 'bg-transparent font-medium text-muted-foreground hover:bg-muted hover:text-foreground',
           )}
         >
@@ -170,27 +191,6 @@ export function PmoPanel({ className }: PmoPanelProps) {
           Contexte
         </button>
       </div>
-
-      {/* Simulation selector — only when more than one is in progress */}
-      {activeSimulations.length > 1 && (
-        <div className="shrink-0 border-b border-border px-[18px] py-2.5">
-          <Select
-            value={simulationId ?? undefined}
-            onValueChange={(val) => setOverrideSimId(val)}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Choisir une simulation" />
-            </SelectTrigger>
-            <SelectContent>
-              {activeSimulations.map((s: any) => (
-                <SelectItem key={s.id} value={s.id}>
-                  {simulationLabel(s)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      )}
 
       {/* Body */}
       <div className="flex flex-1 min-h-0 flex-col overflow-hidden">
