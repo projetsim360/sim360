@@ -234,7 +234,7 @@ function OptionCard({
     <Label
       htmlFor={id}
       className={cn(
-        'flex cursor-pointer flex-col gap-2.5 rounded-xl border-[1.5px] p-3.5 transition-all',
+        'flex cursor-pointer flex-col gap-2.5 rounded-xl border-[1.5px] p-3.5 transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-[0.99] motion-reduce:transform-none',
         selected
           ? 'border-[var(--accent-500)] bg-[var(--accent-50)] shadow-sm'
           : 'border-border bg-card hover:border-[var(--brand-300)]',
