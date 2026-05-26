@@ -29,7 +29,7 @@ const OnboardingPage = () => {
     goToBack,
     goToStep,
     markCompleted,
-    setQuestionnaireData,
+    completeProfilStep,
     questionnaireData,
   } = useOnboarding();
 
@@ -43,11 +43,7 @@ const OnboardingPage = () => {
             profile={profile}
             defaultValues={questionnaireData}
             onLiveChange={handleLive}
-            onNext={(data) => {
-              setQuestionnaireData(data);
-              markCompleted('profil');
-              goToNext();
-            }}
+            onNext={(data) => completeProfilStep(data)}
           />
         );
       case 'aptitude-test':

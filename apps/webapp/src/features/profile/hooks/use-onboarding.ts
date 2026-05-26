@@ -58,6 +58,19 @@ export function useOnboarding(options: UseOnboardingOptions = {}) {
     setCompletedSteps((prev) => new Set(prev).add(step));
   }, []);
 
+  // Submitting the Profil step decides whether the conditional aptitude step
+  // exists. We must advance using the *fresh* experience level rather than the
+  // current `steps` closure, which is still derived from the previous (null)
+  // questionnaire and would skip the aptitude step for beginners.
+  const completeProfilStep = useCallback((data: QuestionnaireData) => {
+    setQuestionnaireData(data);
+    setCompletedSteps((prev) => new Set(prev).add('profil'));
+    const needsApt = data.experienceLevel === 'none';
+    const freshSteps = STEP_ORDER.filter((s) => s !== 'aptitude-test' || needsApt);
+    const next = freshSteps[freshSteps.indexOf('profil') + 1];
+    if (next) setCurrentStep(next);
+  }, []);
+
   const isStepCompleted = useCallback(
     (step: OnboardingStep) => completedSteps.has(step),
     [completedSteps],
@@ -96,6 +109,7 @@ export function useOnboarding(options: UseOnboardingOptions = {}) {
     goToStep,
     markCompleted,
     isStepCompleted,
+    completeProfilStep,
     questionnaireData,
     setQuestionnaireData,
     needsAptitudeTest,
