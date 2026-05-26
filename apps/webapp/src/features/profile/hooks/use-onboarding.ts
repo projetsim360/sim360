@@ -28,14 +28,6 @@ export function useOnboarding(options: UseOnboardingOptions = {}) {
   const totalSteps = steps.length;
   const currentNumber = currentStepIndex + 1;
 
-  const progress = useMemo(() => {
-    if (totalSteps <= 1) return 100;
-    return Math.round((currentStepIndex / (totalSteps - 1)) * 100);
-  }, [currentStepIndex, totalSteps]);
-
-  const canGoNext = currentStepIndex < totalSteps - 1;
-  const canGoBack = currentStepIndex > 0;
-
   const goToNext = useCallback(() => {
     if (currentStepIndex >= steps.length - 1) return;
     setCompletedSteps((prev) => new Set(prev).add(currentStep));
@@ -71,11 +63,6 @@ export function useOnboarding(options: UseOnboardingOptions = {}) {
     if (next) setCurrentStep(next);
   }, []);
 
-  const isStepCompleted = useCallback(
-    (step: OnboardingStep) => completedSteps.has(step),
-    [completedSteps],
-  );
-
   const stepperItems: StepperItem[] = useMemo(
     () =>
       STEP_ORDER.map((key) => {
@@ -97,22 +84,14 @@ export function useOnboarding(options: UseOnboardingOptions = {}) {
 
   return {
     currentStep,
-    currentStepIndex,
     currentNumber,
-    steps,
     totalSteps,
-    progress,
-    canGoNext,
-    canGoBack,
     goToNext,
     goToBack,
     goToStep,
     markCompleted,
-    isStepCompleted,
     completeProfilStep,
     questionnaireData,
-    setQuestionnaireData,
-    needsAptitudeTest,
     stepperItems,
   };
 }

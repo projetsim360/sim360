@@ -102,7 +102,7 @@ const OnboardingPage = () => {
               exit={reduce ? { opacity: 0 } : { opacity: 0, x: -24 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             >
-              <span className="text-[11.5px] font-bold uppercase tracking-wider text-[var(--accent-700)]">
+              <span className="hidden text-[11.5px] font-bold uppercase tracking-wider text-[var(--accent-700)] lg:inline-block">
                 Étape {currentNumber} sur {totalSteps}
               </span>
               <h1 className="mt-2 font-display text-[25px] font-extrabold tracking-tight text-[var(--brand-700)]">
