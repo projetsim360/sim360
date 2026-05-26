@@ -5,12 +5,20 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { KeenIcon } from '@/components/keenicons';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import { PmoMessageBubble, StreamingBubble } from './pmo-message-bubble';
 import { usePmoStream } from '../hooks/use-pmo-stream';
 import { pmoApi, PMO_QUERY_KEYS } from '../api/pmo.api';
 import type { PmoMessage } from '../types/pmo.types';
+
+const QUICK_REPLIES: Array<{ icon: string; tone: string; text: string }> = [
+  { icon: 'chart-line', tone: 'text-brand-600 bg-brand-50', text: 'Quel est l\'état de mon projet ?' },
+  { icon: 'notepad', tone: 'text-[var(--accent-600)] bg-[var(--accent-50)]', text: 'Aide-moi sur un livrable' },
+  { icon: 'check-circle', tone: 'text-success bg-[#ECFDF5]', text: 'Quelle décision dois-je prendre ?' },
+  { icon: 'shield-cross', tone: 'text-destructive bg-[#FEF2F2]', text: 'Quels sont mes risques ?' },
+];
 
 interface PendingDeliverable {
   id: string;
@@ -46,6 +54,7 @@ export function PmoChat({
 }: PmoChatProps) {
   const pendingDeliverableCount = pendingDeliverables.length;
   const [messages, setMessages] = useState<PmoMessage[]>([]);
+  const hasUserMessage = messages.some((m) => m.role === 'user');
   const [input, setInput] = useState('');
   const [isInitializing, setIsInitializing] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -139,45 +148,48 @@ export function PmoChat({
     }
   }, [isLoadingHistory, initialMessages.length, messages.length, simulationId, queryClient]);
 
-  const handleSend = useCallback(async () => {
-    const trimmed = input.trim();
-    if (!trimmed || isStreaming) return;
+  const handleSend = useCallback(
+    async (explicit?: string) => {
+      const trimmed = (explicit ?? input).trim();
+      if (!trimmed || isStreaming) return;
 
-    const userMessage: PmoMessage = {
-      id: `temp-${Date.now()}`,
-      conversationId: '',
-      role: 'user',
-      content: trimmed,
-      createdAt: new Date().toISOString(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setInput('');
-
-    try {
-      const fullContent = await sendMessage(trimmed);
-
-      const assistantMessage: PmoMessage = {
-        id: `temp-assistant-${Date.now()}`,
+      const userMessage: PmoMessage = {
+        id: `temp-${Date.now()}`,
         conversationId: '',
-        role: 'assistant',
-        content: fullContent,
+        role: 'user',
+        content: trimmed,
         createdAt: new Date().toISOString(),
       };
 
-      setMessages((prev) => [...prev, assistantMessage]);
-      queryClient.invalidateQueries({
-        queryKey: PMO_QUERY_KEYS.history(simulationId),
-      });
-    } catch (error) {
-      toast.error(
-        (error as Error).message ||
-          'Erreur lors de la communication avec l\'agent PMO.',
-      );
-    }
+      setMessages((prev) => [...prev, userMessage]);
+      setInput('');
 
-    inputRef.current?.focus();
-  }, [input, isStreaming, sendMessage, simulationId, queryClient]);
+      try {
+        const fullContent = await sendMessage(trimmed);
+
+        const assistantMessage: PmoMessage = {
+          id: `temp-assistant-${Date.now()}`,
+          conversationId: '',
+          role: 'assistant',
+          content: fullContent,
+          createdAt: new Date().toISOString(),
+        };
+
+        setMessages((prev) => [...prev, assistantMessage]);
+        queryClient.invalidateQueries({
+          queryKey: PMO_QUERY_KEYS.history(simulationId),
+        });
+      } catch (error) {
+        toast.error(
+          (error as Error).message ||
+            'Erreur lors de la communication avec l\'agent PMO.',
+        );
+      }
+
+      inputRef.current?.focus();
+    },
+    [input, isStreaming, sendMessage, simulationId, queryClient],
+  );
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -281,6 +293,28 @@ export function PmoChat({
                   enableGlossaryTooltips={enableGlossaryTooltips}
                 />
               ))}
+
+              {!hasUserMessage && !isStreaming && (
+                <div className="space-y-2 pt-1">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                    Pour démarrer
+                  </p>
+                  {QUICK_REPLIES.map((q) => (
+                    <button
+                      key={q.text}
+                      type="button"
+                      onClick={() => handleSend(q.text)}
+                      className="flex w-full items-center gap-2.5 rounded-xl border border-border bg-card px-3 py-2.5 text-left text-sm font-medium text-foreground transition-colors hover:border-[var(--accent-300)] hover:bg-[var(--accent-50)]"
+                    >
+                      <span className={cn('flex size-7 shrink-0 items-center justify-center rounded-lg', q.tone)}>
+                        <KeenIcon icon={q.icon} style="duotone" className="size-3.5" />
+                      </span>
+                      <span className="flex-1">{q.text}</span>
+                      <KeenIcon icon="arrow-right" style="duotone" className="size-3.5 text-muted-foreground/50" />
+                    </button>
+                  ))}
+                </div>
+              )}
             </>
           )}
 
@@ -297,7 +331,7 @@ export function PmoChat({
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Posez une question a votre agent PMO..."
+            placeholder="Posez votre question à l'agent PMO…"
             disabled={isStreaming || isInitializing}
             className="flex-1 border-0 shadow-none focus-visible:ring-0 focus-visible:outline-none bg-transparent px-0 h-9"
           />
@@ -333,7 +367,7 @@ export function PmoChat({
             <Button
               variant="primary"
               size="icon"
-              onClick={handleSend}
+              onClick={() => handleSend()}
               disabled={!input.trim() || isInitializing || isTranscribing}
               title="Envoyer"
               className="shrink-0 size-8 rounded-lg"
