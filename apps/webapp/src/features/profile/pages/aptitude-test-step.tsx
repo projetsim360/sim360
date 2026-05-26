@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { staggerContainer, staggerItem, cardHover } from '@/lib/motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -134,6 +136,12 @@ const CATEGORY_ICONS: Record<TestScenario['category'], string> = {
   budget: 'chart-simple',
 };
 
+const INTRO_CATEGORIES = [
+  { icon: 'sort', title: 'Priorisation', desc: 'Arbitrer entre urgences concurrentes.', tone: 'bg-[var(--accent-50)] text-[var(--accent-700)]' },
+  { icon: 'people', title: 'Communication', desc: "Gérer un conflit d'équipe ou client.", tone: 'bg-[var(--brand-50)] text-[var(--brand-600)]' },
+  { icon: 'chart-simple', title: 'Gestion budgétaire', desc: 'Réagir à un dépassement de budget.', tone: 'bg-[var(--success-50)] text-[var(--success-700)]' },
+] as const;
+
 export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestStepProps) {
   const [isStarted, setIsStarted] = useState(false);
   const [currentScenario, setCurrentScenario] = useState(0);
@@ -145,6 +153,7 @@ export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestS
     organization: number;
   } | null>(null);
   const submitTest = useSubmitAptitudeTest();
+  const reduce = useReducedMotion();
 
   const scenario = SCENARIOS[currentScenario];
   const progress = ((currentScenario + 1) / SCENARIOS.length) * 100;
@@ -259,45 +268,58 @@ export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestS
   if (!isStarted) {
     return (
       <div className="space-y-6">
-        <Card>
-          <CardContent className="p-8 text-center space-y-6">
-            <KeenIcon icon="notepad" style="duotone" className="text-5xl text-primary mx-auto" />
-            <div className="space-y-2">
-              <h3 className="text-lg font-medium text-foreground">3 scénarios de gestion de projet</h3>
-              <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                Vous serez confronté à des situations courantes : gestion des priorités, résolution de
-                conflits et maîtrise budgétaire. Il n'y a pas de mauvaise réponse.
-              </p>
-            </div>
-
-            <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground">
-              {SCENARIOS.map((s) => (
-                <div key={s.id} className="flex items-center gap-1.5">
-                  <KeenIcon
-                    icon={CATEGORY_ICONS[s.category]}
-                    style="duotone"
-                    className="text-base text-primary"
-                  />
-                  <span>{CATEGORY_LABELS[s.category]}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="flex items-center justify-center gap-3">
-              <Button variant="ghost" size="sm" onClick={onBack}>
-                <ArrowLeft className="text-sm me-1" />
-                Retour
-              </Button>
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => setIsStarted(true)}
+        <div>
+          <h3 className="mb-3 font-display text-[13px] font-bold text-[var(--brand-700)]">
+            Ce que nous allons évaluer
+          </h3>
+          <motion.div
+            className="grid gap-3 sm:grid-cols-3"
+            variants={staggerContainer}
+            initial={reduce ? false : 'hidden'}
+            animate="show"
+          >
+            {INTRO_CATEGORIES.map((c, i) => (
+              <motion.div
+                key={c.title}
+                variants={staggerItem}
+                whileHover={reduce ? undefined : cardHover}
+                className="relative rounded-2xl border border-border bg-card p-4 shadow-sm"
               >
-                Commencer le test
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+                <span className="absolute right-3 top-3 font-display text-[11px] font-extrabold text-[var(--neutral-200)]">
+                  0{i + 1}
+                </span>
+                <span className={cn('mb-3 flex size-10 items-center justify-center rounded-xl', c.tone)}>
+                  <KeenIcon icon={c.icon} style="duotone" className="text-lg" />
+                </span>
+                <div className="text-[13.5px] font-semibold text-foreground">{c.title}</div>
+                <p className="mt-1 text-xs text-muted-foreground">{c.desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+
+        <div className="flex flex-wrap gap-x-6 gap-y-2 rounded-xl border border-border bg-muted/40 px-4 py-3.5 text-[12.5px] font-medium text-muted-foreground">
+          <span className="inline-flex items-center gap-2">
+            <KeenIcon icon="notepad" style="duotone" className="text-base text-[var(--brand-500)]" /> 3 scénarios
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <KeenIcon icon="time" style="duotone" className="text-base text-[var(--brand-500)]" /> environ 5 minutes
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <KeenIcon icon="check-circle" style="duotone" className="text-base text-[var(--brand-500)]" /> aucune mauvaise réponse
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between border-t border-border pt-5">
+          <Button variant="ghost" className="min-h-[44px] px-4" onClick={onBack}>
+            <ArrowLeft className="text-sm me-1" />
+            Retour
+          </Button>
+          <Button variant="primary" className="min-h-[44px] px-5" onClick={() => setIsStarted(true)}>
+            Commencer
+            <ArrowRight className="text-sm ms-1" />
+          </Button>
+        </div>
       </div>
     );
   }
