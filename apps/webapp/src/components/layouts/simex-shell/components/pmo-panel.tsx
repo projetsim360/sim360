@@ -11,6 +11,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { useShellState } from '../state/shell-state-provider';
 import { simulationApi } from '@/features/simulation/api/simulation.api';
 import { usePmoHistory, usePmoContext } from '@/features/pmo/api/pmo.api';
@@ -136,13 +141,21 @@ export function PmoPanel({ className }: PmoPanelProps) {
           </span>
         </div>
         {activeSimulations.length > 1 && (
-          <Select value={simulationId ?? undefined} onValueChange={(val) => setOverrideSimId(val)}>
-            <SelectTrigger
-              className="h-8 max-w-[150px] shrink-0 gap-1.5 rounded-full border-border bg-[var(--brand-50)] px-3 text-xs font-semibold text-[var(--brand-700)]"
-              title={activeSimulations.find((s: any) => s.id === simulationId)?.project?.name ?? undefined}
-            >
-              <SelectValue placeholder="Simulation" />
-            </SelectTrigger>
+          <Select value={simulationId ?? undefined} onValueChange={setOverrideSimId}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <SelectTrigger
+                  size="sm"
+                  className="max-w-[150px] shrink-0 gap-1.5 rounded-full border-border bg-[var(--brand-50)] px-3 text-xs font-semibold text-[var(--brand-700)]"
+                >
+                  <SelectValue placeholder="Choisir une simulation" />
+                </SelectTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                {activeSimulations.find((s: any) => s.id === simulationId)?.project?.name ??
+                  'Choisir une simulation'}
+              </TooltipContent>
+            </Tooltip>
             <SelectContent>
               {activeSimulations.map((s: any) => (
                 <SelectItem key={s.id} value={s.id}>
