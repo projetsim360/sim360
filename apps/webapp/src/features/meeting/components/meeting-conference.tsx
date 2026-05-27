@@ -13,6 +13,8 @@ interface MeetingConferenceProps {
   startedAt?: string | null;
   onEnd: () => void;
   forceSingleMode?: boolean;
+  chatOpen?: boolean;
+  onToggleChat?: () => void;
 }
 
 // User "self" tile
@@ -32,6 +34,8 @@ export function MeetingConference({
   startedAt,
   onEnd,
   forceSingleMode = false,
+  chatOpen,
+  onToggleChat,
 }: MeetingConferenceProps) {
   const [conferenceMode, setConferenceMode] = useState<ConferenceMode>(forceSingleMode ? 'single' : 'all');
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
@@ -141,7 +145,7 @@ export function MeetingConference({
   const content = (
     <div
       className={`
-        flex flex-col bg-[#0f0d1a] overflow-hidden
+        flex flex-col bg-gradient-to-br from-[var(--brand-800)] to-[var(--brand-900)] overflow-hidden
         ${isFullscreen ? 'fixed inset-0 z-50 rounded-none' : 'rounded-2xl h-[calc(100vh-180px)]'}
       `}
     >
@@ -150,16 +154,16 @@ export function MeetingConference({
         <div className="flex items-center gap-3">
           {isConnected ? (
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/10">
-                <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-                <span className="text-[11px] text-success font-medium">En direct</span>
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--success-500)]/15">
+                <div className="w-1.5 h-1.5 rounded-full bg-[var(--success-500)] animate-pulse" />
+                <span className="text-[11px] text-white font-medium">En direct</span>
               </div>
               {conferenceMode === 'single' && (
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-500/10">
-                  <svg className="w-3 h-3 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--accent-500)]/15">
+                  <svg className="w-3 h-3 text-[var(--accent-300)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                   </svg>
-                  <span className="text-[10px] text-brand-400 font-medium">Dites un prenom pour changer</span>
+                  <span className="text-[10px] text-[var(--accent-300)] font-medium">Dites un prenom pour changer</span>
                 </div>
               )}
             </div>
@@ -224,7 +228,7 @@ export function MeetingConference({
               /* ===== SPEAKER VIEW ===== */
               <div className="flex flex-col h-full gap-2.5">
                 {/* Main speaker — takes most of the space */}
-                <div className="flex-1 flex items-center justify-center rounded-2xl bg-[#1a1528]/50">
+                <div className="flex-1 flex items-center justify-center rounded-2xl bg-white/4">
                   {speakerParticipant ? (
                     <div className="flex flex-col items-center gap-4">
                       {/* Large avatar */}
@@ -233,8 +237,8 @@ export function MeetingConference({
                           w-32 h-32 rounded-full flex items-center justify-center text-4xl font-semibold
                           transition-all duration-300
                           ${connections.get(speakerParticipant.id)?.isSpeaking
-                            ? 'ring-4 ring-success/50 scale-105 bg-[#332b4d]'
-                            : 'bg-[#251e3a] scale-100'
+                            ? 'ring-4 ring-[var(--accent-400)]/60 scale-105 bg-[var(--brand-600)]'
+                            : 'bg-[var(--brand-700)] scale-100'
                           }
                           text-foreground dark:text-white/90
                         `}
@@ -260,7 +264,7 @@ export function MeetingConference({
                           {[...Array(7)].map((_, i) => (
                             <div
                               key={i}
-                              className="w-1 bg-success/80 rounded-full animate-pulse"
+                              className="w-1 bg-[var(--accent-300)] rounded-full animate-pulse"
                               style={{
                                 height: `${10 + Math.random() * 20}px`,
                                 animationDelay: `${i * 0.08}s`,
@@ -321,6 +325,8 @@ export function MeetingConference({
               participantCount={participants.length}
               activeParticipantName={activeParticipantName}
               forceSingleMode={forceSingleMode}
+              chatOpen={chatOpen}
+              onToggleChat={onToggleChat}
               onToggleMute={toggleMute}
               onToggleConferenceMode={handleToggleConferenceMode}
               onToggleViewMode={() => setViewMode((v) => (v === 'grid' ? 'speaker' : 'grid'))}
@@ -342,7 +348,7 @@ export function MeetingConference({
 
       {/* Cost warning */}
       {conferenceMode === 'all' && !forceSingleMode && participants.length > 3 && isConnected && (
-        <div className="mx-3 mb-2 px-3 py-1.5 rounded-xl bg-warning/10 border border-warning/20 text-warning text-[11px] text-center">
+        <div className="mx-3 mb-2 px-3 py-1.5 rounded-xl bg-[var(--warning-500)]/15 border border-[var(--warning-500)]/25 text-white text-[11px] text-center">
           {participants.length} sessions audio simultanees actives — cela consomme des tokens en temps reel
         </div>
       )}

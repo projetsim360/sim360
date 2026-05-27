@@ -11,6 +11,8 @@ interface ConferenceControlsProps {
   participantCount: number;
   activeParticipantName?: string;
   forceSingleMode?: boolean;
+  chatOpen?: boolean;
+  onToggleChat?: () => void;
   onToggleMute: () => void;
   onToggleConferenceMode: () => void;
   onToggleViewMode: () => void;
@@ -50,6 +52,14 @@ function PhoneIcon() {
   );
 }
 
+function ChatIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+    </svg>
+  );
+}
+
 export function ConferenceControls({
   elapsed,
   isMuted,
@@ -61,6 +71,8 @@ export function ConferenceControls({
   participantCount,
   activeParticipantName,
   forceSingleMode = false,
+  chatOpen,
+  onToggleChat,
   onToggleMute,
   onToggleConferenceMode,
   onToggleViewMode,
@@ -76,7 +88,7 @@ export function ConferenceControls({
         <button
           type="button"
           onClick={onConnect}
-          className="flex items-center gap-2.5 px-6 py-3 rounded-full bg-brand-500 text-white font-medium text-sm hover:bg-brand-600 active:scale-[0.98] transition-all shadow-lg shadow-brand-500/20 cursor-pointer"
+          className="flex items-center gap-2.5 px-6 py-3 rounded-full bg-[var(--accent-500)] text-white font-medium text-sm hover:bg-[var(--accent-600)] active:scale-[0.98] transition-all shadow-lg shadow-[var(--accent-500)]/20 cursor-pointer"
         >
           <MicIcon muted={false} />
           Rejoindre la conference
@@ -93,7 +105,7 @@ export function ConferenceControls({
       {/* Active participant indicator in single mode */}
       {conferenceMode === 'single' && activeParticipantName && (
         <div className="flex items-center justify-center gap-2 py-1">
-          <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+          <div className="w-1.5 h-1.5 rounded-full bg-[var(--success-500)] animate-pulse" />
           <span className="text-sm text-white/50">
             En conversation avec <span className="text-white font-medium">{activeParticipantName}</span>
           </span>
@@ -101,7 +113,7 @@ export function ConferenceControls({
       )}
 
       {/* Main control bar */}
-      <div className="flex items-center justify-between px-4 py-2.5 bg-[#1a1528]/90 backdrop-blur-md rounded-2xl border border-border/50">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-[var(--brand-800)]/90 backdrop-blur-md rounded-2xl border border-white/10">
         {/* Left: Timer + info */}
         <div className="flex items-center gap-3 min-w-[120px]">
           <div className="flex items-center gap-1.5">
@@ -119,7 +131,7 @@ export function ConferenceControls({
             className={`
               relative w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer
               ${isMuted
-                ? 'bg-destructive/20 text-destructive hover:bg-destructive/30 ring-1 ring-destructive/30'
+                ? 'bg-[var(--error-500)]/25 text-white ring-1 ring-[var(--error-500)]/40'
                 : 'bg-white/10 text-white hover:bg-white/15'
               }
             `}
@@ -129,7 +141,7 @@ export function ConferenceControls({
           </button>
 
           {/* Separator */}
-          <div className="w-px h-6 bg-border mx-1" />
+          <div className="w-px h-6 bg-white/15 mx-1" />
 
           {/* Conference mode toggle — hidden when forced to single */}
           {!forceSingleMode && (
@@ -139,8 +151,8 @@ export function ConferenceControls({
               className={`
                 flex items-center gap-2 px-4 py-2.5 rounded-full transition-all duration-200 text-xs font-medium
                 ${conferenceMode === 'all'
-                  ? 'bg-[#251e3a] text-foreground dark:text-white/90 hover:bg-[#332b4d]'
-                  : 'bg-primary/15 text-primary hover:bg-primary/25 ring-1 ring-primary/20'
+                  ? 'bg-[var(--brand-700)] text-white/90 hover:bg-[var(--brand-600)]'
+                  : 'bg-[var(--accent-500)]/15 text-[var(--accent-300)] hover:bg-[var(--accent-500)]/25 ring-1 ring-[var(--accent-500)]/20'
                 }
               `}
               title={conferenceMode === 'all' ? 'Passer en mode individuel' : 'Passer en mode tous'}
@@ -158,14 +170,33 @@ export function ConferenceControls({
             </button>
           )}
 
+          {/* Chat toggle */}
+          {onToggleChat && (
+            <button
+              type="button"
+              onClick={onToggleChat}
+              className={`
+                w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer
+                ${chatOpen
+                  ? 'bg-[var(--accent-500)] text-white'
+                  : 'bg-[var(--accent-500)]/20 text-[var(--accent-300)] hover:bg-[var(--accent-500)]/30'
+                }
+              `}
+              title="Messages"
+              aria-pressed={chatOpen}
+            >
+              <ChatIcon />
+            </button>
+          )}
+
           {/* Separator */}
-          <div className="w-px h-6 bg-border mx-1" />
+          <div className="w-px h-6 bg-white/15 mx-1" />
 
           {/* Hang up */}
           <button
             type="button"
             onClick={onDisconnect}
-            className="w-11 h-11 rounded-full flex items-center justify-center bg-destructive text-white hover:bg-destructive/90 active:scale-95 transition-all duration-200 shadow-lg shadow-destructive/20"
+            className="w-11 h-11 rounded-full flex items-center justify-center bg-[var(--error-500)] text-white hover:bg-[var(--error-700)] active:scale-95 transition-all duration-200 shadow-lg shadow-[var(--error-500)]/20"
             title="Raccrocher"
           >
             <PhoneIcon />
