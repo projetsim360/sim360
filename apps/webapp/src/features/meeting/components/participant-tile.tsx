@@ -12,28 +12,15 @@ interface ParticipantTileProps {
   onClick?: () => void;
 }
 
-// Stable accent colors for participants
-const ACCENT_COLORS = [
-  { bg: 'bg-violet-500/20', ring: 'ring-violet-400', dot: 'bg-violet-400' },
-  { bg: 'bg-emerald-500/20', ring: 'ring-emerald-400', dot: 'bg-emerald-400' },
-  { bg: 'bg-amber-500/20', ring: 'ring-amber-400', dot: 'bg-amber-400' },
-  { bg: 'bg-rose-500/20', ring: 'ring-rose-400', dot: 'bg-rose-400' },
-  { bg: 'bg-cyan-500/20', ring: 'ring-cyan-400', dot: 'bg-cyan-400' },
-  { bg: 'bg-blue-500/20', ring: 'ring-blue-400', dot: 'bg-blue-400' },
-];
-
-function hashName(name: string): number {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  return Math.abs(hash) % ACCENT_COLORS.length;
-}
+// Anneau/onde « parle » accent Simex (un seul accent, pas de palette aléatoire).
+const SPEAKING = { ring: 'ring-[var(--accent-400)]', glow: 'bg-[var(--accent-500)]/15', bar: 'bg-[var(--accent-300)]' };
 
 const STATUS_CONFIG: Record<ParticipantConnectionStatus, { dot: string; label: string }> = {
-  idle: { dot: 'bg-muted-foreground/50', label: 'Hors ligne' },
-  connecting: { dot: 'bg-warning animate-pulse', label: 'Connexion...' },
-  connected: { dot: 'bg-success', label: 'Connecte' },
-  error: { dot: 'bg-destructive', label: 'Erreur' },
-  closed: { dot: 'bg-muted-foreground/50', label: 'Deconnecte' },
+  idle: { dot: 'bg-white/30', label: 'Hors ligne' },
+  connecting: { dot: 'bg-[var(--warning-500)] animate-pulse', label: 'Connexion…' },
+  connected: { dot: 'bg-[var(--success-500)]', label: 'Connecté' },
+  error: { dot: 'bg-[var(--error-500)]', label: 'Erreur' },
+  closed: { dot: 'bg-white/30', label: 'Déconnecté' },
 };
 
 export function ParticipantTile({
@@ -48,7 +35,6 @@ export function ParticipantTile({
   onClick,
 }: ParticipantTileProps) {
   const isLarge = size === 'large';
-  const accent = ACCENT_COLORS[hashName(participant.name)];
   const statusCfg = STATUS_CONFIG[status];
 
   return (
@@ -60,15 +46,15 @@ export function ParticipantTile({
         group relative flex flex-col items-center justify-center rounded-xl transition-all duration-300 overflow-hidden w-full
         ${isLarge ? 'min-h-[160px] py-5 px-4 gap-2.5' : 'min-h-[70px] min-w-[90px] py-2.5 px-3 gap-1.5'}
         ${isActive
-          ? `bg-[#1e1833] ring-1 ${accent.ring}/40`
-          : 'bg-[#16122a] hover:bg-[#1e1833]'
+          ? `bg-[var(--brand-700)] ring-1 ${SPEAKING.ring}/40`
+          : 'bg-[var(--brand-800)] hover:bg-[var(--brand-700)]'
         }
         ${onClick ? 'cursor-pointer' : 'cursor-default'}
       `}
     >
       {/* Speaking glow effect */}
       {isSpeaking && (
-        <div className={`absolute inset-0 rounded-xl ${accent.bg} animate-pulse`} />
+        <div className={`absolute inset-0 rounded-xl ${SPEAKING.glow} animate-pulse`} />
       )}
 
       {/* Content */}
@@ -79,8 +65,8 @@ export function ParticipantTile({
             className={`
               ${isLarge ? 'w-16 h-16 text-xl' : 'w-9 h-9 text-sm'}
               rounded-full flex items-center justify-center font-semibold transition-all duration-300
-              ${isSpeaking ? `ring-[3px] ${accent.ring} scale-105` : 'ring-0 scale-100'}
-              ${isUser ? 'bg-brand-500/25 text-brand-400' : 'bg-[#2a2344] text-white/90'}
+              ${isSpeaking ? `ring-[3px] ${SPEAKING.ring} scale-105` : 'ring-0 scale-100'}
+              ${isUser ? 'bg-[var(--brand-500)]/30 text-[var(--brand-100)]' : 'bg-[var(--brand-600)] text-white/90'}
             `}
           >
             {participant.avatar ? (
@@ -106,7 +92,7 @@ export function ParticipantTile({
               className={`
                 absolute -bottom-0.5 -right-0.5
                 ${isLarge ? 'w-3.5 h-3.5' : 'w-2.5 h-2.5'}
-                rounded-full border-2 border-[#16122a]
+                rounded-full border-2 border-[var(--brand-800)]
                 ${statusCfg.dot}
               `}
             />
@@ -114,7 +100,7 @@ export function ParticipantTile({
 
           {/* Mute indicator (user only) */}
           {isUser && isMuted && (
-            <div className={`absolute -bottom-0.5 -right-0.5 ${isLarge ? 'w-5 h-5' : 'w-3.5 h-3.5'} rounded-full bg-destructive flex items-center justify-center`}>
+            <div className={`absolute -bottom-0.5 -right-0.5 ${isLarge ? 'w-5 h-5' : 'w-3.5 h-3.5'} rounded-full bg-[var(--error-500)] flex items-center justify-center`}>
               <svg className={isLarge ? 'w-3 h-3' : 'w-2 h-2'} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 19L5 5m14 0v6a2 2 0 01-2 2H7" />
               </svg>
@@ -123,7 +109,7 @@ export function ParticipantTile({
 
           {/* Microphone active indicator (user, not muted) */}
           {isUser && !isMuted && status === 'connected' && (
-            <div className={`absolute -bottom-0.5 -right-0.5 ${isLarge ? 'w-6 h-6' : 'w-4 h-4'} rounded-full bg-success flex items-center justify-center`}>
+            <div className={`absolute -bottom-0.5 -right-0.5 ${isLarge ? 'w-6 h-6' : 'w-4 h-4'} rounded-full bg-[var(--success-500)] flex items-center justify-center`}>
               <svg className={isLarge ? 'w-3.5 h-3.5' : 'w-2.5 h-2.5'} viewBox="0 0 24 24" fill="white">
                 <path d="M12 14a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 0014 0h-2zm-5 9a1 1 0 011 1v1h-2v-1a1 1 0 011-1z" />
               </svg>
@@ -149,7 +135,7 @@ export function ParticipantTile({
             {[...Array(5)].map((_, i) => (
               <div
                 key={i}
-                className={`w-[3px] ${accent.dot} rounded-full animate-pulse`}
+                className={`w-[3px] ${SPEAKING.bar} rounded-full animate-pulse`}
                 style={{
                   height: `${6 + Math.random() * 10}px`,
                   animationDelay: `${i * 0.1}s`,
@@ -170,8 +156,8 @@ export function ParticipantTile({
         {/* Active indicator in single mode */}
         {conferenceMode === 'single' && isActive && !isUser && isLarge && (
           <div className="flex items-center gap-1 mt-0.5">
-            <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-            <span className="text-[10px] text-success font-medium">A la parole</span>
+            <div className="w-1.5 h-1.5 rounded-full bg-[var(--success-500)] animate-pulse" />
+            <span className="text-[10px] text-[var(--success-700)] font-medium">À la parole</span>
           </div>
         )}
       </div>
