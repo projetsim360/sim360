@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router';
+import { useParams, Link } from 'react-router';
 import { motion, useReducedMotion } from 'framer-motion';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent } from '@/components/ui/card';
@@ -206,6 +206,25 @@ export default function SimulationDetailPage() {
           />
 
           <CockpitPhaseStrip phases={sim.phases ?? []} />
+
+          <nav aria-label="Accès rapides" className="flex flex-wrap gap-2">
+            {[
+              { to: `/simulations/${sim.id}/meetings`, icon: 'message-text', label: 'Réunions' },
+              { to: `/simulations/${sim.id}/decisions`, icon: 'question-2', label: 'Décisions' },
+              { to: `/simulations/${sim.id}/events`, icon: 'flash', label: 'Événements' },
+              { to: `/simulations/${sim.id}/timeline`, icon: 'time', label: 'Chronologie' },
+              { to: `/simulations/${sim.id}/kpis`, icon: 'chart-line', label: 'Historique KPI' },
+            ].map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--neutral-200)] bg-card px-3 py-1.5 text-[13px] font-medium text-[var(--brand-700)] transition-colors hover:border-[var(--accent-300)] hover:bg-[var(--accent-50)]"
+              >
+                <KeenIcon icon={l.icon} style="duotone" className="text-sm text-[var(--accent-500)]" />
+                {l.label}
+              </Link>
+            ))}
+          </nav>
 
           {kpis && (
             <motion.div
