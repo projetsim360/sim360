@@ -1,17 +1,23 @@
 import { lazy, Suspense } from 'react';
-import { Route } from 'react-router';
+import { Route, Navigate } from 'react-router';
 
 const MeetingsListPage = lazy(() => import('../pages/meetings-list'));
 const MeetingRoomPage = lazy(() => import('../pages/meeting-room'));
-const MeetingLivePage = lazy(() => import('../pages/meeting-live'));
-const MeetingSummaryPage = lazy(() => import('../pages/meeting-summary'));
+
+// Les anciennes routes /live et /summary sont fusionnées dans /meetings/:meetingId.
+function MeetingRedirect() {
+  const m = window.location.pathname.match(/^\/meetings\/([^/]+)\/(?:live|summary)\/?$/);
+  const id = m?.[1];
+  if (!id) return <Navigate to="/meetings" replace />;
+  return <Navigate to={`/meetings/${id}`} replace />;
+}
 
 export const meetingRoutes = (
   <>
     <Route path="/meetings" element={<Suspense><MeetingsListPage /></Suspense>} />
     <Route path="/simulations/:simId/meetings" element={<Suspense><MeetingsListPage /></Suspense>} />
     <Route path="/meetings/:meetingId" element={<Suspense><MeetingRoomPage /></Suspense>} />
-    <Route path="/meetings/:meetingId/live" element={<Suspense><MeetingLivePage /></Suspense>} />
-    <Route path="/meetings/:meetingId/summary" element={<Suspense><MeetingSummaryPage /></Suspense>} />
+    <Route path="/meetings/:meetingId/live" element={<MeetingRedirect />} />
+    <Route path="/meetings/:meetingId/summary" element={<MeetingRedirect />} />
   </>
 );
