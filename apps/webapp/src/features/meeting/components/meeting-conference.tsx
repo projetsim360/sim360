@@ -163,7 +163,7 @@ export function MeetingConference({
                   <svg className="w-3 h-3 text-[var(--accent-300)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                   </svg>
-                  <span className="text-[10px] text-[var(--accent-300)] font-medium">Dites un prenom pour changer</span>
+                  <span className="text-[10px] text-[var(--accent-300)] font-medium">Dites un prénom pour changer</span>
                 </div>
               )}
             </div>
@@ -349,7 +349,7 @@ export function MeetingConference({
       {/* Cost warning */}
       {conferenceMode === 'all' && !forceSingleMode && participants.length > 3 && isConnected && (
         <div className="mx-3 mb-2 px-3 py-1.5 rounded-xl bg-[var(--warning-500)]/15 border border-[var(--warning-500)]/25 text-white text-[11px] text-center">
-          {participants.length} sessions audio simultanees actives — cela consomme des tokens en temps reel
+          {participants.length} sessions audio simultanées actives — cela consomme des tokens en temps réel
         </div>
       )}
     </div>

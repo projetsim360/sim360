@@ -39,7 +39,7 @@ export function TranscriptionPanel({ transcriptions, open, onClose }: Transcript
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 shrink-0">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
+              <div className="w-2 h-2 rounded-full bg-[var(--success-500)] animate-pulse" />
               <span className="text-sm font-medium text-muted-foreground dark:text-white/70">Transcription en direct</span>
             </div>
             <button
