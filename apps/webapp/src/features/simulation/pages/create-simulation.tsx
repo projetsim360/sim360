@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router';
-import { Toolbar, ToolbarHeading, ToolbarActions } from '@/components/layouts/layout-6/components/toolbar';
+import { useNavigate } from 'react-router';
+import { PageHeader } from '@/components/page-header';
+import { ScenarioCard } from '../components/scenario-card';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -29,43 +30,45 @@ import { simulationApi } from '../api/simulation.api';
 import type { Scenario } from '../types/simulation.types';
 
 const DIFFICULTY_LABELS: Record<string, string> = {
-  BEGINNER: 'Debutant',
-  INTERMEDIATE: 'Intermediaire',
-  ADVANCED: 'Avance',
+  BEGINNER: 'Débutant',
+  INTERMEDIATE: 'Intermédiaire',
+  ADVANCED: 'Avancé',
+  EXPERT: 'Expert',
 };
 
 const DIFFICULTY_COLORS: Record<string, string> = {
-  BEGINNER: 'bg-success/10 text-success',
-  INTERMEDIATE: 'bg-warning/10 text-warning',
-  ADVANCED: 'bg-destructive/10 text-destructive',
+  BEGINNER: 'bg-[var(--success-50)] text-[var(--success-700)]',
+  INTERMEDIATE: 'bg-[var(--warning-50)] text-[var(--warning-700)]',
+  ADVANCED: 'bg-[var(--error-50)] text-[var(--error-700)]',
+  EXPERT: 'bg-[var(--error-50)] text-[var(--error-700)]',
 };
 
 const SCENARIO_TYPE_CONFIG: Record<string, { label: string; className: string }> = {
-  GREENFIELD: { label: 'Nouveau projet', className: 'bg-blue-500/10 text-blue-600' },
-  BROWNFIELD: { label: 'Reprise en cours', className: 'bg-amber-500/10 text-amber-600' },
+  GREENFIELD: { label: 'Nouveau projet', className: 'bg-[var(--brand-50)] text-[var(--brand-700)]' },
+  BROWNFIELD: { label: 'Reprise en cours', className: 'bg-[var(--warning-50)] text-[var(--warning-700)]' },
 };
 
 const MORALE_LABELS: Record<string, string> = {
-  very_low: 'Tres bas',
+  very_low: 'Très bas',
   low: 'Bas',
-  medium: 'Moyen',
-  high: 'Bon',
-  very_high: 'Excellent',
+  neutral: 'Neutre',
+  high: 'Haut',
+  very_high: 'Très haut',
 };
 
 const SECTOR_OPTIONS = [
   { value: 'IT', label: 'Technologies de l\'information' },
   { value: 'CONSTRUCTION', label: 'Construction' },
   { value: 'MARKETING', label: 'Marketing' },
-  { value: 'HEALTHCARE', label: 'Sante' },
+  { value: 'HEALTHCARE', label: 'Santé' },
   { value: 'FINANCE', label: 'Finance' },
-  { value: 'CUSTOM', label: 'Autre / personnalise' },
+  { value: 'CUSTOM', label: 'Autre / personnalisé' },
 ];
 
 const DIFFICULTY_OPTIONS = [
-  { value: 'BEGINNER', label: 'Debutant' },
-  { value: 'INTERMEDIATE', label: 'Intermediaire' },
-  { value: 'ADVANCED', label: 'Avance' },
+  { value: 'BEGINNER', label: 'Débutant' },
+  { value: 'INTERMEDIATE', label: 'Intermédiaire' },
+  { value: 'ADVANCED', label: 'Avancé' },
 ];
 
 const SCENARIO_TYPE_OPTIONS = [
@@ -147,10 +150,10 @@ export default function CreateSimulationPage() {
       const scenario = await simulationApi.generateScenario(params);
       setSelectedScenario(scenario);
       setIsGenerated(true);
-      toast.success('Scenario genere avec succes !');
+      toast.success('Scénario généré avec succès !');
     } catch (err: any) {
       setError(err.message);
-      toast.error('Erreur lors de la generation du scenario');
+      toast.error('Erreur lors de la génération du scénario');
     } finally {
       setGenerating(false);
     }
@@ -163,19 +166,15 @@ export default function CreateSimulationPage() {
 
   return (
     <>
-      <Toolbar>
-        <ToolbarHeading>
-          <h1 className="text-xl font-medium text-gray-900">Nouvelle simulation</h1>
-          <p className="text-sm text-gray-700">Choisissez un scenario ou generez-en un avec l'IA</p>
-        </ToolbarHeading>
-        <ToolbarActions>
-          <Link to="/simulations">
-            <Button variant="outline" size="sm">
-              Retour aux simulations
-            </Button>
-          </Link>
-        </ToolbarActions>
-      </Toolbar>
+      <PageHeader
+        breadcrumbs={[
+          { label: 'Tableau de bord', to: '/dashboard' },
+          { label: 'Simulations', to: '/simulations' },
+          { label: 'Nouvelle' },
+        ]}
+        title="Nouvelle simulation"
+        subtitle="Choisissez un scénario ou faites-en générer un par l'IA."
+      />
 
       {/* Scenario detail modal */}
       <Dialog open={!!selectedScenario} onOpenChange={(open) => { if (!open) { setSelectedScenario(null); setIsGenerated(false); } }}>
@@ -196,10 +195,10 @@ export default function CreateSimulationPage() {
                         </span>
                       )}
                       {isGenerated && (
-                        <Badge variant="info" appearance="light" size="sm">Genere par l'IA</Badge>
+                        <Badge variant="info" appearance="light" size="sm">Généré par l'IA</Badge>
                       )}
                     </div>
-                    <DialogTitle className="text-lg font-semibold leading-snug">{selectedScenario.title}</DialogTitle>
+                    <DialogTitle className="font-display text-lg font-extrabold text-[var(--brand-700)] leading-snug">{selectedScenario.title}</DialogTitle>
                     {selectedScenario.description && (
                       <p className="text-sm text-muted-foreground leading-relaxed">{selectedScenario.description}</p>
                     )}
@@ -213,7 +212,7 @@ export default function CreateSimulationPage() {
                     </div>
                     <div className="text-center">
                       <div className="text-lg font-bold text-foreground">{selectedScenario.estimatedDurationHours}h</div>
-                      <div className="text-[10px] text-muted-foreground">Duree</div>
+                      <div className="text-[10px] text-muted-foreground">Durée</div>
                     </div>
                     <div className="text-center">
                       <div className="text-lg font-bold text-foreground">{selectedScenario.objectives.length}</div>
@@ -246,7 +245,7 @@ export default function CreateSimulationPage() {
                     {/* Objectives */}
                     {selectedScenario.objectives.length > 0 && (
                       <div>
-                        <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Objectifs du scenario</h4>
+                        <h4 className="font-display text-sm font-bold text-[var(--brand-700)] mb-3">Objectifs du scénario</h4>
                         <div className="space-y-2">
                           {selectedScenario.objectives.map((obj, i) => (
                             <div key={i} className="flex items-start gap-2.5 p-2.5 rounded-lg bg-muted/50">
@@ -264,7 +263,7 @@ export default function CreateSimulationPage() {
                     <div className="space-y-5">
                       {selectedScenario.competencies.length > 0 && (
                         <div>
-                          <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Competences travaillees</h4>
+                          <h4 className="font-display text-sm font-bold text-[var(--brand-700)] mb-3">Compétences travaillées</h4>
                           <div className="flex flex-wrap gap-2">
                             {selectedScenario.competencies.map((comp, i) => (
                               <span key={i} className="px-3 py-1 bg-brand-500/5 text-brand-500 border border-brand-500/15 rounded-full text-xs font-medium">
@@ -278,7 +277,7 @@ export default function CreateSimulationPage() {
                       {isGenerated && (
                         <div className="p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
                           <p className="text-xs text-blue-700 dark:text-blue-300">
-                            Ce scenario a ete genere par l'IA et adapte a votre profil. Vous pouvez le lancer directement.
+                            Ce scénario a été généré par l'IA et adapté à votre profil. Vous pouvez le lancer directement.
                           </p>
                         </div>
                       )}
@@ -288,11 +287,11 @@ export default function CreateSimulationPage() {
                   {/* Phases timeline */}
                   {selectedScenario.phases.length > 0 && (
                     <div>
-                      <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-                        Deroulement du projet
+                      <h4 className="font-display text-sm font-bold text-[var(--brand-700)] mb-3">
+                        Déroulement du projet
                         {selectedScenario.scenarioType === 'BROWNFIELD' && (
                           <span className="ml-1.5 text-amber-600 font-normal normal-case">
-                            — vous demarrez a la phase {selectedScenario.startingPhaseOrder + 1}
+                            — vous démarrez à la phase {selectedScenario.startingPhaseOrder + 1}
                           </span>
                         )}
                       </h4>
@@ -330,12 +329,12 @@ export default function CreateSimulationPage() {
                                 </div>
                                 {isStart && (
                                   <div className="mt-1.5">
-                                    <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-600 font-medium">Depart</span>
+                                    <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-600 font-medium">Départ</span>
                                   </div>
                                 )}
                                 {isBefore && (
                                   <div className="mt-1.5">
-                                    <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">Termine</span>
+                                    <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">Terminé</span>
                                   </div>
                                 )}
                               </div>
@@ -348,7 +347,7 @@ export default function CreateSimulationPage() {
                   {/* Brownfield context */}
                   {selectedScenario.scenarioType === 'BROWNFIELD' && selectedScenario.brownfieldContext && (
                     <div className="p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg space-y-3">
-                      <h4 className="text-xs font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">Contexte de reprise</h4>
+                      <h4 className="font-display text-sm font-bold text-[var(--brand-700)]">Contexte de reprise</h4>
                       {selectedScenario.brownfieldContext.previousPmNotes && (
                         <p className="text-sm text-amber-800 dark:text-amber-300 italic leading-relaxed">
                           &laquo; {selectedScenario.brownfieldContext.previousPmNotes} &raquo;
@@ -357,11 +356,11 @@ export default function CreateSimulationPage() {
                       <div className="grid grid-cols-4 gap-3">
                         <div className="text-center p-2 bg-white dark:bg-background rounded-lg border border-amber-200 dark:border-amber-800">
                           <div className="text-lg font-bold text-destructive">{selectedScenario.brownfieldContext.accumulatedDelays}j</div>
-                          <div className="text-[10px] text-muted-foreground">Retard accumule</div>
+                          <div className="text-[10px] text-muted-foreground">Retard accumulé</div>
                         </div>
                         <div className="text-center p-2 bg-white dark:bg-background rounded-lg border border-amber-200 dark:border-amber-800">
                           <div className="text-lg font-bold text-amber-600">{Math.round(selectedScenario.brownfieldContext.budgetUsed * 100)}%</div>
-                          <div className="text-[10px] text-muted-foreground">Budget consomme</div>
+                          <div className="text-[10px] text-muted-foreground">Budget consommé</div>
                         </div>
                         <div className="text-center p-2 bg-white dark:bg-background rounded-lg border border-amber-200 dark:border-amber-800">
                           <div className="text-lg font-bold text-amber-600">{selectedScenario.brownfieldContext.knownRisks.filter((r) => r.status === 'ACTIVE').length}</div>
@@ -369,12 +368,12 @@ export default function CreateSimulationPage() {
                         </div>
                         <div className="text-center p-2 bg-white dark:bg-background rounded-lg border border-amber-200 dark:border-amber-800">
                           <div className="text-lg font-bold text-amber-600">{MORALE_LABELS[selectedScenario.brownfieldContext.teamMorale] ?? selectedScenario.brownfieldContext.teamMorale}</div>
-                          <div className="text-[10px] text-muted-foreground">Moral equipe</div>
+                          <div className="text-[10px] text-muted-foreground">Moral équipe</div>
                         </div>
                       </div>
                       {selectedScenario.brownfieldContext.knownRisks.length > 0 && (
                         <div>
-                          <h5 className="text-[11px] font-semibold text-amber-700 dark:text-amber-400 mb-1.5">Risques identifies</h5>
+                          <h5 className="text-[11px] font-semibold text-amber-700 dark:text-amber-400 mb-1.5">Risques identifiés</h5>
                           <div className="space-y-1">
                             {selectedScenario.brownfieldContext.knownRisks.map((risk, i) => (
                               <div key={i} className="flex items-center gap-2 text-xs p-1.5 bg-white dark:bg-background rounded border border-amber-200/50 dark:border-amber-800/50">
@@ -400,31 +399,14 @@ export default function CreateSimulationPage() {
               {/* Sticky footer */}
               <div className="px-6 py-4 border-t border-border bg-muted/30 flex items-center justify-between shrink-0">
                 <Button
-                  variant="ghost"
-                  size="sm"
+                  variant="outline"
+                  size="md"
                   onClick={() => { setSelectedScenario(null); setIsGenerated(false); }}
                 >
                   Annuler
                 </Button>
-                <Button
-                  onClick={handleLaunch}
-                  disabled={creating}
-                  variant="primary"
-                  className="gap-2 px-6"
-                >
-                  {creating ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Lancement en cours...
-                    </>
-                  ) : (
-                    <>
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                      Lancer la simulation
-                    </>
-                  )}
+                <Button variant="primary" size="md" onClick={handleLaunch} disabled={creating}>
+                  {creating ? 'Lancement…' : 'Lancer la simulation'}
                 </Button>
               </div>
             </>
@@ -440,14 +422,15 @@ export default function CreateSimulationPage() {
         )}
 
         {/* Tab switcher */}
-        <div className="flex items-center gap-1 mb-5 p-1 bg-muted rounded-lg w-fit">
+        <div className="mb-5 flex items-center gap-1 border-b border-border">
           <button
             onClick={() => setActiveTab('catalog')}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            className={cn(
+              'cursor-pointer border-b-2 px-4 py-2.5 text-sm font-semibold transition-colors',
               activeTab === 'catalog'
-                ? 'bg-background text-foreground shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
+                ? 'border-[var(--accent-500)] text-[var(--accent-700)]'
+                : 'border-transparent text-[var(--neutral-400)] hover:text-[var(--brand-700)]',
+            )}
           >
             <span className="flex items-center gap-2">
               <KeenIcon icon="element-11" style="duotone" />
@@ -456,15 +439,16 @@ export default function CreateSimulationPage() {
           </button>
           <button
             onClick={() => setActiveTab('generate')}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            className={cn(
+              'cursor-pointer border-b-2 px-4 py-2.5 text-sm font-semibold transition-colors',
               activeTab === 'generate'
-                ? 'bg-background text-foreground shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
+                ? 'border-[var(--accent-500)] text-[var(--accent-700)]'
+                : 'border-transparent text-[var(--neutral-400)] hover:text-[var(--brand-700)]',
+            )}
           >
             <span className="flex items-center gap-2">
               <KeenIcon icon="artificial-intelligence" style="duotone" />
-              Generer avec l'IA
+              Générer avec l'IA
             </span>
           </button>
         </div>
@@ -485,7 +469,7 @@ export default function CreateSimulationPage() {
                 <CardContent className="flex flex-col items-center justify-center py-16 gap-4">
                   <span className="text-4xl">📋</span>
                   <p className="text-muted-foreground text-sm">
-                    Aucun scenario disponible pour le moment.
+                    Aucun scénario disponible pour le moment.
                   </p>
                 </CardContent>
               </Card>
@@ -495,115 +479,35 @@ export default function CreateSimulationPage() {
               <>
                 {/* Recommended scenarios */}
                 {recommendedScenarios.length > 0 && (
-                  <div className="mb-6">
-                    <div className="flex items-center gap-2 mb-3">
-                      <KeenIcon icon="star" style="solid" className="text-warning" />
-                      <h3 className="text-sm font-semibold text-foreground">Recommandes pour vous</h3>
+                  <section className="mb-6">
+                    <h3 className="mb-3 font-display text-[15px] font-bold text-[var(--brand-700)]">
+                      Recommandés pour vous
+                    </h3>
+                    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+                      {recommendedScenarios.map((scenario) => (
+                        <ScenarioCard
+                          key={scenario.id}
+                          scenario={scenario}
+                          recommended
+                          onSelect={handleSelectScenario}
+                        />
+                      ))}
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {recommendedScenarios.map((scenario) => {
-                        const isSelected = selectedScenario?.id === scenario.id;
-                        return (
-                          <Card
-                            key={scenario.id}
-                            className={`cursor-pointer transition-all duration-200 border-warning/30 bg-warning/5 hover:border-brand-500/40 ${
-                              isSelected ? 'ring-2 ring-primary' : ''
-                            }`}
-                            onClick={() => handleSelectScenario(scenario)}
-                          >
-                            <CardContent className="p-4 space-y-2">
-                              <div className="flex items-start justify-between gap-2">
-                                <h3 className="font-semibold text-sm">{scenario.title}</h3>
-                                <Badge variant="warning" appearance="light" size="xs">
-                                  Recommande
-                                </Badge>
-                              </div>
-                              {scenario.description && (
-                                <p className="text-sm text-muted-foreground line-clamp-2">
-                                  {scenario.description}
-                                </p>
-                              )}
-                              <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
-                                <span className="inline-flex items-center gap-1"><KeenIcon icon="folder" style="duotone" className="text-[10px] leading-none" />{scenario.sector}</span>
-                                <span
-                                  className={`px-1.5 py-0.5 rounded-full font-medium ${DIFFICULTY_COLORS[scenario.difficulty]}`}
-                                >
-                                  {DIFFICULTY_LABELS[scenario.difficulty]}
-                                </span>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        );
-                      })}
-                    </div>
-                  </div>
+                  </section>
                 )}
 
                 {/* All scenarios */}
                 <p className="text-sm text-muted-foreground mb-4">
-                  Choisissez un scenario pour demarrer une nouvelle simulation.
+                  Choisissez un scénario pour démarrer une nouvelle simulation.
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                  {scenarios.map((scenario) => {
-                    const isSelected = selectedScenario?.id === scenario.id;
-                    return (
-                      <Card
-                        key={scenario.id}
-                        className={`cursor-pointer transition-all duration-200 hover:border-brand-500/40 ${
-                          isSelected ? 'ring-2 ring-primary' : ''
-                        }`}
-                        onClick={() => handleSelectScenario(scenario)}
-                      >
-                        <CardContent className="p-5 space-y-3">
-                          <div className="flex items-start justify-between gap-2">
-                            <h3 className="font-semibold text-sm">{scenario.title}</h3>
-                            <div className="flex items-center gap-1.5 shrink-0">
-                              {scenario.scenarioType === 'BROWNFIELD' && (
-                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${SCENARIO_TYPE_CONFIG.BROWNFIELD.className}`}>
-                                  Reprise
-                                </span>
-                              )}
-                              <span
-                                className={`px-2 py-0.5 rounded-full text-xs font-medium ${DIFFICULTY_COLORS[scenario.difficulty]}`}
-                              >
-                                {DIFFICULTY_LABELS[scenario.difficulty]}
-                              </span>
-                            </div>
-                          </div>
-
-                          {scenario.description && (
-                            <p className="text-sm text-muted-foreground line-clamp-2">
-                              {scenario.description}
-                            </p>
-                          )}
-
-                          <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
-                            <span className="inline-flex items-center gap-1"><KeenIcon icon="folder" style="duotone" className="text-xs leading-none" />{scenario.sector}</span>
-                            <span className="inline-flex items-center gap-1"><KeenIcon icon="time" style="duotone" className="text-xs leading-none" />{scenario.estimatedDurationHours}h</span>
-                            <span className="inline-flex items-center gap-1"><KeenIcon icon="element-11" style="duotone" className="text-xs leading-none" />{scenario.phases.length} phases</span>
-                          </div>
-
-                          {scenario.competencies.length > 0 && (
-                            <div className="flex flex-wrap gap-1">
-                              {scenario.competencies.slice(0, 4).map((comp, i) => (
-                                <span
-                                  key={i}
-                                  className="px-1.5 py-0.5 bg-muted text-muted-foreground rounded text-[10px]"
-                                >
-                                  {comp}
-                                </span>
-                              ))}
-                              {scenario.competencies.length > 4 && (
-                                <span className="px-1.5 py-0.5 text-muted-foreground text-[10px]">
-                                  +{scenario.competencies.length - 4}
-                                </span>
-                              )}
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+                  {scenarios.map((scenario) => (
+                    <ScenarioCard
+                      key={scenario.id}
+                      scenario={scenario}
+                      onSelect={handleSelectScenario}
+                    />
+                  ))}
                 </div>
               </>
             )}
@@ -616,13 +520,13 @@ export default function CreateSimulationPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <KeenIcon icon="artificial-intelligence" style="duotone" />
-                Generer un scenario avec l'IA
+                Générer un scénario avec l'IA
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-5">
               <p className="text-sm text-muted-foreground">
-                Decrivez votre projet et vos objectifs d'apprentissage. L'IA generera un scenario
-                de simulation adapte a vos besoins.
+                Décrivez votre projet et vos objectifs d'apprentissage. L'IA générera un scénario
+                de simulation adapté à vos besoins.
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -660,7 +564,7 @@ export default function CreateSimulationPage() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-foreground">Difficulte</label>
+                    <label className="text-sm font-medium text-foreground">Difficulté</label>
                     <Select
                       value={genForm.difficulty}
                       onValueChange={(v) => setGenForm((p) => ({ ...p, difficulty: v }))}
@@ -679,7 +583,7 @@ export default function CreateSimulationPage() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-foreground">Type de scenario</label>
+                    <label className="text-sm font-medium text-foreground">Type de scénario</label>
                     <Select
                       value={genForm.scenarioType}
                       onValueChange={(v) => setGenForm((p) => ({ ...p, scenarioType: v }))}
@@ -706,7 +610,7 @@ export default function CreateSimulationPage() {
                       }
                     />
                     <label htmlFor="useProfile" className="text-sm text-foreground cursor-pointer">
-                      Utiliser mon profil pour calibrer le scenario
+                      Utiliser mon profil pour calibrer le scénario
                     </label>
                   </div>
                 </div>
@@ -719,7 +623,7 @@ export default function CreateSimulationPage() {
                       <span className="text-muted-foreground font-normal ml-1">(optionnel)</span>
                     </label>
                     <Textarea
-                      placeholder="Decrivez le contexte et les enjeux du projet..."
+                      placeholder="Décrivez le contexte et les enjeux du projet..."
                       rows={3}
                       value={genForm.projectDescription}
                       onChange={(e) => setGenForm((p) => ({ ...p, projectDescription: e.target.value }))}
@@ -741,11 +645,11 @@ export default function CreateSimulationPage() {
 
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-foreground">
-                      Contraintes specifiques
+                      Contraintes spécifiques
                       <span className="text-muted-foreground font-normal ml-1">(optionnel)</span>
                     </label>
                     <Textarea
-                      placeholder="Ex: Budget limite, equipe reduite, delai serre..."
+                      placeholder="Ex: Budget limité, équipe réduite, délai serré..."
                       rows={3}
                       value={genForm.constraints}
                       onChange={(e) => setGenForm((p) => ({ ...p, constraints: e.target.value }))}
@@ -764,12 +668,12 @@ export default function CreateSimulationPage() {
                   {generating ? (
                     <>
                       <span className="animate-spin">⏳</span>
-                      Generation en cours...
+                      Génération en cours...
                     </>
                   ) : (
                     <>
                       <KeenIcon icon="artificial-intelligence" style="duotone" />
-                      Generer le scenario
+                      Générer le scénario
                     </>
                   )}
                 </Button>
