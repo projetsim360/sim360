@@ -174,7 +174,7 @@ export function HandoverBanner({ simulationId, sim, onHandoverComplete }: Handov
       .finally(() => setLoading(false));
   }, [simulationId]);
 
-  if (loading) return <Skeleton className="h-72 sm:h-44 w-full rounded-xl mb-5" />;
+  if (loading) return <Skeleton className="h-72 sm:h-56 w-full rounded-xl mb-5" />;
   if (!status || !status.hasHandover) return null;
 
   const currentStepIndex = status.isComplete
@@ -326,7 +326,7 @@ export function HandoverBanner({ simulationId, sim, onHandoverComplete }: Handov
           <motion.ol
             role="list"
             variants={reduce ? undefined : staggerContainer}
-            initial={reduce ? undefined : 'hidden'}
+            initial={reduce ? false : 'hidden'}
             animate={reduce ? undefined : 'show'}
             className="hidden sm:flex items-start justify-center gap-0"
           >
@@ -360,7 +360,7 @@ export function HandoverBanner({ simulationId, sim, onHandoverComplete }: Handov
           <motion.ol
             role="list"
             variants={reduce ? undefined : staggerContainer}
-            initial={reduce ? undefined : 'hidden'}
+            initial={reduce ? false : 'hidden'}
             animate={reduce ? undefined : 'show'}
             className="flex sm:hidden flex-col"
           >
