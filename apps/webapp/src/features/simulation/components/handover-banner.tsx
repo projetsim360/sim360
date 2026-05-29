@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useId } from 'react';
 import { Link } from 'react-router';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { GridBackground } from '@/components/ui/grid-background';
 import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
 import { staggerContainer, staggerItem } from '@/lib/motion';
@@ -162,6 +161,7 @@ function MobileStep({
 export function HandoverBanner({ simulationId, sim, onHandoverComplete }: HandoverBannerProps) {
   const { user } = useAuth();
   const reduce = useReducedMotion();
+  const gridId = useId();
   const [status, setStatus] = useState<HandoverStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [completing, setCompleting] = useState(false);
@@ -265,6 +265,19 @@ export function HandoverBanner({ simulationId, sim, onHandoverComplete }: Handov
           50% { box-shadow: 0 0 0 8px rgba(238,122,58,0.20); }
         }
         .animate-handover-pulse-ring { animation: handover-pulse-ring 2s ease-in-out infinite; }
+
+        @keyframes handover-beam-h {
+          0%   { left: -30px;  opacity: 0; }
+          10%  { opacity: 1; }
+          90%  { opacity: 1; }
+          100% { left: calc(100% + 30px); opacity: 0; }
+        }
+        @keyframes handover-beam-v {
+          0%   { top: -30px;  opacity: 0; }
+          10%  { opacity: 1; }
+          90%  { opacity: 1; }
+          100% { top: calc(100% + 30px); opacity: 0; }
+        }
       `}</style>
       <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-[var(--brand-900)] via-[var(--brand-800)] to-[var(--brand-700)]">
         <div
@@ -272,26 +285,46 @@ export function HandoverBanner({ simulationId, sim, onHandoverComplete }: Handov
           className="pointer-events-none absolute -top-12 -right-12 w-52 h-52 rounded-full"
           style={{ background: 'radial-gradient(circle, rgba(238,122,58,0.42), transparent 70%)' }}
         />
-        <GridBackground
-          gridSize="12:8"
-          colors={{
-            background: 'bg-transparent',
-            borderColor: 'border-white/10',
-            borderSize: '1px',
-            borderStyle: 'solid',
-          }}
-          beams={
-            reduce
-              ? { count: 0 }
-              : {
-                  count: 3,
-                  colors: ['bg-[var(--accent-500)]', 'bg-[var(--accent-300)]', 'bg-white'],
-                  shadow: 'shadow-md shadow-[var(--accent-500)]/50 rounded-full',
-                  speed: 5,
-                }
-          }
-          className="absolute inset-0 pointer-events-none"
-        />
+        {/* Square dotted grid via SVG pattern (truly square cells, independent of container ratio) */}
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 h-full w-full"
+        >
+          <defs>
+            <pattern id={gridId} width="32" height="32" patternUnits="userSpaceOnUse">
+              <path
+                d="M 32 0 L 0 0 0 32"
+                fill="none"
+                stroke="rgba(255,255,255,0.22)"
+                strokeWidth="1"
+                strokeDasharray="1 3"
+                strokeLinecap="round"
+              />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill={`url(#${gridId})`} />
+        </svg>
+
+        {/* Animated beams — gated by reduced-motion */}
+        {!reduce && (
+          <>
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute h-[2px] w-6 rounded-full bg-[var(--accent-500)] shadow-[0_0_8px_rgba(238,122,58,0.8)]"
+              style={{ top: '32px', left: 0, animation: 'handover-beam-h 5s linear 0.5s infinite' }}
+            />
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute h-[2px] w-6 rounded-full bg-[var(--accent-300)] shadow-[0_0_8px_rgba(245,165,112,0.8)]"
+              style={{ top: '96px', left: 0, animation: 'handover-beam-h 6s linear 2.5s infinite' }}
+            />
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute w-[2px] h-6 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]"
+              style={{ left: '96px', top: 0, animation: 'handover-beam-v 7s linear 1.5s infinite' }}
+            />
+          </>
+        )}
         <div className="relative z-10 p-5 sm:p-6 text-white">
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-5">
