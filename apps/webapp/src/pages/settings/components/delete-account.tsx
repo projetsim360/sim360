@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useAuth } from '@/providers/auth-provider';
 import { api } from '@/lib/api-client';
 import { toast } from 'sonner';
 import { clearTokens } from '@/lib/auth';
@@ -10,9 +9,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 export function DeleteAccount() {
-  // Keep `useAuth` for parity with previous behavior (logout was imported but logout
-  // happens via window.location.href, so we don't actually need it).
-  useAuth();
   const [confirmed, setConfirmed] = useState(false);
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
