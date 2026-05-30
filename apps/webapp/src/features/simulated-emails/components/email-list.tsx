@@ -32,6 +32,7 @@ export function EmailList({
 }: EmailListProps) {
   return (
     <Card
+      aria-busy={isLoading}
       className={cn(
         'overflow-hidden',
         'border-[var(--neutral-100)] dark:border-white/[0.06]',
@@ -40,7 +41,7 @@ export function EmailList({
       )}
     >
       {isLoading ? (
-        <div className="divide-y divide-[var(--neutral-100)] dark:divide-white/[0.06]">
+        <div aria-hidden="true" className="divide-y divide-[var(--neutral-100)] dark:divide-white/[0.06]">
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="flex items-start gap-3 px-4 py-3">
               <Skeleton className="size-4 mt-1.5 shrink-0 rounded" />
@@ -60,18 +61,19 @@ export function EmailList({
           <EmailEmptyState variant="empty-folder" folder={folder} />
         )
       ) : (
-        <div className="divide-y divide-[var(--neutral-100)] dark:divide-white/[0.06]">
+        <ul role="list" className="list-none m-0 p-0">
           {emails.map((email) => (
-            <EmailListRow
-              key={email.id}
-              email={email}
-              isActive={activeEmailId === email.id}
-              isSelected={selectedIds.has(email.id)}
-              onClick={() => onSelectEmail(email)}
-              onToggleSelect={(checked) => onToggleSelect(email.id, checked)}
-            />
+            <li key={email.id}>
+              <EmailListRow
+                email={email}
+                isActive={activeEmailId === email.id}
+                isSelected={selectedIds.has(email.id)}
+                onClick={() => onSelectEmail(email)}
+                onToggleSelect={(checked) => onToggleSelect(email.id, checked)}
+              />
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </Card>
   );
