@@ -8,7 +8,7 @@ const MAX_LENGTH = 2000;
 interface EmailReplyFormProps {
   value: string;
   onChange: (value: string) => void;
-  onSubmit: () => void;
+  onSubmit: (trimmedValue: string) => void;
   isPending: boolean;
 }
 
@@ -16,8 +16,9 @@ export const EmailReplyForm = forwardRef<HTMLTextAreaElement, EmailReplyFormProp
   function EmailReplyForm({ value, onChange, onSubmit, isPending }, ref) {
     function handleSubmit(e: FormEvent) {
       e.preventDefault();
-      if (!value.trim() || isPending) return;
-      onSubmit();
+      const trimmed = value.trim();
+      if (!trimmed || isPending) return;
+      onSubmit(trimmed);
     }
 
     return (
@@ -34,9 +35,15 @@ export const EmailReplyForm = forwardRef<HTMLTextAreaElement, EmailReplyFormProp
           disabled={isPending}
           className="resize-none bg-background"
           aria-label="Réponse à l'email"
+          aria-describedby="reply-counter"
         />
         <div className="flex items-center justify-between mt-2">
-          <span className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground">
+          <span
+            id="reply-counter"
+            aria-live="polite"
+            aria-atomic="true"
+            className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground"
+          >
             {value.length} / {MAX_LENGTH}
             <span aria-hidden="true">·</span>
             <KeenIcon icon="save-2" style="duotone" className="size-3" />
@@ -49,6 +56,7 @@ export const EmailReplyForm = forwardRef<HTMLTextAreaElement, EmailReplyFormProp
             disabled={isPending || !value.trim()}
             className="gap-1.5"
             title="Envoyer (R)"
+            aria-keyshortcuts="r"
           >
             {isPending ? (
               <>
@@ -66,6 +74,9 @@ export const EmailReplyForm = forwardRef<HTMLTextAreaElement, EmailReplyFormProp
               </>
             )}
           </Button>
+          <span className="sr-only" aria-live="assertive" aria-atomic="true">
+            {isPending ? 'Évaluation en cours…' : ''}
+          </span>
         </div>
       </form>
     );
