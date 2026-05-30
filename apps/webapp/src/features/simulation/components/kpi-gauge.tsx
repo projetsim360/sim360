@@ -63,12 +63,12 @@ export function KpiGauge({ kpiKey: _kpiKey, label, value, caption, tooltip, inve
               className="transition-[stroke-dasharray] duration-700 ease-out motion-reduce:transition-none"
             />
           </svg>
-          <span className="font-display text-[14px] font-extrabold text-[var(--brand-700)]">
+          <span className="font-display text-[14px] font-extrabold text-foreground">
             {Math.round(value)}
           </span>
         </div>
         {caption && (
-          <span className="text-[10px] leading-tight text-[var(--neutral-500)]">{caption}</span>
+          <span className="text-[10px] leading-tight text-muted-foreground">{caption}</span>
         )}
       </div>
     </div>

@@ -41,7 +41,7 @@ export function CockpitTimelineCard({ entries }: CockpitTimelineCardProps) {
           <span className="text-[11px] font-semibold uppercase tracking-[1px] text-[var(--neutral-400)]">
             Historique
           </span>
-          <h3 className="font-display text-[17px] font-bold text-[var(--brand-700)]">Timeline du projet</h3>
+          <h3 className="font-display text-[17px] font-bold text-foreground">Timeline du projet</h3>
         </div>
 
         {entries.length === 0 ? (
@@ -59,7 +59,7 @@ export function CockpitTimelineCard({ entries }: CockpitTimelineCardProps) {
                   <span className={cn('flex size-7 shrink-0 items-center justify-center rounded-lg', config.iconClass)}>
                     <KeenIcon icon={config.icon} style="duotone" className="text-sm" />
                   </span>
-                  <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-[var(--brand-700)]">
+                  <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-foreground">
                     {e.title}
                   </span>
                   <span className="shrink-0 text-[10px] text-[var(--neutral-400)]">{shortDate(e.date)}</span>

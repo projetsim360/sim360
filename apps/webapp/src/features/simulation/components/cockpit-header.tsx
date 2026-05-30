@@ -81,10 +81,10 @@ export function CockpitHeader({
         <span className="text-[11px] font-semibold uppercase tracking-[1px] text-[var(--neutral-400)]">
           Simulation
         </span>
-        <h2 className="mt-1 font-display text-[26px] font-extrabold leading-[1.1] tracking-[-0.02em] text-[var(--brand-700)] sm:text-[30px]">
+        <h2 className="mt-1 font-display text-[26px] font-extrabold leading-[1.1] tracking-[-0.02em] text-foreground sm:text-[30px]">
           {sim.project?.name ?? 'Projet'}
         </h2>
-        <p className="mt-1 truncate text-[13px] text-[var(--neutral-500)]">
+        <p className="mt-1 truncate text-[13px] text-muted-foreground">
           {sim.scenario?.title ?? ''}
         </p>
         <div className="mt-3 flex flex-wrap items-center gap-2">

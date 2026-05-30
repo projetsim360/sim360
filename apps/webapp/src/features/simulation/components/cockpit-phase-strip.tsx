@@ -9,8 +9,8 @@ export function CockpitPhaseStrip({ phases }: CockpitPhaseStripProps) {
   if (!phases || phases.length === 0) return null;
 
   return (
-    <div className="flex items-center gap-2 overflow-x-auto rounded-lg border border-border bg-white px-3 py-2.5">
-      <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[1px] text-[var(--neutral-400)]">
+    <div className="flex items-center gap-2 overflow-x-auto rounded-lg border border-border bg-card px-3 py-2.5">
+      <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[1px] text-muted-foreground">
         Phases
       </span>
       {phases.map((phase) => {
@@ -25,17 +25,17 @@ export function CockpitPhaseStrip({ phases }: CockpitPhaseStripProps) {
                   ? 'bg-[var(--success-500)]'
                   : active
                     ? 'bg-[var(--accent-500)]'
-                    : 'bg-[var(--brand-100)]',
+                    : 'bg-[var(--brand-100)] dark:bg-[var(--brand-700)]',
               )}
             />
             <span
               className={cn(
                 'whitespace-nowrap text-[11px] font-semibold',
                 done
-                  ? 'text-[var(--success-700)]'
+                  ? 'text-[var(--success-700)] dark:text-[var(--success-200)]'
                   : active
-                    ? 'text-[var(--accent-700)]'
-                    : 'text-[var(--neutral-400)]',
+                    ? 'text-[var(--accent-700)] dark:text-[var(--accent-300)]'
+                    : 'text-muted-foreground',
               )}
             >
               {done ? '✓ ' : active ? '● ' : ''}

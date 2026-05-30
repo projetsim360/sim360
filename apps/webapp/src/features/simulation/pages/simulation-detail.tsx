@@ -144,8 +144,8 @@ export default function SimulationDetailPage() {
           <Card>
             <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
               <KeenIcon icon="information-2" style="duotone" className="text-3xl text-[var(--neutral-400)]" />
-              <p className="text-sm font-medium text-[var(--brand-700)]">Impossible de charger cette simulation</p>
-              <p className="max-w-md text-xs text-[var(--neutral-500)]">{error}</p>
+              <p className="text-sm font-medium text-foreground">Impossible de charger cette simulation</p>
+              <p className="max-w-md text-xs text-muted-foreground">{error}</p>
               <Button variant="primary" size="sm" onClick={() => { setError(null); setLoading(true); loadData(); }}>
                 Réessayer
               </Button>
@@ -218,7 +218,7 @@ export default function SimulationDetailPage() {
               <Link
                 key={l.to}
                 to={l.to}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--neutral-200)] bg-card px-3 py-1.5 text-[13px] font-medium text-[var(--brand-700)] transition-colors hover:border-[var(--accent-300)] hover:bg-[var(--accent-50)]"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-[13px] font-medium text-foreground transition-colors hover:border-[var(--accent-300)] hover:bg-[var(--accent-50)] dark:hover:bg-[var(--accent-500)]/10"
               >
                 <KeenIcon icon={l.icon} style="duotone" className="text-sm text-[var(--accent-500)]" />
                 {l.label}

@@ -84,7 +84,7 @@ export function CockpitActionsCard({ simulationId, decisions, events, meetings }
             <span className="text-[11px] font-semibold uppercase tracking-[1px] text-[var(--neutral-400)]">
               À traiter
             </span>
-            <h3 className="font-display text-[17px] font-bold text-[var(--brand-700)]">
+            <h3 className="font-display text-[17px] font-bold text-foreground">
               {items.length} action{items.length > 1 ? 's' : ''} prioritaire{items.length > 1 ? 's' : ''}
             </h3>
           </div>
@@ -114,7 +114,7 @@ export function CockpitActionsCard({ simulationId, decisions, events, meetings }
                   <span className={cn('flex size-7 shrink-0 items-center justify-center rounded-lg', it.iconClass)}>
                     <KeenIcon icon={it.icon} style="duotone" className="text-sm" />
                   </span>
-                  <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-[var(--brand-700)]">
+                  <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-foreground">
                     {it.label}
                   </span>
                   {it.meta && (
