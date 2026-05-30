@@ -349,7 +349,7 @@ export class SimulatedEmailsService {
 
     if (email.status === EmailStatus.ARCHIVED) {
       throw new BadRequestException(
-        "Impossible de marquer un email archive comme non lu",
+        "Impossible de marquer un email archivé comme non lu",
       );
     }
     if (email.status === EmailStatus.UNREAD) {

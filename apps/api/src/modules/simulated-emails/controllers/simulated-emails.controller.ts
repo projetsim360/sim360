@@ -148,7 +148,7 @@ export class SimulatedEmailsController {
 
   @Post('simulations/:simId/emails/bulk-archive')
   @Auditable('EMAIL_BULK_ARCHIVED', 'SimulatedEmail')
-  @ApiOperation({ summary: 'Archiver plusieurs emails en une seule operation' })
+  @ApiOperation({ summary: 'Archiver plusieurs emails en une seule opération' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
   bulkArchive(
     @Param('simId') simId: string,
@@ -168,7 +168,7 @@ export class SimulatedEmailsController {
 
   @Post('simulations/:simId/emails/bulk-mark-read')
   @Auditable('EMAIL_BULK_MARKED_READ', 'SimulatedEmail')
-  @ApiOperation({ summary: 'Marquer plusieurs emails comme lus en une seule operation' })
+  @ApiOperation({ summary: 'Marquer plusieurs emails comme lus en une seule opération' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
   bulkMarkRead(
     @Param('simId') simId: string,
