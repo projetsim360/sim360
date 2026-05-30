@@ -2,6 +2,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { KeenIcon } from '@/components/keenicons';
 import { Checkbox } from '@/components/ui/checkbox';
+import { getInitials } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
 import { EmailPriorityBadge } from './email-priority-badge';
 import type { SimulatedEmail } from '../types/simulated-email.types';
@@ -12,16 +13,6 @@ interface EmailListRowProps {
   isSelected: boolean;
   onClick: () => void;
   onToggleSelect: (checked: boolean) => void;
-}
-
-function getInitials(name: string): string {
-  return name
-    .split(' ')
-    .filter(Boolean)
-    .map((w) => w[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2);
 }
 
 export function EmailListRow({
@@ -51,7 +42,7 @@ export function EmailListRow({
         'group relative flex items-start gap-3 px-4 py-3 cursor-pointer transition-colors',
         'border-b border-[var(--neutral-100)] dark:border-white/[0.06]',
         'hover:bg-[var(--neutral-50)] dark:hover:bg-white/[0.03]',
-        'focus-visible:outline-none focus-visible:bg-[var(--neutral-50)] dark:focus-visible:bg-white/[0.04]',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-500)] focus-visible:ring-inset',
         isActive &&
           'bg-[var(--brand-50)] dark:bg-[var(--brand-950)]/40 hover:bg-[var(--brand-50)] dark:hover:bg-[var(--brand-950)]/40',
         isHigh && !isActive && 'bg-gradient-to-r from-[var(--accent-50)] to-transparent dark:from-[var(--accent-950)]/20',
