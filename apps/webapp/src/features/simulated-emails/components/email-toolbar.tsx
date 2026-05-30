@@ -4,7 +4,8 @@ import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { EmailFilterPopover, type EmailFilterState } from './email-filter-popover';
@@ -16,6 +17,8 @@ const SORT_LABELS: Record<SortKey, string> = {
   'date-asc': 'Date (ancien → récent)',
   priority: 'Priorité (haute → basse)',
 };
+
+const SORT_KEYS = ['date-desc', 'date-asc', 'priority'] as const satisfies readonly SortKey[];
 
 interface EmailToolbarProps {
   search: string;
@@ -53,14 +56,16 @@ export function EmailToolbar({
           className="pl-9"
         />
         {search && (
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="icon"
             onClick={() => onSearchChange('')}
             aria-label="Effacer la recherche"
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-500)]"
+            className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground hover:text-foreground"
           >
             <KeenIcon icon="cross" style="solid" className="size-3.5" />
-          </button>
+          </Button>
         )}
       </div>
 
@@ -75,11 +80,16 @@ export function EmailToolbar({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          {(Object.keys(SORT_LABELS) as SortKey[]).map((key) => (
-            <DropdownMenuItem key={key} onClick={() => onSortChange(key)}>
-              {SORT_LABELS[key]}
-            </DropdownMenuItem>
-          ))}
+          <DropdownMenuRadioGroup
+            value={sort}
+            onValueChange={(v) => onSortChange(v as SortKey)}
+          >
+            {SORT_KEYS.map((key) => (
+              <DropdownMenuRadioItem key={key} value={key}>
+                {SORT_LABELS[key]}
+              </DropdownMenuRadioItem>
+            ))}
+          </DropdownMenuRadioGroup>
         </DropdownMenuContent>
       </DropdownMenu>
 

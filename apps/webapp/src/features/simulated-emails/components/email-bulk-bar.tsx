@@ -15,27 +15,37 @@ export function EmailBulkBar({
   selectedCount,
   totalCount,
   onSelectAll,
+  onMarkRead,
   onArchive,
   onCancel,
   isPending,
-  onMarkRead,
 }: EmailBulkBarProps) {
   const allSelected = selectedCount === totalCount;
 
   return (
-    <div className="flex flex-wrap items-center gap-2 py-2 px-3 rounded-md bg-[var(--brand-50)] dark:bg-[var(--brand-950)]/40 border border-[var(--brand-100)] dark:border-[var(--brand-900)]/60">
-      <span className="font-semibold text-sm text-[var(--brand-700)] dark:text-[var(--brand-300)]">
+    <div
+      role="toolbar"
+      aria-label="Actions sur la sélection"
+      className="flex flex-wrap items-center gap-2 py-2 px-3 rounded-md bg-[var(--brand-50)] dark:bg-[var(--brand-950)]/40 border border-[var(--brand-100)] dark:border-[var(--brand-900)]/60"
+    >
+      <span
+        aria-live="polite"
+        aria-atomic="true"
+        className="font-semibold text-sm text-[var(--brand-700)] dark:text-[var(--brand-300)]"
+      >
         {selectedCount} sélectionné{selectedCount > 1 ? 's' : ''}
       </span>
 
       {!allSelected && (
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="sm"
           onClick={onSelectAll}
-          className="text-xs underline text-[var(--brand-700)] dark:text-[var(--brand-300)] hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-500)] rounded"
+          className="text-xs text-[var(--brand-700)] dark:text-[var(--brand-300)] h-auto p-0 underline hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-500)]"
         >
           Tout sélectionner ({totalCount})
-        </button>
+        </Button>
       )}
 
       <div className="flex-1" />
