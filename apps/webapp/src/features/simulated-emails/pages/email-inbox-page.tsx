@@ -266,7 +266,7 @@ export default function EmailInboxPage() {
       await archiveMutation.mutateAsync(activeEmail.id);
       toast.success('Email archivé.');
       closeDrawer();
-    } catch {
+    } catch (_err) {
       toast.error("Erreur lors de l'archivage.");
     }
   }
@@ -277,7 +277,7 @@ export default function EmailInboxPage() {
       await markUnreadMutation.mutateAsync(activeEmail.id);
       toast.success('Email marqué comme non lu.');
       closeDrawer();
-    } catch {
+    } catch (_err) {
       toast.error('Erreur lors de la mise à jour.');
     }
   }
@@ -290,9 +290,9 @@ export default function EmailInboxPage() {
         data: { response },
       });
       toast.success('Réponse envoyée.');
-    } catch {
+    } catch (_err) {
       toast.error("Erreur lors de l'envoi de la réponse.");
-      throw; // Re-throw so EmailDetailDrawer.handleSubmit can catch it cleanly
+      throw _err; // Re-throw so EmailDetailDrawer.handleSubmit can catch it cleanly
     }
   }
 
@@ -304,7 +304,7 @@ export default function EmailInboxPage() {
         `${result.archived} email${result.archived > 1 ? 's' : ''} archivé${result.archived > 1 ? 's' : ''}.`,
       );
       clearSelection();
-    } catch {
+    } catch (_err) {
       toast.error("Erreur lors de l'archivage groupé.");
     }
   }
@@ -317,7 +317,7 @@ export default function EmailInboxPage() {
         `${result.updated} email${result.updated > 1 ? 's' : ''} marqué${result.updated > 1 ? 's' : ''} comme lu${result.updated > 1 ? 's' : ''}.`,
       );
       clearSelection();
-    } catch {
+    } catch (_err) {
       toast.error('Erreur lors de la mise à jour groupée.');
     }
   }

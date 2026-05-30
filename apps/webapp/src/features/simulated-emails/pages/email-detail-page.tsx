@@ -37,7 +37,7 @@ export default function EmailDetailPage() {
       await archiveMutation.mutateAsync(emailId);
       toast.success('Email archive.');
       navigate(`/simulations/${simId}/emails`);
-    } catch {
+    } catch (_err) {
       toast.error('Erreur lors de l\'archivage.');
     }
   }
@@ -231,7 +231,7 @@ export default function EmailDetailPage() {
                     });
                     toast.success('Réponse envoyée.');
                     setReplyText('');
-                  } catch {
+                  } catch (_err) {
                     toast.error("Erreur lors de l'envoi.");
                   }
                 }}

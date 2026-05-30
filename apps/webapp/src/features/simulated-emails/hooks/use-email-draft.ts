@@ -26,7 +26,7 @@ export function useEmailDraft(emailId: string | null) {
     try {
       const stored = window.localStorage.getItem(DRAFT_KEY_PREFIX + emailId);
       setDraftState(stored ?? '');
-    } catch {
+    } catch (_err) {
       setDraftState('');
     }
   }, [emailId]);
@@ -43,7 +43,7 @@ export function useEmailDraft(emailId: string | null) {
         } else {
           window.localStorage.setItem(DRAFT_KEY_PREFIX + id, value);
         }
-      } catch {
+      } catch (_err) {
         // localStorage may be full or blocked — silently degrade.
       }
     }, DEBOUNCE_MS);
@@ -59,7 +59,7 @@ export function useEmailDraft(emailId: string | null) {
     if (!id) return;
     try {
       window.localStorage.removeItem(DRAFT_KEY_PREFIX + id);
-    } catch {
+    } catch (_err) {
       // ignore
     }
   }

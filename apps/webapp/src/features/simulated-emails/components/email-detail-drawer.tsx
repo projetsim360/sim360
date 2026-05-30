@@ -58,7 +58,7 @@ export function EmailDetailDrawer({
     try {
       await onRespond(trimmedValue);
       clearDraft();
-    } catch {
+    } catch (_err) {
       // Error toast handled by caller's useMutation onError. Swallow here
       // to prevent an unhandled promise rejection.
     }
