@@ -148,7 +148,9 @@ export default function EmailInboxPage() {
   });
 
   const filtersActive =
-    filters.priorities.length > 0 || filters.period !== null || filters.scoreMin70;
+    filters.priorities.length > 0 ||
+    filters.period !== null ||
+    (showScoreFilter && filters.scoreMin70);
 
   // ─── Apply search + filters + sort ───
   const visibleEmails = useMemo(() => {
@@ -195,9 +197,9 @@ export default function EmailInboxPage() {
     setSelectedIds(new Set());
   }
 
-  // Reset selection when folder changes
+  // Reset selection when folder changes (inline to avoid exhaustive-deps warning on clearSelection)
   useEffect(() => {
-    clearSelection();
+    setSelectedIds(new Set());
   }, [activeFolder]);
 
   // ─── Drawer / active email ───
@@ -282,11 +284,16 @@ export default function EmailInboxPage() {
 
   async function handleRespond(response: string) {
     if (!activeEmail) throw new Error('No active email');
-    await respondMutation.mutateAsync({
-      emailId: activeEmail.id,
-      data: { response },
-    });
-    toast.success('Réponse envoyée.');
+    try {
+      await respondMutation.mutateAsync({
+        emailId: activeEmail.id,
+        data: { response },
+      });
+      toast.success('Réponse envoyée.');
+    } catch {
+      toast.error("Erreur lors de l'envoi de la réponse.");
+      throw; // Re-throw so EmailDetailDrawer.handleSubmit can catch it cleanly
+    }
   }
 
   async function handleBulkArchive() {
