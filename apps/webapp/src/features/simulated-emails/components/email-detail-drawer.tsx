@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { KeenIcon } from '@/components/keenicons';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import { getInitials } from '@/lib/helpers';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -47,7 +47,7 @@ export function EmailDetailDrawer({
   const isOpen = email !== null;
   const isArchived = email?.status === 'ARCHIVED';
   const isResponded = email?.status === 'RESPONDED';
-  const canReply = email && !isArchived && !isResponded;
+  const canReply = Boolean(email && !isArchived && !isResponded);
 
   function focusReply() {
     if (canReply) textareaRef.current?.focus();
@@ -55,8 +55,13 @@ export function EmailDetailDrawer({
 
   // EmailReplyForm calls onSubmit(trimmedValue) — we forward it directly
   async function handleSubmit(trimmedValue: string) {
-    await onRespond(trimmedValue);
-    clearDraft();
+    try {
+      await onRespond(trimmedValue);
+      clearDraft();
+    } catch {
+      // Error toast handled by caller's useMutation onError. Swallow here
+      // to prevent an unhandled promise rejection.
+    }
   }
 
   useEmailShortcuts({
@@ -71,13 +76,9 @@ export function EmailDetailDrawer({
       if (!isArchived && (email?.status === 'READ' || email?.status === 'RESPONDED'))
         onMarkUnread();
     },
-    onClose,
+    // onClose omitted — Radix Dialog handles Escape natively, avoids double-invoke
+    onClose: () => {},
   });
-
-  // No-op effect — kept to allow future side-effects when email changes
-  useEffect(() => {
-    if (!isOpen) return;
-  }, [email?.id, isOpen]);
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -95,6 +96,9 @@ export function EmailDetailDrawer({
           <>
             {/* ── Drawer header ── */}
             <div className="shrink-0 px-3 sm:px-4 py-2.5 border-b border-[var(--neutral-100)] dark:border-white/[0.06] flex items-center gap-1 sm:gap-2">
+              <SheetTitle className="sr-only">
+                {email.subject}
+              </SheetTitle>
               <Button
                 variant="ghost"
                 size="icon"
@@ -130,7 +134,7 @@ export function EmailDetailDrawer({
                 >
                   <KeenIcon icon="right" style="solid" className="size-3.5" />
                 </Button>
-                <span className="text-[11px] text-muted-foreground ml-1 hidden sm:inline">
+                <span className="text-[11px] text-muted-foreground ml-1">
                   {index + 1} / {total}
                 </span>
               </div>
