@@ -6,19 +6,21 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
+// Note: URGENT priority is visually collapsed into HIGH ("HAUTE") throughout the UI.
+// The parent's filter logic should include URGENT when HIGH is selected.
 export type PriorityBucket = 'HIGH' | 'NORMAL' | 'LOW';
 export type PeriodBucket = 'today' | 'last7' | 'last30';
 
-export interface EmailFilters {
+export interface EmailFilterState {
   priorities: PriorityBucket[];
   period: PeriodBucket | null;
   scoreMin70: boolean;
 }
 
 interface EmailFilterPopoverProps {
-  filters: EmailFilters;
+  filters: EmailFilterState;
   showScoreFilter: boolean;
-  onApply: (filters: EmailFilters) => void;
+  onApply: (filters: EmailFilterState) => void;
   onReset: () => void;
 }
 
@@ -29,7 +31,7 @@ export function EmailFilterPopover({
   onReset,
 }: EmailFilterPopoverProps) {
   const [open, setOpen] = useState(false);
-  const [draft, setDraft] = useState<EmailFilters>(filters);
+  const [draft, setDraft] = useState<EmailFilterState>(filters);
 
   const activeCount =
     draft.priorities.length +
@@ -69,8 +71,8 @@ export function EmailFilterPopover({
           <KeenIcon icon="down" style="solid" className="size-3" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-72 p-4">
-        <div className="font-display text-sm font-bold text-foreground mb-3">
+      <PopoverContent align="end" aria-labelledby="email-filter-popover-title" className="w-72 p-4">
+        <div id="email-filter-popover-title" className="font-display text-sm font-bold text-foreground mb-3">
           Filtres
         </div>
 
@@ -144,16 +146,16 @@ export function EmailFilterPopover({
         )}
 
         <div className="flex items-center justify-between pt-3 border-t border-[var(--neutral-100)] dark:border-white/[0.06]">
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => {
               handleResetDraft();
               onReset();
             }}
-            className="text-xs text-muted-foreground hover:text-foreground"
           >
             Réinitialiser
-          </button>
+          </Button>
           <Button variant="primary" size="sm" onClick={handleApply}>
             Appliquer{activeCount > 0 && ` (${activeCount})`}
           </Button>
