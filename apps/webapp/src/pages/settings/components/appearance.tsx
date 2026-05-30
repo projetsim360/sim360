@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { CircleCheck } from '@/components/keenicons/icons';
 import { useAuth } from '@/providers/auth-provider';
-import { useShellState } from '@/components/layouts/simex-shell/state/shell-state-provider';
+import { useShellState, type ContentMode } from '@/components/layouts/simex-shell/state/shell-state-provider';
 import { api } from '@/lib/api-client';
 import { toast } from 'sonner';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -16,6 +16,19 @@ const THEMES = [
   { value: 'dark', label: 'Sombre', bg: 'bg-zinc-900' },
   { value: 'system', label: 'Système', bg: 'bg-gradient-to-r from-zinc-100 to-zinc-900' },
 ] as const;
+
+const PILL_BASE =
+  'px-3 py-1.5 text-[12px] font-semibold rounded-md transition-colors ' +
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-500)]/50';
+const PILL_ACTIVE =
+  'bg-card text-foreground shadow-[0_1px_3px_rgba(0,0,0,0.06)] ' +
+  'dark:bg-[var(--brand-700)] dark:text-[var(--accent-300)] dark:shadow-[0_1px_3px_rgba(0,0,0,0.3)]';
+const PILL_IDLE = 'text-muted-foreground hover:text-foreground';
+
+const CONTENT_MODES: Array<{ value: ContentMode; label: string }> = [
+  { value: 'fluide', label: 'Fluide (data)' },
+  { value: 'centre', label: 'Centré 1080px (lecture)' },
+];
 
 export function Appearance() {
   const { theme, setTheme } = useTheme();
@@ -35,7 +48,7 @@ export function Appearance() {
     try {
       await api.patch('/users/me/settings', { sidebarTransparent });
       await refreshUser();
-      toast.success('Apparence sauvegardée');
+      toast.success('Préférence enregistrée');
     } catch {
       toast.error('Erreur lors de la sauvegarde');
     } finally {
@@ -99,9 +112,12 @@ export function Appearance() {
 
         {/* Sidebar transparente */}
         <div className="grid grid-cols-1 sm:grid-cols-[170px_minmax(0,1fr)] gap-3 sm:gap-4 items-center py-3 border-t border-[var(--neutral-100)] dark:border-white/[0.06]">
-          <Label className="text-[13px] font-medium text-foreground">Sidebar transparente</Label>
+          <Label htmlFor="appearance-sidebar-transparent" className="text-[13px] font-medium text-foreground">
+            Sidebar transparente
+          </Label>
           <div className="flex items-center gap-2.5">
             <Switch
+              id="appearance-sidebar-transparent"
               size="sm"
               checked={sidebarTransparent}
               onCheckedChange={setSidebarTransparent}
@@ -113,46 +129,33 @@ export function Appearance() {
         </div>
 
         {/* Mode contenu — NEW */}
-        <div
-          role="radiogroup"
-          aria-label="Largeur du contenu de page"
-          className="grid grid-cols-1 sm:grid-cols-[170px_minmax(0,1fr)] gap-3 sm:gap-4 items-center py-3 border-t border-[var(--neutral-100)] dark:border-white/[0.06]"
-        >
-          <Label className="text-[13px] font-medium text-foreground">
+        <div className="grid grid-cols-1 sm:grid-cols-[170px_minmax(0,1fr)] gap-3 sm:gap-4 items-center py-3 border-t border-[var(--neutral-100)] dark:border-white/[0.06]">
+          <Label id="appearance-content-mode-label" className="text-[13px] font-medium text-foreground">
             Mode contenu
             <span className="block text-[10.5px] font-normal text-muted-foreground mt-0.5">
               Largeur du contenu de page
             </span>
           </Label>
-          <div className="inline-flex items-center gap-1 p-1 bg-[var(--neutral-100)] dark:bg-white/5 rounded-lg w-fit">
-            <button
-              type="button"
-              role="radio"
-              aria-checked={contentMode === 'fluide'}
-              onClick={() => setContentMode('fluide')}
-              className={cn(
-                'px-3 py-1.5 text-[12px] font-semibold rounded-md transition-colors',
-                contentMode === 'fluide'
-                  ? 'bg-card text-foreground shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:bg-[var(--brand-700)] dark:text-[var(--accent-300)] dark:shadow-[0_1px_3px_rgba(0,0,0,0.3)]'
-                  : 'text-muted-foreground hover:text-foreground',
-              )}
-            >
-              Fluide (data)
-            </button>
-            <button
-              type="button"
-              role="radio"
-              aria-checked={contentMode === 'centre'}
-              onClick={() => setContentMode('centre')}
-              className={cn(
-                'px-3 py-1.5 text-[12px] font-semibold rounded-md transition-colors',
-                contentMode === 'centre'
-                  ? 'bg-card text-foreground shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:bg-[var(--brand-700)] dark:text-[var(--accent-300)] dark:shadow-[0_1px_3px_rgba(0,0,0,0.3)]'
-                  : 'text-muted-foreground hover:text-foreground',
-              )}
-            >
-              Centré 1080px (lecture)
-            </button>
+          <div
+            role="radiogroup"
+            aria-labelledby="appearance-content-mode-label"
+            className="inline-flex items-center gap-1 p-1 bg-[var(--neutral-100)] dark:bg-white/5 rounded-lg"
+          >
+            {CONTENT_MODES.map((mode) => {
+              const active = contentMode === mode.value;
+              return (
+                <button
+                  key={mode.value}
+                  type="button"
+                  role="radio"
+                  aria-checked={active}
+                  onClick={() => setContentMode(mode.value)}
+                  className={cn(PILL_BASE, active ? PILL_ACTIVE : PILL_IDLE)}
+                >
+                  {mode.label}
+                </button>
+              );
+            })}
           </div>
         </div>
 
