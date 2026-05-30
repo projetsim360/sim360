@@ -66,12 +66,12 @@ export function SettingsSidebar() {
                     'group flex items-center gap-2.5 px-3 py-2 text-[13px] font-medium rounded-md',
                     'transition-colors',
                     item.danger
-                      ? 'text-[var(--error-700)] dark:text-[var(--error-300)]'
+                      ? 'text-[var(--error-700)] dark:text-[var(--error-200)]'
                       : 'text-[var(--neutral-600)] dark:text-[var(--neutral-300)]',
                     'hover:bg-[var(--neutral-100)] dark:hover:bg-white/5',
                     'data-[active=true]:bg-[var(--accent-50)] data-[active=true]:text-[var(--accent-700)]',
                     'data-[active=true]:font-bold',
-                    'data-[active=true]:dark:bg-[var(--accent-500)]/12 data-[active=true]:dark:text-[var(--accent-300)]',
+                    'dark:data-[active=true]:bg-[var(--accent-500)]/[0.12] dark:data-[active=true]:text-[var(--accent-300)]',
                     'data-[active=true]:shadow-[inset_3px_0_0_var(--accent-500)]',
                     'data-[active=true]:pl-2.5 data-[active=true]:rounded-none data-[active=true]:rounded-r-md',
                   )}
@@ -81,7 +81,7 @@ export function SettingsSidebar() {
                     className={cn(
                       'size-1.5 rounded-full',
                       item.danger
-                        ? 'bg-[var(--error-300)] group-data-[active=true]:bg-[var(--error-500)]'
+                        ? 'bg-[var(--error-200)] group-data-[active=true]:bg-[var(--error-500)]'
                         : 'bg-[var(--neutral-300)] dark:bg-[var(--neutral-600)] group-data-[active=true]:bg-[var(--accent-500)]',
                     )}
                   />
