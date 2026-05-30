@@ -13,19 +13,23 @@ import { KeenIcon } from '@/components/keenicons';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { useState } from 'react';
+import { Textarea } from '@/components/ui/textarea';
 import {
   useSimulatedEmail,
   useArchiveEmail,
+  useRespondToEmail,
 } from '../api/simulated-emails.api';
 import { EmailPriorityBadge } from '../components/email-priority-badge';
-import { EmailResponseForm } from '../components/email-response-form';
 
 export default function EmailDetailPage() {
   const { id: simId, emailId } = useParams<{ id: string; emailId: string }>();
   const navigate = useNavigate();
+  const [replyText, setReplyText] = useState('');
 
   const { data: email, isLoading, error } = useSimulatedEmail(simId || '', emailId || '');
   const archiveMutation = useArchiveEmail(simId || '');
+  const respondMutation = useRespondToEmail(simId || '');
 
   async function handleArchive() {
     if (!emailId) return;
@@ -211,10 +215,62 @@ export default function EmailDetailPage() {
             </CardContent>
           </Card>
         ) : !isArchived ? (
-          <EmailResponseForm
-            simulationId={simId}
-            emailId={emailId}
-          />
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Rédiger une réponse</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  if (!emailId || !replyText.trim()) return;
+                  try {
+                    await respondMutation.mutateAsync({
+                      emailId,
+                      data: { response: replyText.trim() },
+                    });
+                    toast.success('Réponse envoyée.');
+                    setReplyText('');
+                  } catch {
+                    toast.error("Erreur lors de l'envoi.");
+                  }
+                }}
+                className="space-y-3"
+              >
+                <Textarea
+                  value={replyText}
+                  onChange={(e) => setReplyText(e.target.value.slice(0, 2000))}
+                  placeholder="Rédigez votre réponse..."
+                  rows={4}
+                  disabled={respondMutation.isPending}
+                  className="resize-none"
+                />
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-muted-foreground">
+                    {replyText.length}/2000
+                  </span>
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    size="sm"
+                    disabled={respondMutation.isPending || !replyText.trim()}
+                  >
+                    {respondMutation.isPending ? (
+                      <>
+                        <KeenIcon icon="loading" style="duotone" className="size-4 animate-spin mr-1" />
+                        Évaluation...
+                      </>
+                    ) : (
+                      <>
+                        <KeenIcon icon="send" style="duotone" className="size-4 mr-1" />
+                        Envoyer
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
         ) : null}
     </div>
   );
