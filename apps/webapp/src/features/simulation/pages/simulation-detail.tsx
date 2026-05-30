@@ -194,7 +194,7 @@ export default function SimulationDetailPage() {
       <div className="px-6 pb-8">
         <div className="grid gap-5">
           {sim.status === 'ONBOARDING' && (
-            <HandoverBanner simulationId={sim.id} onHandoverComplete={loadData} />
+            <HandoverBanner simulationId={sim.id} sim={sim} onHandoverComplete={loadData} />
           )}
 
           <CockpitHeader
