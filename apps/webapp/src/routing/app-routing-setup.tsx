@@ -66,7 +66,7 @@ export function AppRoutingSetup() {
           {/* SaaS core routes */}
           <Route path="/profile/edit" element={<EditProfilePage />} />
           <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/settings/layout" element={<SettingsPage />} />
+          <Route path="/settings/layout" element={<Navigate to="/settings" replace />} />
 
           {/* Feature routes (Simex pro domaine) */}
           {dashboardRoutes}

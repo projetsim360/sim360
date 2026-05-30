@@ -61,10 +61,6 @@ export const APP_SIDEBAR_MENU: MenuConfig = [
     title: 'Paramètres',
     icon: Settings,
     path: '/settings',
-    children: [
-      { title: 'Général', path: '/settings' },
-      { title: 'Layout', path: '/settings/layout' },
-    ],
   },
   { heading: 'Support' },
   {
@@ -169,7 +165,6 @@ export const APP_MEGA_MENU: MenuConfig = [
           {
             children: [
               { title: 'Mon Profil', icon: UserCircle, path: '/profile/edit' },
-              { title: 'Layout', icon: Settings, path: '/settings/layout' },
               { title: 'Préférences', icon: Settings, path: '/settings' },
             ],
           },
@@ -219,7 +214,6 @@ export const APP_MEGA_MENU_MOBILE: MenuConfig = [
         title: 'Mon Compte',
         children: [
           { title: 'Mon Profil', icon: UserCircle, path: '/profile/edit' },
-          { title: 'Layout', icon: Settings, path: '/settings/layout' },
           { title: 'Préférences', icon: Settings, path: '/settings' },
         ],
       },
