@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import {
   Globe,
-  LayoutGrid,
   LogOut,
   Moon,
   Settings,
@@ -108,13 +107,6 @@ export function UserDropdownMenu({ trigger }: { trigger: ReactNode }) {
           <Link to="/dashboard" className="flex items-center gap-2">
             <Settings />
             Tableau de bord
-          </Link>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem asChild>
-          <Link to="/settings/layout" className="flex items-center gap-2">
-            <LayoutGrid />
-            Changer de layout
           </Link>
         </DropdownMenuItem>
 
