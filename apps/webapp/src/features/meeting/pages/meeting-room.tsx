@@ -113,7 +113,7 @@ export default function MeetingRoomPage() {
   if (meeting.status === 'IN_PROGRESS') {
     return (
       <div>
-        <PageHeader breadcrumbs={breadcrumbs} title={meeting.title} actions={backAction} hideContentMode />
+        <PageHeader breadcrumbs={breadcrumbs} title={meeting.title} actions={backAction} />
         <MeetingRoomShell meeting={meeting} onComplete={handleComplete} actionLoading={actionLoading} />
       </div>
     );
