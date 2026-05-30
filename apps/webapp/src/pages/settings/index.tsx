@@ -19,23 +19,16 @@ export function SettingsPage() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // Find the main page scroller by walking up from the PageHeader, which is
-    // always rendered inside the layout main scroll container. This is more
-    // reliable than scanning all .kt-scrollable-y-auto elements (which would
-    // also match the sidebar menu's own scroller).
+    // SimexShell uses a <main> with overflow-y-auto as the page scroller.
+    // Walk up from the PageHeader to find it. Fall back to the older
+    // .kt-scrollable-y-auto class for any non-SimexShell layout that may
+    // still render this page (defensive — not expected in production).
     const pageHeader = document.querySelector('[data-slot="toolbar-heading"]');
-    const scrollable = pageHeader?.closest('.kt-scrollable-y-auto') as HTMLElement | null;
-    if (scrollable) {
-      (parentRef as React.MutableRefObject<HTMLElement | Document>).current = scrollable;
-    } else {
-      // Fallback: use the heuristic from before (largest overflowing kt-scrollable-y-auto)
-      const candidates = document.querySelectorAll('.kt-scrollable-y-auto');
-      const fallback = Array.from(candidates).find(
-        (el) => el.scrollHeight > el.clientHeight,
-      );
-      (parentRef as React.MutableRefObject<HTMLElement | Document>).current =
-        (fallback as HTMLElement | undefined) ?? document;
-    }
+    const scrollable =
+      (pageHeader?.closest('main') as HTMLElement | null) ??
+      (pageHeader?.closest('.kt-scrollable-y-auto') as HTMLElement | null);
+    (parentRef as React.MutableRefObject<HTMLElement | Document>).current =
+      scrollable ?? document;
     setReady(true);
   }, []);
 
