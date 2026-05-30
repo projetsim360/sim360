@@ -31,3 +31,15 @@ export interface EmailFilters {
 export interface RespondToEmailDto {
   response: string;
 }
+
+export interface BulkEmailActionDto {
+  emailIds: string[];
+}
+
+export interface BulkArchiveResult {
+  archived: number;
+}
+
+export interface BulkMarkReadResult {
+  updated: number;
+}

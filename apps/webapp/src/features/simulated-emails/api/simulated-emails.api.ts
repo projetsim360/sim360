@@ -8,6 +8,8 @@ import type {
   SimulatedEmail,
   EmailFilters,
   RespondToEmailDto,
+  BulkArchiveResult,
+  BulkMarkReadResult,
 } from '../types/simulated-email.types';
 
 const QUERY_KEYS = {
@@ -47,6 +49,23 @@ export const simulatedEmailsApi = {
   archive: (simId: string, emailId: string) =>
     api.post<SimulatedEmail>(
       `/simulations/${simId}/emails/${emailId}/archive`,
+    ),
+
+  bulkArchive: (simId: string, emailIds: string[]) =>
+    api.post<BulkArchiveResult>(
+      `/simulations/${simId}/emails/bulk-archive`,
+      { emailIds },
+    ),
+
+  bulkMarkRead: (simId: string, emailIds: string[]) =>
+    api.post<BulkMarkReadResult>(
+      `/simulations/${simId}/emails/bulk-mark-read`,
+      { emailIds },
+    ),
+
+  markUnread: (simId: string, emailId: string) =>
+    api.post<SimulatedEmail>(
+      `/simulations/${simId}/emails/${emailId}/mark-unread`,
     ),
 };
 
@@ -105,6 +124,51 @@ export const useArchiveEmail = (simId: string) => {
       simulatedEmailsApi.archive(simId, emailId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.all(simId) });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.unreadCount(simId),
+      });
+    },
+  });
+};
+
+export const useBulkArchiveEmails = (simId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (emailIds: string[]) =>
+      simulatedEmailsApi.bulkArchive(simId, emailIds),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.all(simId) });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.unreadCount(simId),
+      });
+    },
+  });
+};
+
+export const useBulkMarkReadEmails = (simId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (emailIds: string[]) =>
+      simulatedEmailsApi.bulkMarkRead(simId, emailIds),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.all(simId) });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.unreadCount(simId),
+      });
+    },
+  });
+};
+
+export const useMarkUnreadEmail = (simId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (emailId: string) =>
+      simulatedEmailsApi.markUnread(simId, emailId),
+    onSuccess: (_result, emailId) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.all(simId) });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.detail(simId, emailId),
+      });
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.unreadCount(simId),
       });
