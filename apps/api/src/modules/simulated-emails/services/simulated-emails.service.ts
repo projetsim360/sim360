@@ -280,6 +280,88 @@ export class SimulatedEmailsService {
     });
   }
 
+  /**
+   * Bulk-archive multiple emails. Returns the count of effectively updated rows.
+   * Ignores emails already archived. Tenant-scoped.
+   */
+  async bulkArchive(
+    simulationId: string,
+    userId: string,
+    tenantId: string,
+    emailIds: string[],
+  ): Promise<{ archived: number }> {
+    await this.getSimulationWithScenario(simulationId, userId, tenantId);
+
+    const result = await this.prisma.simulatedEmail.updateMany({
+      where: {
+        id: { in: emailIds },
+        simulationId,
+        tenantId,
+        status: { not: EmailStatus.ARCHIVED },
+      },
+      data: { status: EmailStatus.ARCHIVED },
+    });
+
+    return { archived: result.count };
+  }
+
+  /**
+   * Bulk-mark multiple UNREAD emails as READ. Returns the count of effectively
+   * updated rows. Ignores emails already read / responded / archived.
+   * Tenant-scoped.
+   */
+  async bulkMarkRead(
+    simulationId: string,
+    userId: string,
+    tenantId: string,
+    emailIds: string[],
+  ): Promise<{ updated: number }> {
+    await this.getSimulationWithScenario(simulationId, userId, tenantId);
+
+    const result = await this.prisma.simulatedEmail.updateMany({
+      where: {
+        id: { in: emailIds },
+        simulationId,
+        tenantId,
+        status: EmailStatus.UNREAD,
+      },
+      data: {
+        status: EmailStatus.READ,
+        readAt: new Date(),
+      },
+    });
+
+    return { updated: result.count };
+  }
+
+  /**
+   * Mark a single email as UNREAD. Only valid when current status is READ
+   * or RESPONDED (cannot un-archive). Tenant-scoped + ownership-checked.
+   */
+  async markUnread(
+    simulationId: string,
+    emailId: string,
+    userId: string,
+    tenantId: string,
+  ): Promise<SimulatedEmail> {
+    await this.getSimulationWithScenario(simulationId, userId, tenantId);
+    const email = await this.findEmailOrThrow(emailId, simulationId, tenantId);
+
+    if (email.status === EmailStatus.ARCHIVED) {
+      throw new BadRequestException(
+        "Impossible de marquer un email archive comme non lu",
+      );
+    }
+    if (email.status === EmailStatus.UNREAD) {
+      return email;
+    }
+
+    return this.prisma.simulatedEmail.update({
+      where: { id: emailId },
+      data: { status: EmailStatus.UNREAD, readAt: null },
+    });
+  }
+
   // ─── Generation operations ────────────────────────────────
 
   /**

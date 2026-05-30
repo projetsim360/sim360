@@ -23,7 +23,7 @@ import {
 } from '@sim360/core';
 import { EmailPriority, EmailStatus } from '@prisma/client';
 import { SimulatedEmailsService } from '../services/simulated-emails.service';
-import { RespondEmailDto, GenerateEmailsDto } from '../dto';
+import { RespondEmailDto, GenerateEmailsDto, BulkEmailActionDto } from '../dto';
 
 @ApiTags('Simulated Emails')
 @ApiBearerAuth()
@@ -137,6 +137,67 @@ export class SimulatedEmailsController {
     @CurrentTenant() tenantId: string,
   ) {
     return this.simulatedEmailsService.archive(
+      simId,
+      emailId,
+      user.id,
+      tenantId,
+    );
+  }
+
+  // ─── Bulk archive ───────────────────────────────────────────
+
+  @Post('simulations/:simId/emails/bulk-archive')
+  @Auditable('EMAIL_BULK_ARCHIVED', 'SimulatedEmail')
+  @ApiOperation({ summary: 'Archiver plusieurs emails en une seule operation' })
+  @ApiParam({ name: 'simId', description: 'ID de la simulation' })
+  bulkArchive(
+    @Param('simId') simId: string,
+    @Body() dto: BulkEmailActionDto,
+    @CurrentUser() user: any,
+    @CurrentTenant() tenantId: string,
+  ) {
+    return this.simulatedEmailsService.bulkArchive(
+      simId,
+      user.id,
+      tenantId,
+      dto.emailIds,
+    );
+  }
+
+  // ─── Bulk mark as read ──────────────────────────────────────
+
+  @Post('simulations/:simId/emails/bulk-mark-read')
+  @Auditable('EMAIL_BULK_MARKED_READ', 'SimulatedEmail')
+  @ApiOperation({ summary: 'Marquer plusieurs emails comme lus en une seule operation' })
+  @ApiParam({ name: 'simId', description: 'ID de la simulation' })
+  bulkMarkRead(
+    @Param('simId') simId: string,
+    @Body() dto: BulkEmailActionDto,
+    @CurrentUser() user: any,
+    @CurrentTenant() tenantId: string,
+  ) {
+    return this.simulatedEmailsService.bulkMarkRead(
+      simId,
+      user.id,
+      tenantId,
+      dto.emailIds,
+    );
+  }
+
+  // ─── Mark single email as unread ────────────────────────────
+
+  @Post('simulations/:simId/emails/:emailId/mark-unread')
+  @Auditable('EMAIL_MARKED_UNREAD', 'SimulatedEmail')
+  @ApiOperation({ summary: 'Marquer un email comme non lu' })
+  @ApiParam({ name: 'simId', description: 'ID de la simulation' })
+  @ApiParam({ name: 'emailId', description: 'ID de l\'email' })
+  markUnread(
+    @Param('simId') simId: string,
+    @Param('emailId') emailId: string,
+    @CurrentUser() user: any,
+    @CurrentTenant() tenantId: string,
+  ) {
+    return this.simulatedEmailsService.markUnread(
       simId,
       emailId,
       user.id,
