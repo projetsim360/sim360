@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ShieldCheck, Loader2 } from '@/components/keenicons/icons';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -121,12 +121,23 @@ export function AuthTwoFactor() {
   // ─── Not enabled, idle state ───
   if (!isEnabled && step === 'idle') {
     return (
-      <Card>
-        <CardHeader id="auth_two_factor">
-          <div className="flex items-center justify-between">
-            <CardTitle>Authentification à deux facteurs (2FA)</CardTitle>
+      <Card
+        id="auth_two_factor"
+        className="border-[var(--neutral-100)] dark:border-white/[0.06] shadow-[0_1px_2px_rgba(15,26,46,0.04),0_8px_24px_-10px_rgba(15,26,46,0.08)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_8px_24px_-10px_rgba(0,0,0,0.5)]"
+      >
+        <CardHeader className="flex-col items-start gap-1 pb-4 border-b-0">
+          <div className="flex items-center justify-between w-full">
+            <span className="text-[10px] font-bold uppercase tracking-[1.2px] text-[var(--accent-700)] dark:text-[var(--accent-300)]">
+              COMPTE
+            </span>
             <Badge variant="outline">Non activé</Badge>
           </div>
+          <h2 className="font-display text-[19px] font-bold text-foreground m-0">
+            Authentification à deux facteurs (2FA)
+          </h2>
+          <p className="text-[13px] text-muted-foreground m-0">
+            Renforcez la sécurité de votre compte avec un second facteur.
+          </p>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-3.5 border border-border rounded-xl px-3.5 py-2.5 mb-5">
@@ -153,9 +164,17 @@ export function AuthTwoFactor() {
   // ─── Setup step 1: password confirmation ───
   if (!isEnabled && step === 'password') {
     return (
-      <Card>
-        <CardHeader id="auth_two_factor">
-          <CardTitle>Configurer le 2FA - Étape 1/3</CardTitle>
+      <Card
+        id="auth_two_factor"
+        className="border-[var(--neutral-100)] dark:border-white/[0.06] shadow-[0_1px_2px_rgba(15,26,46,0.04),0_8px_24px_-10px_rgba(15,26,46,0.08)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_8px_24px_-10px_rgba(0,0,0,0.5)]"
+      >
+        <CardHeader className="flex-col items-start gap-1 pb-4 border-b-0">
+          <span className="text-[10px] font-bold uppercase tracking-[1.2px] text-[var(--accent-700)] dark:text-[var(--accent-300)]">
+            COMPTE · CONFIGURATION 2FA · ÉTAPE 1/3
+          </span>
+          <h2 className="font-display text-[19px] font-bold text-foreground m-0">
+            Confirmez votre mot de passe
+          </h2>
         </CardHeader>
         <CardContent>
           {error && (
@@ -189,9 +208,17 @@ export function AuthTwoFactor() {
   // ─── Setup step 2: QR code + code verification ───
   if (!isEnabled && step === 'qrcode') {
     return (
-      <Card>
-        <CardHeader id="auth_two_factor">
-          <CardTitle>Configurer le 2FA - Étape 2/3</CardTitle>
+      <Card
+        id="auth_two_factor"
+        className="border-[var(--neutral-100)] dark:border-white/[0.06] shadow-[0_1px_2px_rgba(15,26,46,0.04),0_8px_24px_-10px_rgba(15,26,46,0.08)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_8px_24px_-10px_rgba(0,0,0,0.5)]"
+      >
+        <CardHeader className="flex-col items-start gap-1 pb-4 border-b-0">
+          <span className="text-[10px] font-bold uppercase tracking-[1.2px] text-[var(--accent-700)] dark:text-[var(--accent-300)]">
+            COMPTE · CONFIGURATION 2FA · ÉTAPE 2/3
+          </span>
+          <h2 className="font-display text-[19px] font-bold text-foreground m-0">
+            Scannez le QR code
+          </h2>
         </CardHeader>
         <CardContent>
           {error && (
@@ -254,9 +281,20 @@ export function AuthTwoFactor() {
   // ─── Setup step 3 / Regenerate: backup codes display ───
   if (step === 'backup-codes') {
     return (
-      <Card>
-        <CardHeader id="auth_two_factor">
-          <CardTitle>Codes de secours</CardTitle>
+      <Card
+        id="auth_two_factor"
+        className="border-[var(--neutral-100)] dark:border-white/[0.06] shadow-[0_1px_2px_rgba(15,26,46,0.04),0_8px_24px_-10px_rgba(15,26,46,0.08)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_8px_24px_-10px_rgba(0,0,0,0.5)]"
+      >
+        <CardHeader className="flex-col items-start gap-1 pb-4 border-b-0">
+          <span className="text-[10px] font-bold uppercase tracking-[1.2px] text-[var(--accent-700)] dark:text-[var(--accent-300)]">
+            COMPTE · CODES DE SECOURS
+          </span>
+          <h2 className="font-display text-[19px] font-bold text-foreground m-0">
+            Sauvegardez ces codes
+          </h2>
+          <p className="text-[13px] text-muted-foreground m-0">
+            Chaque code ne peut être utilisé qu'une fois — gardez-les en lieu sûr.
+          </p>
         </CardHeader>
         <CardContent>
           <Alert className="mb-4">
@@ -289,14 +327,25 @@ export function AuthTwoFactor() {
   // ─── Enabled state ───
   if (isEnabled && step === 'idle') {
     return (
-      <Card>
-        <CardHeader id="auth_two_factor">
-          <div className="flex items-center justify-between">
-            <CardTitle>Authentification à deux facteurs (2FA)</CardTitle>
+      <Card
+        id="auth_two_factor"
+        className="border-[var(--neutral-100)] dark:border-white/[0.06] shadow-[0_1px_2px_rgba(15,26,46,0.04),0_8px_24px_-10px_rgba(15,26,46,0.08)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_8px_24px_-10px_rgba(0,0,0,0.5)]"
+      >
+        <CardHeader className="flex-col items-start gap-1 pb-4 border-b-0">
+          <div className="flex items-center justify-between w-full">
+            <span className="text-[10px] font-bold uppercase tracking-[1.2px] text-[var(--accent-700)] dark:text-[var(--accent-300)]">
+              COMPTE
+            </span>
             <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
               Activé
             </Badge>
           </div>
+          <h2 className="font-display text-[19px] font-bold text-foreground m-0">
+            Authentification à deux facteurs (2FA)
+          </h2>
+          <p className="text-[13px] text-muted-foreground m-0">
+            Votre compte est protégé par un second facteur.
+          </p>
         </CardHeader>
         <CardContent>
           {error && (
