@@ -43,3 +43,5 @@ export interface BulkArchiveResult {
 export interface BulkMarkReadResult {
   updated: number;
 }
+
+export type EmailFolder = 'inbox' | 'responded' | 'archived';

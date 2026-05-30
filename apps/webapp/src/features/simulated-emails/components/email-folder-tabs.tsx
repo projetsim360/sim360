@@ -1,11 +1,12 @@
-import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import type { EmailFolder } from '../types/simulated-email.types';
 
-export type EmailFolder = 'inbox' | 'responded' | 'archived';
+export type { EmailFolder };
 
-interface EmailFolderTabsProps {
+export interface EmailFolderTabsProps {
   active: EmailFolder;
   counts: Record<EmailFolder, number>;
+  onFolderChange: (folder: EmailFolder) => void;
 }
 
 const FOLDERS: { key: EmailFolder; label: string }[] = [
@@ -14,13 +15,32 @@ const FOLDERS: { key: EmailFolder; label: string }[] = [
   { key: 'archived', label: 'Archives' },
 ];
 
-export function EmailFolderTabs({ active, counts }: EmailFolderTabsProps) {
-  const navigate = useNavigate();
+export function EmailFolderTabs({ active, counts, onFolderChange }: EmailFolderTabsProps) {
+  function handleKeyDown(e: React.KeyboardEvent) {
+    const keys = FOLDERS.map((f) => f.key);
+    const currentIndex = keys.indexOf(active);
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      const next = keys[(currentIndex + 1) % keys.length];
+      onFolderChange(next);
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      const prev = keys[(currentIndex - 1 + keys.length) % keys.length];
+      onFolderChange(prev);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      onFolderChange(keys[0]);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      onFolderChange(keys[keys.length - 1]);
+    }
+  }
 
   return (
     <div
       role="tablist"
       aria-label="Dossiers d'emails"
+      onKeyDown={handleKeyDown}
       className="flex items-center gap-1 sm:gap-2 overflow-x-auto -mx-1 px-1 border-b border-[var(--neutral-100)] dark:border-white/[0.06]"
     >
       {FOLDERS.map(({ key, label }) => {
@@ -32,7 +52,8 @@ export function EmailFolderTabs({ active, counts }: EmailFolderTabsProps) {
             role="tab"
             type="button"
             aria-selected={isActive}
-            onClick={() => navigate(`/emails/${key}`)}
+            tabIndex={isActive ? 0 : -1}
+            onClick={() => onFolderChange(key)}
             className={cn(
               'shrink-0 inline-flex items-center gap-2 px-3 py-2.5 text-sm font-medium transition-colors',
               'border-b-2 -mb-px',
