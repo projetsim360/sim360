@@ -33,7 +33,7 @@ export function DeleteAccount() {
       id="delete_account"
       className="border-[var(--error-200)] dark:border-[var(--error-500)]/30 bg-gradient-to-b from-white to-[var(--error-50)] dark:from-card dark:to-[var(--error-500)]/[0.04] shadow-[0_1px_2px_rgba(220,38,38,0.06),0_8px_24px_-10px_rgba(220,38,38,0.12)]"
     >
-      <CardHeader className="flex-col items-start gap-1 pb-4 border-b-0">
+      <CardHeader className="flex-col items-start gap-1 pt-5 pb-4 border-b-0">
         <span className="text-[10px] font-bold uppercase tracking-[1.2px] text-[var(--error-700)] dark:text-[var(--error-200)]">
           ZONE DE DANGER
         </span>
