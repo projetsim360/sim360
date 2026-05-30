@@ -3,7 +3,7 @@ import { useAuth } from '@/providers/auth-provider';
 import { api } from '@/lib/api-client';
 import { AvatarUpload } from '@/components/common/avatar-upload';
 import { toast } from 'sonner';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -16,6 +16,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+
+const FIELD_ROW =
+  'grid grid-cols-1 sm:grid-cols-[170px_minmax(0,1fr)] gap-3 sm:gap-4 items-baseline py-3 border-t border-[var(--neutral-100)] dark:border-white/[0.06] first:border-t-0 first:pt-1';
 
 export function BasicSettings() {
   const { user, refreshUser } = useAuth();
@@ -62,7 +65,7 @@ export function BasicSettings() {
     try {
       await api.patch('/users/me/profile', form);
       await refreshUser();
-      toast.success('Paramètres sauvegardés');
+      toast.success('Profil enregistré');
     } catch {
       toast.error('Erreur lors de la sauvegarde');
     } finally {
@@ -71,18 +74,26 @@ export function BasicSettings() {
   };
 
   return (
-    <Card className="pb-2.5">
-      <CardHeader id="basic_settings">
-        <CardTitle>Paramètres de base</CardTitle>
+    <Card
+      id="basic_settings"
+      className="border-[var(--neutral-100)] dark:border-white/[0.06] shadow-[0_1px_2px_rgba(15,26,46,0.04),0_8px_24px_-10px_rgba(15,26,46,0.08)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_8px_24px_-10px_rgba(0,0,0,0.5)]"
+    >
+      <CardHeader className="flex-col items-start gap-1 pb-4 border-b-0">
+        <span className="text-[10px] font-bold uppercase tracking-[1.2px] text-[var(--accent-700)] dark:text-[var(--accent-300)]">
+          COMPTE
+        </span>
+        <h2 className="font-display text-[19px] font-bold text-foreground m-0">Profil</h2>
+        <p className="text-[13px] text-muted-foreground m-0">
+          Vos informations publiques et préférences personnelles.
+        </p>
       </CardHeader>
-      <CardContent className="grid gap-5">
+
+      <CardContent className="pt-2">
         {/* Photo */}
-        <div className="flex items-center flex-wrap gap-2.5">
-          <Label className="flex w-full max-w-56">Photo</Label>
-          <div className="flex items-center justify-between flex-wrap grow gap-2.5">
-            <span className="text-sm text-secondary-foreground">
-              150x150px JPEG, PNG, WebP
-            </span>
+        <div className={FIELD_ROW}>
+          <Label className="text-[13px] font-medium text-foreground">Photo</Label>
+          <div className="flex items-center justify-between flex-wrap gap-2.5">
+            <span className="text-[12px] text-muted-foreground">150x150px JPEG, PNG, WebP</span>
             <AvatarUpload
               currentAvatar={user?.avatar}
               firstName={user?.firstName}
@@ -94,120 +105,111 @@ export function BasicSettings() {
         </div>
 
         {/* Prénom */}
-        <div className="w-full">
-          <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-            <Label className="flex w-full items-center gap-1 max-w-56">
-              Prénom
-            </Label>
-            <Input
-              type="text"
-              value={form.firstName}
-              onChange={(e) => handleChange('firstName', e.target.value)}
-            />
-          </div>
+        <div className={FIELD_ROW}>
+          <Label htmlFor="profile-first-name" className="text-[13px] font-medium text-foreground">
+            Prénom
+          </Label>
+          <Input
+            id="profile-first-name"
+            type="text"
+            value={form.firstName}
+            onChange={(e) => handleChange('firstName', e.target.value)}
+          />
         </div>
 
         {/* Nom */}
-        <div className="w-full">
-          <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-            <Label className="flex w-full items-center gap-1 max-w-56">
-              Nom
-            </Label>
-            <Input
-              type="text"
-              value={form.lastName}
-              onChange={(e) => handleChange('lastName', e.target.value)}
-            />
-          </div>
+        <div className={FIELD_ROW}>
+          <Label htmlFor="profile-last-name" className="text-[13px] font-medium text-foreground">
+            Nom
+          </Label>
+          <Input
+            id="profile-last-name"
+            type="text"
+            value={form.lastName}
+            onChange={(e) => handleChange('lastName', e.target.value)}
+          />
         </div>
 
         {/* Titre de poste */}
-        <div className="w-full">
-          <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-            <Label className="flex w-full items-center gap-1 max-w-56">
-              Titre de poste
-            </Label>
-            <Input
-              type="text"
-              placeholder="Ex: Chef de projet"
-              value={form.jobTitle}
-              onChange={(e) => handleChange('jobTitle', e.target.value)}
-            />
-          </div>
+        <div className={FIELD_ROW}>
+          <Label htmlFor="profile-job-title" className="text-[13px] font-medium text-foreground">
+            Titre de poste
+          </Label>
+          <Input
+            id="profile-job-title"
+            type="text"
+            placeholder="Ex: Chef de projet"
+            value={form.jobTitle}
+            onChange={(e) => handleChange('jobTitle', e.target.value)}
+          />
         </div>
 
         {/* Téléphone */}
-        <div className="w-full">
-          <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-            <Label className="flex w-full items-center gap-1 max-w-56">
-              Téléphone
-            </Label>
-            <Input
-              type="text"
-              placeholder="+33 6 12 34 56 78"
-              value={form.phone}
-              onChange={(e) => handleChange('phone', e.target.value)}
-            />
-          </div>
+        <div className={FIELD_ROW}>
+          <Label htmlFor="profile-phone" className="text-[13px] font-medium text-foreground">
+            Téléphone
+          </Label>
+          <Input
+            id="profile-phone"
+            type="text"
+            placeholder="+33 6 12 34 56 78"
+            value={form.phone}
+            onChange={(e) => handleChange('phone', e.target.value)}
+          />
         </div>
 
         {/* Bio */}
-        <div className="w-full">
-          <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-            <Label className="flex w-full items-center gap-1 max-w-56">
-              Bio
-            </Label>
-            <Textarea
-              rows={3}
-              placeholder="Quelques mots sur vous..."
-              className="resize-none"
-              value={form.bio}
-              onChange={(e) => handleChange('bio', e.target.value)}
-            />
-          </div>
+        <div className={FIELD_ROW}>
+          <Label htmlFor="profile-bio" className="text-[13px] font-medium text-foreground">
+            Bio
+          </Label>
+          <Textarea
+            id="profile-bio"
+            rows={3}
+            placeholder="Quelques mots sur vous..."
+            className="resize-none"
+            value={form.bio}
+            onChange={(e) => handleChange('bio', e.target.value)}
+          />
         </div>
 
         {/* Langue */}
-        <div className="flex items-center flex-wrap gap-2.5">
-          <Label className="flex w-full max-w-56">Langue</Label>
-          <div className="grow">
-            <Select value={form.language} onValueChange={(v) => handleChange('language', v)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Sélectionner" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="fr">Français</SelectItem>
-                <SelectItem value="en">English</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        <div className={FIELD_ROW}>
+          <Label className="text-[13px] font-medium text-foreground">Langue</Label>
+          <Select value={form.language} onValueChange={(v) => handleChange('language', v)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Sélectionner" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="fr">Français</SelectItem>
+              <SelectItem value="en">English</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Niveau d'expérience */}
-        <div className="flex items-center flex-wrap gap-2.5">
-          <Label className="flex w-full max-w-56">Niveau d'expérience</Label>
-          <div className="grow">
-            <Select value={form.experienceLevel} onValueChange={(v) => handleChange('experienceLevel', v)}>
-              <SelectTrigger>
-                <SelectValue placeholder="— Sélectionner —" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="beginner">Débutant</SelectItem>
-                <SelectItem value="intermediate">Intermédiaire</SelectItem>
-                <SelectItem value="advanced">Avancé</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        <div className={FIELD_ROW}>
+          <Label className="text-[13px] font-medium text-foreground">Niveau d'expérience</Label>
+          <Select value={form.experienceLevel} onValueChange={(v) => handleChange('experienceLevel', v)}>
+            <SelectTrigger>
+              <SelectValue placeholder="— Sélectionner —" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="beginner">Débutant</SelectItem>
+              <SelectItem value="intermediate">Intermédiaire</SelectItem>
+              <SelectItem value="advanced">Avancé</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Visibilité profil */}
-        <div className="flex items-center flex-wrap gap-2.5">
-          <Label className="flex w-full max-w-56">Visibilité du profil</Label>
-          <div className="flex items-center gap-2">
-            <Label className="text-foreground text-sm font-normal">
-              Profil public
-            </Label>
+        <div className={FIELD_ROW}>
+          <Label htmlFor="profile-visibility" className="text-[13px] font-medium text-foreground">
+            Visibilité du profil
+          </Label>
+          <div className="flex items-center gap-2.5">
             <Switch
+              id="profile-visibility"
               size="sm"
               checked={profileVisibility}
               onCheckedChange={async (checked) => {
@@ -222,12 +224,13 @@ export function BasicSettings() {
                 }
               }}
             />
+            <span className="text-[12px] text-muted-foreground">Profil public</span>
           </div>
         </div>
 
-        <div className="flex justify-end pt-2.5">
+        <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-[var(--neutral-100)] dark:border-white/[0.06]">
           <Button onClick={handleSave} disabled={loading}>
-            {loading ? 'Sauvegarde...' : 'Sauvegarder'}
+            {loading ? 'Sauvegarde…' : 'Enregistrer'}
           </Button>
         </div>
       </CardContent>
