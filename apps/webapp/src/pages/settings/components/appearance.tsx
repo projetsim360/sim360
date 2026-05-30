@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { CircleCheck } from '@/components/keenicons/icons';
 import { useAuth } from '@/providers/auth-provider';
+import { useShellState } from '@/components/layouts/simex-shell/state/shell-state-provider';
 import { api } from '@/lib/api-client';
 import { toast } from 'sonner';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 const THEMES = [
   { value: 'light', label: 'Clair', bg: 'bg-zinc-100' },
@@ -18,6 +20,7 @@ const THEMES = [
 export function Appearance() {
   const { theme, setTheme } = useTheme();
   const { user, refreshUser } = useAuth();
+  const { contentMode, setContentMode } = useShellState();
   const [sidebarTransparent, setSidebarTransparent] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -41,74 +44,122 @@ export function Appearance() {
   };
 
   return (
-    <Card>
-      <CardHeader id="preferences_appearance">
-        <CardTitle>Apparence</CardTitle>
+    <Card
+      id="preferences_appearance"
+      className="border-[var(--neutral-100)] dark:border-white/[0.06] shadow-[0_1px_2px_rgba(15,26,46,0.04),0_8px_24px_-10px_rgba(15,26,46,0.08)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_8px_24px_-10px_rgba(0,0,0,0.5)]"
+    >
+      <CardHeader className="flex-col items-start gap-1 pb-4 border-b-0">
+        <span className="text-[10px] font-bold uppercase tracking-[1.2px] text-[var(--accent-700)] dark:text-[var(--accent-300)]">
+          APPARENCE
+        </span>
+        <h2 className="font-display text-[19px] font-bold text-foreground m-0">
+          Thème et présentation
+        </h2>
+        <p className="text-[13px] text-muted-foreground m-0">
+          Comment l'interface s'affiche pour vous.
+        </p>
       </CardHeader>
-      <CardContent className="lg:py-7.5">
-        {/* Theme mode */}
-        <div className="mb-5">
-          <h3 className="text-base font-medium text-foreground">Mode du thème</h3>
-          <span className="text-sm text-secondary-foreground">
-            Sélectionnez ou personnalisez votre thème d'interface
-          </span>
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-7.5">
-          {THEMES.map((item) => {
-            const isSelected = theme === item.value;
-            return (
-              <div key={item.value}>
-                <Label
-                  className={`flex items-end border rounded-xl h-[170px] mb-0.5 cursor-pointer transition-all ${item.bg} ${
-                    isSelected
-                      ? 'border-primary border-[3px]'
-                      : 'border-input hover:border-primary/50'
-                  }`}
-                  onClick={() => setTheme(item.value)}
-                >
-                  <input
-                    type="radio"
-                    name="theme_option"
-                    className="absolute opacity-0 w-0 h-0"
-                    checked={isSelected}
-                    onChange={() => setTheme(item.value)}
-                  />
-                  {isSelected && (
-                    <CircleCheck size={20} className="ms-5 mb-5 text-primary" />
-                  )}
-                </Label>
-                <span className="text-sm font-medium text-foreground">{item.label}</span>
-              </div>
-            );
-          })}
-        </div>
 
-        <div className="border-t border-border mt-7 mb-8" />
+      <CardContent className="pt-2">
+        {/* Theme cards */}
+        <div className="mb-6">
+          <div className="text-[12px] font-semibold text-foreground mb-2.5">Thème</div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {THEMES.map((item) => {
+              const isSelected = theme === item.value;
+              return (
+                <div key={item.value}>
+                  <Label
+                    className={cn(
+                      'flex items-end border rounded-xl h-[120px] mb-1 cursor-pointer transition-all',
+                      item.bg,
+                      isSelected
+                        ? 'border-[var(--accent-500)] border-[3px] ring-1 ring-[var(--accent-500)]/30'
+                        : 'border-input hover:border-[var(--accent-500)]/50',
+                    )}
+                    onClick={() => setTheme(item.value)}
+                  >
+                    <input
+                      type="radio"
+                      name="theme_option"
+                      className="absolute opacity-0 w-0 h-0"
+                      checked={isSelected}
+                      onChange={() => setTheme(item.value)}
+                    />
+                    {isSelected && (
+                      <CircleCheck size={18} className="ms-3 mb-3 text-[var(--accent-500)]" />
+                    )}
+                  </Label>
+                  <span className="text-[12px] font-medium text-foreground">{item.label}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
         {/* Sidebar transparente */}
-        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5 mb-8">
-          <Label className="flex w-full max-w-48 text-foreground font-normal">
-            Sidebar transparente
-          </Label>
-          <div className="flex items-center gap-7.5 grow">
-            <Label className="text-sm">
-              Activer
-            </Label>
+        <div className="grid grid-cols-1 sm:grid-cols-[170px_minmax(0,1fr)] gap-3 sm:gap-4 items-center py-3 border-t border-[var(--neutral-100)] dark:border-white/[0.06]">
+          <Label className="text-[13px] font-medium text-foreground">Sidebar transparente</Label>
+          <div className="flex items-center gap-2.5">
             <Switch
               size="sm"
               checked={sidebarTransparent}
               onCheckedChange={setSidebarTransparent}
             />
-            <span className="text-foreground text-sm font-normal">
-              Activez la sidebar transparente pour une interface épurée.
-              Désactivez pour un arrière-plan solide.
+            <span className="text-[12px] text-muted-foreground">
+              Active un fond transparent pour une interface épurée.
             </span>
           </div>
         </div>
 
-        <div className="flex justify-end">
+        {/* Mode contenu — NEW */}
+        <div
+          role="radiogroup"
+          aria-label="Largeur du contenu de page"
+          className="grid grid-cols-1 sm:grid-cols-[170px_minmax(0,1fr)] gap-3 sm:gap-4 items-center py-3 border-t border-[var(--neutral-100)] dark:border-white/[0.06]"
+        >
+          <Label className="text-[13px] font-medium text-foreground">
+            Mode contenu
+            <span className="block text-[10.5px] font-normal text-muted-foreground mt-0.5">
+              Largeur du contenu de page
+            </span>
+          </Label>
+          <div className="inline-flex items-center gap-1 p-1 bg-[var(--neutral-100)] dark:bg-white/5 rounded-lg w-fit">
+            <button
+              type="button"
+              role="radio"
+              aria-checked={contentMode === 'fluide'}
+              onClick={() => setContentMode('fluide')}
+              className={cn(
+                'px-3 py-1.5 text-[12px] font-semibold rounded-md transition-colors',
+                contentMode === 'fluide'
+                  ? 'bg-card text-foreground shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:bg-[var(--brand-700)] dark:text-[var(--accent-300)] dark:shadow-[0_1px_3px_rgba(0,0,0,0.3)]'
+                  : 'text-muted-foreground hover:text-foreground',
+              )}
+            >
+              Fluide (data)
+            </button>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={contentMode === 'centre'}
+              onClick={() => setContentMode('centre')}
+              className={cn(
+                'px-3 py-1.5 text-[12px] font-semibold rounded-md transition-colors',
+                contentMode === 'centre'
+                  ? 'bg-card text-foreground shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:bg-[var(--brand-700)] dark:text-[var(--accent-300)] dark:shadow-[0_1px_3px_rgba(0,0,0,0.3)]'
+                  : 'text-muted-foreground hover:text-foreground',
+              )}
+            >
+              Centré 1080px (lecture)
+            </button>
+          </div>
+        </div>
+
+        {/* Save row (Sidebar transparente only — theme + content mode persist directly) */}
+        <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-[var(--neutral-100)] dark:border-white/[0.06]">
           <Button onClick={handleSave} disabled={loading}>
-            {loading ? 'Sauvegarde...' : 'Sauvegarder'}
+            {loading ? 'Sauvegarde…' : 'Enregistrer'}
           </Button>
         </div>
       </CardContent>
