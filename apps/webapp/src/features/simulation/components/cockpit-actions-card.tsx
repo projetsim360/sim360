@@ -81,7 +81,7 @@ export function CockpitActionsCard({ simulationId, decisions, events, meetings }
       <CardContent className="p-5">
         <div className="mb-2 flex items-baseline justify-between">
           <div>
-            <span className="text-[11px] font-semibold uppercase tracking-[1px] text-[var(--neutral-400)]">
+            <span className="text-[11px] font-semibold uppercase tracking-[1px] text-muted-foreground">
               À traiter
             </span>
             <h3 className="font-display text-[17px] font-bold text-foreground">

@@ -42,8 +42,8 @@ export function KpiGauge({ kpiKey: _kpiKey, label, value, caption, tooltip, inve
   const dash = (display / 100) * STROKE_LEN;
 
   const gaugeNode = (
-    <div className="flex min-h-[104px] flex-col gap-2 rounded-lg bg-white p-3.5 shadow-[0_2px_4px_rgba(15,26,46,0.06),0_4px_12px_rgba(15,26,46,0.08)]">
-      <span className="text-[10px] font-semibold uppercase tracking-[0.8px] text-[var(--neutral-400)]">
+    <div className="flex min-h-[104px] flex-col gap-2 rounded-lg bg-card p-3.5 shadow-[0_2px_4px_rgba(15,26,46,0.06),0_4px_12px_rgba(15,26,46,0.08)]">
+      <span className="text-[10px] font-semibold uppercase tracking-[0.8px] text-muted-foreground">
         {label}
       </span>
       <div className="flex items-end gap-2.5">

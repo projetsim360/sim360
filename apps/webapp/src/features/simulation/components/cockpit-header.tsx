@@ -78,7 +78,7 @@ export function CockpitHeader({
   return (
     <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
       <div className="min-w-0 flex-1">
-        <span className="text-[11px] font-semibold uppercase tracking-[1px] text-[var(--neutral-400)]">
+        <span className="text-[11px] font-semibold uppercase tracking-[1px] text-muted-foreground">
           Simulation
         </span>
         <h2 className="mt-1 font-display text-[26px] font-extrabold leading-[1.1] tracking-[-0.02em] text-foreground sm:text-[30px]">
@@ -109,7 +109,7 @@ export function CockpitHeader({
               {pendingDecisions} décision{pendingDecisions > 1 ? 's' : ''} à trancher
             </span>
           )}
-          <span className="text-xs text-[var(--neutral-400)]">{timeAgo(sim.startedAt)}</span>
+          <span className="text-xs text-muted-foreground">{timeAgo(sim.startedAt)}</span>
         </div>
       </div>
 

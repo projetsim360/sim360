@@ -38,7 +38,7 @@ export function CockpitTimelineCard({ entries }: CockpitTimelineCardProps) {
     <Card className="shadow-[0_2px_4px_rgba(15,26,46,0.05),0_6px_16px_rgba(15,26,46,0.06)]">
       <CardContent className="p-5">
         <div className="mb-2">
-          <span className="text-[11px] font-semibold uppercase tracking-[1px] text-[var(--neutral-400)]">
+          <span className="text-[11px] font-semibold uppercase tracking-[1px] text-muted-foreground">
             Historique
           </span>
           <h3 className="font-display text-[17px] font-bold text-foreground">Timeline du projet</h3>
@@ -62,7 +62,7 @@ export function CockpitTimelineCard({ entries }: CockpitTimelineCardProps) {
                   <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-foreground">
                     {e.title}
                   </span>
-                  <span className="shrink-0 text-[10px] text-[var(--neutral-400)]">{shortDate(e.date)}</span>
+                  <span className="shrink-0 text-[10px] text-muted-foreground">{shortDate(e.date)}</span>
                 </div>
               );
             })}

@@ -143,7 +143,7 @@ export default function SimulationDetailPage() {
         <div className="px-6 pb-6">
           <Card>
             <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-              <KeenIcon icon="information-2" style="duotone" className="text-3xl text-[var(--neutral-400)]" />
+              <KeenIcon icon="information-2" style="duotone" className="text-3xl text-muted-foreground" />
               <p className="text-sm font-medium text-foreground">Impossible de charger cette simulation</p>
               <p className="max-w-md text-xs text-muted-foreground">{error}</p>
               <Button variant="primary" size="sm" onClick={() => { setError(null); setLoading(true); loadData(); }}>
