@@ -64,7 +64,7 @@ export function useEmailDraft(emailId: string | null) {
     }
   }
 
-  // Flush on unmount (safety net for unsaved changes)
+  // Cancel pending write on unmount (debounced writes are best-effort).
   useEffect(() => {
     return () => {
       if (timerRef.current) {
