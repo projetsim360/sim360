@@ -279,7 +279,7 @@ export function HandoverBanner({ simulationId, sim, onHandoverComplete }: Handov
           100% { top: calc(100% + 30px); opacity: 0; }
         }
       `}</style>
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-[var(--brand-900)] via-[var(--brand-800)] to-[var(--brand-700)]">
+      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-[var(--brand-900)] via-[var(--brand-800)] to-[var(--brand-700)] ring-1 ring-black/5 shadow-lg shadow-black/10 dark:ring-white/10 dark:shadow-black/50">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -top-12 -right-12 w-52 h-52 rounded-full"
