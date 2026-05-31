@@ -15,7 +15,6 @@ import { GoogleCallbackPage } from '@/pages/auth/google-callback';
 import { VerifyTwoFactorPage } from '@/pages/auth/verify-2fa';
 import { ConfirmEmailChangePage } from '@/pages/auth/confirm-email-change';
 import { ProfileWizardPage } from '@/pages/profile/wizard';
-import { EditProfilePage } from '@/pages/profile/edit-profile';
 import { SettingsPage } from '@/pages/settings';
 
 const LandingPage = lazy(() => import('@/pages/landing/landing-page'));
@@ -64,7 +63,7 @@ export function AppRoutingSetup() {
       <Route element={<ProtectedRoute />}>
         <Route element={<SimexShell />}>
           {/* SaaS core routes */}
-          <Route path="/profile/edit" element={<EditProfilePage />} />
+          <Route path="/profile/edit" element={<Navigate to="/settings" replace />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/settings/layout" element={<Navigate to="/settings" replace />} />
 
