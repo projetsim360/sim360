@@ -49,11 +49,6 @@ export const APP_SIDEBAR_MENU: MenuConfig = [
   },
   { heading: 'Compte' },
   {
-    title: 'Mon Profil',
-    icon: UserCircle,
-    path: '/settings',
-  },
-  {
     title: 'Paramètres',
     icon: Settings,
     path: '/settings',
@@ -78,7 +73,6 @@ export const APP_HEADER_MENU: MenuConfig = [
   { title: 'Réunions', path: '/meetings', icon: MessageSquare },
   { title: 'Rapports', path: '/reports', icon: FileBarChart },
   { title: 'Recrutement', path: '/recruitment/campaigns', icon: Briefcase },
-  { title: 'Mon Profil', path: '/settings', icon: UserCircle },
   { title: 'Paramètres', path: '/settings', icon: Settings },
 ];
 
@@ -112,12 +106,6 @@ export const APP_ICON_RAIL_MENU: MenuConfig = [
   {
     title: 'Paramètres',
     icon: Settings,
-    path: '/settings',
-    rootPath: '/settings',
-  },
-  {
-    title: 'Mon Profil',
-    icon: UserCircle,
     path: '/settings',
     rootPath: '/settings',
   },
@@ -160,8 +148,7 @@ export const APP_MEGA_MENU: MenuConfig = [
         children: [
           {
             children: [
-              { title: 'Mon Profil', icon: UserCircle, path: '/settings' },
-              { title: 'Préférences', icon: Settings, path: '/settings' },
+              { title: 'Paramètres', icon: Settings, path: '/settings' },
             ],
           },
         ],
@@ -209,8 +196,7 @@ export const APP_MEGA_MENU_MOBILE: MenuConfig = [
       {
         title: 'Mon Compte',
         children: [
-          { title: 'Mon Profil', icon: UserCircle, path: '/settings' },
-          { title: 'Préférences', icon: Settings, path: '/settings' },
+          { title: 'Paramètres', icon: Settings, path: '/settings' },
         ],
       },
     ],
