@@ -118,7 +118,7 @@ export function useRealtimeConnections({
           }
 
           // Assistant transcription
-          if (data.type === 'response.audio_transcript.done') {
+          if (data.type === 'response.output_audio_transcript.done') {
             setTranscriptions((prev) => [
               ...prev,
               {
@@ -141,7 +141,7 @@ export function useRealtimeConnections({
       await pc.setLocalDescription(offer);
 
       const sdpResponse = await fetch(
-        'https://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2025-06-03',
+        'https://api.openai.com/v1/realtime/calls',
         {
           method: 'POST',
           headers: {

@@ -15,6 +15,8 @@ interface MessageEvent {
   data: string;
 }
 
+const REALTIME_MODEL = 'gpt-realtime';
+
 const MEETING_INCLUDE = {
   participants: true,
   summary: true,
@@ -418,18 +420,26 @@ export class MeetingsService {
         ].filter(Boolean).join('\n')
       : 'Tu es un participant dans une reunion de gestion de projet. Reponds de maniere professionnelle et concise.';
 
-    const response = await fetch('https://api.openai.com/v1/realtime/sessions', {
+    // GA Realtime API — the beta /v1/realtime/sessions endpoint has been removed
+    const response = await fetch('https://api.openai.com/v1/realtime/client_secrets', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${openaiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-realtime-preview-2025-06-03',
-        voice,
-        instructions,
-        input_audio_transcription: { model: 'gpt-4o-mini-transcribe' },
-        turn_detection: { type: 'server_vad' },
+        session: {
+          type: 'realtime',
+          model: REALTIME_MODEL,
+          instructions,
+          audio: {
+            input: {
+              transcription: { model: 'gpt-4o-mini-transcribe' },
+              turn_detection: { type: 'server_vad' },
+            },
+            output: { voice },
+          },
+        },
       }),
     });
 
@@ -454,11 +464,11 @@ export class MeetingsService {
             participantName: participant?.name,
             participantId: participant?.id,
             voice,
-            sessionId: data.id,
+            sessionId: data.session?.id,
           },
         },
         'openai',
-        'gpt-4o-realtime-preview-2025-06-03',
+        REALTIME_MODEL,
         estimatedInputTokens,
         0,
       )
@@ -467,9 +477,9 @@ export class MeetingsService {
     return {
       participantId: participant?.id ?? null,
       participantName: participant?.name ?? 'IA',
-      clientSecret: data.client_secret?.value,
-      expiresAt: data.client_secret?.expires_at,
-      sessionId: data.id,
+      clientSecret: data.value,
+      expiresAt: data.expires_at,
+      sessionId: data.session?.id,
       voice,
     };
   }
@@ -561,7 +571,7 @@ export class MeetingsService {
             },
           },
           'openai',
-          'gpt-4o-realtime-preview-2025-06-03',
+          REALTIME_MODEL,
           estimatedInputTokens,
           estimatedOutputTokens,
         )

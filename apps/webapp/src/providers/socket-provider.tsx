@@ -10,7 +10,10 @@ interface SocketContextType {
 
 const SocketContext = createContext<SocketContextType>({ socket: null, isConnected: false });
 
-const SOCKET_URL = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
+// Relative VITE_API_URL (e.g. '/api/v1' in prod) means the API is served from the same origin
+const API_ORIGIN = import.meta.env.VITE_API_URL?.replace('/api/v1', '');
+const SOCKET_URL =
+  API_ORIGIN !== undefined ? API_ORIGIN || window.location.origin : 'http://localhost:3001';
 
 export function SocketProvider({ children }: { children: ReactNode }) {
   const { isLoggedIn } = useAuth();
