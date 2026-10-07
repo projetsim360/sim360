@@ -32,7 +32,7 @@ export default function CompanyIntranetPage() {
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-sm text-muted-foreground">
-              Aucune simulation selectionnee.
+              Aucune simulation sélectionnée.
             </p>
           </CardContent>
         </Card>
@@ -89,7 +89,7 @@ export default function CompanyIntranetPage() {
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-destructive text-sm">
-              Erreur lors du chargement des donnees.
+              Erreur lors du chargement des données.
             </p>
           </CardContent>
         </Card>
@@ -109,7 +109,7 @@ export default function CompanyIntranetPage() {
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${simId}/emails`}>
               <KeenIcon icon="sms" style="duotone" className="size-4" />
-              Boite de reception
+              Boîte de réception
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
@@ -164,7 +164,7 @@ export default function CompanyIntranetPage() {
                 Nom du projet
               </span>
               <p className="text-sm font-medium text-foreground">
-                {project?.name || 'Non defini'}
+                {project?.name || 'Non défini'}
               </p>
             </div>
             {project?.description && (
@@ -180,7 +180,7 @@ export default function CompanyIntranetPage() {
             {scenario?.description && (
               <div>
                 <span className="text-sm text-muted-foreground uppercase tracking-wide">
-                  Contexte du scenario
+                  Contexte du scénario
                 </span>
                 <p className="text-sm text-foreground leading-relaxed">
                   {scenario.description}
@@ -196,7 +196,7 @@ export default function CompanyIntranetPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <KeenIcon icon="people" style="duotone" className="size-5" />
-                Equipe projet
+                Équipe projet
                 <Badge variant="secondary" size="sm">
                   {teamMembers.length} membre{teamMembers.length > 1 ? 's' : ''}
                 </Badge>

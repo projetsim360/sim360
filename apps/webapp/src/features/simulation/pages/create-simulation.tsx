@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { PageHeader } from '@/components/page-header';
 import { ScenarioCard } from '../components/scenario-card';
@@ -21,15 +21,13 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { simulationApi } from '../api/simulation.api';
 import type { Scenario } from '../types/simulation.types';
-
-const SECTOR_OPTIONS = [
-  { value: 'IT', label: 'Technologies de l\'information' },
-  { value: 'CONSTRUCTION', label: 'Construction' },
-  { value: 'MARKETING', label: 'Marketing' },
-  { value: 'HEALTHCARE', label: 'Santé' },
-  { value: 'FINANCE', label: 'Finance' },
-  { value: 'CUSTOM', label: 'Autre / personnalisé' },
-];
+import {
+  EMPTY_SCENARIO_FILTERS,
+  SECTORS,
+  filterScenarios,
+  sectorsPresent,
+  type ScenarioFilters,
+} from '../config/sectors';
 
 const DIFFICULTY_OPTIONS = [
   { value: 'BEGINNER', label: 'Débutant' },
@@ -65,6 +63,11 @@ export default function CreateSimulationPage() {
     learningObjectives: '',
   });
   const [generating, setGenerating] = useState(false);
+  const [filters, setFilters] = useState<ScenarioFilters>(EMPTY_SCENARIO_FILTERS);
+  const availableSectors = useMemo(() => sectorsPresent(scenarios), [scenarios]);
+  const visibleScenarios = useMemo(() => filterScenarios(scenarios, filters), [scenarios, filters]);
+  const filtersActive =
+    filters.sector !== 'ALL' || filters.difficulty !== 'ALL' || filters.scenarioType !== 'ALL';
 
   useEffect(() => {
     Promise.all([
@@ -139,7 +142,7 @@ export default function CreateSimulationPage() {
           { label: 'Nouvelle' },
         ]}
         title="Nouvelle simulation"
-        subtitle="Choisissez un scénario ou faites-en générer un par l'IA."
+        subtitle="Choisissez un scénario du catalogue ou générez une nouvelle simulation sur mesure."
       />
 
       {/* Scenario detail modal */}
@@ -201,8 +204,8 @@ export default function CreateSimulationPage() {
             )}
           >
             <span className="flex items-center gap-2">
-              <KeenIcon icon="artificial-intelligence" style="duotone" />
-              Générer avec l'IA
+              <KeenIcon icon="add-files" style="duotone" />
+              Générer une nouvelle simulation
             </span>
           </button>
         </div>
@@ -221,7 +224,7 @@ export default function CreateSimulationPage() {
             {!loading && !error && scenarios.length === 0 && (
               <Card>
                 <CardContent className="flex flex-col items-center justify-center py-16 gap-4">
-                  <span className="text-4xl">📋</span>
+                  <KeenIcon icon="questionnaire-tablet" style="duotone" className="text-4xl text-[var(--neutral-400)]" />
                   <p className="text-muted-foreground text-sm">
                     Aucun scénario disponible pour le moment.
                   </p>
@@ -250,12 +253,69 @@ export default function CreateSimulationPage() {
                   </section>
                 )}
 
-                {/* All scenarios */}
-                <p className="text-sm text-muted-foreground mb-4">
-                  Choisissez un scénario pour démarrer une nouvelle simulation.
-                </p>
+                {/* All scenarios + filters */}
+                <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+                  <p className="text-sm text-muted-foreground">
+                    Choisissez un scénario pour démarrer une nouvelle simulation.
+                  </p>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 lg:w-[620px]">
+                    <Select value={filters.sector} onValueChange={(v) => setFilters((f) => ({ ...f, sector: v }))}>
+                      <SelectTrigger aria-label="Filtrer par secteur">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ALL">Tous les secteurs</SelectItem>
+                        {availableSectors.map((opt) => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select value={filters.difficulty} onValueChange={(v) => setFilters((f) => ({ ...f, difficulty: v }))}>
+                      <SelectTrigger aria-label="Filtrer par niveau de responsabilité">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ALL">Tous les niveaux</SelectItem>
+                        {DIFFICULTY_OPTIONS.map((opt) => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select value={filters.scenarioType} onValueChange={(v) => setFilters((f) => ({ ...f, scenarioType: v }))}>
+                      <SelectTrigger aria-label="Filtrer par type de situation">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ALL">Toutes les situations</SelectItem>
+                        {SCENARIO_TYPE_OPTIONS.map((opt) => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {visibleScenarios.length === 0 && (
+                  <Card>
+                    <CardContent className="flex flex-col items-center justify-center gap-3 py-10 text-center">
+                      <p className="text-sm text-muted-foreground">Aucun scénario ne correspond à ces filtres.</p>
+                      {filtersActive && (
+                        <Button variant="outline" size="sm" onClick={() => setFilters(EMPTY_SCENARIO_FILTERS)}>
+                          Réinitialiser les filtres
+                        </Button>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
+
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
-                  {scenarios.map((scenario) => (
+                  {visibleScenarios.map((scenario) => (
                     <ScenarioCard
                       key={scenario.id}
                       scenario={scenario}
@@ -273,14 +333,14 @@ export default function CreateSimulationPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <KeenIcon icon="artificial-intelligence" style="duotone" />
-                Générer un scénario avec l'IA
+                <KeenIcon icon="add-files" style="duotone" />
+                Générer une nouvelle simulation
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-5">
               <p className="text-sm text-muted-foreground">
-                Décrivez votre projet et vos objectifs d'apprentissage. L'IA générera un scénario
-                de simulation adapté à vos besoins.
+                Décrivez votre projet et vos objectifs d'apprentissage : un scénario de simulation
+                adapté à vos besoins sera préparé pour vous.
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -292,7 +352,7 @@ export default function CreateSimulationPage() {
                       <span className="text-muted-foreground font-normal ml-1">(optionnel)</span>
                     </label>
                     <Input
-                      placeholder="Ex: Migration vers le cloud"
+                      placeholder="Ex. : agrandissement d’une usine"
                       value={genForm.projectName}
                       onChange={(e) => setGenForm((p) => ({ ...p, projectName: e.target.value }))}
                     />
@@ -308,7 +368,7 @@ export default function CreateSimulationPage() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {SECTOR_OPTIONS.map((opt) => (
+                        {SECTORS.map((opt) => (
                           <SelectItem key={opt.value} value={opt.value}>
                             {opt.label}
                           </SelectItem>
@@ -377,7 +437,7 @@ export default function CreateSimulationPage() {
                       <span className="text-muted-foreground font-normal ml-1">(optionnel)</span>
                     </label>
                     <Textarea
-                      placeholder="Décrivez le contexte et les enjeux du projet..."
+                      placeholder="Décrivez le contexte et les enjeux du projet…"
                       rows={3}
                       value={genForm.projectDescription}
                       onChange={(e) => setGenForm((p) => ({ ...p, projectDescription: e.target.value }))}
@@ -390,7 +450,7 @@ export default function CreateSimulationPage() {
                       <span className="text-muted-foreground font-normal ml-1">(optionnel)</span>
                     </label>
                     <Textarea
-                      placeholder="Ex: Gestion des risques, planification agile, communication..."
+                      placeholder="Ex. : gestion des risques, planification agile, communication…"
                       rows={3}
                       value={genForm.learningObjectives}
                       onChange={(e) => setGenForm((p) => ({ ...p, learningObjectives: e.target.value }))}
@@ -403,7 +463,7 @@ export default function CreateSimulationPage() {
                       <span className="text-muted-foreground font-normal ml-1">(optionnel)</span>
                     </label>
                     <Textarea
-                      placeholder="Ex: Budget limité, équipe réduite, délai serré..."
+                      placeholder="Ex. : budget limité, équipe réduite, délai serré…"
                       rows={3}
                       value={genForm.constraints}
                       onChange={(e) => setGenForm((p) => ({ ...p, constraints: e.target.value }))}
@@ -421,13 +481,13 @@ export default function CreateSimulationPage() {
                 >
                   {generating ? (
                     <>
-                      <span className="animate-spin">⏳</span>
-                      Génération en cours...
+                      <span className="size-3.5 rounded-full border-2 border-current border-t-transparent animate-spin" />
+                      Génération en cours…
                     </>
                   ) : (
                     <>
-                      <KeenIcon icon="artificial-intelligence" style="duotone" />
-                      Générer le scénario
+                      <KeenIcon icon="add-files" style="duotone" />
+                      Générer la simulation
                     </>
                   )}
                 </Button>

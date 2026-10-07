@@ -3,13 +3,13 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
 class SkillDto {
-  @ApiProperty({ description: 'Nom de la competence', example: 'Gestion des risques' })
+  @ApiProperty({ description: 'Nom de la compétence', example: 'Gestion des risques' })
   @IsString()
   @IsNotEmpty()
   name!: string;
 
   @ApiProperty({
-    description: 'Niveau actuel de la competence',
+    description: 'Niveau actuel de la compétence',
     example: 'basic',
     enum: ['none', 'basic', 'intermediate', 'advanced'],
   })
@@ -18,7 +18,7 @@ class SkillDto {
   currentLevel!: string;
 
   @ApiProperty({
-    description: 'Niveau cible de la competence',
+    description: 'Niveau cible de la compétence',
     example: 'intermediate',
     enum: ['none', 'basic', 'intermediate', 'advanced'],
   })
@@ -26,7 +26,7 @@ class SkillDto {
   @IsNotEmpty()
   targetLevel!: string;
 
-  @ApiPropertyOptional({ description: 'Ecart calcule (0-100)', example: 50 })
+  @ApiPropertyOptional({ description: 'Écart calculé (0-100)', example: 50 })
   @IsNumber()
   @IsOptional()
   @Min(0)
@@ -36,7 +36,7 @@ class SkillDto {
 
 export class CustomizeSkillsDto {
   @ApiProperty({
-    description: 'Liste des competences personnalisees par l\'apprenant',
+    description: 'Liste des compétences personnalisées par l\'apprenant',
     type: [SkillDto],
   })
   @IsArray()

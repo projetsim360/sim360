@@ -1,5 +1,5 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength, Matches, IsBoolean } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty, IsString, MinLength, Matches, IsBoolean, IsOptional, IsTimeZone } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class RegisterDto {
   @ApiProperty({ example: 'user@example.com' })
@@ -27,4 +27,9 @@ export class RegisterDto {
   @ApiProperty({ example: true })
   @IsBoolean()
   gdprConsent!: boolean;
+
+  @ApiPropertyOptional({ example: 'America/Toronto', description: 'IANA time zone detected by the browser' })
+  @IsOptional()
+  @IsTimeZone()
+  timezone?: string;
 }

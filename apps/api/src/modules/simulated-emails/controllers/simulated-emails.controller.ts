@@ -37,13 +37,13 @@ export class SimulatedEmailsController {
   // ─── List emails ────────────────────────────────────────────
 
   @Get('simulations/:simId/emails')
-  @ApiOperation({ summary: 'Lister les emails d\'une simulation (pagine, filtrable)' })
+  @ApiOperation({ summary: 'Lister les emails d\'une simulation (paginé, filtrable)' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
   @ApiQuery({ name: 'status', required: false, enum: EmailStatus, description: 'Filtrer par statut' })
-  @ApiQuery({ name: 'priority', required: false, enum: EmailPriority, description: 'Filtrer par priorite' })
+  @ApiQuery({ name: 'priority', required: false, enum: EmailPriority, description: 'Filtrer par priorité' })
   @ApiQuery({ name: 'phaseOrder', required: false, type: Number, description: 'Filtrer par phase' })
-  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Numero de page (defaut: 1)' })
-  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Elements par page (defaut: 20)' })
+  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Numéro de page (défaut: 1)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Éléments par page (défaut: 20)' })
   findAll(
     @Param('simId') simId: string,
     @CurrentUser() user: any,
@@ -104,7 +104,7 @@ export class SimulatedEmailsController {
 
   @Post('simulations/:simId/emails/:emailId/respond')
   @Auditable('EMAIL_RESPONDED', 'SimulatedEmail')
-  @ApiOperation({ summary: 'Repondre a un email (evaluation IA en arriere-plan)' })
+  @ApiOperation({ summary: 'Répondre à un email (évaluation IA en arrière-plan)' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
   @ApiParam({ name: 'emailId', description: 'ID de l\'email' })
   respond(
@@ -209,7 +209,7 @@ export class SimulatedEmailsController {
 
   @Post('simulations/:simId/emails/generate')
   @Auditable('EMAIL_BATCH_GENERATED', 'SimulatedEmail')
-  @ApiOperation({ summary: 'Generer les emails pour la phase courante ou specifiee' })
+  @ApiOperation({ summary: 'Générer les emails pour la phase courante ou spécifiée' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
   generate(
     @Param('simId') simId: string,
@@ -229,7 +229,7 @@ export class SimulatedEmailsController {
 
   @Post('simulations/:simId/emails/generate-simultaneous')
   @Auditable('EMAIL_BATCH_GENERATED', 'SimulatedEmail')
-  @ApiOperation({ summary: 'Generer des emails simultanes avec priorites differentes (test de priorisation)' })
+  @ApiOperation({ summary: 'Générer des emails simultanés avec priorités différentes (test de priorisation)' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
   generateSimultaneous(
     @Param('simId') simId: string,
@@ -249,7 +249,7 @@ export class SimulatedEmailsController {
 
   @Post('simulations/:simId/emails/generate-change-request')
   @Auditable('EMAIL_GENERATED', 'SimulatedEmail')
-  @ApiOperation({ summary: 'Generer un email de demande de changement du client' })
+  @ApiOperation({ summary: 'Générer un email de demande de changement du client' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
   generateChangeRequest(
     @Param('simId') simId: string,
@@ -267,7 +267,7 @@ export class SimulatedEmailsController {
 
   @Post('simulations/:simId/emails/generate-welcome')
   @Auditable('EMAIL_GENERATED', 'SimulatedEmail')
-  @ApiOperation({ summary: 'Generer l\'email de bienvenue DRH' })
+  @ApiOperation({ summary: 'Générer l\'email de bienvenue DRH' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
   generateWelcome(
     @Param('simId') simId: string,

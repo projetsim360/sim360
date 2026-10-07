@@ -266,7 +266,7 @@ export function PmoContextPanel({
             <Card className="shadow-none">
               <CardHeader className="p-3 pb-2">
                 <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                  Decisions recentes ({context.decisions.length})
+                  Décisions récentes ({context.decisions.length})
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-3 pt-1 space-y-3">

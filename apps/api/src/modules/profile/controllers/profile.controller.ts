@@ -42,7 +42,7 @@ export class ProfileController {
   ) {}
 
   @Get()
-  @ApiOperation({ summary: 'Obtenir le profil de l\'utilisateur courant (cree un profil vide si inexistant)' })
+  @ApiOperation({ summary: 'Obtenir le profil de l\'utilisateur courant (crée un profil vide si inexistant)' })
   getProfile(
     @CurrentUser() user: any,
     @CurrentTenant() tenantId: string,
@@ -52,8 +52,8 @@ export class ProfileController {
 
   @Get('adaptation')
   @ApiOperation({
-    summary: 'Obtenir la configuration d\'adaptation basee sur le profileType de l\'utilisateur',
-    description: 'Retourne les parametres d\'adaptation (ton PMO, nombre de revisions, tooltips, etc.) en fonction du profil de l\'apprenant.',
+    summary: 'Obtenir la configuration d\'adaptation basée sur le profileType de l\'utilisateur',
+    description: 'Retourne les paramètres d\'adaptation (ton PMO, nombre de révisions, tooltips, etc.) en fonction du profil de l\'apprenant.',
   })
   getAdaptation(
     @CurrentUser() user: any,
@@ -64,7 +64,7 @@ export class ProfileController {
 
   @Post('upload-cv')
   @Auditable('PROFILE_CV_UPLOAD', 'UserProfile')
-  @ApiOperation({ summary: 'Uploader un CV (URL du fichier deja stocke)' })
+  @ApiOperation({ summary: 'Uploader un CV (URL du fichier déjà stocké)' })
   uploadCv(
     @CurrentUser() user: any,
     @CurrentTenant() tenantId: string,
@@ -75,7 +75,7 @@ export class ProfileController {
 
   @Post('import-linkedin')
   @Auditable('PROFILE_LINKEDIN_IMPORT', 'UserProfile')
-  @ApiOperation({ summary: 'Importer les donnees LinkedIn' })
+  @ApiOperation({ summary: 'Importer les données LinkedIn' })
   importLinkedin(
     @CurrentUser() user: any,
     @CurrentTenant() tenantId: string,
@@ -86,7 +86,7 @@ export class ProfileController {
 
   @Post('questionnaire')
   @Auditable('PROFILE_QUESTIONNAIRE_SUBMIT', 'UserProfile')
-  @ApiOperation({ summary: 'Soumettre les reponses au questionnaire de profiling' })
+  @ApiOperation({ summary: 'Soumettre les réponses au questionnaire de profiling' })
   submitQuestionnaire(
     @CurrentUser() user: any,
     @CurrentTenant() tenantId: string,
@@ -97,7 +97,7 @@ export class ProfileController {
 
   @Post('aptitude-test')
   @Auditable('PROFILE_APTITUDE_TEST_SUBMIT', 'UserProfile')
-  @ApiOperation({ summary: 'Soumettre les reponses au test d\'aptitude (evaluation IA)' })
+  @ApiOperation({ summary: 'Soumettre les réponses au test d\'aptitude (évaluation IA)' })
   submitAptitudeTest(
     @CurrentUser() user: any,
     @CurrentTenant() tenantId: string,
@@ -108,7 +108,7 @@ export class ProfileController {
 
   @Post('analyze')
   @Auditable('PROFILE_ANALYZE', 'UserProfile')
-  @ApiOperation({ summary: 'Declencher l\'analyse IA de gap (diagnostic, profileType, competences)' })
+  @ApiOperation({ summary: 'Déclencher l\'analyse IA de gap (diagnostic, profileType, compétences)' })
   analyze(
     @CurrentUser() user: any,
     @CurrentTenant() tenantId: string,
@@ -118,7 +118,7 @@ export class ProfileController {
 
   @Put('skills')
   @Auditable('PROFILE_SKILLS_CUSTOMIZE', 'UserProfile')
-  @ApiOperation({ summary: 'Personnaliser les competences apres diagnostic' })
+  @ApiOperation({ summary: 'Personnaliser les compétences après diagnostic' })
   customizeSkills(
     @CurrentUser() user: any,
     @CurrentTenant() tenantId: string,
@@ -129,7 +129,7 @@ export class ProfileController {
 
   @Put('sector')
   @Auditable('PROFILE_SECTOR_SELECT', 'UserProfile')
-  @ApiOperation({ summary: 'Selectionner le secteur (accepter la suggestion ou choisir un autre)' })
+  @ApiOperation({ summary: 'Sélectionner le secteur (accepter la suggestion ou choisir un autre)' })
   selectSector(
     @CurrentUser() user: any,
     @CurrentTenant() tenantId: string,
@@ -140,7 +140,7 @@ export class ProfileController {
 
   @Post('custom-project')
   @Auditable('PROFILE_CUSTOM_PROJECT_SUBMIT', 'UserProfile')
-  @ApiOperation({ summary: 'Soumettre un projet personnalise pour generation de scenario IA' })
+  @ApiOperation({ summary: 'Soumettre un projet personnalisé pour génération de scénario IA' })
   submitCustomProject(
     @CurrentUser() user: any,
     @CurrentTenant() tenantId: string,
@@ -151,7 +151,7 @@ export class ProfileController {
 
   @Post('complete')
   @Auditable('PROFILE_ONBOARDING_COMPLETE', 'UserProfile')
-  @ApiOperation({ summary: 'Marquer l\'onboarding comme termine' })
+  @ApiOperation({ summary: 'Marquer l\'onboarding comme terminé' })
   completeOnboarding(
     @CurrentUser() user: any,
     @CurrentTenant() tenantId: string,

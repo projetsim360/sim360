@@ -85,7 +85,7 @@ export class DecisionAiService {
       return {
         pattern: 'cautious',
         confidence: Math.round(cautiousRatio * 100),
-        description: 'Vous tendez vers des choix prudents qui minimisent les risques. Cela protege vos KPIs mais peut limiter les gains potentiels.',
+        description: 'Vous tendez vers des choix prudents qui minimisent les risques. Cela protège vos KPIs mais peut limiter les gains potentiels.',
       };
     }
 
@@ -93,7 +93,7 @@ export class DecisionAiService {
       return {
         pattern: 'aggressive',
         confidence: Math.round(aggressiveRatio * 100),
-        description: 'Vous privilegiez des choix ambitieux avec des impacts forts. Cela maximise les gains potentiels mais augmente l\'exposition aux risques.',
+        description: 'Vous privilégiez des choix ambitieux avec des impacts forts. Cela maximise les gains potentiels mais augmente l\'exposition aux risques.',
       };
     }
 
@@ -101,14 +101,14 @@ export class DecisionAiService {
       return {
         pattern: 'balanced',
         confidence: Math.round(optimalRatio * 100),
-        description: 'Vous faites des choix equilibres et souvent optimaux. Vos decisions montrent une bonne analyse des compromis.',
+        description: 'Vous faites des choix équilibrés et souvent optimaux. Vos décisions montrent une bonne analyse des compromis.',
       };
     }
 
     return {
       pattern: 'inconsistent',
       confidence: Math.round((1 - optimalRatio) * 50 + 50),
-      description: 'Vos choix varient significativement. Essayez de definir une strategie coherente pour ameliorer vos resultats.',
+      description: 'Vos choix varient significativement. Essayez de définir une stratégie cohérente pour améliorer vos résultats.',
     };
   }
 
@@ -149,12 +149,12 @@ export class DecisionAiService {
 
     const parts: string[] = [];
     if (decision.selectedOption === optimalIndex) {
-      parts.push('Choix optimal selectionne.');
+      parts.push('Choix optimal sélectionné.');
     } else {
       parts.push(`Choix sous-optimal (option optimale : "${decision.options[optimalIndex].label}").`);
     }
     if (criticalKpis.length > 0 && contextBonus < 15) {
-      parts.push('Des KPIs critiques ont ete impactes negativement.');
+      parts.push('Des KPIs critiques ont été impactés négativement.');
     }
 
     return { score: totalScore, justification: parts.join(' ') };
@@ -177,14 +177,15 @@ export class DecisionAiService {
   ): Promise<string> {
     const result = await this.aiService.complete({
       prompt: [
-        `Analyse cette decision de gestion de projet:`,
+        `Analyse cette décision de gestion de projet:`,
+        `Réponds en français correct, avec les accents.`,
         ``,
-        `Scenario: ${decision.scenarioTitle} — Phase: ${decision.phaseName}`,
-        `Decision: "${decision.title}"`,
+        `Scénario: ${decision.scenarioTitle} — Phase: ${decision.phaseName}`,
+        `Décision: "${decision.title}"`,
         `Contexte: ${decision.context}`,
         `Option choisie: "${selectedOpt.label}" — ${selectedOpt.description}`,
         ``,
-        `KPIs actuels: Budget ${decision.kpis.budget}, Delai ${decision.kpis.schedule}, Qualite ${decision.kpis.quality}, Moral ${decision.kpis.teamMorale}, Risque ${decision.kpis.riskLevel}.`,
+        `KPIs actuels: Budget ${decision.kpis.budget}, Délai ${decision.kpis.schedule}, Qualité ${decision.kpis.quality}, Moral ${decision.kpis.teamMorale}, Risque ${decision.kpis.riskLevel}.`,
         ``,
         `Fournis un coaching constructif en 3-4 phrases:`,
         `1. Points positifs de ce choix`,
@@ -207,13 +208,14 @@ export class DecisionAiService {
   ): Promise<string> {
     const result = await this.aiService.complete({
       prompt: [
-        `Compare ces deux choix de gestion de projet de maniere pedagogique:`,
+        `Compare ces deux choix de gestion de projet de manière pédagogique:`,
+        `Réponds en français correct, avec les accents.`,
         ``,
-        `Decision: "${decision.title}"`,
+        `Décision: "${decision.title}"`,
         `Choix de l'apprenant: "${selectedOpt.label}" — ${selectedOpt.description}`,
         `Choix optimal: "${optimalOpt.label}" — ${optimalOpt.description}`,
         ``,
-        `Explique en 2-3 phrases pourquoi l'option optimale aurait ete preferable, sans etre critique. Reste encourageant.`,
+        `Explique en 2-3 phrases pourquoi l'option optimale aurait été préférable, sans être critique. Reste encourageant.`,
       ].join('\n'),
       maxTokens: 200,
       temperature: 0.5,

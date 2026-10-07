@@ -26,7 +26,7 @@ export class DeliverableTemplatesController {
   constructor(private readonly service: DeliverableTemplatesService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Creer un template de livrable (US-1.1)' })
+  @ApiOperation({ summary: 'Créer un template de livrable (US-1.1)' })
   create(
     @CurrentTenant() tenantId: string,
     @CurrentUser('id') userId: string,
@@ -47,7 +47,7 @@ export class DeliverableTemplatesController {
   }
 
   @Patch(':id/toggle')
-  @ApiOperation({ summary: 'Activer/desactiver un template de livrable (US-1.3)' })
+  @ApiOperation({ summary: 'Activer/désactiver un template de livrable (US-1.3)' })
   toggle(
     @CurrentTenant() tenantId: string,
     @CurrentUser('id') userId: string,
@@ -90,7 +90,7 @@ export class DeliverableTemplatesController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Detail d\'un template de livrable' })
+  @ApiOperation({ summary: 'Détail d\'un template de livrable' })
   findOne(
     @CurrentTenant() tenantId: string,
     @Param('id') id: string,

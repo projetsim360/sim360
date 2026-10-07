@@ -84,8 +84,9 @@ export class AiController {
       name: participant.name,
       role: participant.role,
       personality: participant.personality,
-      expertise: participant.expertise,
-      morale: participant.morale,
+      seniority: participant.expertise,
+      // Team member morale is 0-100; prompts expect a 1-5 cooperation level.
+      cooperationLevel: Math.round((participant.morale ?? 60) / 20),
     };
 
     // Publish event

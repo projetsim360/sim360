@@ -21,6 +21,7 @@ const LandingPage = lazy(() => import('@/pages/landing/landing-page'));
 import {
   dashboardRoutes,
   simulationRoutes,
+  actionItemsRoutes,
   meetingRoutes,
   reportRoutes,
   adminReferenceRoutes,
@@ -70,6 +71,7 @@ export function AppRoutingSetup() {
           {/* Feature routes (Simex pro domaine) */}
           {dashboardRoutes}
           {simulationRoutes}
+          {actionItemsRoutes}
           {meetingRoutes}
           {reportRoutes}
           {adminReferenceRoutes}

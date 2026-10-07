@@ -4,12 +4,12 @@ import { Type } from 'class-transformer';
 
 export class ApprovalChainEntryDto {
   @ApiProperty({
-    description: 'Role du reviewer (SPONSOR, CLIENT, TECHNICAL_LEAD)',
+    description: 'Rôle du reviewer (SPONSOR, CLIENT, TECHNICAL_LEAD)',
   })
   @IsString()
   role!: string;
 
-  @ApiProperty({ description: "ID du membre d'equipe reviewer" })
+  @ApiProperty({ description: "ID du membre d'équipe reviewer" })
   @IsString()
   memberId!: string;
 }
@@ -17,7 +17,7 @@ export class ApprovalChainEntryDto {
 export class DefineApprovalChainDto {
   @ApiProperty({
     type: [ApprovalChainEntryDto],
-    description: "Chaine d'approbation",
+    description: "Chaîne d'approbation",
   })
   @IsArray()
   @ValidateNested({ each: true })

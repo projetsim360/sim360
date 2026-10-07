@@ -215,7 +215,7 @@ function HeroSection() {
           </h1>
 
           <p className="text-lg lg:text-xl text-muted-foreground mt-6 max-w-xl">
-            Plongez dans 12 scénarios immersifs alimentés par l&apos;IA. Pilotez budget, équipe et imprévus comme un senior PM — sans les conséquences réelles.
+            Plongez dans des scénarios immersifs issus de vrais projets. Pilotez budget, équipe et imprévus comme un senior PM — sans les conséquences réelles.
           </p>
 
           <div className="flex flex-wrap gap-4 mt-10">
@@ -607,7 +607,7 @@ function HowItWorksSection() {
             3 étapes vers la maîtrise
           </h2>
           <p className="text-lg text-white/70 max-w-2xl mx-auto">
-            De la première décision au feedback IA, en moins d&apos;une heure par scénario.
+            De la première décision au retour d'expérience, en moins d&apos;une heure par scénario.
           </p>
         </div>
 
@@ -627,7 +627,7 @@ function HowItWorksSection() {
                 Choisissez votre scénario
               </h3>
               <p className="text-white/70 text-lg leading-relaxed">
-                Sélectionnez parmi 12 scénarios calqués sur de vrais cabinets : BTP, IT, transition éco, hyper-croissance. Chaque scénario démarre avec un brief sponsor et un contexte d&apos;équipe réaliste.
+                Sélectionnez parmi plusieurs scénarios calqués sur de vrais cabinets : BTP, IT, transition éco, hyper-croissance. Chaque scénario démarre avec un brief sponsor et un contexte d&apos;équipe réaliste.
               </p>
               <ul className="space-y-2.5 text-white/85 text-[15px]">
                 <li className="flex items-start gap-3">
@@ -668,12 +668,12 @@ function HowItWorksSection() {
                 Pilotez les décisions en temps réel
               </h3>
               <p className="text-white/70 text-lg leading-relaxed">
-                Tour par tour, négociez avec les acteurs IA, arbitrez budget vs qualité, gérez les imprévus. Chaque choix impacte les KPIs en direct.
+                Tour par tour, négociez avec les participants virtuels, arbitrez budget vs qualité, gérez les imprévus. Chaque choix impacte les KPIs en direct.
               </p>
               <ul className="space-y-2.5 text-white/85 text-[15px]">
                 <li className="flex items-start gap-3">
                   <Check size={18} className="text-[var(--accent-400)] mt-0.5 shrink-0" />
-                  Acteurs IA qui réagissent et négocient
+                  Participants virtuels qui réagissent et négocient
                 </li>
                 <li className="flex items-start gap-3">
                   <Check size={18} className="text-[var(--accent-400)] mt-0.5 shrink-0" />
@@ -701,7 +701,7 @@ function HowItWorksSection() {
                 Recevez un feedback senior
               </h3>
               <p className="text-white/70 text-lg leading-relaxed">
-                L&apos;IA analyse vos décisions, identifie les patterns et vous livre un rapport calibré sur le standard PMI. Personnalisable par mentor.
+                Vos décisions sont analysées, les patterns identifiés, et vous recevez un rapport calibré sur le standard PMI. Personnalisable par mentor.
               </p>
               <ul className="space-y-2.5 text-white/85 text-[15px]">
                 <li className="flex items-start gap-3">
@@ -782,7 +782,7 @@ function DomainsSection() {
             Choisissez votre univers
           </h2>
           <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
-            12 scénarios calqués sur de vrais cabinets et entreprises. Mis à jour chaque trimestre.
+            Des scénarios calqués sur de vrais cabinets et entreprises. Mis à jour chaque trimestre.
           </p>
         </Reveal>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -834,7 +834,7 @@ function WhySection() {
   const pillars = [
     {
       Icon: Sparkles,
-      title: 'Réalisme IA',
+      title: 'Réalisme des échanges',
       desc: 'Acteurs virtuels qui réagissent aux décisions, négocient, doutent. Pas de scripts.',
     },
     {
@@ -966,7 +966,7 @@ function PricingSection() {
       featured: false,
       features: [
         '3 scénarios d\'initiation',
-        'IA texte',
+        'Réunions écrites',
         'Dashboard personnel',
         'Support email',
       ],
@@ -980,8 +980,8 @@ function PricingSection() {
       featured: true,
       features: [
         'Scénarios illimités',
-        'IA vocale temps réel',
-        'Mentor IA personnalisé',
+        'Réunions vocales en temps réel',
+        'Mentor virtuel personnalisé',
         'Certificats PMI-ready',
         'Mode multi-joueur',
       ],
@@ -1091,8 +1091,8 @@ function FaqSection() {
       a: 'Vos décisions de simulation sont strictement privées. Les données agrégées (anonymisées) servent uniquement à améliorer les scénarios et à vous comparer à votre cohorte. Conformité RGPD complète, hébergement en Europe.',
     },
     {
-      q: 'Comment fonctionne l\'IA d\'évaluation ?',
-      a: 'L\'IA observe vos décisions, vos arbitrages budget/qualité, votre style de communication avec les acteurs virtuels. Elle compare ensuite votre profil aux best practices PMI et à 12 000+ sessions historiques pour produire un feedback contextualisé.',
+      q: 'Comment fonctionne l\'évaluation ?',
+      a: 'Un moteur d\'analyse observe vos décisions, vos arbitrages budget/qualité, votre style de communication avec les acteurs virtuels. Il compare ensuite votre profil aux best practices PMI et à 12 000+ sessions historiques pour produire un feedback contextualisé.',
     },
     {
       q: 'Puis-je annuler à tout moment ?',

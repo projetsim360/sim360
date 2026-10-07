@@ -47,7 +47,7 @@ export function SkillsInput({ value, onChange, className }: SkillsInputProps) {
           value={newSkill}
           onChange={(e) => setNewSkill(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Ajouter une competence..."
+          placeholder="Ajouter une compétence..."
           className="flex-1"
         />
         <Button type="button" variant="outline" size="sm" onClick={handleAdd} disabled={!newSkill.trim()}>
@@ -90,7 +90,7 @@ export function SkillsInput({ value, onChange, className }: SkillsInputProps) {
 
       {value.length === 0 && (
         <p className="text-sm text-muted-foreground text-center py-4">
-          Aucune competence ajoutee. Utilisez le champ ci-dessus pour en ajouter.
+          Aucune compétence ajoutée. Utilisez le champ ci-dessus pour en ajouter.
         </p>
       )}
     </div>

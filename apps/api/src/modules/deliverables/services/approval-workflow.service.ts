@@ -49,7 +49,7 @@ export class ApprovalWorkflowService {
     });
     if (!deliverable) throw new NotFoundException('Livrable introuvable');
     if (deliverable.simulation.userId !== userId)
-      throw new BadRequestException('Acces refuse');
+      throw new BadRequestException('Accès refusé');
 
     // Verify all members exist in the project
     const memberIds = chain.map((c) => c.memberId);
@@ -115,17 +115,17 @@ export class ApprovalWorkflowService {
     });
     if (!deliverable) throw new NotFoundException('Livrable introuvable');
     if (deliverable.simulation.userId !== userId)
-      throw new BadRequestException('Acces refuse');
+      throw new BadRequestException('Accès refusé');
     if (!deliverable.approvalChain)
       throw new BadRequestException(
-        "Aucune chaine d'approbation definie",
+        "Aucune chaîne d'approbation définie",
       );
     if (
       deliverable.status !== 'EVALUATED' &&
       deliverable.status !== 'REVISED'
     ) {
       throw new BadRequestException(
-        'Le livrable doit etre evalue avant soumission pour approbation',
+        'Le livrable doit être évalué avant soumission pour approbation',
       );
     }
 
@@ -197,6 +197,7 @@ export class ApprovalWorkflowService {
 
     const prompt = [
       `Tu es ${reviewerName}, en charge de valider un livrable de gestion de projet.`,
+      `Réponds en français correct, avec les accents.`,
       ``,
       `Titre du livrable : ${approval.deliverable.title}`,
       `Type : ${approval.deliverable.type}`,
@@ -206,13 +207,13 @@ export class ApprovalWorkflowService {
       approval.deliverable.content ?? '(vide)',
       `---`,
       ``,
-      `En tant que ${approval.reviewerRole}, evalue ce livrable :`,
-      `1. Le document repond-il aux exigences de qualite ?`,
-      `2. Les informations sont-elles completes et coherentes ?`,
+      `En tant que ${approval.reviewerRole}, évalué ce livrable :`,
+      `1. Le document repond-il aux exigences de qualité ?`,
+      `2. Les informations sont-elles completes et cohérentes ?`,
       `3. Y a-t-il des erreurs ou des lacunes majeures ?`,
       ``,
-      `Reponds au format JSON strict :`,
-      `{ "decision": "APPROVED" ou "REJECTED", "comment": "ton commentaire detaille (2-3 phrases)" }`,
+      `Réponds au format JSON strict :`,
+      `{ "decision": "APPROVED" ou "REJECTED", "comment": "ton commentaire détaillé (2-3 phrases)" }`,
     ].join('\n');
 
     const result = await this.aiService.complete({
@@ -364,7 +365,7 @@ export class ApprovalWorkflowService {
     });
     if (!deliverable) throw new NotFoundException('Livrable introuvable');
     if (deliverable.simulation.userId !== userId)
-      throw new BadRequestException('Acces refuse');
+      throw new BadRequestException('Accès refusé');
 
     return {
       chain: deliverable.approvalChain,

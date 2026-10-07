@@ -184,14 +184,14 @@ function EditorToolbar({ editor, disabled }: { editor: Editor; disabled?: boolea
       />
       <ToolbarButton
         icon="numbered-list"
-        label="Liste numerotee"
+        label="Liste numérotée"
         isActive={editor.isActive('orderedList')}
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
       />
       <ToolbarButton
         icon="check-squared"
-        label="Liste de taches"
+        label="Liste de tâches"
         isActive={editor.isActive('taskList')}
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleTaskList().run()}
@@ -256,7 +256,7 @@ function EditorToolbar({ editor, disabled }: { editor: Editor; disabled?: boolea
       />
       <ToolbarButton
         icon="arrow-right"
-        label="Retablir (Ctrl+Shift+Z)"
+        label="Rétablir (Ctrl+Shift+Z)"
         disabled={disabled || !editor.can().redo()}
         onClick={() => editor.chain().focus().redo().run()}
       />
@@ -268,7 +268,7 @@ export function RichTextEditor({
   content,
   onChange,
   disabled = false,
-  placeholder = 'Redigez votre livrable ici...',
+  placeholder = 'Rédigez votre livrable ici...',
   className,
 }: RichTextEditorProps) {
   const isSettingContent = useRef(false);

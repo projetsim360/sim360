@@ -41,8 +41,8 @@ import {
 import { useMentoringSessions, useCreateSession } from '../api/mentoring.api';
 
 const SESSION_TYPES = [
-  { value: 'DEBRIEFING', label: 'Debriefing' },
-  { value: 'CAREER_COACHING', label: 'Coaching carriere' },
+  { value: 'DEBRIEFING', label: 'Débriefing' },
+  { value: 'CAREER_COACHING', label: 'Coaching carrière' },
   { value: 'INTERVIEW_PREP', label: 'Preparation entretien' },
 ] as const;
 
@@ -59,7 +59,7 @@ function getStatusBadge(status: string) {
     case 'COMPLETED':
       return (
         <Badge variant="success" size="sm">
-          Terminee
+          Terminée
         </Badge>
       );
     case 'IN_PROGRESS':
@@ -71,7 +71,7 @@ function getStatusBadge(status: string) {
     default:
       return (
         <Badge variant="secondary" size="sm">
-          Planifiee
+          Planifiée
         </Badge>
       );
   }
@@ -105,12 +105,12 @@ export default function MentoringSessionsPage() {
       },
       {
         onSuccess: () => {
-          toast.success('Session creee avec succes');
+          toast.success('Session créée avec succès');
           setDialogOpen(false);
           form.reset();
         },
         onError: () => {
-          toast.error('Erreur lors de la creation de la session');
+          toast.error('Erreur lors de la création de la session');
         },
       },
     );
@@ -126,7 +126,7 @@ export default function MentoringSessionsPage() {
             Sessions de mentorat
           </h1>
           <p className="text-sm text-gray-700">
-            Gerez vos sessions de mentorat avec les apprenants
+            Gérez vos sessions de mentorat avec les apprenants
           </p>
         </ToolbarHeading>
         <ToolbarActions>
@@ -178,7 +178,7 @@ export default function MentoringSessionsPage() {
                   className="mt-4"
                   onClick={() => setDialogOpen(true)}
                 >
-                  Creer une session
+                  Créer une session
                 </Button>
               </div>
             ) : (
@@ -313,7 +313,7 @@ export default function MentoringSessionsPage() {
               size="sm"
               disabled={createSession.isPending}
             >
-              {createSession.isPending ? 'Creation...' : 'Creer'}
+              {createSession.isPending ? 'Création...' : 'Créer'}
             </Button>
           </DialogFooter>
         </DialogContent>

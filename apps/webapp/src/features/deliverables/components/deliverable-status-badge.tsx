@@ -7,10 +7,10 @@ const STATUS_CONFIG: Record<
 > = {
   DRAFT: { label: 'Brouillon', variant: 'secondary' },
   SUBMITTED: { label: 'Soumis', variant: 'primary' },
-  EVALUATED: { label: 'Evalue', variant: 'warning' },
+  EVALUATED: { label: 'Évalué', variant: 'warning' },
   REVISED: { label: 'Revise', variant: 'info' },
-  VALIDATED: { label: 'Valide', variant: 'success' },
-  REJECTED: { label: 'Rejete', variant: 'destructive' },
+  VALIDATED: { label: 'Validé', variant: 'success' },
+  REJECTED: { label: 'Rejeté', variant: 'destructive' },
   PENDING_APPROVAL: { label: 'En approbation', variant: 'warning' },
 };
 

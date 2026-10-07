@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronsUpDown, User, Users, Sparkles, LogOut, Sun, Moon } from "@/components/keenicons/icons";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/providers/auth-provider";
+import { getApiOrigin } from '@/lib/asset-url';
 
 export function SidebarFooter() {
   const { theme, setTheme } = useTheme();
@@ -18,7 +19,7 @@ export function SidebarFooter() {
   const initials = user
     ? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
     : '?';
-  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
+  const apiBase = getApiOrigin();
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");

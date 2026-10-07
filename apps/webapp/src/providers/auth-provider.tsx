@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, useCallback, type React
 import { useNavigate, useLocation } from 'react-router-dom';
 import { api } from '@/lib/api-client';
 import { isAuthenticated, setTokens, clearTokens } from '@/lib/auth';
+import { getBrowserTimezone } from '@/lib/timezones';
 
 interface AuthUser {
   id: string;
@@ -126,7 +127,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       gdprConsent: boolean;
     }) => {
       const { confirmPassword: _, ...payload } = data;
-      const result = await api.post<{ message: string }>('/auth/register', payload);
+      const result = await api.post<{ message: string }>('/auth/register', {
+        ...payload,
+        timezone: getBrowserTimezone(),
+      });
       return result;
     },
     [],

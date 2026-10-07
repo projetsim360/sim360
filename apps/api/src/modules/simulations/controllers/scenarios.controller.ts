@@ -15,7 +15,7 @@ export class ScenariosController {
   constructor(private scenariosService: ScenariosService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Catalogue de scenarios' })
+  @ApiOperation({ summary: 'Catalogue de scénarios' })
   @ApiQuery({ name: 'sector', enum: Sector, required: false })
   @ApiQuery({ name: 'difficulty', enum: Difficulty, required: false })
   @ApiQuery({ name: 'scenarioType', enum: ScenarioType, required: false })
@@ -29,13 +29,13 @@ export class ScenariosController {
   }
 
   @Get('recommended')
-  @ApiOperation({ summary: 'Scenarios recommandes selon le profil' })
+  @ApiOperation({ summary: 'Scénarios recommandés selon le profil' })
   getRecommended(@CurrentUser('id') userId: string, @Query('limit') limit?: string) {
     return this.scenariosService.getRecommended(userId, limit ? parseInt(limit, 10) : 5);
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Detail d\'un scenario' })
+  @ApiOperation({ summary: 'Détail d\'un scénario' })
   findOne(@Param('id') id: string) {
     return this.scenariosService.findOne(id);
   }
@@ -43,7 +43,7 @@ export class ScenariosController {
   @Post('generate')
   @Roles(UserRole.MEMBER, UserRole.MANAGER, UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @Auditable('SCENARIO_GENERATE', 'Scenario')
-  @ApiOperation({ summary: 'Generer un scenario via IA depuis le profil ou un projet custom' })
+  @ApiOperation({ summary: 'Générer un scénario via IA depuis le profil ou un projet custom' })
   generateScenario(
     @Body() dto: GenerateScenarioDto,
     @CurrentUser() user: any,
@@ -54,14 +54,14 @@ export class ScenariosController {
 
   @Post()
   @Roles(UserRole.MANAGER, UserRole.ADMIN, UserRole.SUPER_ADMIN)
-  @ApiOperation({ summary: 'Creer un scenario' })
+  @ApiOperation({ summary: 'Créer un scénario' })
   create(@Body() dto: CreateScenarioDto, @CurrentUser('id') userId: string) {
     return this.scenariosService.create(userId, dto);
   }
 
   @Put(':id')
   @Roles(UserRole.MANAGER, UserRole.ADMIN, UserRole.SUPER_ADMIN)
-  @ApiOperation({ summary: 'Modifier un scenario' })
+  @ApiOperation({ summary: 'Modifier un scénario' })
   update(@Param('id') id: string, @Body() dto: UpdateScenarioDto) {
     return this.scenariosService.update(id, dto);
   }

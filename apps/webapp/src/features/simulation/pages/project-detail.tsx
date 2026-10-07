@@ -12,7 +12,7 @@ const DELIVERABLE_STATUS: Record<string, { label: string; variant: 'secondary' |
   IN_PROGRESS: { label: 'En cours', variant: 'primary' },
   DELIVERED: { label: 'Livre', variant: 'primary' },
   ACCEPTED: { label: 'Accepte', variant: 'success' },
-  REJECTED: { label: 'Rejete', variant: 'destructive' },
+  REJECTED: { label: 'Rejeté', variant: 'destructive' },
 };
 
 export default function ProjectDetailPage() {
@@ -75,7 +75,7 @@ export default function ProjectDetailPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
         <StatCard label="Budget initial" value={`${project.initialBudget.toLocaleString('fr-FR')} EUR`} />
         <StatCard label="Budget restant" value={`${project.currentBudget.toLocaleString('fr-FR')} EUR`} color={budgetUsed > 80 ? 'text-destructive' : undefined} />
-        <StatCard label="Equipe" value={String(project.teamMembers.length)} />
+        <StatCard label="Équipe" value={String(project.teamMembers.length)} />
         <StatCard label="Livrables" value={String(project.deliverables.length)} />
       </div>
 
@@ -92,7 +92,7 @@ export default function ProjectDetailPage() {
         {/* Team */}
         <Card>
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
-            <CardTitle className="text-sm">Equipe ({project.teamMembers.length})</CardTitle>
+            <CardTitle className="text-sm">Équipe ({project.teamMembers.length})</CardTitle>
             <Link to={`/projects/${project.id}/team`} className="text-sm text-primary hover:underline">
               Voir tout
             </Link>
@@ -101,8 +101,8 @@ export default function ProjectDetailPage() {
             {project.teamMembers.length === 0 ? (
               <EmptyState
                 icon="people"
-                title="Equipe vide"
-                description="L'equipe sera constituee au lancement de la simulation."
+                title="Équipe vide"
+                description="L'équipe sera constituée au lancement de la simulation."
               />
             ) : (
               <div className="space-y-2">

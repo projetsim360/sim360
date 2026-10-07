@@ -107,7 +107,7 @@ export function PmoChat({
       mediaRecorderRef.current = mediaRecorder;
       setIsRecording(true);
     } catch {
-      toast.error('Impossible d\'acceder au microphone');
+      toast.error('Impossible d\'accéder au microphone');
     }
   }, [simulationId]);
 
@@ -220,11 +220,11 @@ export function PmoChat({
                 />
               </div>
               <p className="text-sm font-medium text-foreground">
-                Demarrez une conversation avec votre agent PMO
+                Démarrez une conversation avec votre agent PMO
               </p>
               <p className="text-xs text-muted-foreground mt-1 max-w-xs">
                 Il peut vous aider sur la gestion de projet, les livrables, les
-                decisions a prendre...
+                décisions à prendre...
               </p>
             </div>
           ) : (
@@ -348,7 +348,7 @@ export function PmoChat({
               size="icon"
               onClick={isRecording ? stopRecording : startRecording}
               disabled={isTranscribing || isInitializing}
-              title={isRecording ? 'Arreter l\'enregistrement' : 'Enregistrer un message vocal'}
+              title={isRecording ? 'Arrêter l\'enregistrement' : 'Enregistrer un message vocal'}
               className={`shrink-0 size-8 rounded-lg ${isRecording ? 'animate-pulse' : ''}`}
             >
               {isTranscribing ? (
@@ -366,7 +366,7 @@ export function PmoChat({
               variant="outline"
               size="icon"
               onClick={cancelStream}
-              title="Arreter"
+              title="Arrêter"
               className="shrink-0 size-8 rounded-lg"
             >
               <KeenIcon icon="cross" style="duotone" className="size-3.5" />

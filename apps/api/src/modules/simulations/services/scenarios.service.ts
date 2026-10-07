@@ -5,6 +5,7 @@ import { CreateScenarioDto } from '../dto/create-scenario.dto';
 import { UpdateScenarioDto } from '../dto/update-scenario.dto';
 import { GenerateScenarioDto } from '../dto/generate-scenario.dto';
 import { ScenarioGenerationAiService } from '../../ai/services/scenario-generation-ai.service';
+import { SECTOR_CODES } from '../sector-labels';
 
 @Injectable()
 export class ScenariosService {
@@ -47,7 +48,7 @@ export class ScenariosService {
       },
     });
 
-    if (!scenario) throw new NotFoundException('Scenario introuvable');
+    if (!scenario) throw new NotFoundException('Scénario introuvable');
     return scenario;
   }
 
@@ -97,7 +98,7 @@ export class ScenariosService {
 
   async update(id: string, dto: UpdateScenarioDto) {
     const existing = await this.prisma.scenario.findUnique({ where: { id } });
-    if (!existing) throw new NotFoundException('Scenario introuvable');
+    if (!existing) throw new NotFoundException('Scénario introuvable');
 
     const { phases, ...data } = dto;
 
@@ -142,7 +143,7 @@ export class ScenariosService {
   }
 
   async getRecommended(userId: string, limit = 5) {
-    const validSectors = ['IT', 'CONSTRUCTION', 'MARKETING', 'HEALTHCARE', 'FINANCE', 'CUSTOM'];
+    const validSectors = SECTOR_CODES;
     const validDifficulties = ['BEGINNER', 'INTERMEDIATE', 'ADVANCED'];
 
     let profile: { selectedSector?: string | null; suggestedSector?: string | null; profileType?: string | null } | null = null;

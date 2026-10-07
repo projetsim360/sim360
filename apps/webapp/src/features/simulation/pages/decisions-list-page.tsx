@@ -55,7 +55,7 @@ export default function DecisionsListPage() {
       <div className="container-fixed">
         <Toolbar>
           <ToolbarHeading>
-            <h1 className="text-xl font-medium text-gray-900">Decisions</h1>
+            <h1 className="text-xl font-medium text-gray-900">Décisions</h1>
           </ToolbarHeading>
         </Toolbar>
         <Card>
@@ -71,7 +71,7 @@ export default function DecisionsListPage() {
     <div className="container-fixed space-y-5">
       <Toolbar>
         <ToolbarHeading>
-          <h1 className="text-xl font-medium text-gray-900">Decisions</h1>
+          <h1 className="text-xl font-medium text-gray-900">Décisions</h1>
           <p className="text-sm text-gray-700">
             {decisions.length} decision(s) — {pending.length} en attente, {resolved.length} resolue(s)
           </p>
@@ -91,8 +91,8 @@ export default function DecisionsListPage() {
           <CardContent>
             <EmptyState
               icon="question-2"
-              title="Aucune decision"
-              description="Les decisions apparaitront au fil de la simulation."
+              title="Aucune décision"
+              description="Les décisions apparaîtront au fil de la simulation."
             />
           </CardContent>
         </Card>
@@ -147,7 +147,7 @@ function DecisionCard({ decision, simId }: { decision: Decision; simId: string }
                 Phase {decision.phaseOrder + 1}
               </Badge>
               <Badge variant={isResolved ? 'success' : 'warning'} appearance="light" size="sm">
-                {isResolved ? 'Resolue' : 'En attente'}
+                {isResolved ? 'Résolue' : 'En attente'}
               </Badge>
               {decision.options.length > 0 && (
                 <span className="text-xs text-muted-foreground">

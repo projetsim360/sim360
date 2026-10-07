@@ -29,9 +29,9 @@ export const STEP_META: Record<OnboardingStep, StepMeta> = {
   },
   'diagnostic': {
     shortLabel: 'Diagnostic',
-    railSubtitle: 'Analyse IA',
+    railSubtitle: 'Analyse de profil',
     title: 'Votre diagnostic',
-    lead: "Voici ce que notre IA a compris de votre profil.",
+    lead: "Voici ce que nous avons compris de votre profil.",
     icon: 'shield-tick',
   },
   'choose-path': {

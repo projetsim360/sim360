@@ -112,7 +112,7 @@ export class MailService {
           <h2 style="color: #333;">Bonjour ${firstName},</h2>
           <p style="color: #555; font-size: 16px;">${body}</p>
           <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
-          <p style="color: #999; font-size: 12px;">Cet email a ete envoye automatiquement par Sim360.</p>
+          <p style="color: #999; font-size: 12px;">Cet email a été envoyé automatiquement par Sim360.</p>
         </div>
       `);
       this.logger.log(`Notification email sent to ${to}: ${title}`);

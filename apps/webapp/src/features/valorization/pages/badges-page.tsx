@@ -14,7 +14,7 @@ export default function BadgesPage() {
         <Toolbar>
           <ToolbarHeading>
             <h1 className="text-xl font-medium text-gray-900">Mes badges</h1>
-            <p className="text-sm text-gray-700">Vos badges de competence obtenus</p>
+            <p className="text-sm text-gray-700">Vos badges de compétence obtenus</p>
           </ToolbarHeading>
         </Toolbar>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -68,8 +68,8 @@ export default function BadgesPage() {
           <h1 className="text-xl font-medium text-gray-900">Mes badges</h1>
           <p className="text-sm text-gray-700">
             {badges && badges.length > 0
-              ? `${badges.length} badge(s) de competence`
-              : 'Vos badges de competence obtenus'}
+              ? `${badges.length} badge(s) de compétence`
+              : 'Vos badges de compétence obtenus'}
           </p>
         </ToolbarHeading>
       </Toolbar>
@@ -80,7 +80,7 @@ export default function BadgesPage() {
             <EmptyState
               icon="award"
               title="Aucun badge"
-              description="Terminez une simulation pour obtenir votre premier badge de competence."
+              description="Terminez une simulation pour obtenir votre premier badge de compétence."
             />
           </CardContent>
         </Card>

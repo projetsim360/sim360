@@ -1,7 +1,9 @@
+import { MeetingTimelineChip } from './meeting-timeline-chip';
 import type { ConferenceMode, ViewMode } from '../types/meeting.types';
 
 interface ConferenceControlsProps {
   elapsed: number;
+  durationMinutes?: number | null;
   isMuted: boolean;
   isConnected: boolean;
   conferenceMode: ConferenceMode;
@@ -22,11 +24,6 @@ interface ConferenceControlsProps {
   onDisconnect: () => void;
 }
 
-function formatTime(seconds: number): string {
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-}
 
 // SVG icons inline for crisp rendering
 function MicIcon({ muted }: { muted: boolean }) {
@@ -62,6 +59,7 @@ function ChatIcon() {
 
 export function ConferenceControls({
   elapsed,
+  durationMinutes,
   isMuted,
   isConnected,
   conferenceMode,
@@ -115,11 +113,9 @@ export function ConferenceControls({
       {/* Main control bar */}
       <div className="flex items-center justify-between px-4 py-2.5 bg-[var(--brand-800)]/90 backdrop-blur-md rounded-2xl border border-white/10">
         {/* Left: Timer + info */}
-        <div className="flex items-center gap-3 min-w-[120px]">
-          <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
-            <span className="text-sm font-mono text-white/70 tabular-nums">{formatTime(elapsed)}</span>
-          </div>
+        <div className="flex items-center gap-2 min-w-[120px]">
+          <div className="w-2 h-2 shrink-0 rounded-full bg-destructive animate-pulse" />
+          <MeetingTimelineChip elapsedSeconds={elapsed} durationMinutes={durationMinutes} className="bg-transparent px-0" />
         </div>
 
         {/* Center: Action buttons */}

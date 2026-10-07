@@ -121,7 +121,7 @@ export default function DeliverableEditorPage() {
         contentChangedRef.current = false;
       }
       await submitMutation.mutateAsync(delId);
-      toast.success("Livrable soumis avec succes ! L'evaluation IA est en cours.");
+      toast.success("Livrable soumis avec succès ! L'évaluation est en cours.");
       navigate(`/simulations/${id}/deliverables`);
     } catch (err) {
       toast.error(
@@ -144,7 +144,7 @@ export default function DeliverableEditorPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Editeur de livrable" />
+          <ToolbarHeading title="Éditeur de livrable" />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
@@ -187,7 +187,7 @@ export default function DeliverableEditorPage() {
               </>
             ) : lastSaved ? (
               <>
-                Sauvegarde{' '}
+                Sauvegardé{' '}
                 {formatDistanceToNow(lastSaved, {
                   addSuffix: true,
                   locale: fr,
@@ -219,7 +219,7 @@ export default function DeliverableEditorPage() {
 
           {/* Submit */}
           {!isReadOnly && (
-            <DisabledWithTooltip disabled={!content.trim()} reason="Redigez du contenu pour pouvoir soumettre">
+            <DisabledWithTooltip disabled={!content.trim()} reason="Rédigez du contenu pour pouvoir soumettre">
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button size="sm" disabled={!content.trim()}>
@@ -230,16 +230,16 @@ export default function DeliverableEditorPage() {
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>
-                    Soumettre pour evaluation ?
+                    Soumettre pour évaluation ?
                   </AlertDialogTitle>
                   <AlertDialogDescription>
-                    Votre livrable sera evalue par l'IA. Vous ne pourrez plus le
-                    modifier tant que l'evaluation n'est pas terminee.
+                    Votre livrable sera évalué automatiquement. Vous ne pourrez plus le
+                    modifier tant que l'évaluation n'est pas terminée.
                     {deliverable.revisionNumber > 0 && (
                       <>
                         <br />
                         <br />
-                        Il s'agit de votre revision{' '}
+                        Il s'agit de votre révision{' '}
                         {deliverable.revisionNumber}/{deliverable.maxRevisions}.
                       </>
                     )}
@@ -263,14 +263,14 @@ export default function DeliverableEditorPage() {
             </Link>
           </Button>
           <ContextualHelp
-            title="Comment rediger un livrable"
-            description="L'editeur vous permet de rediger votre livrable en utilisant du texte enrichi. Consultez le template pour connaitre la structure attendue."
+            title="Comment rédiger un livrable"
+            description="L'éditeur vous permet de rédiger votre livrable en utilisant du texte enrichi. Consultez le template pour connaître la structure attendue."
             tips={[
-              'Utilisez le bouton "Voir template" pour afficher le modele de reference a suivre.',
-              'Votre travail est sauvegarde automatiquement toutes les 30 secondes.',
-              'Vous pouvez sauvegarder manuellement a tout moment avec le bouton Sauvegarder.',
-              'Une fois soumis, votre livrable sera evalue par l\'IA. Vous ne pourrez plus le modifier.',
-              'Verifiez le nombre de revisions restantes avant de soumettre.',
+              'Utilisez le bouton "Voir template" pour afficher le modèle de référence à suivre.',
+              'Votre travail est sauvegardé automatiquement toutes les 30 secondes.',
+              'Vous pouvez sauvegarder manuellement à tout moment avec le bouton Sauvegarder.',
+              'Une fois soumis, votre livrable sera évalué automatiquement. Vous ne pourrez plus le modifier.',
+              'Vérifiez le nombre de révisions restantes avant de soumettre.',
             ]}
           />
         </ToolbarActions>
@@ -286,7 +286,7 @@ export default function DeliverableEditorPage() {
           <div className="flex items-center gap-2 rounded-lg bg-info/10 p-3 mb-4">
             <KeenIcon icon="information-2" style="duotone" className="size-4 text-info shrink-0" />
             <p className="text-sm text-info">
-              Ce livrable est en attente d'evaluation. Vous ne pouvez plus le modifier.
+              Ce livrable est en attente d'évaluation. Vous ne pouvez plus le modifier.
             </p>
           </div>
         )}
@@ -295,14 +295,14 @@ export default function DeliverableEditorPage() {
           {/* WYSIWYG Editor */}
           <Card className={showTemplate ? 'lg:col-span-2' : ''}>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Editeur</CardTitle>
+              <CardTitle className="text-sm">Éditeur</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               <RichTextEditor
                 content={content}
                 onChange={handleContentChange}
                 disabled={isReadOnly}
-                placeholder="Redigez votre livrable ici..."
+                placeholder="Rédigez votre livrable ici..."
               />
             </CardContent>
           </Card>
@@ -347,7 +347,7 @@ export default function DeliverableEditorPage() {
                 {template.evaluationCriteria && Object.keys(template.evaluationCriteria).length > 0 && (
                   <div className="px-4 pb-4 pt-3 border-t border-border">
                     <p className="text-sm font-semibold text-foreground mb-2">
-                      Criteres d'evaluation :
+                      Critères d'évaluation :
                     </p>
                     <div className="flex flex-wrap gap-1.5">
                       {Object.entries(template.evaluationCriteria).map(([key, value]) => (
@@ -379,11 +379,11 @@ export default function DeliverableEditorPage() {
         <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
           <span>Phase {deliverable.phaseOrder}</span>
           <span>
-            Revision {deliverable.revisionNumber}/{deliverable.maxRevisions}
+            Révision {deliverable.revisionNumber}/{deliverable.maxRevisions}
           </span>
           {deliverable.dueDate && (
             <span>
-              Echeance :{' '}
+              Échéance :{' '}
               {new Date(deliverable.dueDate).toLocaleDateString('fr-FR')}
             </span>
           )}

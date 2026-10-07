@@ -166,7 +166,7 @@ export class DeliverablesService {
       deliverable.status !== UserDeliverableStatus.REVISED
     ) {
       throw new BadRequestException(
-        'Le livrable ne peut etre modifie que s\'il est en brouillon ou en revision',
+        'Le livrable ne peut être modifié que s\'il est en brouillon ou en révision',
       );
     }
 
@@ -217,13 +217,13 @@ export class DeliverablesService {
       deliverable.status !== UserDeliverableStatus.REVISED
     ) {
       throw new BadRequestException(
-        'Seul un livrable en brouillon ou en revision peut etre soumis',
+        'Seul un livrable en brouillon ou en révision peut être soumis',
       );
     }
 
     if (!deliverable.content || deliverable.content.trim().length === 0) {
       throw new BadRequestException(
-        'Le livrable ne peut pas etre soumis sans contenu',
+        'Le livrable ne peut pas être soumis sans contenu',
       );
     }
 
@@ -352,7 +352,7 @@ export class DeliverablesService {
 
     if (!deliverable.templateId) {
       throw new NotFoundException(
-        'Aucun template associe a ce livrable',
+        'Aucun template associé à ce livrable',
       );
     }
 
@@ -401,7 +401,7 @@ export class DeliverablesService {
 
     if (!evaluation) {
       throw new NotFoundException(
-        'Aucune evaluation disponible pour ce livrable',
+        'Aucune évaluation disponible pour ce livrable',
       );
     }
 
@@ -434,7 +434,7 @@ export class DeliverablesService {
 
     if (!evaluatedStatuses.includes(deliverable.status)) {
       throw new ForbiddenException(
-        'L\'exemple de reference n\'est accessible qu\'apres evaluation du livrable',
+        'L\'exemple de référence n\'est accessible qu\'après évaluation du livrable',
       );
     }
 
@@ -444,7 +444,7 @@ export class DeliverablesService {
         title: deliverable.title,
         type: deliverable.type,
         referenceExample: null,
-        message: 'Aucun exemple de reference disponible pour ce livrable. Le Jumeau Parfait est disponible uniquement pour les livrables bases sur un template de reference.',
+        message: 'Aucun exemple de référence disponible pour ce livrable. Le Jumeau Parfait est disponible uniquement pour les livrables basés sur un template de référence.',
       };
     }
 
@@ -464,7 +464,7 @@ export class DeliverablesService {
         title: template?.title ?? deliverable.title,
         type: template?.type ?? deliverable.type,
         referenceExample: null,
-        message: 'Aucun exemple de reference redige pour ce template.',
+        message: 'Aucun exemple de référence rédigé pour ce template.',
       };
     }
 
@@ -493,13 +493,13 @@ export class DeliverablesService {
 
     if (deliverable.status !== UserDeliverableStatus.EVALUATED) {
       throw new BadRequestException(
-        'Seul un livrable evalue peut etre remis en revision',
+        'Seul un livrable évalué peut être remis en révision',
       );
     }
 
     if (deliverable.revisionNumber >= deliverable.maxRevisions) {
       throw new BadRequestException(
-        `Nombre maximum de revisions atteint (${deliverable.maxRevisions})`,
+        `Nombre maximum de révisions atteint (${deliverable.maxRevisions})`,
       );
     }
 
@@ -552,12 +552,12 @@ export class DeliverablesService {
     });
 
     if (!meeting) {
-      throw new NotFoundException('Reunion introuvable');
+      throw new NotFoundException('Réunion introuvable');
     }
 
     if (meeting.status !== 'COMPLETED') {
       throw new BadRequestException(
-        'Le compte-rendu ne peut etre cree qu\'apres la fin de la reunion',
+        'Le compte-rendu ne peut être créé qu\'après la fin de la réunion',
       );
     }
 
@@ -568,7 +568,7 @@ export class DeliverablesService {
 
     if (existing) {
       throw new BadRequestException(
-        'Un compte-rendu existe deja pour cette reunion',
+        'Un compte-rendu existe déjà pour cette réunion',
       );
     }
 
@@ -576,13 +576,13 @@ export class DeliverablesService {
       .map((p) => `- ${p.name} (${p.role})`)
       .join('\n');
 
-    const prefilledContent = `# Compte-rendu de reunion
+    const prefilledContent = `# Compte-rendu de réunion
 
-## Informations generales
-- **Reunion** : ${meeting.title}
+## Informations générales
+- **Réunion** : ${meeting.title}
 - **Type** : ${meeting.type}
 - **Date** : ${meeting.completedAt?.toLocaleDateString('fr-FR') ?? 'N/A'}
-- **Duree** : ${meeting.durationMinutes} minutes
+- **Durée** : ${meeting.durationMinutes} minutes
 
 ## Participants
 ${participantsList}
@@ -590,22 +590,22 @@ ${participantsList}
 ## Objectifs
 ${meeting.objectives.map((o) => `- ${o}`).join('\n')}
 
-## Points abordes
-<!-- Completez cette section -->
+## Points abordés
+<!-- Complétez cette section -->
 
-## Decisions prises
-<!-- Completez cette section -->
+## Décisions prises
+<!-- Complétez cette section -->
 
-## Actions a mener
-| Responsable | Action | Echeance |
+## Actions à mener
+| Responsable | Action | Échéance |
 |---|---|---|
 | | | |
 
 ## Points en suspens
-<!-- Completez cette section -->
+<!-- Complétez cette section -->
 
-## Prochaines etapes
-<!-- Completez cette section -->
+## Prochaines étapes
+<!-- Complétez cette section -->
 `;
 
     const deliverable = await this.prisma.userDeliverable.create({

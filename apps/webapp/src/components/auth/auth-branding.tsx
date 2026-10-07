@@ -1,7 +1,7 @@
 import { Logo } from '@/components/logo';
 
 const VALUE_PROPS = [
-  'Vivez 12 scénarios issus de vrais cabinets',
+  'Vivez des scénarios issus de vrais projets',
   'Pilotez budget, équipe et sponsor en temps réel',
   'Recevez un feedback senior après chaque livrable',
 ];

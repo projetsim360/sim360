@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { User, Settings, Briefcase, LifeBuoy, Keyboard, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/providers/auth-provider';
+import { getUserDisplayName } from '@/lib/user-display';
 import { useShellState } from '../state/shell-state-provider';
 
 interface UserMenuProps {
@@ -14,7 +15,7 @@ const ITEM_BASE =
 
 export function UserMenu({ className }: UserMenuProps) {
   const { userMenuOpen, setUserMenuOpen } = useShellState();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Outside-click handler: close when clicking outside this menu
@@ -56,8 +57,15 @@ export function UserMenu({ className }: UserMenuProps) {
         boxShadow: 'var(--elevation-lg)',
       }}
     >
+      {/* Identity */}
+      <div className="px-3 pb-2 pt-1.5">
+        <div className="truncate text-[13.5px] font-semibold text-foreground">{getUserDisplayName(user)}</div>
+        {user?.email && <div className="truncate text-xs text-muted-foreground">{user.email}</div>}
+      </div>
+      <div className="mx-1 mb-1.5 h-px bg-border" />
+
       <Link
-        to="/profile/edit"
+        to="/settings"
         role="menuitem"
         onClick={close}
         className={cn(ITEM_BASE, 'text-foreground')}

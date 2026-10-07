@@ -44,23 +44,23 @@ export class StakeholderIdentificationService {
       `Projet : ${simulation.project?.name ?? simulation.scenario.title}`,
       `Secteur : ${simulation.project?.sector ?? simulation.scenario.sector}`,
       `Description : ${simulation.project?.description ?? ''}`,
-      `Difficulte : ${simulation.scenario.difficulty}`,
+      `Difficulté : ${simulation.scenario.difficulty}`,
     ].join('\n');
 
     const prompt = [
       `Tu es un expert en gestion de projet PMI/PMBOK.`,
-      `A partir du contexte suivant, identifie les parties prenantes cles necessaires au projet.`,
+      `À partir du contexte suivant, identifie les parties prenantes clés nécessaires au projet.`,
       ``,
       projectContext,
-      charterContent ? `\nCharte de projet redigee par l'apprenant :\n${charterContent}` : '',
+      charterContent ? `\nCharte de projet rédigée par l'apprenant :\n${charterContent}` : '',
       ``,
-      `Genere une equipe de 5 a 7 membres avec des profils realistes.`,
-      `Inclus au minimum : 1 Sponsor/Directeur, 1 Expert technique senior, 1-2 developpeurs/executants, 1 QA/testeur, 1 utilisateur cle.`,
+      `Génère une équipe de 5 à 7 membres avec des profils réalistes.`,
+      `Inclus au minimum : 1 Sponsor/Directeur, 1 Expert technique senior, 1-2 développeurs/exécutants, 1 QA/testeur, 1 utilisateur clé.`,
       ``,
-      `Reponds en JSON strict (array) :`,
-      `[{"name": "Prenom Nom", "role": "Titre du poste", "expertise": "JUNIOR|INTERMEDIATE|SENIOR", "personality": "COOPERATIVE|NEUTRAL|RESISTANT", "morale": 50-90, "rationale": "Pourquoi cette personne est necessaire (1 phrase)"}]`,
+      `Réponds en JSON strict (array) :`,
+      `[{"name": "Prénom Nom", "role": "Titre du poste", "expertise": "JUNIOR|INTERMEDIATE|SENIOR", "personality": "COOPERATIVE|NEUTRAL|RESISTANT", "morale": 50-90, "rationale": "Pourquoi cette personne est nécessaire (1 phrase)"}]`,
       ``,
-      `Utilise des noms francais realistes. Varie les personnalites selon la difficulte (${simulation.scenario.difficulty}).`,
+      `Utilise des noms français réalistes. Varie les personnalités selon la difficulté (${simulation.scenario.difficulty}). Réponds en français correct, avec les accents.`,
     ].filter(Boolean).join('\n');
 
     const result = await this.aiService.complete({

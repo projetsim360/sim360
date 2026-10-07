@@ -151,7 +151,7 @@ export class AiService {
     subscriber: { next: (v: MessageEvent) => void; complete: () => void },
   ): Promise<void> {
     if (!this.anthropic) {
-      throw new Error('Anthropic API key non configuree');
+      throw new Error('Anthropic API key non configurée');
     }
 
     const messages = this.buildAnthropicMessages(dto);
@@ -195,7 +195,7 @@ export class AiService {
     subscriber: { next: (v: MessageEvent) => void; complete: () => void },
   ): Promise<void> {
     if (!this.openai) {
-      throw new Error('OpenAI API key non configuree');
+      throw new Error('OpenAI API key non configurée');
     }
 
     const messages = this.buildOpenAIMessages(dto, dto.systemPrompt);
@@ -320,7 +320,7 @@ export class AiService {
 
   private async completeWithAnthropic(dto: AiCompletionOptions): Promise<AiCompletionResult> {
     if (!this.anthropic) {
-      throw new Error('Anthropic API key non configuree');
+      throw new Error('Anthropic API key non configurée');
     }
 
     const messages = this.buildAnthropicMessages(dto);
@@ -346,7 +346,7 @@ export class AiService {
 
   private async completeWithOpenAI(dto: AiCompletionOptions): Promise<AiCompletionResult> {
     if (!this.openai) {
-      throw new Error('OpenAI API key non configuree');
+      throw new Error('OpenAI API key non configurée');
     }
 
     const messages = this.buildOpenAIMessages(dto, dto.systemPrompt);

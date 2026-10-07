@@ -20,7 +20,7 @@ export class DashboardController {
   }
 
   @Get('summary')
-  @ApiOperation({ summary: 'Command Center — donnees enrichies du dashboard' })
+  @ApiOperation({ summary: 'Command Center — données enrichies du dashboard' })
   getSummary(
     @CurrentUser('id') userId: string,
     @CurrentTenant() tenantId: string,
@@ -40,8 +40,8 @@ export class DashboardController {
   @Get('trainer')
   @Roles('SUPER_ADMIN', 'ADMIN', 'MANAGER')
   @ApiOperation({ summary: 'Vue formateur — tous les apprenants' })
-  @ApiQuery({ name: 'scenario', required: false, description: 'Filtrer par nom de scenario' })
-  @ApiQuery({ name: 'period', required: false, enum: ['7d', '30d', '90d'], description: 'Filtrer par periode' })
+  @ApiQuery({ name: 'scenario', required: false, description: 'Filtrer par nom de scénario' })
+  @ApiQuery({ name: 'period', required: false, enum: ['7d', '30d', '90d'], description: 'Filtrer par période' })
   getTrainerDashboard(
     @CurrentTenant() tenantId: string,
     @Query('scenario') scenario?: string,

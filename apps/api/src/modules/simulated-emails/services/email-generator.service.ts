@@ -26,9 +26,9 @@ type SimulationWithScenario = Simulation & { scenario: Scenario };
 const PHASE_NAMES: Record<number, string> = {
   1: 'Initiation',
   2: 'Planification',
-  3: 'Execution',
-  4: 'Surveillance et Maitrise',
-  5: 'Cloture',
+  3: 'Exécution',
+  4: 'Surveillance et Maîtrise',
+  5: 'Clôture',
 };
 
 @Injectable()
@@ -57,127 +57,128 @@ export class EmailGeneratorService {
       ? (simulation.scenario.brownfieldContext as Record<string, unknown> | null)
       : null;
 
-    const systemPrompt = `Tu es un generateur d'emails professionnels realistes pour une simulation de gestion de projet.
-Tu generes des emails en francais, avec un ton professionnel adapte au role de l'expediteur.
-Le contenu du body doit etre en format Markdown structure avec des titres (##), sous-titres (###), listes a puces, et mise en gras (**texte**).
-Tu dois retourner un JSON valide et rien d'autre.`;
+    const systemPrompt = `Tu es un générateur d'emails professionnels réalistes pour une simulation de gestion de projet.
+Tu génères des emails en français, avec un ton professionnel adapté au rôle de l'expéditeur.
+Le contenu du body doit être en format Markdown structure avec des titres (##), sous-titres (###), listes à puces, et mise en gras (**texte**).
+Tu dois retourner un JSON valide et rien d'autre.
+Réponds en français correct, avec les accents.`;
 
     const brownfieldSection = brownfieldContext
       ? `
 
-## SECTION SUPPLEMENTAIRE OBLIGATOIRE — Etat actuel du projet (BROWNFIELD)
-Comme il s'agit d'un projet en reprise (brownfield), tu DOIS ajouter une section "## Etat actuel du projet" apres la section Bienvenue, incluant :
-- Decisions precedentes prises : ${JSON.stringify(brownfieldContext.previousDecisions || [])}
-- Livrables deja completes : ${JSON.stringify(brownfieldContext.completedDeliverables || [])}
-- Retards accumules : ${brownfieldContext.accumulatedDelays || 'non communique'}
-- Budget consomme : ${brownfieldContext.budgetUsed || 'non communique'}
+## SECTION SUPPLÉMENTAIRE OBLIGATOIRE — État actuel du projet (BROWNFIELD)
+Comme il s'agit d'un projet en reprise (brownfield), tu DOIS ajouter une section "## État actuel du projet" après la section Bienvenue, incluant :
+- Décisions précédentes prises : ${JSON.stringify(brownfieldContext.previousDecisions || [])}
+- Livrables déjà completes : ${JSON.stringify(brownfieldContext.completedDeliverables || [])}
+- Retards accumulés : ${brownfieldContext.accumulatedDelays || 'non communiqué'}
+- Budget consommé : ${brownfieldContext.budgetUsed || 'non communiqué'}
 - Risques connus : ${JSON.stringify(brownfieldContext.knownRisks || [])}
-- Moral de l'equipe : ${brownfieldContext.teamMorale || 'non communique'}
-- Notes du precedent chef de projet : ${brownfieldContext.previousPmNotes || 'aucune'}
+- Moral de l'équipe : ${brownfieldContext.teamMorale || 'non communiqué'}
+- Notes du précédent chef de projet : ${brownfieldContext.previousPmNotes || 'aucune'}
 
-Cette section doit expliquer clairement la situation heritee, les defis en cours, et les points d'attention prioritaires pour le nouveau chef de projet.`
+Cette section doit expliquer clairement la situation héritée, les défis en cours, et les points d'attention prioritaires pour le nouveau chef de projet.`
       : '';
 
-    const prompt = `Genere un email de bienvenue complet envoye par la DRH au nouveau chef de projet.
-Cet email sert de "Guide du Projet" (Project Handbook) et doit etre un document de reference complet.
+    const prompt = `Génère un email de bienvenue complet envoyé par la DRH au nouveau chef de projet.
+Cet email sert de "Guide du Projet" (Project Handbook) et doit être un document de référence complet.
 
-Contexte du scenario :
+Contexte du scénario :
 - Entreprise/Projet : ${projectTemplate.name || simulation.scenario.title}
 - Secteur : ${simulation.scenario.sector}
 - Description : ${simulation.scenario.description || 'Projet de gestion'}
 - Culture d'entreprise : ${projectTemplate.culture || 'professionnelle'}
 - Objectifs : ${simulation.scenario.objectives?.join(', ') || 'Gestion de projet'}
-- Taille de l'equipe : ${projectTemplate.teamSize || 'non definie'}
-- Budget initial : ${projectTemplate.initialBudget || 'non defini'}
-- Deadline : ${projectTemplate.deadlineDays || 'non definie'} jours
-- Difficulte : ${simulation.scenario.difficulty}
-- Type de scenario : ${simulation.scenario.scenarioType}
-- Competences visees : ${simulation.scenario.competencies?.join(', ') || 'gestion de projet'}
+- Taille de l'équipe : ${projectTemplate.teamSize || 'non définie'}
+- Budget initial : ${projectTemplate.initialBudget || 'non défini'}
+- Deadline : ${projectTemplate.deadlineDays || 'non définie'} jours
+- Difficulté : ${simulation.scenario.difficulty}
+- Type de scénario : ${simulation.scenario.scenarioType}
+- Compétences visées : ${simulation.scenario.competencies?.join(', ') || 'gestion de projet'}
 
-Le body de l'email DOIT etre en Markdown et DOIT contenir les 7 sections suivantes dans cet ordre exact :
+Le body de l'email DOIT être en Markdown et DOIT contenir les 7 sections suivantes dans cet ordre exact :
 
 ## 1. Bienvenue
 - Accueil chaleureux et personnalise de la part de la DRH
-- Presentation de l'entreprise, son secteur, sa culture
-- Contexte du projet et pourquoi le chef de projet a ete choisi
-- Ton adapte a la culture d'entreprise (formel si culture formelle, decontracte si startup/agile)
-${isBrownfield ? '\n## 2. Etat actuel du projet\n- Synthese claire de la situation heritee (retards, budget, risques, moral equipe)\n- Points d\'attention prioritaires\n- Decisions precedentes a connaitre\n- Livrables deja completes et ceux en cours' : ''}
+- Présentation de l'entreprise, son secteur, sa culture
+- Contexte du projet et pourquoi le chef de projet a été choisi
+- Ton adapté à la culture d'entreprise (formel si culture formelle, décontracté si startup/agile)
+${isBrownfield ? '\n## 2. État actuel du projet\n- Synthèse claire de la situation héritée (retards, budget, risques, moral de l\'équipe)\n- Points d\'attention prioritaires\n- Décisions précédentes à connaître\n- Livrables déjà complétés et ceux en cours' : ''}
 
-## ${isBrownfield ? '3' : '2'}. Methodologie Projet (PMBOK/PMI)
-Presenter les 5 groupes de processus PMI que le chef de projet devra suivre :
-- **Initiation** : Definition du projet, identification des parties prenantes, charte de projet
-- **Planification** : Elaboration du plan de management (scope, echeancier, couts, qualite, ressources, communications, risques, approvisionnements)
-- **Execution** : Direction et gestion du travail, management de l'equipe, communication avec les parties prenantes
-- **Surveillance et Maitrise** : Suivi de l'avancement, controle des changements, gestion des ecarts (cout, delai, qualite)
-- **Cloture** : Recette finale, bilan de projet, lecons apprises, archivage, liberation des ressources
+## ${isBrownfield ? '3' : '2'}. Méthodologie Projet (PMBOK/PMI)
+Présenter les 5 groupes de processus PMI que le chef de projet devra suivre :
+- **Initiation** : Définition du projet, identification des parties prenantes, charte de projet
+- **Planification** : Élaboration du plan de management (scope, échéancier, coûts, qualité, ressources, communications, risques, approvisionnements)
+- **Exécution** : Direction et gestion du travail, management de l'équipe, communication avec les parties prenantes
+- **Surveillance et Maîtrise** : Suivi de l'avancement, contrôle des changements, gestion des écarts (coût, délai, qualité)
+- **Clôture** : Recette finale, bilan de projet, leçons apprises, archivage, libération des ressources
 
 ## ${isBrownfield ? '4' : '3'}. Gouvernance
-Decrire la structure de gouvernance du projet :
-- **Sponsor** : Qui est-il, son role (validation budget, arbitrages strategiques)
-- **Chef de Projet (vous)** : Vos responsabilites (planification, coordination, reporting, gestion des risques)
-- **Equipe Projet** : Composition, roles attendus, regles de fonctionnement
-- **PMO** : Role d'accompagnement, support methodologique, suivi des KPIs
-- **Processus d'escalade** : Quand et comment escalader (niveaux de decision)
-- **Niveaux d'autorite** : Ce que le chef de projet peut decider seul vs. ce qui necessite validation
+Décrire la structure de gouvernance du projet :
+- **Sponsor** : Qui est-il, son rôle (validation budget, arbitrages stratégiques)
+- **Chef de Projet (vous)** : Vos responsabilités (planification, coordination, reporting, gestion des risques)
+- **Équipe Projet** : Composition, rôles attendus, règles de fonctionnement
+- **PMO** : Rôle d'accompagnement, support méthodologique, suivi des KPIs
+- **Processus d'escalade** : Quand et comment escalader (niveaux de décision)
+- **Niveaux d'autorite** : Ce que le chef de projet peut décider seul vs. ce qui nécessite validation
 
-## ${isBrownfield ? '5' : '4'}. Procedures Standards
-Detailler les 4 procedures cles :
+## ${isBrownfield ? '5' : '4'}. Procédures Standards
+Détailler les 4 procédures clés :
 
 ### Gestion des changements
 - Processus de demande de changement (change request)
-- Analyse d'impact obligatoire (scope, budget, delai, qualite)
+- Analyse d'impact obligatoire (scope, budget, délai, qualité)
 - Circuit de validation selon l'ampleur du changement
 
 ### Gestion des risques
 - Identification continue des risques
 - Analyse qualitative et quantitative
-- Plan de reponse (eviter, transferer, attenuer, accepter)
+- Plan de réponse (éviter, transférer, attenuer, accepter)
 - Suivi dans le registre des risques
 
-### Gestion de la qualite
-- Criteres d'acceptation des livrables
+### Gestion de la qualité
+- Critères d'acceptation des livrables
 - Processus de revue et validation
-- Normes de qualite applicables au secteur
+- Normes de qualité applicables au secteur
 
 ### Communication
-- Frequence des reunions (comite de pilotage, stand-up, retrospective)
+- Fréquence des réunions (comite de pilotage, stand-up, rétrospective)
 - Rapports d'avancement attendus
-- Canaux de communication (email, reunions, messagerie)
+- Canaux de communication (email, réunions, messagerie)
 
-## ${isBrownfield ? '6' : '5'}. Outils a votre disposition
-Presenter les outils disponibles dans la plateforme :
-- **Agent PMO IA** : Assistant intelligent pour poser des questions methodologiques, obtenir des conseils, analyser vos decisions
-- **Editeur de livrables** : Outil pour rediger et soumettre vos livrables (charte projet, plan de management, rapports, etc.) avec evaluation automatique
-- **Reunions virtuelles** : Systeme de reunions avec des participants IA (client, equipe, sponsor) en mode texte ou audio
-- **Tableaux de bord KPIs** : Suivi en temps reel de vos indicateurs (budget, echeancier, qualite, moral equipe, niveau de risque)
-- **Boite de reception** : Emails simules de parties prenantes necessitant vos reponses et decisions
+## ${isBrownfield ? '6' : '5'}. Outils à votre disposition
+Présenter les outils disponibles dans la plateforme :
+- **Agent PMO IA** : Assistant intelligent pour poser des questions méthodologiques, obtenir des conseils, analyser vos décisions
+- **Éditeur de livrables** : Outil pour rédiger et soumettre vos livrables (charte projet, plan de management, rapports, etc.) avec évaluation automatique
+- **Réunions virtuelles** : Système de réunions avec des participants IA (client, équipe, sponsor) en mode texte ou audio
+- **Tableaux de bord KPIs** : Suivi en temps réel de vos indicateurs (budget, échéancier, qualité, moral équipe, niveau de risque)
+- **Boîte de réception** : Emails simulés de parties prenantes nécessitant vos réponses et décisions
 
-## ${isBrownfield ? '7' : '6'}. Contacts cles
-Generer 4-5 contacts fictifs realistes avec :
-- Nom, role, email, et dans quel cas les contacter
+## ${isBrownfield ? '7' : '6'}. Contacts clés
+Générer 4-5 contacts fictifs réalistes avec :
+- Nom, rôle, email, et dans quel cas les contacter
 - Au minimum : Sponsor/DG, Client, Responsable technique, DRH, PMO
 
-## ${isBrownfield ? '8' : '7'}. Prochaines etapes
-Lister 5-6 actions concretes que le chef de projet doit accomplir en premier :
+## ${isBrownfield ? '8' : '7'}. Prochaines étapes
+Lister 5-6 actions concrètes que le chef de projet doit accomplir en premier :
 - Consulter les documents du projet
-- Organiser une reunion de lancement (kick-off)
+- Organiser une réunion de lancement (kick-off)
 - Identifier les parties prenantes
-- Rediger la charte de projet
+- Rédiger la charte de projet
 - Prendre connaissance des KPIs initiaux
-- Contacter l'equipe projet
-${isBrownfield ? '- Analyser la situation heritee et identifier les actions correctives prioritaires' : ''}
+- Contacter l'équipe projet
+${isBrownfield ? '- Analyser la situation héritée et identifier les actions correctives prioritaires' : ''}
 ${brownfieldSection}
 
-IMPORTANT : Le body doit etre long et detaille (environ 2000-3000 mots). C'est un document de reference que l'apprenant consultera tout au long de la simulation.
-Adapte le vocabulaire et les exemples au secteur "${simulation.scenario.sector}" et a la difficulte "${simulation.scenario.difficulty}".
+IMPORTANT : Le body doit être long et détaille (environ 2000-3000 mots). C'est un document de référence que l'apprenant consultera tout au long de la simulation.
+Adapte le vocabulaire et les exemples au secteur "${simulation.scenario.sector}" et a la difficulté "${simulation.scenario.difficulty}".
 
 Retourne un JSON avec cette structure exacte :
 {
-  "senderName": "Prenom Nom",
+  "senderName": "Prénom Nom",
   "senderRole": "DRH",
   "senderEmail": "prenom.nom@entreprise.com",
   "subject": "Bienvenue - Guide du Projet [nom du projet]",
-  "body": "Contenu complet en Markdown avec toutes les sections demandees",
+  "body": "Contenu complet en Markdown avec toutes les sections demandées",
   "priority": "NORMAL"
 }`;
 
@@ -212,43 +213,44 @@ Retourne un JSON avec cette structure exacte :
     >;
     const phaseName = PHASE_NAMES[phaseOrder] || `Phase ${phaseOrder}`;
 
-    const systemPrompt = `Tu es un generateur d'emails professionnels realistes pour une simulation de gestion de projet.
-Tu generes des emails en francais qui simulent des communications reelles recues par un chef de projet.
-Chaque email doit avoir un expediteur different avec une personnalite distincte :
+    const systemPrompt = `Tu es un générateur d'emails professionnels réalistes pour une simulation de gestion de projet.
+Tu génères des emails en français qui simulent des communications réelles reçues par un chef de projet.
+Chaque email doit avoir un expéditeur différent avec une personnalité distincte :
 - Client : exigeant, pose des questions, demande des comptes rendus
-- Fournisseur : technique, informe sur les livraisons/problemes
-- Membre d'equipe : collegial, remonte des problemes ou partage des avancees
-- Sponsor/DG : strategique, demande des syntheses, rappelle les enjeux business
-- DRH : administratif, rappelle les processus, informe sur les equipes
+- Fournisseur : technique, informe sur les livraisons/problèmes
+- Membre d'équipe : collégial, remonte des problèmes ou partage des avancées
+- Sponsor/DG : stratégique, demande des synthèses, rappelle les enjeux business
+- DRH : administratif, rappelle les processus, informe sur les équipes
 
-Les emails doivent necessiter une action ou une decision de la part de l'apprenant.
-Tu dois retourner un tableau JSON valide et rien d'autre.`;
+Les emails doivent nécessiter une action ou une décision de la part de l'apprenant.
+Tu dois retourner un tableau JSON valide et rien d'autre.
+Réponds en français correct, avec les accents.`;
 
-    const prompt = `Genere entre 2 et 4 emails professionnels pour la phase "${phaseName}" (phase ${phaseOrder}/5) du projet.
+    const prompt = `Génère entre 2 et 4 emails professionnels pour la phase "${phaseName}" (phase ${phaseOrder}/5) du projet.
 
 Contexte :
 - Projet : ${projectTemplate.name || simulation.scenario.title}
 - Secteur : ${simulation.scenario.sector}
-- Difficulte : ${simulation.scenario.difficulty}
+- Difficulté : ${simulation.scenario.difficulty}
 - Description : ${simulation.scenario.description || ''}
 - Culture : ${projectTemplate.culture || 'professionnelle'}
-- Budget initial : ${projectTemplate.initialBudget || 'non defini'}
-- Deadline : ${projectTemplate.deadlineDays || 'non definie'} jours
+- Budget initial : ${projectTemplate.initialBudget || 'non défini'}
+- Deadline : ${projectTemplate.deadlineDays || 'non définie'} jours
 
 Phase actuelle "${phaseName}" — adapte le contenu des emails :
-${phaseOrder === 1 ? '- Phase Initiation : emails sur la definition du projet, parties prenantes, charte projet' : ''}
-${phaseOrder === 2 ? '- Phase Planification : emails sur le planning, les ressources, les risques identifies, le budget detaille' : ''}
-${phaseOrder === 3 ? '- Phase Execution : emails sur l\'avancement, les problemes techniques, les livraisons, la qualite' : ''}
-${phaseOrder === 4 ? '- Phase Surveillance : emails sur les ecarts, les alertes KPI, les demandes de changement, les audits' : ''}
-${phaseOrder === 5 ? '- Phase Cloture : emails sur la recette, le bilan, les lecons apprises, la transition' : ''}
+${phaseOrder === 1 ? '- Phase Initiation : emails sur la définition du projet, parties prenantes, charte projet' : ''}
+${phaseOrder === 2 ? '- Phase Planification : emails sur le planning, les ressources, les risques identifiés, le budget détaillé' : ''}
+${phaseOrder === 3 ? '- Phase Exécution : emails sur l\'avancement, les problèmes techniques, les livraisons, la qualité' : ''}
+${phaseOrder === 4 ? '- Phase Surveillance : emails sur les écarts, les alertes KPI, les demandes de changement, les audits' : ''}
+${phaseOrder === 5 ? '- Phase Clôture : emails sur la recette, le bilan, les leçons apprises, la transition' : ''}
 
-Chaque email doit venir d'un expediteur different. Assure-toi que chaque email demande une action specifique.
+Chaque email doit venir d'un expéditeur différent. Assure-toi que chaque email demande une action spécifique.
 
 Retourne un tableau JSON avec cette structure exacte :
 [
   {
-    "senderName": "Prenom Nom",
-    "senderRole": "Client|Fournisseur|Membre equipe|Sponsor|DG|DRH",
+    "senderName": "Prénom Nom",
+    "senderRole": "Client|Fournisseur|Membre équipe|Sponsor|DG|DRH",
     "senderEmail": "prenom.nom@domaine.com",
     "subject": "Objet de l'email",
     "body": "Contenu complet de l'email",
@@ -287,35 +289,36 @@ Retourne un tableau JSON avec cette structure exacte :
       unknown
     >;
 
-    const systemPrompt = `Tu es un generateur d'emails professionnels realistes pour une simulation de gestion de projet.
-Tu generes un email en francais qui informe le chef de projet d'un evenement imprevu.
-L'email doit etre realiste et creer un sentiment d'urgence adapte a la gravite de l'evenement.
-Tu dois retourner un JSON valide et rien d'autre.`;
+    const systemPrompt = `Tu es un générateur d'emails professionnels réalistes pour une simulation de gestion de projet.
+Tu génères un email en français qui informe le chef de projet d'un événement imprévu.
+L'email doit être réaliste et créer un sentiment d'urgence adapté à la gravité de l'événement.
+Tu dois retourner un JSON valide et rien d'autre.
+Réponds en français correct, avec les accents.`;
 
-    const prompt = `Genere un email professionnel qui informe le chef de projet d'un evenement imprevu.
+    const prompt = `Génère un email professionnel qui informe le chef de projet d'un événement imprévu.
 
 Contexte du projet :
 - Projet : ${projectTemplate.name || simulation.scenario.title}
 - Secteur : ${simulation.scenario.sector}
 
-Evenement :
+Événement :
 - Titre : ${event.title}
 - Description : ${event.description || ''}
-- Severite : ${event.severity}
+- Sévérité : ${event.severity}
 - Type : ${event.type}
 
 L'email doit :
 1. Informer clairement de la situation
-2. Decrire l'impact potentiel
-3. Demander une decision ou action rapide
-4. Adapter le ton a la gravite (urgent si critique, informatif si mineur)
+2. Décrire l'impact potentiel
+3. Demander une décision ou action rapide
+4. Adapter le ton a la gravité (urgent si critique, informatif si mineur)
 
-Choisis un expediteur logique par rapport au type d'evenement (ex: technique -> developpeur, budget -> DAF, equipe -> RH).
+Choisis un expéditeur logique par rapport au type d'événement (ex: technique -> développeur, budget -> DAF, équipe -> RH).
 
 Retourne un JSON avec cette structure exacte :
 {
-  "senderName": "Prenom Nom",
-  "senderRole": "Role adapte",
+  "senderName": "Prénom Nom",
+  "senderRole": "Rôle adapté",
   "senderEmail": "prenom.nom@domaine.com",
   "subject": "Objet de l'email",
   "body": "Contenu complet de l'email",
@@ -355,36 +358,37 @@ Retourne un JSON avec cette structure exacte :
     >;
     const phaseName = PHASE_NAMES[phaseOrder] || `Phase ${phaseOrder}`;
 
-    const systemPrompt = `Tu es un generateur d'emails professionnels realistes pour une simulation de gestion de projet.
-Tu generes exactement 3 emails qui arrivent SIMULTANEMENT au chef de projet.
-Ces emails DOIVENT avoir des priorites differentes : un URGENT, un HIGH, un NORMAL.
-Ils DOIVENT venir de types d'expediteurs differents (client, membre d'equipe, direction).
-L'objectif pedagogique est de tester la capacite de l'apprenant a prioriser ses reponses.
-L'ordre dans lequel il repond impactera les KPIs de la simulation.
-Tu dois retourner un tableau JSON valide et rien d'autre.`;
+    const systemPrompt = `Tu es un générateur d'emails professionnels réalistes pour une simulation de gestion de projet.
+Tu génères exactement 3 emails qui arrivent SIMULTANÉMENT au chef de projet.
+Ces emails DOIVENT avoir des priorités différentes : un URGENT, un HIGH, un NORMAL.
+Ils DOIVENT venir de types d'expéditeurs différents (client, membre d'équipe, direction).
+L'objectif pédagogique est de tester la capacité de l'apprenant à prioriser ses réponses.
+L'ordre dans lequel il répond impactera les KPIs de la simulation.
+Tu dois retourner un tableau JSON valide et rien d'autre.
+Réponds en français correct, avec les accents.`;
 
-    const prompt = `Genere exactement 3 emails professionnels qui arrivent en meme temps au chef de projet durant la phase "${phaseName}".
+    const prompt = `Génère exactement 3 emails professionnels qui arrivent en même temps au chef de projet durant la phase "${phaseName}".
 
 Contexte :
 - Projet : ${projectTemplate.name || simulation.scenario.title}
 - Secteur : ${simulation.scenario.sector}
-- Difficulte : ${simulation.scenario.difficulty}
+- Difficulté : ${simulation.scenario.difficulty}
 - Description : ${simulation.scenario.description || ''}
-- Budget initial : ${projectTemplate.initialBudget || 'non defini'}
+- Budget initial : ${projectTemplate.initialBudget || 'non défini'}
 
-Regles strictes :
-1. Email 1 (URGENT) : Du client ou du sponsor. Necessite une reponse immediate. Consequence grave si ignore.
-2. Email 2 (HIGH) : D'un membre de l'equipe ou d'un fournisseur. Probleme technique ou humain important.
-3. Email 3 (NORMAL) : De la DRH ou d'un collegue. Demande administrative ou informationnelle.
+Règles strictes :
+1. Email 1 (URGENT) : Du client ou du sponsor. Nécessite une réponse immédiate. Conséquence grave si ignore.
+2. Email 2 (HIGH) : D'un membre de l'équipe ou d'un fournisseur. Problème technique ou humain important.
+3. Email 3 (NORMAL) : De la DRH ou d'un collègue. Demande administrative ou informationnelle.
 
-Chaque email doit clairement necessiter une action de la part du chef de projet.
-Le contenu doit etre coherent avec la phase "${phaseName}" du projet.
+Chaque email doit clairement nécessiter une action de la part du chef de projet.
+Le contenu doit être cohérent avec la phase "${phaseName}" du projet.
 
 Retourne un tableau JSON avec cette structure exacte :
 [
   {
-    "senderName": "Prenom Nom",
-    "senderRole": "Client|Sponsor|Membre equipe|Fournisseur|DRH|Collegue",
+    "senderName": "Prénom Nom",
+    "senderRole": "Client|Sponsor|Membre équipe|Fournisseur|DRH|Collègue",
     "senderEmail": "prenom.nom@domaine.com",
     "subject": "Objet de l'email",
     "body": "Contenu complet de l'email",
@@ -433,32 +437,33 @@ Retourne un tableau JSON avec cette structure exacte :
       unknown
     >;
 
-    const systemPrompt = `Tu es un generateur d'emails professionnels realistes pour une simulation de gestion de projet.
-Tu generes un email de demande de changement de la part du client.
-L'email doit etre realiste et representer un vrai defi pour un chef de projet.
-Tu dois retourner un JSON valide et rien d'autre.`;
+    const systemPrompt = `Tu es un générateur d'emails professionnels réalistes pour une simulation de gestion de projet.
+Tu génères un email de demande de changement de la part du client.
+L'email doit être réaliste et représenter un vrai défi pour un chef de projet.
+Tu dois retourner un JSON valide et rien d'autre.
+Réponds en français correct, avec les accents.`;
 
-    const prompt = `Genere un email de demande de changement envoye par le client au chef de projet.
+    const prompt = `Génère un email de demande de changement envoyé par le client au chef de projet.
 
 Contexte :
 - Projet : ${projectTemplate.name || simulation.scenario.title}
 - Secteur : ${simulation.scenario.sector}
 - Phase actuelle : ${PHASE_NAMES[simulation.currentPhaseOrder] || `Phase ${simulation.currentPhaseOrder}`}
-- Budget initial : ${projectTemplate.initialBudget || 'non defini'}
+- Budget initial : ${projectTemplate.initialBudget || 'non défini'}
 
 La demande de changement doit :
-1. Etre realiste pour le secteur et le type de projet
-2. Avoir un impact sur au moins 2 dimensions (scope, budget, delai, qualite)
-3. Etre formulee comme une demande ferme mais polie du client
-4. Necessiter une analyse d'impact de la part du chef de projet
+1. Être réaliste pour le secteur et le type de projet
+2. Avoir un impact sur au moins 2 dimensions (scope, budget, délai, qualité)
+3. Être formulée comme une demande ferme mais polie du client
+4. Nécessiter une analyse d'impact de la part du chef de projet
 5. Mentionner une justification business
 
 Retourne un JSON avec cette structure exacte :
 {
-  "senderName": "Prenom Nom",
+  "senderName": "Prénom Nom",
   "senderRole": "Client",
   "senderEmail": "prenom.nom@client.com",
-  "subject": "Demande de modification - [sujet precis]",
+  "subject": "Demande de modification - [sujet précis]",
   "body": "Contenu complet de l'email",
   "priority": "HIGH"
 }`;
@@ -489,19 +494,20 @@ Retourne un JSON avec cette structure exacte :
     tenantId: string,
     userId: string,
   ): Promise<ResponseEvaluation> {
-    const systemPrompt = `Tu es un evaluateur pedagogique pour une simulation de gestion de projet.
-Tu evalues la reponse d'un apprenant a un email professionnel simule.
-Tu dois retourner un JSON valide et rien d'autre.`;
+    const systemPrompt = `Tu es un évaluateur pédagogique pour une simulation de gestion de projet.
+Tu évalues la réponse d'un apprenant à un email professionnel simulé.
+Tu dois retourner un JSON valide et rien d'autre.
+Réponds en français correct, avec les accents.`;
 
-    const prompt = `Evalue la reponse de l'apprenant a l'email suivant.
+    const prompt = `Évalue la réponse de l'apprenant à l'email suivant.
 
 Email original :
 - De : ${email.senderName} (${email.senderRole})
 - Objet : ${email.subject}
 - Contenu : ${email.body}
-- Priorite : ${email.priority}
+- Priorité : ${email.priority}
 
-Reponse de l'apprenant :
+Réponse de l'apprenant :
 ${userResponse}
 
 Contexte du projet :
@@ -509,16 +515,16 @@ Contexte du projet :
 - Secteur : ${simulation.scenario.sector}
 - Phase : ${PHASE_NAMES[email.phaseOrder] || `Phase ${email.phaseOrder}`}
 
-Evalue selon ces criteres :
-1. Pertinence (30%) : La reponse repond-elle aux questions/demandes de l'email ?
-2. Ton professionnel (20%) : Le ton est-il adapte au destinataire et au contexte ?
-3. Completude (30%) : Tous les points sont-ils traites ? Des actions concretes sont-elles proposees ?
-4. Qualite redactionnelle (20%) : Clarte, structure, absence de fautes majeures
+Évalue selon ces critères :
+1. Pertinence (30%) : La réponse repond-elle aux questions/demandes de l'email ?
+2. Ton professionnel (20%) : Le ton est-il adapté au destinataire et au contexte ?
+3. Complétude (30%) : Tous les points sont-ils traités ? Des actions concrètes sont-elles proposées ?
+4. Qualité rédactionnelle (20%) : Clarté, structure, absence de fautes majeures
 
 Retourne un JSON avec cette structure exacte :
 {
   "score": 75,
-  "feedback": "Feedback detaille en francais avec points forts et axes d'amelioration. Structurer avec des paragraphes."
+  "feedback": "Feedback détaillé en français avec points forts et axes d'amélioration. Structurer avec des paragraphes."
 }`;
 
     const result = await this.aiService.complete({
@@ -588,7 +594,7 @@ Retourne un JSON avec cette structure exacte :
       const parsed = JSON.parse(jsonMatch[0]) as ResponseEvaluation;
       return {
         score: Math.max(0, Math.min(100, parsed.score || 50)),
-        feedback: parsed.feedback || 'Evaluation non disponible.',
+        feedback: parsed.feedback || 'Évaluation non disponible.',
       };
     } catch (error) {
       this.logger.error(
@@ -597,7 +603,7 @@ Retourne un JSON avec cette structure exacte :
       return {
         score: 50,
         feedback:
-          'L\'evaluation automatique n\'a pas pu etre completee. Votre reponse a ete enregistree.',
+          'L\'évaluation automatique n\'a pas pu être complétée. Votre réponse a été enregistrée.',
       };
     }
   }
@@ -620,8 +626,8 @@ Retourne un JSON avec cette structure exacte :
       senderName: 'Marie Laurent',
       senderRole: 'DRH',
       senderEmail: 'marie.laurent@entreprise.com',
-      subject: 'Bienvenue — Votre guide de demarrage projet',
-      body: `## Bienvenue dans l'equipe !\n\nNous sommes ravis de vous accueillir en tant que Chef de Projet.\n\n## Methodologie\n\nNous suivons le referentiel **PMBOK (PMI)** avec 5 phases :\n1. **Initiation** — Cadrage et charte\n2. **Planification** — Plan de management\n3. **Execution** — Realisation des livrables\n4. **Suivi & Controle** — Indicateurs et ajustements\n5. **Cloture** — Bilan et retour d'experience\n\n## Outils a disposition\n\n- **Agent PMO** pour les conseils methodologiques\n- **Editeur de livrables** avec evaluation IA\n- **Reunions virtuelles** avec les parties prenantes\n- **Tableaux de bord** KPIs en temps reel\n\n## Prochaines etapes\n\n1. Completez votre passation (RH + PMO)\n2. Consultez vos livrables a produire\n3. Participez a votre premiere reunion\n\nBonne simulation !`,
+      subject: 'Bienvenue — Votre guide de démarrage projet',
+      body: `## Bienvenue dans l'équipe !\n\nNous sommes ravis de vous accueillir en tant que Chef de Projet.\n\n## Méthodologie\n\nNous suivons le référentiel **PMBOK (PMI)** avec 5 phases :\n1. **Initiation** — Cadrage et charte\n2. **Planification** — Plan de management\n3. **Exécution** — Réalisation des livrables\n4. **Suivi & Contrôle** — Indicateurs et ajustements\n5. **Clôture** — Bilan et retour d'expérience\n\n## Outils à disposition\n\n- **Agent PMO** pour les conseils méthodologiques\n- **Éditeur de livrables** avec évaluation IA\n- **Réunions virtuelles** avec les parties prenantes\n- **Tableaux de bord** KPIs en temps réel\n\n## Prochaines étapes\n\n1. Complétez votre passation (RH + PMO)\n2. Consultez vos livrables à produire\n3. Participez à votre première réunion\n\nBonne simulation !`,
       priority: 'HIGH',
     };
   }

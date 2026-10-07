@@ -22,17 +22,17 @@ import { simulationApi } from '../api/simulation.api';
 import type { KpiSnapshot } from '@/features/dashboard/types/dashboard.types';
 
 const TRIGGER_LABELS: Record<string, string> = {
-  simulation_start: 'Debut simulation',
-  decision: 'Decision',
-  event: 'Evenement',
-  meeting: 'Reunion',
+  simulation_start: 'Début simulation',
+  decision: 'Décision',
+  event: 'Événement',
+  meeting: 'Réunion',
   phase_advance: 'Phase suivante',
 };
 
 const KPI_CONFIG = [
   { key: 'budget', label: 'Budget', color: 'var(--chart-1)' },
-  { key: 'schedule', label: 'Delai', color: 'var(--chart-3)' },
-  { key: 'quality', label: 'Qualite', color: 'var(--chart-2)' },
+  { key: 'schedule', label: 'Délai', color: 'var(--chart-3)' },
+  { key: 'quality', label: 'Qualité', color: 'var(--chart-2)' },
   { key: 'teamMorale', label: 'Moral', color: 'var(--chart-5)' },
   { key: 'riskLevel', label: 'Risque', color: 'var(--chart-4)' },
 ];
@@ -171,7 +171,7 @@ export default function KpiHistoryPage() {
             <EmptyState
               icon="chart-simple"
               title="Aucun historique"
-              description="Les KPIs seront enregistres au fil de vos actions dans la simulation."
+              description="Les KPIs seront enregistrés au fil de vos actions dans la simulation."
             />
           </CardContent>
         </Card>
@@ -180,7 +180,7 @@ export default function KpiHistoryPage() {
           {/* Main chart */}
           <Card className="mb-5">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Evolution des indicateurs</CardTitle>
+              <CardTitle className="text-sm">Évolution des indicateurs</CardTitle>
             </CardHeader>
             <CardContent>
               <div ref={chartRef}>
@@ -241,7 +241,7 @@ export default function KpiHistoryPage() {
           {/* Snapshot table */}
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Details des snapshots</CardTitle>
+              <CardTitle className="text-sm">Détails des snapshots</CardTitle>
             </CardHeader>
             <CardContent>
               <Table className="text-sm">
@@ -251,8 +251,8 @@ export default function KpiHistoryPage() {
                     <TableHead className="text-left">Phase</TableHead>
                     <TableHead className="text-left">Declencheur</TableHead>
                     <TableHead className="text-right">Budget</TableHead>
-                    <TableHead className="text-right">Delai</TableHead>
-                    <TableHead className="text-right">Qualite</TableHead>
+                    <TableHead className="text-right">Délai</TableHead>
+                    <TableHead className="text-right">Qualité</TableHead>
                     <TableHead className="text-right">Moral</TableHead>
                     <TableHead className="text-right">Risque</TableHead>
                     <TableHead className="text-left">Date</TableHead>

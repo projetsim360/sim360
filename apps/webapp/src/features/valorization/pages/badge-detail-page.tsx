@@ -13,7 +13,7 @@ import { ShareBadgeDialog } from '../components/share-badge-dialog';
 
 const DIFFICULTY_LABELS: Record<string, string> = {
   EASY: 'Facile',
-  MEDIUM: 'Intermediaire',
+  MEDIUM: 'Intermédiaire',
   HARD: 'Difficile',
   EXPERT: 'Expert',
 };
@@ -27,7 +27,7 @@ export default function BadgeDetailPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Detail du badge" />
+          <ToolbarHeading title="Détail du badge" />
         </Toolbar>
         <div className="flex justify-center py-16">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
@@ -40,7 +40,7 @@ export default function BadgeDetailPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Detail du badge" />
+          <ToolbarHeading title="Détail du badge" />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
@@ -56,7 +56,7 @@ export default function BadgeDetailPage() {
   return (
     <div className="container space-y-5">
       <Toolbar>
-        <ToolbarHeading title="Detail du badge" />
+        <ToolbarHeading title="Détail du badge" />
         <ToolbarActions>
           <Button
             variant="outline"
@@ -89,7 +89,7 @@ export default function BadgeDetailPage() {
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${badge.simulationId}/debriefing`}>
               <KeenIcon icon="chart" style="duotone" className="text-sm" />
-              Debriefing complet
+              Débriefing complet
             </Link>
           </Button>
         </ToolbarActions>
@@ -145,7 +145,7 @@ export default function BadgeDetailPage() {
         {/* Radar chart */}
         <Card>
           <CardHeader>
-            <CardTitle>Competences evaluees</CardTitle>
+            <CardTitle>Compétences évaluées</CardTitle>
           </CardHeader>
           <CardContent>
             <CompetencyRadarChart scores={badge.competencyScores} />
@@ -161,7 +161,7 @@ export default function BadgeDetailPage() {
             iconColor="text-success"
           />
           <DebriefingSection
-            title="Axes d'amelioration"
+            title="Axes d'amélioration"
             items={badge.improvements}
             icon="information-2"
             iconColor="text-warning"

@@ -8,10 +8,10 @@ import { getGradeTextClass } from '@/config/theme.constants';
 import type { PortfolioDeliverable } from '../types/valorization.types';
 
 const STATUS_LABELS: Record<string, string> = {
-  COMPLETED: 'Termine',
+  COMPLETED: 'Terminé',
   IN_PROGRESS: 'En cours',
   PENDING: 'En attente',
-  REJECTED: 'Rejete',
+  REJECTED: 'Rejeté',
 };
 
 const STATUS_VARIANTS: Record<string, 'success' | 'info' | 'warning' | 'destructive'> = {
@@ -59,7 +59,7 @@ export function PortfolioDeliverableCard({ deliverable, className }: PortfolioDe
             >
               {STATUS_LABELS[deliverable.status] ?? deliverable.status}
             </Badge>
-            <Button variant="ghost" size="sm" mode="icon" aria-label="Voir les details">
+            <Button variant="ghost" size="sm" mode="icon" aria-label="Voir les détails">
               <KeenIcon
                 icon={expanded ? 'arrow-up' : 'arrow-down'}
                 style="duotone"

@@ -235,7 +235,7 @@ export function EmailDetailDrawer({
                   {email.responseFeedback && (
                     <div className="px-4 py-3 bg-[var(--neutral-50)] dark:bg-white/[0.02] border-t border-[var(--neutral-100)] dark:border-white/[0.06]">
                       <div className="text-[10px] font-bold uppercase tracking-[1.2px] text-[var(--accent-700)] dark:text-[var(--accent-300)] mb-1">
-                        Retour de l'IA
+                        Retour détaillé
                       </div>
                       <p className="text-[12.5px] text-muted-foreground leading-relaxed m-0">
                         {email.responseFeedback}

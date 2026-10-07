@@ -3,7 +3,9 @@ import {
   UnauthorizedException,
   ConflictException,
   BadRequestException,
+  ServiceUnavailableException,
   Logger,
+  OnModuleInit,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -15,10 +17,12 @@ import { PrismaService } from '../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { encrypt, decrypt } from '../common/utils/crypto.util';
+import { encrypt, decrypt, isValidEncryptionKey } from '../common/utils/crypto.util';
+import { RedisCacheService } from '../cache/redis-cache.service';
+import { CacheEvict } from '../common/decorators';
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnModuleInit {
   private readonly logger = new Logger(AuthService.name);
 
   constructor(
@@ -26,7 +30,30 @@ export class AuthService {
     private jwtService: JwtService,
     private config: ConfigService,
     private mailService: MailService,
+    // Named `cache` on purpose: @CacheEvict reads `this.cache`.
+    private cache: RedisCacheService,
   ) {}
+
+  onModuleInit() {
+    // Don't crash the API on a bad key (it would take login down for everyone):
+    // warn loudly and refuse 2FA setup instead.
+    if (!isValidEncryptionKey(this.config.get<string>('auth.twoFactorEncryptionKey'))) {
+      this.logger.error(
+        'TWO_FACTOR_ENCRYPTION_KEY is missing or invalid (expected 64 hex chars, e.g. `openssl rand -hex 32`). 2FA setup is disabled.',
+      );
+    }
+  }
+
+  /** Returns the 2FA encryption key, or throws a clear error when the server is misconfigured. */
+  private getTwoFactorKey(): string {
+    const key = this.config.get<string>('auth.twoFactorEncryptionKey');
+    if (!isValidEncryptionKey(key)) {
+      throw new ServiceUnavailableException(
+        "L'authentification à deux facteurs n'est pas configurée sur ce serveur. Contactez l'administrateur.",
+      );
+    }
+    return key!;
+  }
 
   async register(dto: RegisterDto, ip?: string, userAgent?: string) {
     if (!dto.gdprConsent) {
@@ -58,6 +85,7 @@ export class AuthService {
         passwordHash,
         firstName: dto.firstName,
         lastName: dto.lastName,
+        ...(dto.timezone ? { timezone: dto.timezone } : {}),
         tenantId: tenant.id,
         emailVerificationToken,
         emailVerificationExpiry,
@@ -143,7 +171,10 @@ export class AuthService {
     if (user.twoFactorEnabled) {
       const tempToken = this.jwtService.sign(
         { sub: user.id, type: '2fa_temp', rememberMe: dto.rememberMe ?? false },
-        { expiresIn: this.config.get<string>('auth.twoFactorTempTokenExpiresIn', '5m') },
+        {
+          secret: this.config.get<string>('auth.twoFactorTempSecret'),
+          expiresIn: this.config.get<string>('auth.twoFactorTempTokenExpiresIn', '5m'),
+        },
       );
       return { requires2FA: true, tempToken };
     }
@@ -367,7 +398,10 @@ export class AuthService {
     if (user.twoFactorEnabled) {
       const tempToken = this.jwtService.sign(
         { sub: user.id, type: '2fa_temp', rememberMe: false },
-        { expiresIn: this.config.get<string>('auth.twoFactorTempTokenExpiresIn', '5m') },
+        {
+          secret: this.config.get<string>('auth.twoFactorTempSecret'),
+          expiresIn: this.config.get<string>('auth.twoFactorTempTokenExpiresIn', '5m'),
+        },
       );
       return { requires2FA: true, tempToken, tokens: null, user };
     }
@@ -422,7 +456,7 @@ export class AuthService {
     const otpauthUrl = generated.otpauth_url!;
 
     // Encrypt and store secret temporarily (not enabled yet)
-    const encryptionKey = this.config.get<string>('auth.twoFactorEncryptionKey')!;
+    const encryptionKey = this.getTwoFactorKey();
     const encryptedSecret = encrypt(secret, encryptionKey);
 
     await this.prisma.user.update({
@@ -435,6 +469,7 @@ export class AuthService {
     return { qrCode: qrCodeDataUri, secret };
   }
 
+  @CacheEvict({ key: 'user:profile::arg0' })
   async enableTwoFactor(userId: string, code: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new BadRequestException('Utilisateur non trouvé');
@@ -448,7 +483,7 @@ export class AuthService {
     }
 
     // Decrypt and verify
-    const encryptionKey = this.config.get<string>('auth.twoFactorEncryptionKey')!;
+    const encryptionKey = this.getTwoFactorKey();
     const secret = decrypt(user.twoFactorSecret, encryptionKey);
     const isValid = speakeasy.totp.verify({ secret, encoding: 'base32', token: code, window: 1 });
 
@@ -478,6 +513,7 @@ export class AuthService {
     return { backupCodes: plainBackupCodes };
   }
 
+  @CacheEvict({ key: 'user:profile::arg0' })
   async disableTwoFactor(userId: string, password: string, code: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new BadRequestException('Utilisateur non trouvé');
@@ -496,7 +532,7 @@ export class AuthService {
     }
 
     // Verify TOTP code
-    const encryptionKey = this.config.get<string>('auth.twoFactorEncryptionKey')!;
+    const encryptionKey = this.getTwoFactorKey();
     const secret = decrypt(user.twoFactorSecret!, encryptionKey);
     const codeValid = speakeasy.totp.verify({ secret, encoding: 'base32', token: code, window: 1 });
     if (!codeValid) {
@@ -522,7 +558,9 @@ export class AuthService {
 
     let payload: { sub: string; type: string; rememberMe: boolean };
     try {
-      payload = this.jwtService.verify(tempToken);
+      payload = this.jwtService.verify(tempToken, {
+        secret: this.config.get<string>('auth.twoFactorTempSecret'),
+      });
     } catch {
       throw new UnauthorizedException('Token temporaire invalide ou expiré');
     }
@@ -536,7 +574,7 @@ export class AuthService {
       throw new UnauthorizedException('Configuration 2FA invalide');
     }
 
-    const encryptionKey = this.config.get<string>('auth.twoFactorEncryptionKey')!;
+    const encryptionKey = this.getTwoFactorKey();
 
     if (code) {
       const secret = decrypt(user.twoFactorSecret, encryptionKey);
@@ -610,7 +648,7 @@ export class AuthService {
     }
 
     // Verify TOTP code
-    const encryptionKey = this.config.get<string>('auth.twoFactorEncryptionKey')!;
+    const encryptionKey = this.getTwoFactorKey();
     const secret = decrypt(user.twoFactorSecret, encryptionKey);
     const codeValid = speakeasy.totp.verify({ secret, encoding: 'base32', token: code, window: 1 });
     if (!codeValid) {
@@ -639,7 +677,7 @@ export class AuthService {
     try {
       const payload = this.jwtService.verify<{ userId: string; newEmail: string; type: string }>(
         token,
-        { secret: this.config.get<string>('auth.jwtSecret')! },
+        { secret: this.config.get<string>('auth.emailChangeSecret')! },
       );
 
       if (payload.type !== 'email_change') {

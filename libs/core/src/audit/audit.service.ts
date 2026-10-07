@@ -136,20 +136,20 @@ export class AuditService {
       doc.on('error', reject);
 
       // Header
-      doc.fontSize(18).font('Helvetica-Bold').text('Journal d\'activite - Sim360', { align: 'center' });
+      doc.fontSize(18).font('Helvetica-Bold').text('Journal d\'activité - Sim360', { align: 'center' });
       doc.moveDown(0.3);
       doc.fontSize(9).font('Helvetica').fillColor('#666')
-        .text(`Genere le ${new Date().toLocaleDateString('fr-FR')} a ${new Date().toLocaleTimeString('fr-FR')}`, { align: 'center' });
+        .text(`Généré le ${new Date().toLocaleDateString('fr-FR')} à ${new Date().toLocaleTimeString('fr-FR')}`, { align: 'center' });
 
       if (filters.startDate || filters.endDate) {
         const range = [
           filters.startDate ? `Du ${new Date(filters.startDate).toLocaleDateString('fr-FR')}` : '',
           filters.endDate ? `Au ${new Date(filters.endDate).toLocaleDateString('fr-FR')}` : '',
         ].filter(Boolean).join(' ');
-        doc.text(`Periode : ${range}`, { align: 'center' });
+        doc.text(`Période : ${range}`, { align: 'center' });
       }
 
-      doc.text(`${logs.length} entree(s)`, { align: 'center' });
+      doc.text(`${logs.length} entrée(s)`, { align: 'center' });
       doc.moveDown(1);
 
       // Table header
@@ -161,7 +161,7 @@ export class AuditService {
       doc.text('Date', colX.date, tableTop, { width: 95 });
       doc.text('Utilisateur', colX.user, tableTop, { width: 135 });
       doc.text('Action', colX.action, tableTop, { width: 95 });
-      doc.text('Entite', colX.entity, tableTop, { width: 95 });
+      doc.text('Entité', colX.entity, tableTop, { width: 95 });
       doc.text('Statut', colX.status, tableTop, { width: 60 });
 
       doc.moveDown(0.8);
@@ -177,7 +177,7 @@ export class AuditService {
         const y = doc.y;
         const date = new Date(log.createdAt);
         const dateStr = `${date.toLocaleDateString('fr-FR')} ${date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`;
-        const userName = log.user ? `${log.user.firstName} ${log.user.lastName}` : 'Systeme';
+        const userName = log.user ? `${log.user.firstName} ${log.user.lastName}` : 'Système';
         const action = log.action.replace(/_/g, ' ').toLowerCase();
         const entity = `${log.entity}${log.entityId ? ` #${log.entityId.slice(0, 8)}` : ''}`;
         const status = log.success ? 'OK' : 'Erreur';

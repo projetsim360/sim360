@@ -31,15 +31,15 @@ export function getKpiLevel(value: number) {
 export const CULTURE_LABELS: Record<string, { label: string; description: string }> = {
   AGILE: {
     label: 'Agile',
-    description: 'Environnement flexible, iterations rapides, retrospectives frequentes.',
+    description: 'Environnement flexible, itérations rapides, rétrospectives fréquentes.',
   },
   STRICT: {
     label: 'Strict',
-    description: 'Processus formel, documentation rigoureuse, validation hierarchique.',
+    description: 'Processus formel, documentation rigoureuse, validation hiérarchique.',
   },
   COLLABORATIVE: {
     label: 'Collaboratif',
-    description: 'Travail en equipe, consensus, communication ouverte.',
+    description: 'Travail en équipe, consensus, communication ouverte.',
   },
 };
 
@@ -54,7 +54,7 @@ export const KPI_THEME = {
   },
   schedule: {
     icon: 'time',
-    label: 'Delai',
+    label: 'Délai',
     bg: '',
     iconBg: 'bg-[var(--accent-brand)]/10',
     text: 'text-[var(--accent-brand)]',
@@ -62,7 +62,7 @@ export const KPI_THEME = {
   },
   quality: {
     icon: 'medal-star',
-    label: 'Qualite',
+    label: 'Qualité',
     bg: '',
     iconBg: 'bg-success/10',
     text: 'text-success',

@@ -43,6 +43,8 @@ export function useRealtimeConnections({
   const streamRef = useRef<MediaStream | null>(null);
   const analyserIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isFirstConnectionRef = useRef(true);
+  // The opening statement is spoken at most once per conference.
+  const openingSentRef = useRef(false);
 
   // Update state from ref
   const syncConnections = useCallback(() => {
@@ -77,6 +79,7 @@ export function useRealtimeConnections({
       clientSecret: string,
       voice: string,
       isFirstPeer: boolean,
+      openingInstruction?: string | null,
     ) => {
       const pc = new RTCPeerConnection();
       const audioElement = new Audio();
@@ -94,6 +97,13 @@ export function useRealtimeConnections({
 
       // Data channel for events
       const dc = pc.createDataChannel('oai-events');
+
+      // Avoid the silent start: the opener speaks first as soon as the channel is usable.
+      dc.onopen = () => {
+        if (!openingInstruction || openingSentRef.current) return;
+        openingSentRef.current = true;
+        dc.send(JSON.stringify({ type: 'response.create', response: { instructions: openingInstruction } }));
+      };
 
       dc.onmessage = (event) => {
         try {
@@ -219,6 +229,7 @@ export function useRealtimeConnections({
             session.clientSecret,
             session.voice,
             isFirst,
+            session.openingInstruction,
           );
         }
       } else {
@@ -233,6 +244,7 @@ export function useRealtimeConnections({
           session.clientSecret,
           session.voice,
           true,
+          session.openingInstruction,
         );
         setActiveParticipantId(targetId);
       }

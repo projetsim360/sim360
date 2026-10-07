@@ -35,7 +35,7 @@ const CATEGORIES: ReferenceDocumentCategory[] = ['TEMPLATE', 'STANDARD', 'BEST_P
 const documentSchema = z.object({
   title: z.string().min(1, 'Le titre est requis'),
   category: z.enum(['TEMPLATE', 'STANDARD', 'BEST_PRACTICE', 'GLOSSARY'], {
-    required_error: 'La categorie est requise',
+    required_error: 'La catégorie est requise',
   }),
   phase: z.string().optional(),
   pmiProcess: z.string().optional(),
@@ -134,12 +134,12 @@ export function ReferenceDocumentForm({
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {document ? 'Modifier le document' : 'Nouveau document de reference'}
+            {document ? 'Modifier le document' : 'Nouveau document de référence'}
           </DialogTitle>
           <DialogDescription>
             {document
-              ? 'Modifiez les informations du document de reference.'
-              : 'Remplissez les informations pour creer un nouveau document.'}
+              ? 'Modifiez les informations du document de référence.'
+              : 'Remplissez les informations pour créer un nouveau document.'}
           </DialogDescription>
         </DialogHeader>
 
@@ -161,13 +161,13 @@ export function ReferenceDocumentForm({
             {/* Categorie + Phase */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label>Categorie</Label>
+                <Label>Catégorie</Label>
                 <Select
                   value={categoryValue}
                   onValueChange={(val) => setValue('category', val as ReferenceDocumentCategory)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Selectionner une categorie" />
+                    <SelectValue placeholder="Sélectionner une catégorie" />
                   </SelectTrigger>
                   <SelectContent>
                     {CATEGORIES.map((cat) => (
@@ -189,7 +189,7 @@ export function ReferenceDocumentForm({
                   onValueChange={(val) => setValue('phase', val === '_none' ? '' : val)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Selectionner une phase" />
+                    <SelectValue placeholder="Sélectionner une phase" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="_none">Aucune</SelectItem>
@@ -221,7 +221,7 @@ export function ReferenceDocumentForm({
                   <Input
                     id="doc-term"
                     {...register('term')}
-                    placeholder="Terme a definir"
+                    placeholder="Terme à définir"
                   />
                 </div>
 
@@ -243,7 +243,7 @@ export function ReferenceDocumentForm({
               <Textarea
                 id="doc-content"
                 {...register('content')}
-                placeholder="Redigez le contenu du document en Markdown..."
+                placeholder="Rédigez le contenu du document en Markdown..."
                 className="min-h-32 font-mono text-xs"
               />
               {errors.content && (
@@ -269,7 +269,7 @@ export function ReferenceDocumentForm({
             form="reference-document-form"
             disabled={isPending}
           >
-            {isPending ? 'Enregistrement...' : document ? 'Mettre a jour' : 'Creer'}
+            {isPending ? 'Enregistrement...' : document ? 'Mettre à jour' : 'Créer'}
           </Button>
         </DialogFooter>
       </DialogContent>

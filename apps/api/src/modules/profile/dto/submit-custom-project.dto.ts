@@ -3,7 +3,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class SubmitCustomProjectDto {
   @ApiProperty({
-    description: 'Nom du projet personnalise',
+    description: 'Nom du projet personnalisé',
     example: 'Migration cloud pour une PME',
   })
   @IsString()
@@ -12,14 +12,14 @@ export class SubmitCustomProjectDto {
 
   @ApiProperty({
     description: 'Description du projet',
-    example: 'Migration de l\'infrastructure on-premise vers AWS pour une PME de 50 employes.',
+    example: 'Migration de l\'infrastructure on-premise vers AWS pour une PME de 50 employés.',
   })
   @IsString()
   @IsNotEmpty()
   description!: string;
 
   @ApiPropertyOptional({
-    description: 'Secteur d\'activite du projet',
+    description: 'Secteur d\'activité du projet',
     example: 'IT / Digital',
   })
   @IsString()
@@ -27,16 +27,16 @@ export class SubmitCustomProjectDto {
   sector?: string;
 
   @ApiPropertyOptional({
-    description: 'Contraintes specifiques du projet',
-    example: 'Budget limite a 100k, delai de 6 mois',
+    description: 'Contraintes spécifiques du projet',
+    example: 'Budget limité à 100k, délai de 6 mois',
   })
   @IsString()
   @IsOptional()
   constraints?: string;
 
   @ApiPropertyOptional({
-    description: 'Objectifs d\'apprentissage specifiques',
-    example: 'Maitriser la gestion des risques et le suivi budgetaire',
+    description: 'Objectifs d\'apprentissage spécifiques',
+    example: 'Maîtriser la gestion des risques et le suivi budgétaire',
   })
   @IsString()
   @IsOptional()

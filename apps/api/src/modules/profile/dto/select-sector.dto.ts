@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class SelectSectorDto {
   @ApiProperty({
-    description: 'Secteur selectionne par l\'apprenant (suggestion acceptee ou override)',
+    description: 'Secteur sélectionné par l\'apprenant (suggestion acceptée ou override)',
     example: 'IT / Digital',
   })
   @IsString()

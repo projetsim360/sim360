@@ -63,7 +63,7 @@ export function TranscriptionPanel({ transcriptions, open, onClose }: Transcript
                   </svg>
                 </div>
                 <p className="text-muted-foreground text-sm text-center">
-                  La transcription apparaitra ici<br />une fois la conversation lancee
+                  La transcription apparaîtra ici<br />une fois la conversation lancée
                 </p>
               </div>
             )}

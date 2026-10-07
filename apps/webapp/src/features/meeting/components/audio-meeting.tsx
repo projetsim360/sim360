@@ -199,11 +199,11 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
   }, []);
 
   const statusLabel: Record<ConnectionStatus, string> = {
-    idle: 'Pret',
+    idle: 'Prêt',
     connecting: 'Connexion...',
-    connected: 'Connecte',
+    connected: 'Connecté',
     error: 'Erreur',
-    closed: 'Deconnecte',
+    closed: 'Déconnecté',
   };
 
   const statusVariant: Record<ConnectionStatus, 'secondary' | 'primary' | 'success' | 'destructive' | 'warning'> = {
@@ -221,7 +221,7 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <KeenIcon icon="microphone" style="duotone" className="size-5 text-primary" />
-            <span className="text-sm font-medium">Reunion Audio</span>
+            <span className="text-sm font-medium">Réunion Audio</span>
             <Badge variant={statusVariant[status]} appearance="light" size="sm">
               {statusLabel[status]}
             </Badge>
@@ -268,12 +268,12 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
         <div className="h-[300px] overflow-y-auto space-y-3 mb-4 border rounded-lg p-3">
           {transcriptions.length === 0 && status !== 'connected' && (
             <p className="text-center text-muted-foreground text-sm py-8">
-              Demarrez la session audio pour commencer.
+              Démarrez la session audio pour commencer.
             </p>
           )}
           {transcriptions.length === 0 && status === 'connected' && (
             <p className="text-center text-muted-foreground text-sm py-8">
-              En ecoute... Parlez pour commencer.
+              En écoute... Parlez pour commencer.
             </p>
           )}
           {transcriptions.map((t) => (
@@ -284,7 +284,7 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
               <div className="max-w-[75%]">
                 {t.role === 'assistant' && (
                   <p className="text-[10px] text-muted-foreground mb-0.5 ml-1">
-                    {participants[0]?.name ?? 'IA'}
+                    {participants[0]?.name ?? 'Participant'}
                   </p>
                 )}
                 <div
@@ -307,7 +307,7 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
           {status === 'idle' || status === 'closed' || status === 'error' ? (
             <Button onClick={connect}>
               <KeenIcon icon="microphone" style="duotone" className="size-4" />
-              Demarrer la session audio
+              Démarrer la session audio
             </Button>
           ) : (
             <>
@@ -321,7 +321,7 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
                   style="duotone"
                   className="size-4"
                 />
-                {muted ? 'Desactiver le mute' : 'Mute'}
+                {muted ? 'Désactiver le mute' : 'Mute'}
               </Button>
               <Button
                 variant="destructive"

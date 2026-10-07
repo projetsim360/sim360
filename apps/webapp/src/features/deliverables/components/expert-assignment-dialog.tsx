@@ -61,10 +61,10 @@ export function ExpertAssignmentDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[540px]">
         <DialogHeader>
-          <DialogTitle>Deleguer le livrable</DialogTitle>
+          <DialogTitle>Déléguer le livrable</DialogTitle>
           <DialogDescription>
-            Selectionnez un membre de l&apos;equipe pour lui confier la
-            realisation de ce livrable.
+            Sélectionnez un membre de l&apos;équipe pour lui confier la
+            réalisation de ce livrable.
           </DialogDescription>
         </DialogHeader>
 
@@ -139,7 +139,7 @@ export function ExpertAssignmentDialog({
               id="assignment-instructions"
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
-              placeholder="Precisions ou consignes pour le membre de l'equipe..."
+              placeholder="Précisions ou consignes pour le membre de l'équipe..."
               rows={3}
             />
           </div>

@@ -17,11 +17,11 @@ function getCampaignSteps(campaign: Props['campaign']): WorkflowStep[] {
 
   return [
     {
-      label: 'Creer',
+      label: 'Créer',
       status: 'completed',
     },
     {
-      label: 'Scenario',
+      label: 'Scénario',
       status: hasScenario ? 'completed' : 'upcoming',
     },
     {
@@ -45,7 +45,7 @@ function getCampaignSteps(campaign: Props['campaign']): WorkflowStep[] {
           : 'upcoming',
     },
     {
-      label: 'Cloturer',
+      label: 'Clôturer',
       status: isClosedOrArchived ? 'completed' : 'upcoming',
     },
   ];

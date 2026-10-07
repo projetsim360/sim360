@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { AiService } from '../ai.service';
 import { PrismaService } from '@sim360/core';
 import { Prisma, PhaseType } from '@prisma/client';
+import { sectorLabel } from '../../simulations/sector-labels';
 
 export interface GenerateScenarioInput {
   // From profile
@@ -110,10 +111,11 @@ export class ScenarioGenerationAiService {
 
     const result = await this.aiService.complete({
       systemPrompt: [
-        'Tu es un expert en conception de scenarios de simulation de gestion de projet.',
-        'Tu generes des scenarios realistes et pedagogiques pour former des chefs de projet.',
-        'Tes scenarios sont alignes sur le referentiel PMBOK du PMI.',
-        'Tu reponds UNIQUEMENT en JSON valide, sans commentaires ni markdown.',
+        'Tu es un expert en conception de scénarios de simulation de gestion de projet.',
+        'Tu génères des scénarios réalistes et pédagogiques pour former des chefs de projet.',
+        'Tes scénarios sont alignés sur le référentiel PMBOK du PMI.',
+        'Tu réponds UNIQUEMENT en JSON valide, sans commentaires ni markdown.',
+        'Réponds en français correct, avec les accents.',
       ].join('\n'),
       prompt,
       maxTokens: 8000,
@@ -167,7 +169,7 @@ export class ScenarioGenerationAiService {
     } catch (err) {
       this.logger.error(`Failed to parse AI scenario: ${err}`);
       throw new Error(
-        'Impossible de generer le scenario. Veuillez reessayer.',
+        'Impossible de générer le scénario. Veuillez réessayer.',
       );
     }
   }
@@ -251,10 +253,11 @@ export class ScenarioGenerationAiService {
     scenarioType: string,
   ): string {
     const parts: string[] = [
-      `Genere un scenario complet de simulation de gestion de projet avec les parametres suivants :`,
+      `Génère un scénario complet de simulation de gestion de projet avec les paramètres suivants :`,
       ``,
-      `- Secteur : ${sector}`,
-      `- Difficulte : ${difficulty}`,
+      `- Secteur : ${sectorLabel(sector) ?? sector} (code ${sector})`,
+      `Utilise le vocabulaire métier, les contraintes réglementaires et les parties prenantes typiques de ce secteur.`,
+      `- Difficulté : ${difficulty}`,
       `- Type : ${scenarioType}`,
     ];
 
@@ -274,18 +277,18 @@ export class ScenarioGenerationAiService {
     }
     if (input.skills?.length) {
       const skillNames = input.skills.map((s) => s.name).join(', ');
-      parts.push(`- Competences a travailler : ${skillNames}`);
+      parts.push(`- Compétences à travailler : ${skillNames}`);
     }
     if (input.profileType) {
       parts.push(`- Profil apprenant : ${input.profileType}`);
     }
 
     parts.push(``);
-    parts.push(`Reponds en JSON avec cette structure exacte :`);
+    parts.push(`Réponds en JSON avec cette structure exacte :`);
     parts.push(`{`);
-    parts.push(`  "title": "Titre du scenario (court, accrocheur)",`);
+    parts.push(`  "title": "Titre du scénario (court, accrocheur)",`);
     parts.push(
-      `  "description": "Description detaillee du contexte (3-5 phrases)",`,
+      `  "description": "Description détaillée du contexte (3-5 phrases)",`,
     );
     parts.push(
       `  "objectives": ["objectif 1", "objectif 2", "objectif 3", "objectif 4"],`,
@@ -303,7 +306,7 @@ export class ScenarioGenerationAiService {
     parts.push(`    "initialBudget": 150000,`);
     parts.push(`    "deadlineDays": 180,`);
     parts.push(
-      `    "team": [{"name": "Prenom Nom", "role": "Role", "expertise": "JUNIOR|INTERMEDIATE|SENIOR", "personality": "COOPERATIVE|NEUTRAL|RESISTANT", "morale": 75}],`,
+      `    "team": [{"name": "Prénom Nom", "role": "Role", "expertise": "JUNIOR|INTERMEDIATE|SENIOR", "personality": "COOPERATIVE|NEUTRAL|RESISTANT", "morale": 75}],`,
     );
     parts.push(
       `    "deliverables": [{"name": "Nom", "description": "Description", "phaseOrder": 0, "type": "charter"}]`,
@@ -332,19 +335,19 @@ export class ScenarioGenerationAiService {
     parts.push(``);
     parts.push(`IMPORTANT :`);
     parts.push(
-      `- Genere exactement 5 phases (INITIATION, PLANNING, EXECUTION, MONITORING, CLOSURE)`,
+      `- Génère exactement 5 phases (INITIATION, PLANNING, EXECUTION, MONITORING, CLOSURE)`,
     );
     parts.push(
-      `- ${difficulty === 'BEGINNER' ? '1 decision par phase, equipe cooperative' : difficulty === 'INTERMEDIATE' ? '1-2 decisions par phase, mix de personnalites' : '2 decisions par phase, personnalites resistantes'}`,
+      `- ${difficulty === 'BEGINNER' ? '1 décision par phase, équipe coopérative' : difficulty === 'INTERMEDIATE' ? '1-2 décisions par phase, mix de personnalités' : '2 décisions par phase, personnalités résistantes'}`,
     );
     parts.push(`- 1 meeting par phase (pas plus)`);
     parts.push(`- Descriptions courtes (1-2 phrases max par champ)`);
     parts.push(
-      `- 4-7 membres d'equipe avec des prenoms/noms francais realistes`,
+      `- 4-7 membres d'équipe avec des prenoms/noms français réalistes`,
     );
-    parts.push(`- 5-7 livrables repartis sur les phases`);
-    parts.push(`- Contexte realiste pour le secteur ${sector}`);
-    parts.push(`- Tout en francais`);
+    parts.push(`- 5-7 livrables répartis sur les phases`);
+    parts.push(`- Contexte réaliste pour le secteur ${sector}`);
+    parts.push(`- Tout en français`);
 
     return parts.join('\n');
   }

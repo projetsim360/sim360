@@ -21,3 +21,4 @@ export { recruitmentRoutes, recruitmentJoinRoute } from './recruitment/config/re
 export { recruitmentMenuItems } from './recruitment/config/recruitment.menu';
 export { mentoringRoutes } from './mentoring/config/mentoring.routes';
 export { mentoringMenuItems } from './mentoring/config/mentoring.menu';
+export { actionItemsRoutes } from './action-items/config/action-items.routes';

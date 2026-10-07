@@ -3,6 +3,7 @@ import { Plus } from '@/components/keenicons/icons';
 import { cn } from '@/lib/utils';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { useAuth } from '@/providers/auth-provider';
+import { getApiOrigin } from '@/lib/asset-url';
 
 interface Contact {
   id: string;
@@ -40,7 +41,7 @@ export function SidebarContacts() {
   const initials = user
     ? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
     : '?';
-  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
+  const apiBase = getApiOrigin();
 
   return (
     <div className="space-y-0.5 pt-5">

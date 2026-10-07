@@ -37,7 +37,7 @@ function getStatusBadge(status: string) {
     case 'COMPLETED':
       return (
         <Badge variant="success" size="sm">
-          Terminee
+          Terminée
         </Badge>
       );
     case 'IN_PROGRESS':
@@ -49,7 +49,7 @@ function getStatusBadge(status: string) {
     default:
       return (
         <Badge variant="secondary" size="sm">
-          Planifiee
+          Planifiée
         </Badge>
       );
   }
@@ -58,9 +58,9 @@ function getStatusBadge(status: string) {
 function getTypeLabel(type: string) {
   switch (type) {
     case 'DEBRIEFING':
-      return 'Debriefing';
+      return 'Débriefing';
     case 'CAREER_COACHING':
-      return 'Coaching carriere';
+      return 'Coaching carrière';
     case 'INTERVIEW_PREP':
       return 'Preparation entretien';
     default:
@@ -104,10 +104,10 @@ export default function MentoringSessionPage() {
     if (!id) return;
     completeSession.mutate(id, {
       onSuccess: () => {
-        toast.success('Session terminee avec succes');
+        toast.success('Session terminée avec succès');
       },
       onError: () => {
-        toast.error('Erreur lors de la cloture de la session');
+        toast.error('Erreur lors de la clôture de la session');
       },
     });
   };
@@ -129,7 +129,7 @@ export default function MentoringSessionPage() {
               : `Session ${session ? getTypeLabel(session.type) : ''}`}
           </h1>
           <p className="text-sm text-gray-700">
-            Echangez avec l'apprenant en temps reel
+            Échangez avec l'apprenant en temps réel
           </p>
         </ToolbarHeading>
         <ToolbarActions>
@@ -149,7 +149,7 @@ export default function MentoringSessionPage() {
                 <AlertDialogHeader>
                   <AlertDialogTitle>Terminer la session</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Etes-vous sur de vouloir terminer cette session de mentorat ?
+                    Êtes-vous sûr de vouloir terminer cette session de mentorat ?
                     Cette action est irreversible.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
@@ -225,7 +225,7 @@ export default function MentoringSessionPage() {
                     Aucun message pour le moment
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Envoyez le premier message pour demarrer la conversation
+                    Envoyez le premier message pour démarrer la conversation
                   </p>
                 </div>
               ) : (
@@ -286,7 +286,7 @@ export default function MentoringSessionPage() {
             {session?.status === 'COMPLETED' && (
               <div className="border-t p-4 text-center">
                 <p className="text-sm text-muted-foreground">
-                  Cette session est terminee
+                  Cette session est terminée
                 </p>
               </div>
             )}

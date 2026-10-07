@@ -4,14 +4,14 @@ import { Type } from 'class-transformer';
 import { CampaignStatus } from '@prisma/client';
 
 export class QueryCampaignsDto {
-  @ApiPropertyOptional({ description: 'Numero de page', default: 1 })
+  @ApiPropertyOptional({ description: 'Numéro de page', default: 1 })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(1)
   page?: number;
 
-  @ApiPropertyOptional({ description: 'Nombre d\'elements par page', default: 10 })
+  @ApiPropertyOptional({ description: 'Nombre d\'éléments par page', default: 10 })
   @IsOptional()
   @Type(() => Number)
   @IsInt()

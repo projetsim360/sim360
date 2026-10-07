@@ -51,24 +51,24 @@ export class CandidateReportService {
     });
 
     if (!candidate) throw new NotFoundException('Candidat introuvable');
-    if (candidate.campaign.tenantId !== tenantId) throw new BadRequestException('Acces refuse');
+    if (candidate.campaign.tenantId !== tenantId) throw new BadRequestException('Accès refusé');
     if (candidate.status !== 'COMPLETED') {
-      throw new BadRequestException('Le candidat doit avoir termine la simulation');
+      throw new BadRequestException('Le candidat doit avoir terminé la simulation');
     }
 
     const skills = candidate.campaign.requiredSkills as Array<{ skill: string; weight: number }>;
     const simulation = candidate.simulation;
 
-    const systemPrompt = `Tu es un expert en evaluation de competences et recrutement. Tu analyses les performances d'un candidat dans une simulation de gestion de projet pour generer un rapport d'aptitude complet (rapport 360).
+    const systemPrompt = `Tu es un expert en évaluation de compétences et recrutement. Tu analyses les performances d'un candidat dans une simulation de gestion de projet pour générer un rapport d'aptitude complet (rapport 360).
 
-Tu dois evaluer :
-1. Les competences techniques (hard skills) : qualite des decisions, gestion du budget/delai/qualite
-2. Les competences comportementales (soft skills) : communication en reunion, gestion d'equipe, leadership
-3. La fiabilite : respect des engagements, coherence des decisions
-4. L'adaptabilite : reaction aux evenements imprevus, gestion des crises
-5. Le leadership : prise d'initiative, influence sur l'equipe
+Tu dois évaluer :
+1. Les compétences techniques (hard skills) : qualité des décisions, gestion du budget/délai/qualité
+2. Les compétences comportementales (soft skills) : communication en réunion, gestion d'équipe, leadership
+3. La fiabilité : respect des engagements, cohérence des décisions
+4. L'adaptabilité : réaction aux événements imprévus, gestion des crises
+5. Le leadership : prise d'initiative, influence sur l'équipe
 
-Reponds UNIQUEMENT avec un JSON valide (sans markdown).`;
+Réponds UNIQUEMENT avec un JSON valide (sans markdown). Réponds en français correct, avec les accents.`;
 
     const decisionsSummary = simulation?.decisions.map((d) => ({
       title: d.title,
@@ -97,26 +97,26 @@ Reponds UNIQUEMENT avec un JSON valide (sans markdown).`;
 
     const prompt = `Analyse les performances du candidat ${candidate.user.firstName} ${candidate.user.lastName} pour le poste "${candidate.campaign.jobTitle}".
 
-**Competences requises** : ${skills.map((s) => `${s.skill} (poids: ${s.weight})`).join(', ')}
+**Compétences requises** : ${skills.map((s) => `${s.skill} (poids: ${s.weight})`).join(', ')}
 **Niveau requis** : ${candidate.campaign.experienceLevel}
 **Culture** : ${candidate.campaign.culture}
 
 **KPIs finaux** :
 - Budget: ${kpis?.budget ?? 'N/A'}%
-- Delai: ${kpis?.schedule ?? 'N/A'}%
-- Qualite: ${kpis?.quality ?? 'N/A'}%
-- Moral equipe: ${kpis?.teamMorale ?? 'N/A'}%
+- Délai: ${kpis?.schedule ?? 'N/A'}%
+- Qualité: ${kpis?.quality ?? 'N/A'}%
+- Moral équipe: ${kpis?.teamMorale ?? 'N/A'}%
 - Niveau de risque: ${kpis?.riskLevel ?? 'N/A'}%
 
-**Decisions prises** (${decisionsSummary.length}) : ${JSON.stringify(decisionsSummary)}
+**Décisions prises** (${decisionsSummary.length}) : ${JSON.stringify(decisionsSummary)}
 
-**Evenements geres** (${eventsSummary.length}) : ${JSON.stringify(eventsSummary)}
+**Événements gérés** (${eventsSummary.length}) : ${JSON.stringify(eventsSummary)}
 
-**Reunions** (${meetingsSummary.length}) : ${JSON.stringify(meetingsSummary)}
+**Réunions** (${meetingsSummary.length}) : ${JSON.stringify(meetingsSummary)}
 
-**Duree totale** : ${simulation?.totalDurationMinutes ?? 'N/A'} minutes
+**Durée totale** : ${simulation?.totalDurationMinutes ?? 'N/A'} minutes
 
-Reponds avec ce JSON :
+Réponds avec ce JSON :
 {
   "hardSkillsScore": number (0-100),
   "softSkillsScore": number (0-100),
@@ -127,14 +127,14 @@ Reponds avec ce JSON :
   "matchPercentage": number (0-100),
   "strengths": ["string (max 5)"],
   "weaknesses": ["string (max 5)"],
-  "aiJustification": "string (300-500 mots, analyse detaillee)",
+  "aiJustification": "string (300-500 mots, analyse détaillée)",
   "competencyScores": { "competenceName": number (0-100) },
   "detailedAnalysis": {
-    "decisionQuality": "string (analyse des decisions)",
+    "decisionQuality": "string (analyse des décisions)",
     "communicationSkills": "string (analyse de la communication)",
     "crisisManagement": "string (analyse de la gestion de crise)",
     "timeManagement": "string (analyse de la gestion du temps)",
-    "teamManagement": "string (analyse de la gestion d'equipe)"
+    "teamManagement": "string (analyse de la gestion d'équipe)"
   },
   "recommendation": "STRONGLY_RECOMMEND|RECOMMEND|NEUTRAL|NOT_RECOMMEND"
 }`;
@@ -161,7 +161,7 @@ Reponds avec ce JSON :
       report = JSON.parse(jsonStr);
     } catch {
       this.logger.error(`Failed to parse AI report response: ${result.content.substring(0, 200)}`);
-      throw new BadRequestException('Echec de la generation du rapport. Veuillez reessayer.');
+      throw new BadRequestException('Échec de la génération du rapport. Veuillez réessayer.');
     }
 
     // Update candidate result with scores and report
@@ -212,7 +212,7 @@ Reponds avec ce JSON :
     });
 
     if (!campaign) throw new NotFoundException('Campagne introuvable');
-    if (campaign.tenantId !== tenantId) throw new BadRequestException('Acces refuse');
+    if (campaign.tenantId !== tenantId) throw new BadRequestException('Accès refusé');
 
     const candidates = await this.prisma.candidateResult.findMany({
       where: { campaignId, status: 'COMPLETED' },
@@ -223,21 +223,21 @@ Reponds avec ce JSON :
     });
 
     if (candidates.length === 0) {
-      throw new BadRequestException('Aucun candidat n\'a termine la simulation');
+      throw new BadRequestException('Aucun candidat n\'a terminé la simulation');
     }
 
     const skills = campaign.requiredSkills as Array<{ skill: string; weight: number }>;
 
-    const systemPrompt = `Tu es un expert en recrutement. Tu generes une short-list de candidats en justifiant le classement. Reponds UNIQUEMENT avec un JSON valide.`;
+    const systemPrompt = `Tu es un expert en recrutement. Tu génères une short-list de candidats en justifiant le classement. Réponds UNIQUEMENT avec un JSON valide. Réponds en français correct, avec les accents.`;
 
-    const prompt = `Genere une short-list de ${Math.min(count, candidates.length)} candidats pour le poste "${campaign.jobTitle}".
+    const prompt = `Génère une short-list de ${Math.min(count, candidates.length)} candidats pour le poste "${campaign.jobTitle}".
 
-**Competences requises** : ${skills.map((s) => `${s.skill} (poids: ${s.weight})`).join(', ')}
+**Compétences requises** : ${skills.map((s) => `${s.skill} (poids: ${s.weight})`).join(', ')}
 
 **Candidats** :
 ${candidates.map((c) => `- ${c.user.firstName} ${c.user.lastName} (ID: ${c.id}) — Score global: ${c.globalScore ?? 'N/A'}, Hard: ${c.hardSkillsScore ?? 'N/A'}, Soft: ${c.softSkillsScore ?? 'N/A'}, Match: ${c.matchPercentage ?? 'N/A'}%, Forces: ${c.strengths.join(', ')}, Faiblesses: ${c.weaknesses.join(', ')}`).join('\n')}
 
-Reponds avec :
+Réponds avec :
 {
   "shortlist": [
     {
@@ -274,7 +274,7 @@ Reponds avec :
       shortlist = JSON.parse(jsonStr);
     } catch {
       this.logger.error(`Failed to parse AI shortlist response`);
-      throw new BadRequestException('Echec de la generation de la short-list. Veuillez reessayer.');
+      throw new BadRequestException('Échec de la génération de la short-list. Veuillez réessayer.');
     }
 
     await this.eventPublisher.publish(
@@ -301,7 +301,7 @@ Reponds avec :
     });
 
     if (!campaign) throw new NotFoundException('Campagne introuvable');
-    if (campaign.tenantId !== tenantId) throw new BadRequestException('Acces refuse');
+    if (campaign.tenantId !== tenantId) throw new BadRequestException('Accès refusé');
 
     const [candidateA, candidateB] = await Promise.all([
       this.prisma.candidateResult.findUnique({
@@ -316,32 +316,32 @@ Reponds avec :
 
     if (!candidateA || !candidateB) throw new NotFoundException('Candidat introuvable');
     if (candidateA.campaignId !== campaignId || candidateB.campaignId !== campaignId) {
-      throw new BadRequestException('Les deux candidats doivent appartenir a cette campagne');
+      throw new BadRequestException('Les deux candidats doivent appartenir à cette campagne');
     }
 
-    const systemPrompt = `Tu es un expert en recrutement. Tu compares deux candidats de maniere objective et detaillee. Reponds UNIQUEMENT avec un JSON valide.`;
+    const systemPrompt = `Tu es un expert en recrutement. Tu compares deux candidats de manière objective et détaillée. Réponds UNIQUEMENT avec un JSON valide. Réponds en français correct, avec les accents.`;
 
     const skills = campaign.requiredSkills as Array<{ skill: string; weight: number }>;
 
     const prompt = `Compare ces deux candidats pour le poste "${campaign.jobTitle}".
 
-**Competences requises** : ${skills.map((s) => `${s.skill} (poids: ${s.weight})`).join(', ')}
+**Compétences requises** : ${skills.map((s) => `${s.skill} (poids: ${s.weight})`).join(', ')}
 
 **Candidat A** : ${candidateA.user.firstName} ${candidateA.user.lastName}
 - Score global: ${candidateA.globalScore ?? 'N/A'}, Match: ${candidateA.matchPercentage ?? 'N/A'}%
 - Hard skills: ${candidateA.hardSkillsScore ?? 'N/A'}, Soft skills: ${candidateA.softSkillsScore ?? 'N/A'}
-- Fiabilite: ${candidateA.reliabilityScore ?? 'N/A'}, Adaptabilite: ${candidateA.adaptabilityScore ?? 'N/A'}, Leadership: ${candidateA.leadershipScore ?? 'N/A'}
+- Fiabilité: ${candidateA.reliabilityScore ?? 'N/A'}, Adaptabilité: ${candidateA.adaptabilityScore ?? 'N/A'}, Leadership: ${candidateA.leadershipScore ?? 'N/A'}
 - Forces: ${candidateA.strengths.join(', ')}
 - Faiblesses: ${candidateA.weaknesses.join(', ')}
 
 **Candidat B** : ${candidateB.user.firstName} ${candidateB.user.lastName}
 - Score global: ${candidateB.globalScore ?? 'N/A'}, Match: ${candidateB.matchPercentage ?? 'N/A'}%
 - Hard skills: ${candidateB.hardSkillsScore ?? 'N/A'}, Soft skills: ${candidateB.softSkillsScore ?? 'N/A'}
-- Fiabilite: ${candidateB.reliabilityScore ?? 'N/A'}, Adaptabilite: ${candidateB.adaptabilityScore ?? 'N/A'}, Leadership: ${candidateB.leadershipScore ?? 'N/A'}
+- Fiabilité: ${candidateB.reliabilityScore ?? 'N/A'}, Adaptabilité: ${candidateB.adaptabilityScore ?? 'N/A'}, Leadership: ${candidateB.leadershipScore ?? 'N/A'}
 - Forces: ${candidateB.strengths.join(', ')}
 - Faiblesses: ${candidateB.weaknesses.join(', ')}
 
-Reponds avec :
+Réponds avec :
 {
   "winner": "A|B|TIE",
   "scoreComparison": {
@@ -356,7 +356,7 @@ Reponds avec :
     "candidateA": ["string"],
     "candidateB": ["string"]
   },
-  "analysis": "string (200-300 mots, analyse comparative detaillee)",
+  "analysis": "string (200-300 mots, analyse comparative détaillée)",
   "recommendation": "string (conseil final pour le recruteur)"
 }`;
 
@@ -381,7 +381,7 @@ Reponds avec :
       }
       comparison = JSON.parse(jsonStr);
     } catch {
-      throw new BadRequestException('Echec de la comparaison. Veuillez reessayer.');
+      throw new BadRequestException('Échec de la comparaison. Veuillez réessayer.');
     }
 
     await this.eventPublisher.publish(
@@ -427,29 +427,29 @@ Reponds avec :
     });
 
     if (!candidate) throw new NotFoundException('Candidat introuvable');
-    if (candidate.campaign.tenantId !== tenantId) throw new BadRequestException('Acces refuse');
+    if (candidate.campaign.tenantId !== tenantId) throw new BadRequestException('Accès refusé');
 
     const skills = candidate.campaign.requiredSkills as Array<{ skill: string; weight: number }>;
 
-    const systemPrompt = `Tu es un expert en recrutement et en entretien d'embauche. Tu generes un guide d'entretien personnalise base sur les performances du candidat en simulation. Reponds UNIQUEMENT avec un JSON valide.`;
+    const systemPrompt = `Tu es un expert en recrutement et en entretien d'embauche. Tu génères un guide d'entretien personnalisé basé sur les performances du candidat en simulation. Réponds UNIQUEMENT avec un JSON valide. Réponds en français correct, avec les accents.`;
 
-    const prompt = `Genere un guide d'entretien pour ${candidate.user.firstName} ${candidate.user.lastName}, candidat au poste "${candidate.campaign.jobTitle}".
+    const prompt = `Génère un guide d'entretien pour ${candidate.user.firstName} ${candidate.user.lastName}, candidat au poste "${candidate.campaign.jobTitle}".
 
-**Competences evaluees** : ${skills.map((s) => `${s.skill} (poids: ${s.weight})`).join(', ')}
+**Compétences évaluées** : ${skills.map((s) => `${s.skill} (poids: ${s.weight})`).join(', ')}
 **Culture** : ${candidate.campaign.culture}
 
-**Resultats de simulation** :
+**Résultats de simulation** :
 - Score global: ${candidate.globalScore ?? 'N/A'}
 - Hard skills: ${candidate.hardSkillsScore ?? 'N/A'}, Soft skills: ${candidate.softSkillsScore ?? 'N/A'}
-- Fiabilite: ${candidate.reliabilityScore ?? 'N/A'}, Adaptabilite: ${candidate.adaptabilityScore ?? 'N/A'}, Leadership: ${candidate.leadershipScore ?? 'N/A'}
+- Fiabilité: ${candidate.reliabilityScore ?? 'N/A'}, Adaptabilité: ${candidate.adaptabilityScore ?? 'N/A'}, Leadership: ${candidate.leadershipScore ?? 'N/A'}
 - Match: ${candidate.matchPercentage ?? 'N/A'}%
 - Forces: ${candidate.strengths.join(', ')}
 - Faiblesses: ${candidate.weaknesses.join(', ')}
 ${candidate.aiJustification ? `- Analyse IA: ${candidate.aiJustification}` : ''}
 
-Genere entre 5 et 10 questions d'entretien personnalisees, en ciblant les zones de doute et les points a approfondir.
+Génère entre 5 et 10 questions d'entretien personnalisées, en ciblant les zones de doute et les points à approfondir.
 
-Reponds avec :
+Réponds avec :
 {
   "questions": [
     {
@@ -461,8 +461,8 @@ Reponds avec :
     }
   ],
   "interviewStrategy": "string (conseils pour mener l'entretien)",
-  "redFlags": ["string (signaux d'alerte a surveiller)"],
-  "positiveSignals": ["string (points a confirmer)"]
+  "redFlags": ["string (signaux d'alerte à surveiller)"],
+  "positiveSignals": ["string (points à confirmer)"]
 }`;
 
     const result = await this.aiService.complete({
@@ -486,7 +486,7 @@ Reponds avec :
       }
       guide = JSON.parse(jsonStr);
     } catch {
-      throw new BadRequestException('Echec de la generation du guide. Veuillez reessayer.');
+      throw new BadRequestException('Échec de la génération du guide. Veuillez réessayer.');
     }
 
     // Save the interview guide on the candidate result

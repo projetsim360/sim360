@@ -46,7 +46,7 @@ export function SectorSelector({ value, suggestedSector, onChange, className }: 
               role="radio"
               tabIndex={0}
               aria-checked={isSelected}
-              aria-label={`${sector.label}${isSuggested ? " (suggéré par l'IA)" : ''}`}
+              aria-label={`${sector.label}${isSuggested ? " (suggéré)" : ''}`}
               className={cn(
                 'relative h-full cursor-pointer outline-none transition-all hover:shadow-md',
                 'focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
@@ -59,7 +59,7 @@ export function SectorSelector({ value, suggestedSector, onChange, className }: 
               <CardContent className="flex flex-col items-center justify-center gap-2.5 p-5">
                 {isSuggested && (
                   <Badge variant="primary" size="xs" className="absolute right-2 top-2">
-                    Suggéré par l'IA
+                    Suggéré pour vous
                   </Badge>
                 )}
                 <div

@@ -8,7 +8,7 @@ export const planningTemplates: DeliverableTemplateData[] = [
     type: 'project-management-plan',
     phase: 'PLANNING',
     description:
-      "Document central decrivant la strategie globale de gestion du projet. Integre les plans subsidiaires et definit les processus de pilotage.",
+      "Document central décrivant la stratégie globale de gestion du projet. Intégré les plans subsidiaires et définit les processus de pilotage.",
     pmiProcess: '4.2',
     difficulty: 'ADVANCED',
     content: `# Plan de Management de Projet
@@ -27,102 +27,102 @@ export const planningTemplates: DeliverableTemplateData[] = [
 
 | Version | Auteur | Description | Date |
 |---|---|---|---|
-| 1.0 | {{userName}} | Creation initiale | {{currentDate}} |
+| 1.0 | {{userName}} | Création initiale | {{currentDate}} |
 
 ---
 
 ## 1. Introduction
 
 ### 1.1 Objet du document
-Ce document constitue le plan de management du projet "{{projectName}}". Il definit la strategie globale de gestion et les processus de pilotage.
+Ce document constitue le plan de management du projet "{{projectName}}". Il définit la stratégie globale de gestion et les processus de pilotage.
 
 ### 1.2 Contexte du projet
 > {{projectDescription}}
 
-### 1.3 References
-- Charte de projet approuvee
+### 1.3 Références
+- Charte de projet approuvée
 - Registre des parties prenantes
 - Contrat client : {{clientName}}
 
-## 2. Perimetre du projet
+## 2. Périmètre du projet
 
-### 2.1 Enonce du perimetre
-[Decrivez le perimetre inclus et exclu du projet.]
+### 2.1 Énoncé du périmètre
+[Décrivez le périmètre inclus et exclu du projet.]
 
 ### 2.2 Livrables principaux
-| # | Livrable | Phase | Date prevue |
+| # | Livrable | Phase | Date prévue |
 |---|---|---|---|
-| 1 | [A completer] | Initiation | [A completer] |
-| 2 | [A completer] | Planification | [A completer] |
-| 3 | [A completer] | Execution | [A completer] |
+| 1 | [À compléter] | Initiation | [À compléter] |
+| 2 | [À compléter] | Planification | [À compléter] |
+| 3 | [À compléter] | Exécution | [À compléter] |
 
 ### 2.3 Exclusions
-[Listez ce qui est explicitement hors perimetre.]
+[Listez ce qui est explicitement hors périmètre.]
 
 ## 3. Organisation du projet
 
 ### 3.1 Structure organisationnelle
-[Decrivez l'organigramme du projet et les roles cles.]
+[Décrivez l'organigramme du projet et les rôles clés.]
 
-### 3.2 Equipe projet
+### 3.2 Équipe projet
 {{teamMembers}}
 
-### 3.3 Matrice RACI resumee
-| Activite | Chef de projet | Sponsor | Equipe | Client |
+### 3.3 Matrice RACI résumée
+| Activité | Chef de projet | Sponsor | Équipe | Client |
 |---|---|---|---|---|
-| Validation perimetre | R | A | C | I |
+| Validation périmètre | R | A | C | I |
 | Planification | R/A | I | C | I |
-| Execution | R | I | A | I |
+| Exécution | R | I | A | I |
 | Reporting | R/A | I | C | I |
 
 ## 4. Plans subsidiaires
 
-### 4.1 Gestion du perimetre
-[Processus de gestion des changements de perimetre.]
+### 4.1 Gestion du périmètre
+[Processus de gestion des changements de périmètre.]
 
-### 4.2 Gestion de l'echeancier
-- Delai global : {{deadlineDays}} jours
-- Methode de planification : [Chemin critique / Agile]
-- Frequence de mise a jour : [Hebdomadaire]
+### 4.2 Gestion de l'échéancier
+- Délai global : {{deadlineDays}} jours
+- Méthode de planification : [Chemin critique / Agile]
+- Fréquence de mise à jour : [Hebdomadaire]
 
-### 4.3 Gestion des couts
+### 4.3 Gestion des coûts
 - Budget initial : {{initialBudget}}
-- Methode de suivi : Earned Value Management (EVM)
+- Méthode de suivi : Earned Value Management (EVM)
 - Seuils d'alerte : CPI/SPI < 0.9
 
-### 4.4 Gestion de la qualite
-[Processus d'assurance et de controle qualite.]
+### 4.4 Gestion de la qualité
+[Processus d'assurance et de contrôle qualité.]
 
 ### 4.5 Gestion des ressources
-[Strategie d'allocation et de gestion des ressources.]
+[Stratégie d'allocation et de gestion des ressources.]
 
 ### 4.6 Gestion de la communication
-[Plan de communication synthetique.]
+[Plan de communication synthétique.]
 
 ### 4.7 Gestion des risques
-[Strategie de gestion des risques.]
+[Stratégie de gestion des risques.]
 
 ### 4.8 Gestion des approvisionnements
-[Strategie d'achat si applicable.]
+[Stratégie d'achat si applicable.]
 
 ## 5. Processus de pilotage
 
-### 5.1 Suivi et controle
-| Activite | Frequence | Responsable | Participants |
+### 5.1 Suivi et contrôle
+| Activité | Fréquence | Responsable | Participants |
 |---|---|---|---|
-| Comite de pilotage | [A completer] | {{sponsorName}} | Direction |
-| Revue de projet | [A completer] | {{userName}} | Equipe |
-| Point d'avancement | [A completer] | {{userName}} | Equipe |
+| Comité de pilotage | [À compléter] | {{sponsorName}} | Direction |
+| Revue de projet | [À compléter] | {{userName}} | Équipe |
+| Point d'avancement | [À compléter] | {{userName}} | Équipe |
 
 ### 5.2 Gestion des changements
-[Processus de demande, evaluation et approbation des changements.]
+[Processus de demande, évaluation et approbation des changements.]
 
-### 5.3 Criteres de succes
-[Definissez les KPIs et criteres de succes du projet.]
+### 5.3 Critères de succès
+[Définissez les KPIs et critères de succès du projet.]
 
 ## 6. Approbation
 
-| Nom | Role | Signature | Date |
+| Nom | Rôle | Signature | Date |
 |---|---|---|---|
 | {{userName}} | Chef de projet | | {{currentDate}} |
 | {{sponsorName}} | Sponsor | | |
@@ -132,38 +132,38 @@ Ce document constitue le plan de management du projet "{{projectName}}". Il defi
       sections: [
         {
           id: 'completeness',
-          name: 'Completude',
+          name: 'Complétude',
           weight: 30,
           criteria: [
-            { label: 'Plans subsidiaires', description: 'Tous les plans subsidiaires sont identifies et decrits', maxPoints: 15 },
-            { label: 'Processus de pilotage', description: 'Les processus de suivi et controle sont definis', maxPoints: 15 },
+            { label: 'Plans subsidiaires', description: 'Tous les plans subsidiaires sont identifiés et décrits', maxPoints: 15 },
+            { label: 'Processus de pilotage', description: 'Les processus de suivi et contrôle sont définis', maxPoints: 15 },
           ],
         },
         {
           id: 'coherence',
-          name: 'Coherence',
+          name: 'Cohérence',
           weight: 25,
           criteria: [
-            { label: 'Alignement objectifs', description: 'Le plan est aligne avec la charte et les objectifs', maxPoints: 15 },
-            { label: 'Integration', description: 'Les plans subsidiaires sont coherents entre eux', maxPoints: 10 },
+            { label: 'Alignement objectifs', description: 'Le plan est aligné avec la charte et les objectifs', maxPoints: 15 },
+            { label: 'Intégration', description: 'Les plans subsidiaires sont cohérents entre eux', maxPoints: 10 },
           ],
         },
         {
           id: 'quality',
-          name: 'Qualite redactionnelle',
+          name: 'Qualité rédactionnelle',
           weight: 20,
           criteria: [
-            { label: 'Clarte', description: 'Le document est clair et comprehensible', maxPoints: 10 },
+            { label: 'Clarté', description: 'Le document est clair et compréhensible', maxPoints: 10 },
             { label: 'Professionnalisme', description: 'Le ton et le format sont professionnels', maxPoints: 10 },
           ],
         },
         {
           id: 'applicability',
-          name: 'Applicabilite',
+          name: 'Applicabilité',
           weight: 25,
           criteria: [
-            { label: 'Realisme', description: 'Les processus sont realistes et applicables', maxPoints: 15 },
-            { label: 'Mesurabilite', description: 'Les indicateurs sont mesurables', maxPoints: 10 },
+            { label: 'Réalisme', description: 'Les processus sont réalistes et applicables', maxPoints: 15 },
+            { label: 'Mesurabilité', description: 'Les indicateurs sont mesurables', maxPoints: 10 },
           ],
         },
       ],
@@ -173,15 +173,15 @@ Ce document constitue le plan de management du projet "{{projectName}}". Il defi
     },
     referenceExample: `# Plan de Management de Projet — Exemple
 
-## Perimetre : Migration ERP SAP pour TechCorp
+## Périmètre : Migration ERP SAP pour TechCorp
 - 3 modules : Finance, RH, Supply Chain
 - Exclusions : personnalisations legacy, formation utilisateurs finaux (sous-traite)
 
-## Organisation : Equipe de 8 personnes, structure matricielle
+## Organisation : Équipe de 8 personnes, structure matricielle
 ## Budget : 450 000 EUR, suivi EVM mensuel, seuil alerte CPI < 0.9
-## Echeancier : 180 jours, jalons mensuels, chemin critique sur integration
-## Qualite : Revues de code hebdomadaires, tests de non-regression automatises
-## Risques : Revue bi-mensuelle, 5 risques critiques identifies
+## Échéancier : 180 jours, jalons mensuels, chemin critique sur intégration
+## Qualité : Revues de code hebdomadaires, tests de non-régression automatisés
+## Risques : Revue bi-mensuelle, 5 risques critiques identifiés
 ## Communication : COPIL mensuel, daily standup, newsletter bi-mensuelle
 `,
   },
@@ -189,14 +189,14 @@ Ce document constitue le plan de management du projet "{{projectName}}". Il defi
   // ─── 02. Structure de Decoupage du Travail (WBS) ──────────
   {
     id: 'seed-tpl-wbs',
-    title: 'Structure de Decoupage du Travail (WBS)',
+    title: 'Structure de Découpage du Travail (WBS)',
     type: 'wbs',
     phase: 'PLANNING',
     description:
-      "Decomposition hierarchique du travail du projet en lots et taches elementaires. Base de l'estimation et de la planification.",
+      "Décomposition hiérarchique du travail du projet en lots et tâches élémentaires. Base de l'estimation et de la planification.",
     pmiProcess: '5.4',
     difficulty: 'STANDARD',
-    content: `# Structure de Decoupage du Travail (WBS)
+    content: `# Structure de Découpage du Travail (WBS)
 
 | Champ | Valeur |
 |---|---|
@@ -207,60 +207,60 @@ Ce document constitue le plan de management du projet "{{projectName}}". Il defi
 
 ---
 
-## 1. Regles de decomposition
+## 1. Règles de décomposition
 
-- Regle des 100% : chaque niveau couvre 100% du travail du niveau superieur
+- Règle des 100% : chaque niveau couvre 100% du travail du niveau supérieur
 - Profondeur maximale : 4 niveaux
-- Lots de travail : duree maximale de 2 semaines
+- Lots de travail : durée maximale de 2 semaines
 
-## 2. WBS hierarchique
+## 2. WBS hiérarchique
 
 ### Niveau 0 : {{projectName}}
 
 #### 1. Phase Initiation
-- 1.1 Etude d'opportunite
+- 1.1 Étude d'opportunité
 - 1.2 Charte de projet
 - 1.3 Registre des parties prenantes
-- 1.4 Reunion de lancement
+- 1.4 Réunion de lancement
 
 #### 2. Phase Planification
 - 2.1 Plan de management
 - 2.2 WBS et dictionnaire
-- 2.3 Echeancier
+- 2.3 Échéancier
 - 2.4 Budget
 - 2.5 Plan de communication
 - 2.6 Plan de gestion des risques
 
-#### 3. Phase Execution
-- 3.1 [A completer — lot technique 1]
-  - 3.1.1 [Tache]
-  - 3.1.2 [Tache]
-- 3.2 [A completer — lot technique 2]
-  - 3.2.1 [Tache]
-  - 3.2.2 [Tache]
-- 3.3 [A completer — lot technique 3]
+#### 3. Phase Exécution
+- 3.1 [À compléter — lot technique 1]
+  - 3.1.1 [Tâche]
+  - 3.1.2 [Tâche]
+- 3.2 [À compléter — lot technique 2]
+  - 3.2.1 [Tâche]
+  - 3.2.2 [Tâche]
+- 3.3 [À compléter — lot technique 3]
 
-#### 4. Phase Suivi & Controle
+#### 4. Phase Suivi & Contrôle
 - 4.1 Rapports d'avancement
-- 4.2 Suivi budgetaire
+- 4.2 Suivi budgétaire
 - 4.3 Gestion des changements
 
-#### 5. Phase Cloture
-- 5.1 PV de reception
+#### 5. Phase Clôture
+- 5.1 PV de réception
 - 5.2 Bilan projet
-- 5.3 Retour d'experience
+- 5.3 Retour d'expérience
 
 ## 3. Dictionnaire du WBS
 
 | Code WBS | Lot de travail | Description | Responsable | Estimation (j/h) | Livrable |
 |---|---|---|---|---|---|
-| 1.1 | Etude d'opportunite | Analyse de faisabilite et justification | {{userName}} | [A completer] | Business case |
-| 1.2 | Charte de projet | Document fondateur | {{userName}} | [A completer] | Charte signee |
-| 3.1 | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
+| 1.1 | Étude d'opportunité | Analyse de faisabilité et justification | {{userName}} | [À compléter] | Business case |
+| 1.2 | Charte de projet | Document fondateur | {{userName}} | [À compléter] | Charte signée |
+| 3.1 | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
 ## 4. Approbation
 
-| Nom | Role | Date |
+| Nom | Rôle | Date |
 |---|---|---|
 | {{userName}} | Chef de projet | {{currentDate}} |
 | {{sponsorName}} | Sponsor | |
@@ -269,12 +269,12 @@ Ce document constitue le plan de management du projet "{{projectName}}". Il defi
       sections: [
         {
           id: 'structure',
-          name: 'Structure hierarchique',
+          name: 'Structure hiérarchique',
           weight: 35,
           criteria: [
-            { label: 'Regle des 100%', description: 'Chaque niveau couvre 100% du travail', maxPoints: 15 },
-            { label: 'Granularite', description: 'Decomposition suffisante en lots de travail', maxPoints: 10 },
-            { label: 'Coherence des niveaux', description: 'Les niveaux sont homogenes', maxPoints: 10 },
+            { label: 'Règle des 100%', description: 'Chaque niveau couvre 100% du travail', maxPoints: 15 },
+            { label: 'Granularité', description: 'Décomposition suffisante en lots de travail', maxPoints: 10 },
+            { label: 'Cohérence des niveaux', description: 'Les niveaux sont homogènes', maxPoints: 10 },
           ],
         },
         {
@@ -282,8 +282,8 @@ Ce document constitue le plan de management du projet "{{projectName}}". Il defi
           name: 'Dictionnaire WBS',
           weight: 30,
           criteria: [
-            { label: 'Description des lots', description: 'Chaque lot est clairement decrit', maxPoints: 15 },
-            { label: 'Estimations', description: 'Estimations de charge presentes', maxPoints: 15 },
+            { label: 'Description des lots', description: 'Chaque lot est clairement décrit', maxPoints: 15 },
+            { label: 'Estimations', description: 'Estimations de charge présentés', maxPoints: 15 },
           ],
         },
         {
@@ -291,8 +291,8 @@ Ce document constitue le plan de management du projet "{{projectName}}". Il defi
           name: 'Couverture',
           weight: 35,
           criteria: [
-            { label: 'Phases couvertes', description: 'Toutes les phases du projet sont presentes', maxPoints: 20 },
-            { label: 'Livrables identifies', description: 'Chaque lot produit un livrable identifie', maxPoints: 15 },
+            { label: 'Phases couvertes', description: 'Toutes les phases du projet sont présentés', maxPoints: 20 },
+            { label: 'Livrables identifiés', description: 'Chaque lot produit un livrable identifié', maxPoints: 15 },
           ],
         },
       ],
@@ -303,13 +303,13 @@ Ce document constitue le plan de management du projet "{{projectName}}". Il defi
     referenceExample: `# WBS — Exemple Migration ERP
 ## 1. Initiation (4 lots, 15 j/h)
 ## 2. Planification (6 lots, 25 j/h)
-## 3. Execution
+## 3. Exécution
   3.1 Module Finance (3 sous-lots, 80 j/h)
   3.2 Module RH (3 sous-lots, 60 j/h)
   3.3 Module Supply Chain (4 sous-lots, 90 j/h)
-  3.4 Integration (2 sous-lots, 40 j/h)
+  3.4 Intégration (2 sous-lots, 40 j/h)
 ## 4. Suivi (3 lots, 20 j/h)
-## 5. Cloture (3 lots, 10 j/h)
+## 5. Clôture (3 lots, 10 j/h)
 Total : 340 j/h, 22 lots de travail
 `,
   },
@@ -317,81 +317,81 @@ Total : 340 j/h, 22 lots de travail
   // ─── 03. Echeancier / Planning ────────────────────────────
   {
     id: 'seed-tpl-schedule',
-    title: 'Echeancier du Projet',
+    title: 'Échéancier du Projet',
     type: 'schedule',
     phase: 'PLANNING',
     description:
-      "Chronogramme detaille avec jalons, dependances et chemin critique. Outil central de pilotage temporel du projet.",
+      "Chronogramme détaillé avec jalons, dépendances et chemin critique. Outil central de pilotage temporel du projet.",
     pmiProcess: '6.5',
     difficulty: 'STANDARD',
-    content: `# Echeancier du Projet
+    content: `# Échéancier du Projet
 
 | Champ | Valeur |
 |---|---|
 | **Projet** | {{projectName}} |
 | **Code** | {{projectCode}} |
 | **Chef de projet** | {{userName}} |
-| **Date de debut** | {{currentDate}} |
-| **Duree prevue** | {{deadlineDays}} jours |
+| **Date de début** | {{currentDate}} |
+| **Durée prévue** | {{deadlineDays}} jours |
 
 ---
 
 ## 1. Jalons du projet
 
-| # | Jalon | Date prevue | Critere de validation |
+| # | Jalon | Date prévue | Critère de validation |
 |---|---|---|---|
-| J1 | Lancement officiel | [A completer] | Charte approuvee |
-| J2 | Fin planification | [A completer] | Plans valides |
-| J3 | Livraison intermediaire | [A completer] | [A completer] |
-| J4 | Recette finale | [A completer] | PV signe |
-| J5 | Cloture projet | [A completer] | Bilan approuve |
+| J1 | Lancement officiel | [À compléter] | Charte approuvée |
+| J2 | Fin planification | [À compléter] | Plans valides |
+| J3 | Livraison intermédiaire | [À compléter] | [À compléter] |
+| J4 | Recette finale | [À compléter] | PV signe |
+| J5 | Clôture projet | [À compléter] | Bilan approuvé |
 
-## 2. Planning detaille
+## 2. Planning détaillé
 
 ### Phase 1 : Initiation (Semaines 1-2)
-| Tache | Duree | Debut | Fin | Predecesseur | Responsable |
+| Tâche | Durée | Début | Fin | Prédécesseur | Responsable |
 |---|---|---|---|---|---|
-| Etude d'opportunite | 3j | [A completer] | [A completer] | - | {{userName}} |
-| Charte de projet | 2j | [A completer] | [A completer] | 1 | {{userName}} |
-| Reunion lancement | 1j | [A completer] | [A completer] | 2 | {{userName}} |
+| Étude d'opportunité | 3j | [À compléter] | [À compléter] | - | {{userName}} |
+| Charte de projet | 2j | [À compléter] | [À compléter] | 1 | {{userName}} |
+| Réunion lancement | 1j | [À compléter] | [À compléter] | 2 | {{userName}} |
 
 ### Phase 2 : Planification (Semaines 3-5)
-| Tache | Duree | Debut | Fin | Predecesseur | Responsable |
+| Tâche | Durée | Début | Fin | Prédécesseur | Responsable |
 |---|---|---|---|---|---|
-| WBS | 3j | [A completer] | [A completer] | J1 | {{userName}} |
-| Estimation couts | 2j | [A completer] | [A completer] | WBS | {{userName}} |
-| Plan risques | 2j | [A completer] | [A completer] | WBS | [A completer] |
+| WBS | 3j | [À compléter] | [À compléter] | J1 | {{userName}} |
+| Estimation coûts | 2j | [À compléter] | [À compléter] | WBS | {{userName}} |
+| Plan risques | 2j | [À compléter] | [À compléter] | WBS | [À compléter] |
 
-### Phase 3 : Execution (Semaines 6-N)
-| Tache | Duree | Debut | Fin | Predecesseur | Responsable |
+### Phase 3 : Exécution (Semaines 6-N)
+| Tâche | Durée | Début | Fin | Prédécesseur | Responsable |
 |---|---|---|---|---|---|
-| [A completer] | [A completer] | [A completer] | [A completer] | J2 | [A completer] |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] | J2 | [À compléter] |
 
-### Phase 4 : Suivi & Controle (continu)
-| Tache | Frequence | Responsable |
+### Phase 4 : Suivi & Contrôle (continu)
+| Tâche | Fréquence | Responsable |
 |---|---|---|
 | Rapport avancement | Hebdomadaire | {{userName}} |
 | Revue risques | Bi-mensuelle | {{userName}} |
 
-### Phase 5 : Cloture (2 dernieres semaines)
-| Tache | Duree | Debut | Fin | Predecesseur | Responsable |
+### Phase 5 : Clôture (2 dernières semaines)
+| Tâche | Durée | Début | Fin | Prédécesseur | Responsable |
 |---|---|---|---|---|---|
-| PV reception | 2j | [A completer] | [A completer] | Phase 3 | {{userName}} |
-| Bilan projet | 3j | [A completer] | [A completer] | PV | {{userName}} |
+| PV réception | 2j | [À compléter] | [À compléter] | Phase 3 | {{userName}} |
+| Bilan projet | 3j | [À compléter] | [À compléter] | PV | {{userName}} |
 
 ## 3. Chemin critique
 
-[Identifiez la sequence de taches determinant la duree minimale du projet.]
+[Identifiez la séquence de tâches déterminant la durée minimale du projet.]
 
-- Tache A → Tache B → Tache C → ... → Livraison
-- Marge totale du projet : [A completer] jours
+- Tâche A → Tâche B → Tâche C → ... → Livraison
+- Marge totale du projet : [À compléter] jours
 
-## 4. Hypotheses et contraintes
+## 4. Hypothèses et contraintes
 
 | Type | Description |
 |---|---|
-| Hypothese | [A completer] |
-| Contrainte | Delai impose : {{deadlineDays}} jours |
+| Hypothèse | [À compléter] |
+| Contrainte | Délai imposé : {{deadlineDays}} jours |
 `,
     evaluationCriteria: {
       sections: [
@@ -400,51 +400,51 @@ Total : 340 j/h, 22 lots de travail
           name: 'Structure du planning',
           weight: 30,
           criteria: [
-            { label: 'Phases identifiees', description: 'Toutes les phases sont presentes', maxPoints: 15 },
-            { label: 'Jalons definis', description: 'Les jalons cles sont identifies', maxPoints: 15 },
+            { label: 'Phases identifiées', description: 'Toutes les phases sont présentés', maxPoints: 15 },
+            { label: 'Jalons définis', description: 'Les jalons clés sont identifiés', maxPoints: 15 },
           ],
         },
         {
           id: 'dependencies',
-          name: 'Dependances et chemin critique',
+          name: 'Dépendances et chemin critique',
           weight: 30,
           criteria: [
-            { label: 'Dependances', description: 'Les dependances entre taches sont identifiees', maxPoints: 15 },
-            { label: 'Chemin critique', description: 'Le chemin critique est identifie', maxPoints: 15 },
+            { label: 'Dépendances', description: 'Les dépendances entre tâches sont identifiées', maxPoints: 15 },
+            { label: 'Chemin critique', description: 'Le chemin critique est identifié', maxPoints: 15 },
           ],
         },
         {
           id: 'detail',
-          name: 'Niveau de detail',
+          name: 'Niveau de détail',
           weight: 40,
           criteria: [
-            { label: 'Taches detaillees', description: 'Les taches sont suffisamment decomposees', maxPoints: 20 },
-            { label: 'Responsables', description: 'Chaque tache a un responsable', maxPoints: 10 },
-            { label: 'Estimations', description: 'Durees estimees de facon realiste', maxPoints: 10 },
+            { label: 'Tâches détaillées', description: 'Les tâches sont suffisamment décomposées', maxPoints: 20 },
+            { label: 'Responsables', description: 'Chaque tâche a un responsable', maxPoints: 10 },
+            { label: 'Estimations', description: 'Durées estimées de façon réaliste', maxPoints: 10 },
           ],
         },
       ],
       passingScore: 60,
       maxScore: 100,
-      pmiOutputs: ['Echeancier du projet', 'Diagramme de Gantt', 'Chemin critique'],
+      pmiOutputs: ['Échéancier du projet', 'Diagramme de Gantt', 'Chemin critique'],
     },
-    referenceExample: `# Echeancier — Exemple
-5 jalons, 35 taches, chemin critique : Specs → Dev module Finance → Integration → Tests → Recette
-Duree totale : 180 jours, marge 12 jours
+    referenceExample: `# Échéancier — Exemple
+5 jalons, 35 tâches, chemin critique : Specs → Dev module Finance → Intégration → Tests → Recette
+Durée totale : 180 jours, marge 12 jours
 `,
   },
 
   // ─── 04. Estimation des Couts ─────────────────────────────
   {
     id: 'seed-tpl-cost-estimate',
-    title: 'Estimation des Couts',
+    title: 'Estimation des Coûts',
     type: 'cost-estimate',
     phase: 'PLANNING',
     description:
-      "Budget detaille du projet avec estimations par lot de travail, provisions pour risques et analyse de sensibilite.",
+      "Budget détaillé du projet avec estimations par lot de travail, provisions pour risques et analyse de sensibilité.",
     pmiProcess: '7.2',
     difficulty: 'STANDARD',
-    content: `# Estimation des Couts
+    content: `# Estimation des Coûts
 
 | Champ | Valeur |
 |---|---|
@@ -456,41 +456,41 @@ Duree totale : 180 jours, marge 12 jours
 
 ---
 
-## 1. Methode d'estimation
+## 1. Méthode d'estimation
 
-[Decrivez la methode utilisee : analogique, parametrique, bottom-up, 3 points.]
+[Décrivez la méthode utilisée : analogique, paramétrique, bottom-up, 3 points.]
 
 ## 2. Budget par phase
 
-| Phase | Cout estime | % du budget |
+| Phase | Coût estimé | % du budget |
 |---|---|---|
-| Initiation | [A completer] | [A completer] |
-| Planification | [A completer] | [A completer] |
-| Execution | [A completer] | [A completer] |
-| Suivi & Controle | [A completer] | [A completer] |
-| Cloture | [A completer] | [A completer] |
+| Initiation | [À compléter] | [À compléter] |
+| Planification | [À compléter] | [À compléter] |
+| Exécution | [À compléter] | [À compléter] |
+| Suivi & Contrôle | [À compléter] | [À compléter] |
+| Clôture | [À compléter] | [À compléter] |
 | **Total** | {{initialBudget}} | 100% |
 
-## 3. Budget detaille par lot de travail
+## 3. Budget détaillé par lot de travail
 
-| Code WBS | Lot | Ressources | J/H | Cout unitaire | Total |
+| Code WBS | Lot | Ressources | J/H | Coût unitaire | Total |
 |---|---|---|---|---|---|
-| [A completer] | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
 ## 4. Provisions
 
 | Type | Montant | Justification |
 |---|---|---|
-| Provision pour aleas | [A completer] | Risques identifies |
-| Reserve de management | [A completer] | Risques non identifies |
+| Provision pour aléas | [À compléter] | Risques identifiés |
+| Réserve de management | [À compléter] | Risques non identifiés |
 
-## 5. Hypotheses de cout
+## 5. Hypothèses de coût
 
-[Listez les hypotheses sur lesquelles reposent vos estimations.]
+[Listez les hypothèses sur lesquelles reposent vos estimations.]
 
 ## 6. Approbation
 
-| Nom | Role | Date |
+| Nom | Rôle | Date |
 |---|---|---|
 | {{userName}} | Chef de projet | {{currentDate}} |
 | {{sponsorName}} | Sponsor | |
@@ -499,20 +499,20 @@ Duree totale : 180 jours, marge 12 jours
       sections: [
         {
           id: 'methodology',
-          name: 'Methodologie',
+          name: 'Méthodologie',
           weight: 25,
           criteria: [
-            { label: 'Methode justifiee', description: "La methode d'estimation est expliquee", maxPoints: 15 },
-            { label: 'Hypotheses', description: 'Les hypotheses sont documentees', maxPoints: 10 },
+            { label: 'Méthode justifiée', description: "La méthode d'estimation est expliquée", maxPoints: 15 },
+            { label: 'Hypothèses', description: 'Les hypothèses sont documentées', maxPoints: 10 },
           ],
         },
         {
           id: 'detail',
-          name: 'Detail des estimations',
+          name: 'Détail des estimations',
           weight: 40,
           criteria: [
-            { label: 'Decomposition', description: 'Le budget est decompose par phase et lot', maxPoints: 20 },
-            { label: 'Coherence WBS', description: 'Les couts sont alignes avec le WBS', maxPoints: 20 },
+            { label: 'Décomposition', description: 'Le budget est décomposé par phase et lot', maxPoints: 20 },
+            { label: 'Cohérence WBS', description: 'Les coûts sont alignés avec le WBS', maxPoints: 20 },
           ],
         },
         {
@@ -520,19 +520,19 @@ Duree totale : 180 jours, marge 12 jours
           name: 'Provisions et risques',
           weight: 35,
           criteria: [
-            { label: 'Provisions', description: 'Des provisions pour aleas sont prevues', maxPoints: 20 },
-            { label: 'Realisme', description: 'Les estimations sont realistes et justifiees', maxPoints: 15 },
+            { label: 'Provisions', description: 'Des provisions pour aléas sont prévues', maxPoints: 20 },
+            { label: 'Réalisme', description: 'Les estimations sont réalistes et justifiées', maxPoints: 15 },
           ],
         },
       ],
       passingScore: 60,
       maxScore: 100,
-      pmiOutputs: ['Estimations des couts', 'Base de reference des couts'],
+      pmiOutputs: ['Estimations des coûts', 'Base de référence des coûts'],
     },
     referenceExample: `# Estimation — Exemple
-Methode bottom-up, 22 lots estimes. Budget : 450k EUR
-Provisions aleas : 10% (45k), reserve management : 5% (22.5k)
-Budget total autorise : 517.5k EUR
+Méthode bottom-up, 22 lots estimés. Budget : 450k EUR
+Provisions aléas : 10% (45k), réserve management : 5% (22.5k)
+Budget total autorisé : 517.5k EUR
 `,
   },
 
@@ -543,7 +543,7 @@ Budget total autorise : 517.5k EUR
     type: 'raci-matrix',
     phase: 'PLANNING',
     description:
-      "Matrice d'attribution des responsabilites definissant qui est Responsible, Accountable, Consulted et Informed pour chaque activite.",
+      "Matrice d'attribution des responsabilités définissant qui est Responsible, Accountable, Consulted et Informed pour chaque activité.",
     pmiProcess: '9.1',
     difficulty: 'DISCOVERY',
     content: `# Matrice RACI
@@ -557,54 +557,54 @@ Budget total autorise : 517.5k EUR
 
 ---
 
-## Legende
+## Légende
 
-- **R** = Responsible (Realise le travail)
-- **A** = Accountable (Approuve / rend des comptes — un seul par ligne)
-- **C** = Consulted (Consulte avant decision)
-- **I** = Informed (Informe apres decision)
+- **R** = Responsible (Réalise le travail)
+- **A** = Accountable (Approuvé / rend des comptes — un seul par ligne)
+- **C** = Consulted (Consulte avant décision)
+- **I** = Informed (Informé après décision)
 
 ## Matrice RACI
 
-| Activite / Livrable | {{userName}} | {{sponsorName}} | {{clientName}} | [Membre 1] | [Membre 2] |
+| Activité / Livrable | {{userName}} | {{sponsorName}} | {{clientName}} | [Membre 1] | [Membre 2] |
 |---|---|---|---|---|---|
 | Charte de projet | R | A | C | I | I |
 | Plan de management | R/A | I | C | C | I |
 | WBS | R | A | I | C | C |
-| Echeancier | R | I | I | C | C |
+| Échéancier | R | I | I | C | C |
 | Budget | R | A | I | I | I |
-| Execution technique | I | I | I | R | R |
+| Exécution technique | I | I | I | R | R |
 | Tests | C | I | I | R | A |
 | Rapports avancement | R/A | I | I | C | C |
 | Gestion des risques | R | A | C | C | I |
 | Gestion des changements | R | A | C | I | I |
-| PV de reception | R | A | A | I | I |
-| Bilan de cloture | R/A | I | I | C | C |
+| PV de réception | R | A | A | I | I |
+| Bilan de clôture | R/A | I | I | C | C |
 
-## Regles de validation
+## Règles de validation
 
 - Chaque ligne a exactement un A
 - Au moins un R par ligne
-- Eviter les surcharges (pas plus de 5 R par personne)
+- Éviter les surcharges (pas plus de 5 R par personne)
 
 ## Notes
 
-[Ajoutez des precisions si necessaire.]
+[Ajoutez des précisions si nécessaire.]
 `,
     evaluationCriteria: {
       sections: [
         {
           id: 'completeness',
-          name: 'Completude',
+          name: 'Complétude',
           weight: 35,
           criteria: [
-            { label: 'Activites couvertes', description: 'Les activites principales sont toutes listees', maxPoints: 20 },
-            { label: 'Acteurs identifies', description: 'Tous les roles sont presents', maxPoints: 15 },
+            { label: 'Activités couvertes', description: 'Les activités principales sont toutes listées', maxPoints: 20 },
+            { label: 'Acteurs identifiés', description: 'Tous les rôles sont présents', maxPoints: 15 },
           ],
         },
         {
           id: 'correctness',
-          name: 'Respect des regles RACI',
+          name: 'Respect des règles RACI',
           weight: 40,
           criteria: [
             { label: 'Un seul A', description: 'Chaque ligne a exactement un Accountable', maxPoints: 20 },
@@ -614,11 +614,11 @@ Budget total autorise : 517.5k EUR
         },
         {
           id: 'clarity',
-          name: 'Clarte',
+          name: 'Clarté',
           weight: 25,
           criteria: [
-            { label: 'Legende', description: 'La legende RACI est presente', maxPoints: 10 },
-            { label: 'Lisibilite', description: 'La matrice est facile a lire', maxPoints: 15 },
+            { label: 'Légende', description: 'La légende RACI est présentée', maxPoints: 10 },
+            { label: 'Lisibilité', description: 'La matrice est facile à lire', maxPoints: 15 },
           ],
         },
       ],
@@ -627,7 +627,7 @@ Budget total autorise : 517.5k EUR
       pmiOutputs: ['Matrice RACI', "Plan de gestion des ressources"],
     },
     referenceExample: `# RACI — Exemple
-12 activites, 6 acteurs. Chaque ligne a 1 A, regles respectees.
+12 activités, 6 acteurs. Chaque ligne a 1 A, règles respectées.
 Chef de projet : 8R, 2A. Dev senior : 3R, 1A. Sponsor : 4A, 2C.
 `,
   },
@@ -639,7 +639,7 @@ Chef de projet : 8R, 2A. Dev senior : 3R, 1A. Sponsor : 4A, 2C.
     type: 'communication-plan',
     phase: 'PLANNING',
     description:
-      "Strategie de communication du projet definissant les canaux, frequences et messages pour chaque partie prenante.",
+      "Stratégie de communication du projet définissant les canaux, fréquences et messages pour chaque partie prenante.",
     pmiProcess: '10.1',
     difficulty: 'STANDARD',
     content: `# Plan de Communication
@@ -655,42 +655,42 @@ Chef de projet : 8R, 2A. Dev senior : 3R, 1A. Sponsor : 4A, 2C.
 
 ## 1. Objectifs de communication
 
-[Definissez les objectifs globaux de la communication projet.]
+[Définissez les objectifs globaux de la communication projet.]
 
 ## 2. Parties prenantes et besoins
 
-| Partie prenante | Niveau d'interet | Niveau de pouvoir | Besoin d'information |
+| Partie prenante | Niveau d'intérêt | Niveau de pouvoir | Besoin d'information |
 |---|---|---|---|
-| {{sponsorName}} (Sponsor) | Eleve | Eleve | Avancement, decisions, risques |
-| {{clientName}} (Client) | Eleve | Moyen | Livrables, jalons |
-| Equipe projet | Eleve | Moyen | Taches, planning, decisions |
-| [A completer] | [A completer] | [A completer] | [A completer] |
+| {{sponsorName}} (Sponsor) | Élevé | Élevé | Avancement, décisions, risques |
+| {{clientName}} (Client) | Élevé | Moyen | Livrables, jalons |
+| Équipe projet | Élevé | Moyen | Tâches, planning, décisions |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
 ## 3. Matrice de communication
 
-| Communication | Public cible | Frequence | Canal | Responsable | Contenu |
+| Communication | Public cible | Fréquence | Canal | Responsable | Contenu |
 |---|---|---|---|---|---|
-| COPIL | Sponsor, Direction | Mensuel | Reunion | {{userName}} | Dashboard KPIs, risques |
-| Point equipe | Equipe projet | Hebdomadaire | Reunion | {{userName}} | Avancement, blocages |
+| COPIL | Sponsor, Direction | Mensuel | Réunion | {{userName}} | Dashboard KPIs, risques |
+| Point équipe | Équipe projet | Hebdomadaire | Réunion | {{userName}} | Avancement, blocages |
 | Rapport avancement | Sponsor, Client | Bi-mensuel | Email + doc | {{userName}} | KPIs, jalons, alertes |
 | Newsletter projet | Toutes PP | Mensuel | Email | {{userName}} | Faits marquants |
 | Alertes | Sponsor | Ad hoc | Email/Tel | {{userName}} | Risques critiques |
 
-## 4. Modeles de communication
+## 4. Modèles de communication
 
-[Listez les templates de communication utilises.]
+[Listez les templates de communication utilisés.]
 
 ## 5. Outils
 
 | Outil | Usage |
 |---|---|
-| [A completer] | Gestion de projet |
-| [A completer] | Communication equipe |
-| [A completer] | Partage de documents |
+| [À compléter] | Gestion de projet |
+| [À compléter] | Communication équipe |
+| [À compléter] | Partage de documents |
 
 ## 6. Escalade
 
-[Definissez le processus d'escalade pour les problemes de communication.]
+[Définissez le processus d'escalade pour les problèmes de communication.]
 `,
     evaluationCriteria: {
       sections: [
@@ -699,8 +699,8 @@ Chef de projet : 8R, 2A. Dev senior : 3R, 1A. Sponsor : 4A, 2C.
           name: 'Parties prenantes',
           weight: 30,
           criteria: [
-            { label: 'Identification', description: 'Les parties prenantes sont identifiees avec leur niveau', maxPoints: 15 },
-            { label: 'Besoins', description: 'Les besoins de chaque PP sont definis', maxPoints: 15 },
+            { label: 'Identification', description: 'Les parties prenantes sont identifiées avec leur niveau', maxPoints: 15 },
+            { label: 'Besoins', description: 'Les besoins de chaque PP sont définis', maxPoints: 15 },
           ],
         },
         {
@@ -708,9 +708,9 @@ Chef de projet : 8R, 2A. Dev senior : 3R, 1A. Sponsor : 4A, 2C.
           name: 'Matrice de communication',
           weight: 40,
           criteria: [
-            { label: 'Completude', description: 'Toutes les communications sont listees', maxPoints: 20 },
-            { label: 'Frequences', description: 'Les frequences sont adaptees aux besoins', maxPoints: 10 },
-            { label: 'Canaux', description: 'Les canaux sont varies et adaptes', maxPoints: 10 },
+            { label: 'Complétude', description: 'Toutes les communications sont listées', maxPoints: 20 },
+            { label: 'Fréquences', description: 'Les fréquences sont adaptées aux besoins', maxPoints: 10 },
+            { label: 'Canaux', description: 'Les canaux sont varies et adaptés', maxPoints: 10 },
           ],
         },
         {
@@ -718,8 +718,8 @@ Chef de projet : 8R, 2A. Dev senior : 3R, 1A. Sponsor : 4A, 2C.
           name: 'Aspect pratique',
           weight: 30,
           criteria: [
-            { label: 'Outils', description: 'Les outils de communication sont identifies', maxPoints: 15 },
-            { label: 'Escalade', description: 'Le processus d\'escalade est defini', maxPoints: 15 },
+            { label: 'Outils', description: 'Les outils de communication sont identifiés', maxPoints: 15 },
+            { label: 'Escalade', description: 'Le processus d\'escalade est défini', maxPoints: 15 },
           ],
         },
       ],
@@ -741,7 +741,7 @@ Outils : MS Teams, Confluence, Jira, email.
     type: 'risk-management-plan',
     phase: 'PLANNING',
     description:
-      "Strategie globale de gestion des risques : processus d'identification, analyse, reponse et suivi des risques.",
+      "Stratégie globale de gestion des risques : processus d'identification, analyse, réponse et suivi des risques.",
     pmiProcess: '11.1',
     difficulty: 'ADVANCED',
     content: `# Plan de Gestion des Risques
@@ -757,62 +757,62 @@ Outils : MS Teams, Confluence, Jira, email.
 
 ## 1. Approche de gestion des risques
 
-[Decrivez l'approche globale : proactive, iterative, quantitative/qualitative.]
+[Décrivez l'approche globale : proactive, iterative, quantitative/qualitative.]
 
-## 2. Roles et responsabilites
+## 2. Rôles et responsabilités
 
-| Role | Responsable | Activites |
+| Rôle | Responsable | Activités |
 |---|---|---|
 | Risk Manager | {{userName}} | Coordination globale |
-| Risk Owner | [Variable] | Suivi des risques assignes |
-| Sponsor | {{sponsorName}} | Validation des strategies |
+| Risk Owner | [Variable] | Suivi des risques assignés |
+| Sponsor | {{sponsorName}} | Validation des stratégies |
 
-## 3. Categorisation des risques (RBS)
+## 3. Catégorisation des risques (RBS)
 
 - **Technique** : Technologie, architecture, performance
-- **Externe** : Marche, reglementation, fournisseurs
-- **Organisationnel** : Ressources, priorites, budget
-- **Gestion de projet** : Planning, perimetre, communication
+- **Externe** : Marche, réglementation, fournisseurs
+- **Organisationnel** : Ressources, priorités, budget
+- **Gestion de projet** : Planning, périmètre, communication
 
-## 4. Echelle de probabilite et impact
+## 4. Échelle de probabilité et impact
 
-### Probabilite
+### Probabilité
 | Niveau | Valeur | Description |
 |---|---|---|
-| Tres faible | 0.1 | < 10% de chance |
+| Très faible | 0.1 | < 10% de chance |
 | Faible | 0.3 | 10-30% |
 | Moyen | 0.5 | 30-50% |
-| Eleve | 0.7 | 50-70% |
-| Tres eleve | 0.9 | > 70% |
+| Élevé | 0.7 | 50-70% |
+| Très élevé | 0.9 | > 70% |
 
-### Impact (sur cout/delai)
+### Impact (sur coût/délai)
 | Niveau | Valeur | Description |
 |---|---|---|
-| Negligeable | 0.05 | < 1% du budget/delai |
+| Négligeable | 0.05 | < 1% du budget/délai |
 | Mineur | 0.1 | 1-5% |
-| Modere | 0.2 | 5-10% |
+| Modéré | 0.2 | 5-10% |
 | Majeur | 0.4 | 10-20% |
 | Critique | 0.8 | > 20% |
 
-## 5. Seuils de tolerances
+## 5. Seuils de tolérances
 
-- Risque critique (score > 0.5) : escalade immediate au sponsor
-- Risque majeur (score 0.3-0.5) : plan de reponse obligatoire
-- Risque modere (score 0.1-0.3) : surveillance active
+- Risque critique (score > 0.5) : escalade immédiate au sponsor
+- Risque majeur (score 0.3-0.5) : plan de réponse obligatoire
+- Risque modéré (score 0.1-0.3) : surveillance active
 - Risque faible (score < 0.1) : acceptation
 
-## 6. Frequence de revue
+## 6. Fréquence de revue
 
-| Activite | Frequence |
+| Activité | Fréquence |
 |---|---|
-| Revue complete des risques | Bi-mensuelle |
-| Mise a jour du registre | Hebdomadaire |
+| Revue complète des risques | Bi-mensuelle |
+| Mise à jour du registre | Hebdomadaire |
 | Rapport risques au COPIL | Mensuel |
 
 ## 7. Budget risque
 
-- Provision pour aleas : [A completer] % du budget
-- Reserve de management : [A completer] % du budget
+- Provision pour aléas : [À compléter] % du budget
+- Réserve de management : [À compléter] % du budget
 `,
     evaluationCriteria: {
       sections: [
@@ -821,28 +821,28 @@ Outils : MS Teams, Confluence, Jira, email.
           name: 'Processus de gestion',
           weight: 30,
           criteria: [
-            { label: 'Approche', description: "L'approche est definie et justifiee", maxPoints: 15 },
-            { label: 'Roles', description: 'Les roles sont clairement attribues', maxPoints: 15 },
+            { label: 'Approche', description: "L'approche est définie et justifiée", maxPoints: 15 },
+            { label: 'Rôles', description: 'Les rôles sont clairement attribués', maxPoints: 15 },
           ],
         },
         {
           id: 'scales',
-          name: 'Echelles et seuils',
+          name: 'Échelles et seuils',
           weight: 35,
           criteria: [
-            { label: 'Probabilite', description: "L'echelle de probabilite est definie", maxPoints: 15 },
-            { label: 'Impact', description: "L'echelle d'impact est definie", maxPoints: 10 },
-            { label: 'Seuils', description: 'Les seuils de tolerance sont definis', maxPoints: 10 },
+            { label: 'Probabilité', description: "L'échelle de probabilité est définie", maxPoints: 15 },
+            { label: 'Impact', description: "L'échelle d'impact est définie", maxPoints: 10 },
+            { label: 'Seuils', description: 'Les seuils de tolérance sont définis', maxPoints: 10 },
           ],
         },
         {
           id: 'operational',
-          name: 'Aspect operationnel',
+          name: 'Aspect opérationnel',
           weight: 35,
           criteria: [
-            { label: 'Categorisation', description: 'Les categories de risques sont definies (RBS)', maxPoints: 15 },
-            { label: 'Frequence', description: 'Les frequences de revue sont definies', maxPoints: 10 },
-            { label: 'Budget', description: 'Le budget risque est prevu', maxPoints: 10 },
+            { label: 'Catégorisation', description: 'Les catégories de risques sont définies (RBS)', maxPoints: 15 },
+            { label: 'Fréquence', description: 'Les fréquences de revue sont définies', maxPoints: 10 },
+            { label: 'Budget', description: 'Le budget risque est prévu', maxPoints: 10 },
           ],
         },
       ],
@@ -851,9 +851,9 @@ Outils : MS Teams, Confluence, Jira, email.
       pmiOutputs: ['Plan de gestion des risques'],
     },
     referenceExample: `# Plan Risques — Exemple
-Approche proactive, revue bi-mensuelle, 4 categories RBS.
-Echelle 5 niveaux (probabilite et impact). Seuil escalade : score > 0.5.
-Provision aleas 10%, reserve management 5%.
+Approche proactive, revue bi-mensuelle, 4 catégories RBS.
+Échelle 5 niveaux (probabilité et impact). Seuil escalade : score > 0.5.
+Provision aléas 10%, réserve management 5%.
 `,
   },
 
@@ -864,7 +864,7 @@ Provision aleas 10%, reserve management 5%.
     type: 'procurement-plan',
     phase: 'PLANNING',
     description:
-      "Plan des achats et sous-traitances du projet. Definit la strategie d'approvisionnement, les criteres de selection et le calendrier.",
+      "Plan des achats et sous-traitances du projet. Définit la stratégie d'approvisionnement, les critères de sélection et le calendrier.",
     pmiProcess: '12.1',
     difficulty: 'ADVANCED',
     content: `# Plan d'Approvisionnement
@@ -880,38 +880,38 @@ Provision aleas 10%, reserve management 5%.
 
 ## 1. Besoins d'approvisionnement
 
-| # | Besoin | Type | Estimation | Priorite |
+| # | Besoin | Type | Estimation | Priorité |
 |---|---|---|---|---|
-| 1 | [A completer] | Achat / Sous-traitance | [A completer] | [A completer] |
-| 2 | [A completer] | Achat / Sous-traitance | [A completer] | [A completer] |
+| 1 | [À compléter] | Achat / Sous-traitance | [À compléter] | [À compléter] |
+| 2 | [À compléter] | Achat / Sous-traitance | [À compléter] | [À compléter] |
 
-## 2. Strategie d'approvisionnement
+## 2. Stratégie d'approvisionnement
 
-[Decrivez la strategie : faire vs acheter, type de contrat, processus de selection.]
+[Décrivez la stratégie : faire vs acheter, type de contrat, processus de sélection.]
 
 ### 2.1 Analyse Make or Buy
-| Besoin | Faire en interne | Acheter / Sous-traiter | Decision |
+| Besoin | Faire en interne | Acheter / Sous-traiter | Décision |
 |---|---|---|---|
-| [A completer] | [Avantages/Inconvenients] | [Avantages/Inconvenients] | [A completer] |
+| [À compléter] | [Avantages/Inconvénients] | [Avantages/Inconvénients] | [À compléter] |
 
-## 3. Criteres de selection des fournisseurs
+## 3. Critères de sélection des fournisseurs
 
-| Critere | Poids |
+| Critère | Poids |
 |---|---|
-| Competence technique | [A completer]% |
-| Prix | [A completer]% |
-| Delais | [A completer]% |
-| References | [A completer]% |
+| Compétence technique | [À compléter]% |
+| Prix | [À compléter]% |
+| Délais | [À compléter]% |
+| Références | [À compléter]% |
 
 ## 4. Calendrier d'approvisionnement
 
-| Besoin | Publication AO | Reception offres | Selection | Contrat |
+| Besoin | Publication AO | Réception offres | Sélection | Contrat |
 |---|---|---|---|---|
-| [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
 ## 5. Types de contrats
 
-[Definissez le type de contrat pour chaque approvisionnement : forfait, regie, etc.]
+[Définissez le type de contrat pour chaque approvisionnement : forfait, régie, etc.]
 `,
     evaluationCriteria: {
       sections: [
@@ -920,17 +920,17 @@ Provision aleas 10%, reserve management 5%.
           name: 'Identification des besoins',
           weight: 30,
           criteria: [
-            { label: 'Besoins identifies', description: 'Les besoins sont clairement listes', maxPoints: 15 },
-            { label: 'Make or Buy', description: "L'analyse make/buy est realisee", maxPoints: 15 },
+            { label: 'Besoins identifiés', description: 'Les besoins sont clairement listes', maxPoints: 15 },
+            { label: 'Make or Buy', description: "L'analyse make/buy est réalisée", maxPoints: 15 },
           ],
         },
         {
           id: 'strategy',
-          name: 'Strategie',
+          name: 'Stratégie',
           weight: 35,
           criteria: [
-            { label: 'Criteres selection', description: 'Les criteres sont ponderes', maxPoints: 15 },
-            { label: 'Types contrats', description: 'Les types de contrats sont definis', maxPoints: 20 },
+            { label: 'Critères sélection', description: 'Les critères sont pondérés', maxPoints: 15 },
+            { label: 'Types contrats', description: 'Les types de contrats sont définis', maxPoints: 20 },
           ],
         },
         {
@@ -938,8 +938,8 @@ Provision aleas 10%, reserve management 5%.
           name: 'Planification',
           weight: 35,
           criteria: [
-            { label: 'Calendrier', description: 'Le calendrier est detaille', maxPoints: 20 },
-            { label: 'Coherence', description: 'Coherent avec le planning projet', maxPoints: 15 },
+            { label: 'Calendrier', description: 'Le calendrier est détaillé', maxPoints: 20 },
+            { label: 'Cohérence', description: 'Cohérent avec le planning projet', maxPoints: 15 },
           ],
         },
       ],
@@ -948,23 +948,23 @@ Provision aleas 10%, reserve management 5%.
       pmiOutputs: ["Plan de gestion des approvisionnements"],
     },
     referenceExample: `# Approvisionnement — Exemple
-3 besoins identifies, analyse make/buy realisee. 2 sous-traitances, 1 achat.
-Criteres : technique 40%, prix 30%, delais 20%, references 10%.
-Contrats : 1 forfait, 1 regie plafonnee.
+3 besoins identifiés, analyse make/buy réalisée. 2 sous-traitances, 1 achat.
+Critères : technique 40%, prix 30%, délais 20%, références 10%.
+Contrats : 1 forfait, 1 régie plafonnée.
 `,
   },
 
   // ─── 09. Plan de Gestion de la Qualite ────────────────────
   {
     id: 'seed-tpl-quality-plan',
-    title: 'Plan de Gestion de la Qualite',
+    title: 'Plan de Gestion de la Qualité',
     type: 'quality-plan',
     phase: 'PLANNING',
     description:
-      "Strategie d'assurance et de controle qualite du projet. Definit les normes, metriques et processus de validation.",
+      "Stratégie d'assurance et de contrôle qualité du projet. Définit les normes, métriques et processus de validation.",
     pmiProcess: '8.1',
     difficulty: 'STANDARD',
-    content: `# Plan de Gestion de la Qualite
+    content: `# Plan de Gestion de la Qualité
 
 | Champ | Valeur |
 |---|---|
@@ -975,83 +975,83 @@ Contrats : 1 forfait, 1 regie plafonnee.
 
 ---
 
-## 1. Politique qualite
+## 1. Politique qualité
 
-[Definissez la politique qualite applicable au projet.]
+[Définissez la politique qualité applicable au projet.]
 
 ## 2. Normes et standards applicables
 
-| Norme | Description | Applicabilite |
+| Norme | Description | Applicabilité |
 |---|---|---|
-| [A completer] | [A completer] | [A completer] |
+| [À compléter] | [À compléter] | [À compléter] |
 
-## 3. Metriques qualite
+## 3. Métriques qualité
 
-| Metrique | Cible | Methode de mesure | Frequence |
+| Métrique | Cible | Méthode de mesure | Fréquence |
 |---|---|---|---|
-| Taux de conformite des livrables | > 90% | Revue par les pairs | Par livrable |
-| Nombre de defauts | < [A completer] | Tests | Continue |
-| Satisfaction client | > 4/5 | Enquete | Fin de phase |
+| Taux de conformité des livrables | > 90% | Revue par les pairs | Par livrable |
+| Nombre de défauts | < [À compléter] | Tests | Continue |
+| Satisfaction client | > 4/5 | Enquête | Fin de phase |
 
-## 4. Assurance qualite (QA)
+## 4. Assurance qualité (QA)
 
-[Activites preventives pour garantir la qualite.]
+[Activités préventives pour garantir la qualité.]
 
-| Activite QA | Frequence | Responsable |
+| Activité QA | Fréquence | Responsable |
 |---|---|---|
-| Revue de livrables | Par livrable | [A completer] |
-| Audit de processus | Trimestriel | [A completer] |
+| Revue de livrables | Par livrable | [À compléter] |
+| Audit de processus | Trimestriel | [À compléter] |
 
-## 5. Controle qualite (QC)
+## 5. Contrôle qualité (QC)
 
-[Activites de verification et validation.]
+[Activités de vérification et validation.]
 
-| Activite QC | Critere d'acceptation | Responsable |
+| Activité QC | Critère d'acceptation | Responsable |
 |---|---|---|
-| [A completer] | [A completer] | [A completer] |
+| [À compléter] | [À compléter] | [À compléter] |
 
-## 6. Amelioration continue
+## 6. Amélioration continue
 
-[Processus de retour d'experience et amelioration.]
+[Processus de retour d'expérience et amélioration.]
 `,
     evaluationCriteria: {
       sections: [
         {
           id: 'standards',
-          name: 'Normes et metriques',
+          name: 'Normes et métriques',
           weight: 30,
           criteria: [
-            { label: 'Normes', description: 'Les normes applicables sont identifiees', maxPoints: 15 },
-            { label: 'Metriques', description: 'Les metriques qualite sont definies avec cibles', maxPoints: 15 },
+            { label: 'Normes', description: 'Les normes applicables sont identifiées', maxPoints: 15 },
+            { label: 'Métriques', description: 'Les métriques qualité sont définies avec cibles', maxPoints: 15 },
           ],
         },
         {
           id: 'qa',
-          name: 'Assurance qualite',
+          name: 'Assurance qualité',
           weight: 35,
           criteria: [
-            { label: 'Activites QA', description: 'Les activites preventives sont planifiees', maxPoints: 20 },
-            { label: 'Responsabilites', description: 'Les responsables QA sont designes', maxPoints: 15 },
+            { label: 'Activités QA', description: 'Les activités préventives sont planifiées', maxPoints: 20 },
+            { label: 'Responsabilités', description: 'Les responsables QA sont désignés', maxPoints: 15 },
           ],
         },
         {
           id: 'qc',
-          name: 'Controle qualite',
+          name: 'Contrôle qualité',
           weight: 35,
           criteria: [
-            { label: 'Activites QC', description: 'Les activites de verification sont definies', maxPoints: 20 },
-            { label: 'Criteres acceptation', description: "Les criteres d'acceptation sont clairs", maxPoints: 15 },
+            { label: 'Activités QC', description: 'Les activités de vérification sont définies', maxPoints: 20 },
+            { label: 'Critères acceptation', description: "Les critères d'acceptation sont clairs", maxPoints: 15 },
           ],
         },
       ],
       passingScore: 60,
       maxScore: 100,
-      pmiOutputs: ['Plan de gestion de la qualite', 'Metriques qualite'],
+      pmiOutputs: ['Plan de gestion de la qualité', 'Métriques qualité'],
     },
-    referenceExample: `# Qualite — Exemple
-Normes : ISO 9001, IEEE 830. 3 metriques cibles.
+    referenceExample: `# Qualité — Exemple
+Normes : ISO 9001, IEEE 830. 3 métriques cibles.
 QA : revues par pairs, audits trimestriels.
-QC : tests unitaires (couverture 80%), tests integration, recette utilisateur.
+QC : tests unitaires (couverture 80%), tests intégration, recette utilisateur.
 `,
   },
 
@@ -1062,7 +1062,7 @@ QC : tests unitaires (couverture 80%), tests integration, recette utilisateur.
     type: 'resource-plan',
     phase: 'PLANNING',
     description:
-      "Planification des ressources humaines et materielles. Definit les besoins, la disponibilite et la strategie d'acquisition.",
+      "Planification des ressources humaines et matérielles. Définit les besoins, la disponibilité et la stratégie d'acquisition.",
     pmiProcess: '9.1',
     difficulty: 'STANDARD',
     content: `# Plan de Gestion des Ressources
@@ -1076,39 +1076,39 @@ QC : tests unitaires (couverture 80%), tests integration, recette utilisateur.
 
 ---
 
-## 1. Equipe projet
+## 1. Équipe projet
 
 {{teamMembers}}
 
 ## 2. Besoins en ressources par phase
 
-| Phase | Ressources necessaires | Competences cles |
+| Phase | Ressources nécessaires | Compétences clés |
 |---|---|---|
 | Initiation | {{userName}} | Cadrage, communication |
-| Planification | Equipe complete | Planification, estimation |
-| Execution | [A completer] | [A completer] |
+| Planification | Équipe complète | Planification, estimation |
+| Exécution | [À compléter] | [À compléter] |
 | Suivi | {{userName}} | Reporting, analyse |
-| Cloture | Equipe reduite | Bilan, transfert |
+| Clôture | Équipe réduite | Bilan, transfert |
 
-## 3. Matrice des competences
+## 3. Matrice des compétences
 
-| Competence | Niveau requis | Ressource assignee | Ecart |
+| Compétence | Niveau requis | Ressource assignée | Écart |
 |---|---|---|---|
-| [A completer] | [A completer] | [A completer] | [A completer] |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
 ## 4. Plan de formation
 
-| Formation | Public | Date | Duree |
+| Formation | Public | Date | Durée |
 |---|---|---|---|
-| [A completer] | [A completer] | [A completer] | [A completer] |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
 ## 5. Calendrier des ressources
 
-[Decrivez la disponibilite des ressources par periode.]
+[Décrivez la disponibilité des ressources par période.]
 
 ## 6. Gestion des conflits de ressources
 
-[Processus de resolution des conflits d'allocation.]
+[Processus de résolution des conflits d'allocation.]
 `,
     evaluationCriteria: {
       sections: [
@@ -1117,17 +1117,17 @@ QC : tests unitaires (couverture 80%), tests integration, recette utilisateur.
           name: 'Identification des besoins',
           weight: 35,
           criteria: [
-            { label: 'Equipe', description: "L'equipe est identifiee avec roles et competences", maxPoints: 20 },
-            { label: 'Besoins par phase', description: 'Les besoins sont detailles par phase', maxPoints: 15 },
+            { label: 'Équipe', description: "L'équipe est identifiée avec rôles et compétences", maxPoints: 20 },
+            { label: 'Besoins par phase', description: 'Les besoins sont détaillés par phase', maxPoints: 15 },
           ],
         },
         {
           id: 'skills',
-          name: 'Competences',
+          name: 'Compétences',
           weight: 30,
           criteria: [
-            { label: 'Matrice competences', description: 'Les ecarts de competences sont identifies', maxPoints: 15 },
-            { label: 'Formation', description: 'Un plan de formation est prevu', maxPoints: 15 },
+            { label: 'Matrice compétences', description: 'Les écarts de compétences sont identifiés', maxPoints: 15 },
+            { label: 'Formation', description: 'Un plan de formation est prévu', maxPoints: 15 },
           ],
         },
         {
@@ -1135,8 +1135,8 @@ QC : tests unitaires (couverture 80%), tests integration, recette utilisateur.
           name: 'Planification',
           weight: 35,
           criteria: [
-            { label: 'Calendrier', description: 'La disponibilite est planifiee', maxPoints: 20 },
-            { label: 'Conflits', description: 'La gestion des conflits est prevue', maxPoints: 15 },
+            { label: 'Calendrier', description: 'La disponibilité est planifiée', maxPoints: 20 },
+            { label: 'Conflits', description: 'La gestion des conflits est prévue', maxPoints: 15 },
           ],
         },
       ],
@@ -1145,22 +1145,22 @@ QC : tests unitaires (couverture 80%), tests integration, recette utilisateur.
       pmiOutputs: ['Plan de gestion des ressources', "Calendrier des ressources"],
     },
     referenceExample: `# Ressources — Exemple
-8 membres, 12 competences mappees, 2 formations planifiees.
-Pics de charge : sem 8-12 (execution). Conflit identifie : dev senior partage avec autre projet.
+8 membres, 12 compétences mappées, 2 formations planifiées.
+Pics de charge : sem 8-12 (exécution). Conflit identifié : dev senior partage avec autre projet.
 `,
   },
 
   // ─── 11. Ligne de Base du Perimetre ───────────────────────
   {
     id: 'seed-tpl-scope-baseline',
-    title: 'Ligne de Base du Perimetre',
+    title: 'Ligne de Base du Périmètre',
     type: 'scope-baseline',
     phase: 'PLANNING',
     description:
-      "Reference approuvee du perimetre du projet. Comprend l'enonce du perimetre, le WBS et le dictionnaire WBS valides.",
+      "Référence approuvée du périmètre du projet. Comprend l'énoncé du périmètre, le WBS et le dictionnaire WBS valides.",
     pmiProcess: '5.4',
     difficulty: 'STANDARD',
-    content: `# Ligne de Base du Perimetre
+    content: `# Ligne de Base du Périmètre
 
 | Champ | Valeur |
 |---|---|
@@ -1171,7 +1171,7 @@ Pics de charge : sem 8-12 (execution). Conflit identifie : dev senior partage av
 
 ---
 
-## 1. Enonce du perimetre
+## 1. Énoncé du périmètre
 
 ### 1.1 Description du projet
 > {{projectDescription}}
@@ -1180,30 +1180,30 @@ Pics de charge : sem 8-12 (execution). Conflit identifie : dev senior partage av
 [Listez les objectifs SMART du projet.]
 
 ### 1.3 Livrables
-| # | Livrable | Description | Critere d'acceptation |
+| # | Livrable | Description | Critère d'acceptation |
 |---|---|---|---|
-| 1 | [A completer] | [A completer] | [A completer] |
+| 1 | [À compléter] | [À compléter] | [À compléter] |
 
 ### 1.4 Exclusions
-[Ce qui est explicitement hors perimetre.]
+[Ce qui est explicitement hors périmètre.]
 
 ### 1.5 Contraintes
 | Contrainte | Description |
 |---|---|
 | Budget | {{initialBudget}} |
-| Delai | {{deadlineDays}} jours |
-| [A completer] | [A completer] |
+| Délai | {{deadlineDays}} jours |
+| [À compléter] | [À compléter] |
 
-### 1.6 Hypotheses
-[Listez les hypotheses de perimetre.]
+### 1.6 Hypothèses
+[Listez les hypothèses de périmètre.]
 
-## 2. WBS de reference
+## 2. WBS de référence
 
-[Inserez ou referencez le WBS approuve.]
+[Insérez ou référencez le WBS approuvé.]
 
 ## 3. Approbation
 
-| Nom | Role | Signature | Date |
+| Nom | Rôle | Signature | Date |
 |---|---|---|---|
 | {{userName}} | Chef de projet | | {{currentDate}} |
 | {{sponsorName}} | Sponsor | | |
@@ -1213,21 +1213,21 @@ Pics de charge : sem 8-12 (execution). Conflit identifie : dev senior partage av
       sections: [
         {
           id: 'scope',
-          name: 'Enonce du perimetre',
+          name: 'Énoncé du périmètre',
           weight: 40,
           criteria: [
             { label: 'Objectifs SMART', description: 'Les objectifs sont SMART', maxPoints: 15 },
-            { label: 'Livrables', description: 'Les livrables et criteres sont definis', maxPoints: 15 },
+            { label: 'Livrables', description: 'Les livrables et critères sont définis', maxPoints: 15 },
             { label: 'Exclusions', description: 'Les exclusions sont claires', maxPoints: 10 },
           ],
         },
         {
           id: 'constraints',
-          name: 'Contraintes et hypotheses',
+          name: 'Contraintes et hypothèses',
           weight: 30,
           criteria: [
-            { label: 'Contraintes', description: 'Les contraintes sont identifiees', maxPoints: 15 },
-            { label: 'Hypotheses', description: 'Les hypotheses sont documentees', maxPoints: 15 },
+            { label: 'Contraintes', description: 'Les contraintes sont identifiées', maxPoints: 15 },
+            { label: 'Hypothèses', description: 'Les hypothèses sont documentées', maxPoints: 15 },
           ],
         },
         {
@@ -1235,19 +1235,19 @@ Pics de charge : sem 8-12 (execution). Conflit identifie : dev senior partage av
           name: 'Validation',
           weight: 30,
           criteria: [
-            { label: 'WBS reference', description: 'Le WBS est inclus ou reference', maxPoints: 15 },
-            { label: 'Approbation', description: 'Les approbations sont prevues', maxPoints: 15 },
+            { label: 'WBS référence', description: 'Le WBS est inclus ou référencé', maxPoints: 15 },
+            { label: 'Approbation', description: 'Les approbations sont prévues', maxPoints: 15 },
           ],
         },
       ],
       passingScore: 60,
       maxScore: 100,
-      pmiOutputs: ['Ligne de base du perimetre', 'Enonce du perimetre'],
+      pmiOutputs: ['Ligne de base du périmètre', 'Énoncé du périmètre'],
     },
     referenceExample: `# Scope Baseline — Exemple
-5 objectifs SMART, 8 livrables avec criteres d'acceptation.
-3 exclusions, 4 contraintes, 5 hypotheses.
-Approuve par CP, Sponsor et Client.
+5 objectifs SMART, 8 livrables avec critères d'acceptation.
+3 exclusions, 4 contraintes, 5 hypothèses.
+Approuvé par CP, Sponsor et Client.
 `,
   },
 
@@ -1258,7 +1258,7 @@ Approuve par CP, Sponsor et Client.
     type: 'change-management-plan',
     phase: 'PLANNING',
     description:
-      "Processus de gestion des demandes de changement. Definit les etapes d'evaluation, validation et implementation.",
+      "Processus de gestion des demandes de changement. Définit les étapes d'évaluation, validation et implémentation.",
     pmiProcess: '4.6',
     difficulty: 'STANDARD',
     content: `# Plan de Gestion des Changements
@@ -1276,55 +1276,55 @@ Approuve par CP, Sponsor et Client.
 
 ### 1.1 Flux de traitement
 1. **Soumission** : Toute partie prenante peut soumettre une demande
-2. **Analyse d'impact** : Le chef de projet analyse l'impact sur cout/delai/perimetre
-3. **Evaluation** : Le comite de changement evalue la demande
-4. **Decision** : Approuver, rejeter ou reporter
-5. **Implementation** : Si approuvee, planifier et executer
-6. **Verification** : Verifier la bonne mise en oeuvre
+2. **Analyse d'impact** : Le chef de projet analyse l'impact sur coût/délai/périmètre
+3. **Évaluation** : Le comité de changement évalué la demande
+4. **Décision** : Approuver, rejeter ou reporter
+5. **Implémentation** : Si approuvée, planifier et exécuter
+6. **Vérification** : Vérifier la bonne mise en œuvre
 
-### 1.2 Comite de changement (CCB)
+### 1.2 Comité de changement (CCB)
 
-| Membre | Role | Pouvoir de decision |
+| Membre | Rôle | Pouvoir de décision |
 |---|---|---|
 | {{userName}} | Chef de projet | Recommandation |
 | {{sponsorName}} | Sponsor | Approbation (impact > seuil) |
-| {{clientName}} | Client | Validation perimetre |
+| {{clientName}} | Client | Validation périmètre |
 
-### 1.3 Seuils de decision
+### 1.3 Seuils de décision
 
-| Impact | Decideur |
+| Impact | Décideur |
 |---|---|
-| < 5% du budget et < 1 semaine delai | Chef de projet |
-| 5-15% du budget ou 1-3 semaines delai | Sponsor |
-| > 15% du budget ou > 3 semaines delai | COPIL |
+| < 5% du budget et < 1 semaine délai | Chef de projet |
+| 5-15% du budget ou 1-3 semaines délai | Sponsor |
+| > 15% du budget ou > 3 semaines délai | COPIL |
 
 ## 2. Formulaire de demande de changement
 
 | Champ | Description |
 |---|---|
-| ID | Numero unique (CR-XXX) |
+| ID | Numéro unique (CR-XXX) |
 | Date | Date de soumission |
-| Demandeur | Nom et role |
-| Description | Description detaillee du changement |
+| Demandeur | Nom et rôle |
+| Description | Description détaillée du changement |
 | Justification | Raison de la demande |
-| Impact cout | Estimation financiere |
-| Impact delai | Impact sur le planning |
-| Impact perimetre | Modification du perimetre |
-| Priorite | Critique / Haute / Moyenne / Basse |
-| Decision | Approuve / Rejete / Reporte |
+| Impact coût | Estimation financière |
+| Impact délai | Impact sur le planning |
+| Impact périmètre | Modification du périmètre |
+| Priorité | Critique / Haute / Moyenne / Basse |
+| Décision | Approuvé / Rejeté / Reporté |
 
 ## 3. Registre des changements
 
-| ID | Date | Description | Impact | Statut | Decision |
+| ID | Date | Description | Impact | Statut | Décision |
 |---|---|---|---|---|---|
-| CR-001 | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
+| CR-001 | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
 ## 4. Indicateurs
 
-- Nombre de demandes par periode
+- Nombre de demandes par période
 - Taux d'approbation
-- Delai moyen de traitement
-- Impact cumule sur budget/delai
+- Délai moyen de traitement
+- Impact cumulé sur budget/délai
 `,
     evaluationCriteria: {
       sections: [
@@ -1334,8 +1334,8 @@ Approuve par CP, Sponsor et Client.
           weight: 35,
           criteria: [
             { label: 'Flux', description: 'Le flux de traitement est complet', maxPoints: 15 },
-            { label: 'CCB', description: 'Le comite est defini avec pouvoirs', maxPoints: 10 },
-            { label: 'Seuils', description: 'Les seuils de decision sont clairs', maxPoints: 10 },
+            { label: 'CCB', description: 'Le comité est défini avec pouvoirs', maxPoints: 10 },
+            { label: 'Seuils', description: 'Les seuils de décision sont clairs', maxPoints: 10 },
           ],
         },
         {
@@ -1345,7 +1345,7 @@ Approuve par CP, Sponsor et Client.
           criteria: [
             { label: 'Formulaire', description: 'Le formulaire est complet', maxPoints: 15 },
             { label: 'Registre', description: 'Le registre est structure', maxPoints: 10 },
-            { label: 'Traçabilite', description: 'La traçabilite est assuree', maxPoints: 10 },
+            { label: 'Traçabilité', description: 'La traçabilité est assurée', maxPoints: 10 },
           ],
         },
         {
@@ -1353,7 +1353,7 @@ Approuve par CP, Sponsor et Client.
           name: 'Indicateurs',
           weight: 30,
           criteria: [
-            { label: 'KPIs', description: 'Les indicateurs de suivi sont definis', maxPoints: 15 },
+            { label: 'KPIs', description: 'Les indicateurs de suivi sont définis', maxPoints: 15 },
             { label: 'Pertinence', description: 'Les indicateurs sont pertinents', maxPoints: 15 },
           ],
         },
@@ -1363,8 +1363,8 @@ Approuve par CP, Sponsor et Client.
       pmiOutputs: ['Plan de gestion des changements', 'Registre des changements'],
     },
     referenceExample: `# Changements — Exemple
-Flux en 6 etapes, CCB de 3 membres. Seuils : <5% CP, 5-15% Sponsor, >15% COPIL.
-Formulaire 10 champs, registre avec traçabilite. 4 KPIs de suivi.
+Flux en 6 étapes, CCB de 3 membres. Seuils : <5% CP, 5-15% Sponsor, >15% COPIL.
+Formulaire 10 champs, registre avec traçabilité. 4 KPIs de suivi.
 `,
   },
 
@@ -1375,7 +1375,7 @@ Formulaire 10 champs, registre avec traçabilite. 4 KPIs de suivi.
     type: 'technical-specs',
     phase: 'PLANNING',
     description:
-      "Specifications techniques detaillees du projet. Definit les exigences fonctionnelles, non-fonctionnelles et les contraintes techniques.",
+      "Spécifications techniques détaillées du projet. Définit les exigences fonctionnelles, non-fonctionnelles et les contraintes techniques.",
     pmiProcess: '5.3',
     difficulty: 'ADVANCED',
     content: `# Cahier des Charges Technique
@@ -1397,56 +1397,56 @@ Formulaire 10 champs, registre avec traçabilite. 4 KPIs de suivi.
 > {{projectDescription}}
 
 ### 1.2 Objectifs techniques
-[Definissez les objectifs techniques du projet.]
+[Définissez les objectifs techniques du projet.]
 
 ## 2. Exigences fonctionnelles
 
-| ID | Exigence | Priorite | Critere d'acceptation |
+| ID | Exigence | Priorité | Critère d'acceptation |
 |---|---|---|---|
-| EF-001 | [A completer] | Obligatoire | [A completer] |
-| EF-002 | [A completer] | Souhaitable | [A completer] |
+| EF-001 | [À compléter] | Obligatoire | [À compléter] |
+| EF-002 | [À compléter] | Souhaitable | [À compléter] |
 
 ## 3. Exigences non-fonctionnelles
 
 ### 3.1 Performance
-| Metrique | Cible |
+| Métrique | Cible |
 |---|---|
-| [A completer] | [A completer] |
+| [À compléter] | [À compléter] |
 
-### 3.2 Securite
-[Exigences de securite.]
+### 3.2 Sécurité
+[Exigences de sécurité.]
 
-### 3.3 Disponibilite
-[Exigences de disponibilite et SLA.]
+### 3.3 Disponibilité
+[Exigences de disponibilité et SLA.]
 
-### 3.4 Evolutivite
-[Exigences de scalabilite et maintenabilite.]
+### 3.4 Évolutivité
+[Exigences de scalabilité et maintenabilité.]
 
 ## 4. Architecture technique
 
-[Decrivez l'architecture cible : composants, flux, technologies.]
+[Décrivez l'architecture cible : composants, flux, technologies.]
 
 ## 5. Contraintes techniques
 
 | Contrainte | Description | Impact |
 |---|---|---|
-| [A completer] | [A completer] | [A completer] |
+| [À compléter] | [À compléter] | [À compléter] |
 
 ## 6. Interfaces
 
-[Decrivez les interfaces avec les systemes existants.]
+[Décrivez les interfaces avec les systèmes existants.]
 
 ## 7. Plan de tests
 
-| Type de test | Perimetre | Critere de succes |
+| Type de test | Périmètre | Critère de succès |
 |---|---|---|
-| Unitaire | [A completer] | [A completer] |
-| Integration | [A completer] | [A completer] |
-| Acceptation | [A completer] | [A completer] |
+| Unitaire | [À compléter] | [À compléter] |
+| Intégration | [À compléter] | [À compléter] |
+| Acceptation | [À compléter] | [À compléter] |
 
 ## 8. Approbation
 
-| Nom | Role | Date |
+| Nom | Rôle | Date |
 |---|---|---|
 | {{userName}} | Chef de projet | {{currentDate}} |
 | {{clientName}} | Client | |
@@ -1458,8 +1458,8 @@ Formulaire 10 champs, registre avec traçabilite. 4 KPIs de suivi.
           name: 'Exigences fonctionnelles',
           weight: 30,
           criteria: [
-            { label: 'Completude', description: 'Les exigences sont completes et priorisees', maxPoints: 15 },
-            { label: 'Criteres acceptation', description: 'Chaque exigence a un critere', maxPoints: 15 },
+            { label: 'Complétude', description: 'Les exigences sont complètes et priorisées', maxPoints: 15 },
+            { label: 'Critères acceptation', description: 'Chaque exigence a un critère', maxPoints: 15 },
           ],
         },
         {
@@ -1467,8 +1467,8 @@ Formulaire 10 champs, registre avec traçabilite. 4 KPIs de suivi.
           name: 'Exigences non-fonctionnelles',
           weight: 25,
           criteria: [
-            { label: 'Performance', description: 'Les metriques de performance sont definies', maxPoints: 10 },
-            { label: 'Securite/Dispo', description: 'Securite et disponibilite sont adressees', maxPoints: 15 },
+            { label: 'Performance', description: 'Les métriques de performance sont définies', maxPoints: 10 },
+            { label: 'Sécurité/Dispo', description: 'Sécurité et disponibilité sont adressées', maxPoints: 15 },
           ],
         },
         {
@@ -1476,8 +1476,8 @@ Formulaire 10 champs, registre avec traçabilite. 4 KPIs de suivi.
           name: 'Architecture',
           weight: 25,
           criteria: [
-            { label: 'Architecture', description: "L'architecture est decrite", maxPoints: 15 },
-            { label: 'Interfaces', description: 'Les interfaces sont identifiees', maxPoints: 10 },
+            { label: 'Architecture', description: "L'architecture est décrite", maxPoints: 15 },
+            { label: 'Interfaces', description: 'Les interfaces sont identifiées', maxPoints: 10 },
           ],
         },
         {
@@ -1485,20 +1485,20 @@ Formulaire 10 champs, registre avec traçabilite. 4 KPIs de suivi.
           name: 'Plan de tests',
           weight: 20,
           criteria: [
-            { label: 'Strategie tests', description: 'Le plan de tests est defini', maxPoints: 10 },
-            { label: 'Criteres succes', description: 'Les criteres de succes sont clairs', maxPoints: 10 },
+            { label: 'Stratégie tests', description: 'Le plan de tests est défini', maxPoints: 10 },
+            { label: 'Critères succès', description: 'Les critères de succès sont clairs', maxPoints: 10 },
           ],
         },
       ],
       passingScore: 60,
       maxScore: 100,
-      pmiOutputs: ['Enonce du perimetre du projet', 'Documentation des exigences'],
+      pmiOutputs: ['Énoncé du périmètre du projet', 'Documentation des exigences'],
     },
     referenceExample: `# Specs Techniques — Exemple
 15 exigences fonctionnelles (8 obligatoires, 7 souhaitables).
-NFR : temps reponse < 200ms, SLA 99.9%, chiffrement AES-256.
+NFR : temps réponse < 200ms, SLA 99.9%, chiffrement AES-256.
 Architecture microservices, 3 interfaces externes.
-Tests : unitaires (80% couverture), integration, performance, acceptation.
+Tests : unitaires (80% couverture), intégration, performance, acceptation.
 `,
   },
 ];

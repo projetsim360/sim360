@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/providers/auth-provider';
 import { api } from '@/lib/api-client';
 import { AvatarUpload } from '@/components/common/avatar-upload';
+import { SearchableCombobox } from '@/components/common/searchable-combobox';
+import { JOB_TITLE_OPTIONS } from '@/lib/job-titles';
 import {
   Check,
   User,
@@ -23,9 +25,9 @@ import { Progress } from '@/components/ui/progress';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 
 const STEPS = [
-  { label: 'Identite', icon: User, description: 'Vos informations' },
-  { label: 'Langue', icon: Globe, description: 'Votre preference' },
-  { label: 'Experience', icon: Award, description: 'Votre niveau' },
+  { label: 'Identité', icon: User, description: 'Vos informations' },
+  { label: 'Langue', icon: Globe, description: 'Votre préférence' },
+  { label: 'Expérience', icon: Award, description: 'Votre niveau' },
   { label: 'Photo', icon: ImageIcon, description: 'Votre avatar' },
 ];
 
@@ -72,7 +74,7 @@ export function ProfileWizardPage() {
       await refreshUser();
       navigate('/dashboard', { replace: true });
     } catch {
-      setError('Une erreur est survenue. Veuillez reessayer.');
+      setError('Une erreur est survenue. Veuillez réessayer.');
     } finally {
       setIsSubmitting(false);
     }
@@ -92,10 +94,10 @@ export function ProfileWizardPage() {
                 <Sparkles className="h-6 w-6 text-primary" />
               </div>
               <h1 className="text-2xl font-bold text-foreground tracking-tight">
-                Completez votre profil
+                Complétez votre profil
               </h1>
               <p className="text-muted-foreground mt-1.5 text-sm">
-                Etape {step + 1} sur {STEPS.length} &mdash; {STEPS[step].description}
+                Étape {step + 1} sur {STEPS.length} &mdash; {STEPS[step].description}
               </p>
             </div>
 
@@ -172,13 +174,13 @@ export function ProfileWizardPage() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="firstName">
-                            Prenom <span className="text-destructive">*</span>
+                            Prénom <span className="text-destructive">*</span>
                           </Label>
                           <Input
                             id="firstName"
                             value={formData.firstName}
                             onChange={(e) => updateField('firstName', e.target.value)}
-                            placeholder="Votre prenom"
+                            placeholder="Votre prénom"
                           />
                         </div>
                         <div className="space-y-2">
@@ -195,12 +197,16 @@ export function ProfileWizardPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="jobTitle">Poste</Label>
-                        <Input
+                        <Label htmlFor="jobTitle">Fonction</Label>
+                        <SearchableCombobox
                           id="jobTitle"
                           value={formData.jobTitle}
-                          onChange={(e) => updateField('jobTitle', e.target.value)}
-                          placeholder="Ex: Chef de projet, Developpeur..."
+                          onChange={(v) => updateField('jobTitle', v)}
+                          options={JOB_TITLE_OPTIONS}
+                          placeholder="Choisir ou saisir une fonction"
+                          searchPlaceholder="Rechercher ou saisir une fonction…"
+                          allowCustom
+                          customLabel={(q) => `Autre : « ${q} »`}
                         />
                       </div>
 
@@ -210,10 +216,10 @@ export function ProfileWizardPage() {
                           id="bio"
                           value={formData.bio}
                           onChange={(e) => updateField('bio', e.target.value)}
-                          placeholder="Decrivez-vous en quelques mots..."
+                          placeholder="Décrivez-vous en quelques mots…"
                           rows={3}
                         />
-                        <p className="text-xs text-muted-foreground">Optionnel. Visible par les membres de votre equipe.</p>
+                        <p className="text-xs text-muted-foreground">Optionnel. Visible par les membres de votre équipe.</p>
                       </div>
                     </div>
                   </div>
@@ -223,7 +229,7 @@ export function ProfileWizardPage() {
                 {step === 1 && (
                   <div className="space-y-5">
                     <div>
-                      <h3 className="text-base font-semibold text-foreground">Langue preferee</h3>
+                      <h3 className="text-base font-semibold text-foreground">Langue préférée</h3>
                       <p className="text-sm text-muted-foreground mt-1">
                         Choisissez la langue de l'interface
                       </p>
@@ -231,7 +237,7 @@ export function ProfileWizardPage() {
 
                     <div className="grid grid-cols-2 gap-4">
                       {[
-                        { value: 'fr', label: 'Francais', flag: '\uD83C\uDDEB\uD83C\uDDF7', desc: 'Interface en francais' },
+                        { value: 'fr', label: 'Français', flag: '\uD83C\uDDEB\uD83C\uDDF7', desc: 'Interface en français' },
                         { value: 'en', label: 'English', flag: '\uD83C\uDDEC\uD83C\uDDE7', desc: 'English interface' },
                       ].map((lang) => {
                         const selected = formData.language === lang.value;
@@ -271,9 +277,9 @@ export function ProfileWizardPage() {
                 {step === 2 && (
                   <div className="space-y-5">
                     <div>
-                      <h3 className="text-base font-semibold text-foreground">Niveau d'experience</h3>
+                      <h3 className="text-base font-semibold text-foreground">Niveau d'expérience</h3>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Cela nous aide a adapter votre experience
+                        Cela nous aide à adapter votre expérience
                       </p>
                     </div>
 
@@ -281,20 +287,20 @@ export function ProfileWizardPage() {
                       {[
                         {
                           value: 'beginner',
-                          label: 'Debutant',
-                          desc: 'Je decouvre la simulation d\'entreprise',
+                          label: 'Débutant',
+                          desc: 'Je découvre la simulation de projet',
                           emoji: '\uD83C\uDF31',
                         },
                         {
                           value: 'intermediate',
-                          label: 'Intermediaire',
-                          desc: 'J\'ai deja participe a des simulations',
+                          label: 'Intermédiaire',
+                          desc: 'J\'ai déjà participé à des simulations',
                           emoji: '\uD83D\uDE80',
                         },
                         {
                           value: 'advanced',
-                          label: 'Avance',
-                          desc: 'Je maitrise les concepts de simulation',
+                          label: 'Avancé',
+                          desc: 'Je maîtrise les concepts de gestion de projet',
                           emoji: '\u2B50',
                         },
                       ].map((level) => {
@@ -351,7 +357,7 @@ export function ProfileWizardPage() {
 
                     <div className="bg-muted/50 rounded-lg p-4 border border-border/60">
                       <p className="text-xs text-muted-foreground text-center">
-                        Cette etape est optionnelle. Vous pourrez toujours ajouter ou modifier votre photo dans les parametres.
+                        Cette étape est optionnelle. Vous pourrez toujours ajouter ou modifier votre photo dans les paramètres.
                       </p>
                     </div>
                   </div>
@@ -397,7 +403,7 @@ export function ProfileWizardPage() {
           </div>
         </div>
 
-        {/* Panneau branding — droite (identique a AuthLayout) */}
+        {/* Panneau branding — droite (identique à AuthLayout) */}
         <div className="lg:rounded-xl lg:border lg:border-border lg:m-5 order-1 lg:order-2 bg-primary relative overflow-hidden flex flex-col">
           <img
             src="/media/app/auth-bg.png"

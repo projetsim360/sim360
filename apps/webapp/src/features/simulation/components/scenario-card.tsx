@@ -4,6 +4,7 @@ import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
 import { staggerItem } from '@/lib/motion';
 import type { Scenario } from '../types/simulation.types';
+import { getSectorIcon, getSectorLabel } from '../config/sectors';
 
 const DIFFICULTY_LABEL: Record<string, string> = {
   BEGINNER: 'Débutant',
@@ -24,15 +25,6 @@ const TYPE_LABEL: Record<string, string> = {
   BROWNFIELD: 'Reprise en cours',
 };
 
-const SECTOR_ICONS: Record<string, string> = {
-  IT: 'technology-2',
-  CONSTRUCTION: 'home',
-  MARKETING: 'chart-line',
-  HEALTHCARE: 'heart',
-  FINANCE: 'dollar',
-  CUSTOM: 'element-11',
-};
-
 interface ScenarioCardProps {
   scenario: Scenario;
   onSelect: (s: Scenario) => void;
@@ -51,10 +43,10 @@ export function ScenarioCard({ scenario, onSelect, recommended = false }: Scenar
           <div className="mb-2 flex items-start justify-between gap-2">
             <div className="flex items-center gap-2">
               <span className="flex size-7 items-center justify-center rounded-lg bg-[var(--brand-50)]">
-                <KeenIcon icon={SECTOR_ICONS[scenario.sector] ?? 'element-11'} style="duotone" className="text-sm text-[var(--brand-700)]" />
+                <KeenIcon icon={getSectorIcon(scenario.sector)} style="duotone" className="text-sm text-[var(--brand-700)]" />
               </span>
               <span className="text-[10px] font-semibold uppercase tracking-[1px] text-[var(--neutral-400)]">
-                {scenario.sector}
+                {getSectorLabel(scenario.sector)}
               </span>
             </div>
             {recommended && (

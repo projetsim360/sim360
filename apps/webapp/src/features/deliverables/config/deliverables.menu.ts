@@ -6,6 +6,6 @@ export const deliverableMenuItems: MenuConfig = [
     title: 'Livrables',
     icon: FileText,
     path: '/simulations',
-    desc: 'Gerez vos livrables de projet',
+    desc: 'Gérez vos livrables de projet',
   },
 ];

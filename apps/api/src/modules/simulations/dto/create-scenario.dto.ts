@@ -80,19 +80,19 @@ export class CreateScenarioDto {
   @IsString({ each: true })
   competencies?: string[];
 
-  @ApiPropertyOptional({ enum: ScenarioType, description: 'Type de scenario: GREENFIELD (nouveau) ou BROWNFIELD (reprise)' })
+  @ApiPropertyOptional({ enum: ScenarioType, description: 'Type de scénario: GREENFIELD (nouveau) ou BROWNFIELD (reprise)' })
   @IsOptional()
   @IsEnum(ScenarioType)
   scenarioType?: ScenarioType;
 
-  @ApiPropertyOptional({ description: 'Phase de depart pour les scenarios Brownfield (0 par defaut)', minimum: 0, maximum: 4 })
+  @ApiPropertyOptional({ description: 'Phase de départ pour les scénarios Brownfield (0 par défaut)', minimum: 0, maximum: 4 })
   @IsOptional()
   @IsInt()
   @Min(0)
   @Max(4)
   startingPhaseOrder?: number;
 
-  @ApiPropertyOptional({ description: 'Contexte historique pour les scenarios Brownfield (decisions passees, retards, risques)' })
+  @ApiPropertyOptional({ description: 'Contexte historique pour les scénarios Brownfield (décisions passées, retards, risques)' })
   @IsOptional()
   @IsObject()
   brownfieldContext?: Record<string, unknown>;

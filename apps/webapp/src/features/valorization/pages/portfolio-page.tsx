@@ -127,7 +127,7 @@ export default function PortfolioPage() {
                 </p>
                 {data.simulation.completedAt && (
                   <p className="text-xs text-muted-foreground mt-1">
-                    Termine le{' '}
+                    Terminé le{' '}
                     {new Date(data.simulation.completedAt).toLocaleDateString('fr-FR', {
                       day: 'numeric',
                       month: 'long',
@@ -182,7 +182,7 @@ export default function PortfolioPage() {
               <EmptyState
                 icon="briefcase"
                 title="Portfolio vide"
-                description="Votre portfolio se construit avec vos meilleurs livrables. Soumettez et faites evaluer vos livrables."
+                description="Votre portfolio se construit avec vos meilleurs livrables. Soumettez et faites évaluer vos livrables."
               />
             </CardContent>
           </Card>
@@ -205,7 +205,7 @@ export default function PortfolioPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <KeenIcon icon="notepad" style="duotone" className="text-base text-primary" />
-                Lecons apprises
+                Leçons apprises
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -227,7 +227,7 @@ export default function PortfolioPage() {
                           appearance="light"
                           size="sm"
                         >
-                          {deliverable.status === 'COMPLETED' ? 'Termine' : deliverable.status}
+                          {deliverable.status === 'COMPLETED' ? 'Terminé' : deliverable.status}
                         </Badge>
                         {(deliverable.evaluation?.grade ?? deliverable.grade) && (
                           <span className="text-sm font-medium text-muted-foreground">
@@ -252,7 +252,7 @@ export default function PortfolioPage() {
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}/debriefing`}>
               <KeenIcon icon="chart" style="duotone" className="text-sm" />
-              Voir le debriefing
+              Voir le débriefing
             </Link>
           </Button>
         </div>

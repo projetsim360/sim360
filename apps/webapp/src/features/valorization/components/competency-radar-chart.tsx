@@ -14,7 +14,7 @@ const COMPETENCY_LABELS: Record<keyof CompetencyScores, string> = {
   risques: 'Gestion des risques',
   leadership: 'Leadership',
   rigueur: 'Rigueur',
-  adaptabilite: 'Adaptabilite',
+  adaptabilite: 'Adaptabilité',
 };
 
 interface CompetencyRadarChartProps {
@@ -44,7 +44,7 @@ export function CompetencyRadarChart({ scores, className }: CompetencyRadarChart
             tick={{ fontSize: 10, fill: 'var(--color-muted-foreground)' }}
           />
           <Radar
-            name="Competences"
+            name="Compétences"
             dataKey="value"
             stroke="var(--color-primary)"
             fill="var(--color-primary)"

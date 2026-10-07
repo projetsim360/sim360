@@ -19,6 +19,7 @@ import { useTheme } from 'next-themes';
 import { Avatar, AvatarFallback, AvatarImage, } from '@/components/ui/avatar';
 import { Link } from 'react-router';
 import { cn } from '@/lib/utils';
+import { getApiOrigin } from '@/lib/asset-url';
 
 type Account = {
   name: string;
@@ -56,7 +57,7 @@ export function UserPanel() {
   const initials = user
     ? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
     : '?';
-  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
+  const apiBase = getApiOrigin();
 
   return (
 		<DropdownMenu>

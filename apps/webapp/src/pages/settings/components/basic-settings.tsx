@@ -8,6 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import { SearchableCombobox } from '@/components/common/searchable-combobox';
+import { JOB_TITLE_OPTIONS } from '@/lib/job-titles';
 import { Switch } from '@/components/ui/switch';
 import {
   Select,
@@ -133,14 +135,17 @@ export function BasicSettings() {
         {/* Titre de poste */}
         <div className={FIELD_ROW}>
           <Label htmlFor="profile-job-title" className="text-[13px] font-medium text-foreground">
-            Titre de poste
+            Fonction
           </Label>
-          <Input
+          <SearchableCombobox
             id="profile-job-title"
-            type="text"
-            placeholder="Ex: Chef de projet"
             value={form.jobTitle}
-            onChange={(e) => handleChange('jobTitle', e.target.value)}
+            onChange={(v) => handleChange('jobTitle', v)}
+            options={JOB_TITLE_OPTIONS}
+            placeholder="Choisir ou saisir une fonction"
+            searchPlaceholder="Rechercher ou saisir une fonction…"
+            allowCustom
+            customLabel={(q) => `Autre : « ${q} »`}
           />
         </div>
 

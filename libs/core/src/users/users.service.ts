@@ -259,7 +259,7 @@ export class UsersService {
     // Generate a verification token
     const token = this.jwtService.sign(
       { userId, newEmail, type: 'email_change' },
-      { secret: this.config.get<string>('auth.jwtSecret')!, expiresIn: '1h' },
+      { secret: this.config.get<string>('auth.emailChangeSecret')!, expiresIn: '1h' },
     );
 
     await this.mailService.sendEmailChangeVerification(newEmail, user.firstName, token);

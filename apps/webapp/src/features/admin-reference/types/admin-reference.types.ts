@@ -83,14 +83,14 @@ export const PHASE_LABELS: Record<PhaseType, string> = {
   INITIATION: 'Initialisation',
   PLANNING: 'Planification',
   EXECUTION: 'Execution',
-  MONITORING: 'Suivi et Controle',
-  CLOSURE: 'Cloture',
+  MONITORING: 'Suivi et Contrôle',
+  CLOSURE: 'Clôture',
 };
 
 export const DIFFICULTY_LABELS: Record<DeliverableTemplateDifficulty, string> = {
-  DISCOVERY: 'Decouverte',
+  DISCOVERY: 'Découverte',
   STANDARD: 'Standard',
-  ADVANCED: 'Avance',
+  ADVANCED: 'Avancé',
 };
 
 export const CATEGORY_LABELS: Record<ReferenceDocumentCategory, string> = {

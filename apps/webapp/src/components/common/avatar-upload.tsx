@@ -1,6 +1,8 @@
 import { useState, useRef, useCallback } from 'react';
 import { Upload, X, User } from '@/components/keenicons/icons';
 import { api } from '@/lib/api-client';
+import { resolveAssetUrl } from '@/lib/asset-url';
+import { toast } from 'sonner';
 
 interface AvatarUploadProps {
   currentAvatar?: string | null;
@@ -23,19 +25,18 @@ export function AvatarUpload({
   const fileRef = useRef<HTMLInputElement>(null);
 
   const initials = `${firstName[0] || ''}${lastName[0] || ''}`.toUpperCase();
-  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
-  const avatarSrc = currentAvatar?.startsWith('http') ? currentAvatar : currentAvatar ? `${apiBase}${currentAvatar}` : null;
+  const avatarSrc = resolveAssetUrl(currentAvatar);
   const displayUrl = preview || avatarSrc;
 
   const handleFile = useCallback(
     async (file: File) => {
       if (file.size > 5 * 1024 * 1024) {
-        alert('La taille maximum est de 5 Mo');
+        toast.error('La taille maximale est de 5 Mo');
         return;
       }
 
       if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-        alert('Formats acceptés : JPG, PNG, WebP');
+        toast.error('Formats acceptés : JPG, PNG, WebP');
         return;
       }
 
@@ -50,10 +51,14 @@ export function AvatarUpload({
         formData.append('file', file);
         const result = await api.upload<{ avatar: string }>('/users/me/avatar', formData);
         onUpload?.(result.avatar);
+        // Drop the local preview so the image shown is the one actually served.
+        setPreview(null);
+        toast.success('Photo de profil mise à jour');
       } catch {
         setPreview(null);
-        alert("Erreur lors de l'upload");
+        toast.error('Erreur lors du téléversement de la photo');
       } finally {
+        URL.revokeObjectURL(url);
         setUploading(false);
       }
     },
@@ -76,7 +81,7 @@ export function AvatarUpload({
       setPreview(null);
       onDelete?.();
     } catch {
-      alert("Erreur lors de la suppression");
+      toast.error('Erreur lors de la suppression de la photo');
     }
   };
 

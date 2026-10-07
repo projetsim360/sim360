@@ -22,7 +22,7 @@ export default function ProjectTeamPage() {
   return (
     <div className="container">
       <Toolbar>
-        <ToolbarHeading title="Equipe du projet" />
+        <ToolbarHeading title="Équipe du projet" />
       </Toolbar>
 
       {loading ? (
@@ -32,7 +32,7 @@ export default function ProjectTeamPage() {
       ) : members.length === 0 ? (
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-sm text-muted-foreground">Aucun membre dans l'equipe</p>
+            <p className="text-sm text-muted-foreground">Aucun membre dans l'équipe</p>
           </CardContent>
         </Card>
       ) : (
@@ -52,9 +52,9 @@ export default function ProjectTeamPage() {
               </CardHeader>
               <CardContent className="space-y-2">
                 <InfoRow label="Expertise" value={m.expertise} />
-                <InfoRow label="Personnalite" value={m.personality} />
+                <InfoRow label="Personnalité" value={m.personality} />
                 <div className="flex items-center gap-4 pt-1 border-t border-border">
-                  <MiniGauge label="Disponibilite" value={m.availability} />
+                  <MiniGauge label="Disponibilité" value={m.availability} />
                   <MiniGauge label="Moral" value={m.morale} />
                 </div>
               </CardContent>

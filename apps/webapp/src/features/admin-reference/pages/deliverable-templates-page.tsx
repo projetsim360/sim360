@@ -132,8 +132,8 @@ export default function DeliverableTemplatesPage() {
 
   const handleToggle = (id: string) => {
     toggleMutation.mutate(id, {
-      onSuccess: () => toast.success('Statut mis a jour'),
-      onError: () => toast.error('Erreur lors de la mise a jour du statut'),
+      onSuccess: () => toast.success('Statut mis à jour'),
+      onError: () => toast.error('Erreur lors de la mise à jour du statut'),
     });
   };
 
@@ -143,20 +143,20 @@ export default function DeliverableTemplatesPage() {
         { id: editingTemplate.id, data },
         {
           onSuccess: () => {
-            toast.success('Template mis a jour');
+            toast.success('Template mis à jour');
             setFormOpen(false);
             setEditingTemplate(null);
           },
-          onError: () => toast.error('Erreur lors de la mise a jour'),
+          onError: () => toast.error('Erreur lors de la mise à jour'),
         },
       );
     } else {
       createMutation.mutate(data as CreateDeliverableTemplateDto, {
         onSuccess: () => {
-          toast.success('Template cree');
+          toast.success('Template créé');
           setFormOpen(false);
         },
-        onError: () => toast.error('Erreur lors de la creation'),
+        onError: () => toast.error('Erreur lors de la création'),
       });
     }
   };
@@ -213,7 +213,7 @@ export default function DeliverableTemplatesPage() {
               <div className="w-36">
                 <Select value={filterDifficulty} onValueChange={setFilterDifficulty}>
                   <SelectTrigger size="sm">
-                    <SelectValue placeholder="Difficulte" />
+                    <SelectValue placeholder="Difficulté" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="_all">Toutes</SelectItem>
@@ -251,7 +251,7 @@ export default function DeliverableTemplatesPage() {
                     setSearch('');
                   }}
                 >
-                  Reinitialiser
+                  Réinitialiser
                 </Button>
               )}
             </div>
@@ -281,8 +281,8 @@ export default function DeliverableTemplatesPage() {
               <EmptyState
                 icon="document"
                 title="Aucun template"
-                description="Aucun template ne correspond a vos filtres."
-                action={{ label: 'Creer un premier template', onClick: handleCreate }}
+                description="Aucun template ne correspond à vos filtres."
+                action={{ label: 'Créer un premier template', onClick: handleCreate }}
               />
             </CardContent>
           </Card>
@@ -317,7 +317,7 @@ export default function DeliverableTemplatesPage() {
                         className="px-4 py-3 text-left font-medium text-muted-foreground cursor-pointer hover:text-foreground"
                         onClick={() => handleSort('difficulty')}
                       >
-                        Difficulte{sortIcon('difficulty')}
+                        Difficulté{sortIcon('difficulty')}
                       </th>
                       <th
                         className="px-4 py-3 text-center font-medium text-muted-foreground cursor-pointer hover:text-foreground"
@@ -332,7 +332,7 @@ export default function DeliverableTemplatesPage() {
                         className="px-4 py-3 text-left font-medium text-muted-foreground cursor-pointer hover:text-foreground"
                         onClick={() => handleSort('updatedAt')}
                       >
-                        Modifie{sortIcon('updatedAt')}
+                        Modifié{sortIcon('updatedAt')}
                       </th>
                       <th className="px-4 py-3 text-right font-medium text-muted-foreground">
                         Actions
@@ -397,7 +397,7 @@ export default function DeliverableTemplatesPage() {
                               onClick={() => handleToggle(tpl.id)}
                               disabled={toggleMutation.isPending}
                             >
-                              {tpl.isActive ? 'Desactiver' : 'Activer'}
+                              {tpl.isActive ? 'Désactiver' : 'Activer'}
                             </Button>
                           </div>
                         </td>

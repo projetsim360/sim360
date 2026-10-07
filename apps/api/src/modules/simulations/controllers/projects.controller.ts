@@ -18,13 +18,13 @@ export class ProjectsController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Detail d\'un projet' })
+  @ApiOperation({ summary: 'Détail d\'un projet' })
   findOne(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.projectsService.findOne(id, userId);
   }
 
   @Get(':id/team')
-  @ApiOperation({ summary: 'Equipe du projet' })
+  @ApiOperation({ summary: 'Équipe du projet' })
   getTeam(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.projectsService.getTeam(id, userId);
   }
@@ -36,7 +36,7 @@ export class ProjectsController {
   }
 
   @Patch(':id/deliverables/:delId')
-  @ApiOperation({ summary: 'Mettre a jour un livrable' })
+  @ApiOperation({ summary: 'Mettre à jour un livrable' })
   updateDeliverable(
     @Param('id') id: string,
     @Param('delId') delId: string,

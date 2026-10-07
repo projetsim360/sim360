@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import { motion, useReducedMotion } from 'framer-motion';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import { staggerContainer, staggerItem } from '@/lib/motion';
 import { simulationApi } from '../api/simulation.api';
 import type { Simulation, SimulationPhase, KpiValues } from '../types/simulation.types';
+import { getSectorIcon, getSectorLabel } from '../config/sectors';
 
 const STATUS_CONFIG: Record<Simulation['status'], { label: string; dot: string; pill: string }> = {
   DRAFT: { label: 'Brouillon', dot: 'bg-[var(--neutral-400)]', pill: 'text-[var(--neutral-500)]' },
@@ -26,15 +27,6 @@ const DIFFICULTY_LABEL: Record<string, string> = {
   INTERMEDIATE: 'Intermédiaire',
   ADVANCED: 'Avancé',
   EXPERT: 'Expert',
-};
-
-const SECTOR_ICONS: Record<string, string> = {
-  IT: 'technology-2',
-  CONSTRUCTION: 'home',
-  MARKETING: 'chart-line',
-  HEALTHCARE: 'heart',
-  FINANCE: 'dollar',
-  CUSTOM: 'element-11',
 };
 
 function kpiStroke(value: number, inverse = false): string {
@@ -95,7 +87,12 @@ export default function SimulationsListPage() {
   const [simulations, setSimulations] = useState<Simulation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<TabFilter>('all');
+  const [searchParams] = useSearchParams();
+  // ?statut=COMPLETED preselects a tab (used by the help assistant links).
+  const [activeTab, setActiveTab] = useState<TabFilter>(() => {
+    const fromUrl = searchParams.get('statut') as TabFilter | null;
+    return fromUrl === 'IN_PROGRESS' || fromUrl === 'COMPLETED' ? fromUrl : 'all';
+  });
 
   useEffect(() => {
     setLoading(true);
@@ -199,7 +196,7 @@ export default function SimulationsListPage() {
               const totalPhases = sim.phases?.length ?? 0;
               const k = sim.kpis as KpiValues | null;
               const statusCfg = STATUS_CONFIG[sim.status] ?? STATUS_CONFIG.DRAFT;
-              const sectorIcon = SECTOR_ICONS[sim.scenario?.sector ?? ''] ?? 'element-11';
+              const sectorIcon = getSectorIcon(sim.scenario?.sector);
               const pendingDecisions = sim.decisions?.filter((d) => d.selectedOption === null).length ?? 0;
 
               return (
@@ -230,7 +227,7 @@ export default function SimulationsListPage() {
                         <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
                           <span className="inline-flex items-center gap-1 rounded bg-[var(--brand-50)] px-1.5 py-0.5 text-[10px] text-[var(--brand-700)]">
                             <KeenIcon icon={sectorIcon} style="duotone" className="text-[10px] leading-none" />
-                            {sim.scenario?.sector}
+                            {getSectorLabel(sim.scenario?.sector)}
                           </span>
                           <span className="inline-flex items-center gap-1 rounded bg-[var(--brand-50)] px-1.5 py-0.5 text-[10px] text-[var(--brand-700)]">
                             {DIFFICULTY_LABEL[sim.scenario?.difficulty ?? ''] ?? sim.scenario?.difficulty}

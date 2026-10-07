@@ -51,7 +51,7 @@ export default function EmailDetailPage() {
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-sm text-muted-foreground">
-              Parametres manquants.
+              Paramètres manquants.
             </p>
           </CardContent>
         </Card>
@@ -167,7 +167,7 @@ export default function EmailDetailPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
                 <KeenIcon icon="double-check" style="duotone" className="size-5 text-success" />
-                Votre reponse
+                Votre réponse
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -179,7 +179,7 @@ export default function EmailDetailPage() {
 
               {email.respondedAt && (
                 <p className="text-xs text-muted-foreground">
-                  Repondu le{' '}
+                  Répondu le{' '}
                   {format(new Date(email.respondedAt), 'd MMMM yyyy, HH:mm', {
                     locale: fr,
                   })}
@@ -206,7 +206,7 @@ export default function EmailDetailPage() {
 
               {email.responseFeedback && (
                 <div className="pt-2">
-                  <h4 className="text-sm font-semibold mb-1">Retour de l'IA</h4>
+                  <h4 className="text-sm font-semibold mb-1">Retour détaillé</h4>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     {email.responseFeedback}
                   </p>

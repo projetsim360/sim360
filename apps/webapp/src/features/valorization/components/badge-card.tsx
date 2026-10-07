@@ -15,7 +15,7 @@ const DIFFICULTY_BG: Record<string, string> = {
 
 const DIFFICULTY_LABELS: Record<string, string> = {
   EASY: 'Facile',
-  MEDIUM: 'Intermediaire',
+  MEDIUM: 'Intermédiaire',
   HARD: 'Difficile',
   EXPERT: 'Expert',
 };

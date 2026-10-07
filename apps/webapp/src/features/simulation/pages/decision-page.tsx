@@ -20,9 +20,9 @@ function kpiColor(value: number): string {
 
 const KPI_LABELS: Record<string, string> = {
   budget: 'Budget',
-  schedule: 'Delai',
-  quality: 'Qualite',
-  teamMorale: 'Moral equipe',
+  schedule: 'Délai',
+  quality: 'Qualité',
+  teamMorale: 'Moral équipe',
   riskLevel: 'Niveau risque',
 };
 
@@ -76,7 +76,7 @@ export default function DecisionPage() {
       const dec = simData.decisions?.find((d: Decision) => d.id === decId);
       if (dec) setDecision(dec);
       setSubmitted(true);
-      toast.success('Decision enregistree. Les KPIs ont ete mis a jour.');
+      toast.success('Décision enregistrée. Les KPIs ont été mis à jour.');
 
       // Trigger AI analysis (fail silently)
       setAiLoading(true);
@@ -87,7 +87,7 @@ export default function DecisionPage() {
         .finally(() => setAiLoading(false));
     } catch (err: any) {
       setError(err.message);
-      toast.error('Erreur lors de la prise de decision.');
+      toast.error('Erreur lors de la prise de décision.');
     } finally {
       setSubmitting(false);
     }
@@ -112,16 +112,16 @@ export default function DecisionPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Decision" />
+          <ToolbarHeading title="Décision" />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-destructive text-sm">
-              {error || 'Decision introuvable.'}
+              {error || 'Décision introuvable.'}
             </p>
             <Button variant="link" asChild>
               <Link to={id ? `/simulations/${id}` : '/simulations'}>
-                Retour a la simulation
+                Retour à la simulation
               </Link>
             </Button>
           </CardContent>
@@ -133,11 +133,11 @@ export default function DecisionPage() {
   return (
     <div className="container">
       <Toolbar>
-        <ToolbarHeading title="Decision" />
+        <ToolbarHeading title="Décision" />
         <ToolbarActions>
           <Button variant="outline" asChild>
             <Link to={`/simulations/${id}`}>
-              <KeenIcon icon="arrow-left" style="duotone" className="size-4" /> Retour a la simulation
+              <KeenIcon icon="arrow-left" style="duotone" className="size-4" /> Retour à la simulation
             </Link>
           </Button>
         </ToolbarActions>
@@ -247,7 +247,7 @@ export default function DecisionPage() {
                 Validation...
               </>
             ) : (
-              'Confirmer la decision'
+              'Confirmer la décision'
             )}
           </Button>
         </div>
@@ -258,7 +258,7 @@ export default function DecisionPage() {
         <Card className="mt-5 border-success/30 bg-success/10">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm text-success">
-              <KeenIcon icon="check-circle" style="duotone" className="size-4 text-success" /> Impact de votre decision
+              <KeenIcon icon="check-circle" style="duotone" className="size-4 text-success" /> Impact de votre décision
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -285,7 +285,7 @@ export default function DecisionPage() {
 
       {submitted && (!decision.kpiImpact || Object.keys(decision.kpiImpact).length === 0) && (
         <div className="mt-5 text-center">
-          <p className="text-sm text-success mb-3">Decision enregistree.</p>
+          <p className="text-sm text-success mb-3">Décision enregistrée.</p>
           <Button asChild>
             <Link to={`/simulations/${id}`}>
               Retour au tableau de bord
@@ -299,7 +299,7 @@ export default function DecisionPage() {
         <Card className="mt-5 border-primary/20 bg-primary/5">
           <CardContent className="py-6 text-center">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto mb-2" />
-            <p className="text-sm text-primary">Analyse IA en cours...</p>
+            <p className="text-sm text-primary">Analyse de votre décision en cours...</p>
           </CardContent>
         </Card>
       )}
@@ -307,7 +307,7 @@ export default function DecisionPage() {
       {submitted && aiAnalysis && (
         <Card className="mt-5 border-primary/20 bg-primary/5">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm text-primary">Analyse IA</CardTitle>
+            <CardTitle className="text-sm text-primary">Analyse de votre décision</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {aiAnalysis.score !== undefined && (
@@ -318,7 +318,7 @@ export default function DecisionPage() {
                   {aiAnalysis.score}
                 </div>
                 <div>
-                  <p className="text-sm font-medium">Score de la decision</p>
+                  <p className="text-sm font-medium">Score de la décision</p>
                   {aiAnalysis.scoreJustification && (
                     <p className="text-sm text-muted-foreground">{aiAnalysis.scoreJustification}</p>
                   )}
@@ -338,7 +338,7 @@ export default function DecisionPage() {
             {aiAnalysis.patternAnalysis && (
               <div className="border-t border-primary/20 pt-3">
                 <h4 className="text-sm font-semibold text-primary mb-1">
-                  Profil decisionnel : <span className="capitalize">{aiAnalysis.patternAnalysis.pattern === 'cautious' ? 'Prudent' : aiAnalysis.patternAnalysis.pattern === 'aggressive' ? 'Audacieux' : aiAnalysis.patternAnalysis.pattern === 'balanced' ? 'Equilibre' : 'Variable'}</span>
+                  Profil décisionnel : <span className="capitalize">{aiAnalysis.patternAnalysis.pattern === 'cautious' ? 'Prudent' : aiAnalysis.patternAnalysis.pattern === 'aggressive' ? 'Audacieux' : aiAnalysis.patternAnalysis.pattern === 'balanced' ? 'Équilibre' : 'Variable'}</span>
                   <span className="text-primary/60 font-normal ml-1">({aiAnalysis.patternAnalysis.confidence}%)</span>
                 </h4>
                 <p className="text-sm text-primary">{aiAnalysis.patternAnalysis.description}</p>

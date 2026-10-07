@@ -100,7 +100,7 @@ export default function MentorReviewPage() {
       },
       {
         onSuccess: () => {
-          toast.success('Review soumise avec succes');
+          toast.success('Review soumise avec succès');
           navigate('/mentoring');
         },
         onError: () => {
@@ -118,7 +118,7 @@ export default function MentorReviewPage() {
             Review Mentor
           </h1>
           <p className="text-sm text-gray-700">
-            Evaluez le livrable et fournissez votre feedback
+            Évaluez le livrable et fournissez votre feedback
           </p>
         </ToolbarHeading>
         <ToolbarActions>
@@ -135,7 +135,7 @@ export default function MentorReviewPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <KeenIcon icon="ai-network" style="duotone" />
-              Evaluation IA existante
+              Évaluation automatique existante
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -154,7 +154,7 @@ export default function MentorReviewPage() {
                 </div>
                 {review.score !== undefined && (
                   <Badge variant="info" size="sm">
-                    Score IA : {review.score}/100
+                    Score automatique : {review.score}/100
                   </Badge>
                 )}
                 {review.grade && (
@@ -165,7 +165,7 @@ export default function MentorReviewPage() {
               </div>
             ) : (
               <p className="text-sm text-muted-foreground">
-                Aucune evaluation trouvee pour cet identifiant
+                Aucune évaluation trouvée pour cet identifiant
               </p>
             )}
           </CardContent>
@@ -276,7 +276,7 @@ export default function MentorReviewPage() {
                       <FormControl>
                         <Textarea
                           rows={4}
-                          placeholder="Votre feedback detaille sur le livrable..."
+                          placeholder="Votre feedback détaillé sur le livrable..."
                           {...field}
                         />
                       </FormControl>

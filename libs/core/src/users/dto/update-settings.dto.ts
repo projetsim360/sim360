@@ -1,4 +1,4 @@
-import { IsOptional, IsBoolean, IsString } from 'class-validator';
+import { IsOptional, IsBoolean, IsString, IsTimeZone } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateSettingsDto {
@@ -7,9 +7,9 @@ export class UpdateSettingsDto {
   @IsBoolean()
   profileVisibility?: boolean;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: 'America/Toronto' })
   @IsOptional()
-  @IsString()
+  @IsTimeZone({ message: 'Fuseau horaire invalide' })
   timezone?: string;
 
   @ApiPropertyOptional()

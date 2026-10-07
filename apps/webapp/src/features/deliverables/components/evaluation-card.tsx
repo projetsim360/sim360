@@ -15,7 +15,7 @@ export function EvaluationCard({
   icon,
   iconColor,
   items,
-  emptyMessage = 'Aucun element.',
+  emptyMessage = 'Aucun élément.',
 }: EvaluationCardProps) {
   return (
     <Card>

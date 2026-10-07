@@ -10,8 +10,8 @@ const STATUS_LABELS: Record<string, string> = {
   DRAFT: 'Brouillon',
   IN_PROGRESS: 'En cours',
   PAUSED: 'En pause',
-  COMPLETED: 'Termine',
-  ABANDONED: 'Abandonne',
+  COMPLETED: 'Terminé',
+  ABANDONED: 'Abandonné',
 };
 
 const STATUS_VARIANT: Record<string, 'secondary' | 'primary' | 'warning' | 'success' | 'destructive'> = {
@@ -62,7 +62,7 @@ export default function ProjectsListPage() {
             <EmptyState
               icon="folder"
               title="Aucun projet"
-              description="Lancez une simulation pour creer votre premier projet."
+              description="Lancez une simulation pour créer votre premier projet."
               action={{ label: 'Nouvelle simulation', href: '/simulations/new' }}
             />
           </CardContent>

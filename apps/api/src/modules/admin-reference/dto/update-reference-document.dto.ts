@@ -3,21 +3,21 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { ReferenceDocumentCategory, PhaseType } from '@prisma/client';
 
 export class UpdateReferenceDocumentDto {
-  @ApiPropertyOptional({ description: 'Titre du document de reference' })
+  @ApiPropertyOptional({ description: 'Titre du document de référence' })
   @IsString()
   @IsNotEmpty()
   @IsOptional()
   title?: string;
 
   @ApiPropertyOptional({
-    description: 'Categorie du document',
+    description: 'Catégorie du document',
     enum: ReferenceDocumentCategory,
   })
   @IsEnum(ReferenceDocumentCategory)
   @IsOptional()
   category?: ReferenceDocumentCategory;
 
-  @ApiPropertyOptional({ description: 'Phase PMI associee', enum: PhaseType })
+  @ApiPropertyOptional({ description: 'Phase PMI associée', enum: PhaseType })
   @IsEnum(PhaseType)
   @IsOptional()
   phase?: PhaseType;
@@ -36,14 +36,14 @@ export class UpdateReferenceDocumentDto {
   @ApiPropertyOptional({ description: 'Terme PMI (obligatoire si category = GLOSSARY)' })
   @ValidateIf((o) => o.category === ReferenceDocumentCategory.GLOSSARY)
   @IsString()
-  @IsNotEmpty({ message: 'Le terme est obligatoire pour les entrees de glossaire' })
+  @IsNotEmpty({ message: 'Le terme est obligatoire pour les entrées de glossaire' })
   @IsOptional()
   term?: string;
 
   @ApiPropertyOptional({ description: 'Exemple concret (obligatoire si category = GLOSSARY)' })
   @ValidateIf((o) => o.category === ReferenceDocumentCategory.GLOSSARY)
   @IsString()
-  @IsNotEmpty({ message: 'L\'exemple est obligatoire pour les entrees de glossaire' })
+  @IsNotEmpty({ message: 'L\'exemple est obligatoire pour les entrées de glossaire' })
   @IsOptional()
   example?: string;
 }

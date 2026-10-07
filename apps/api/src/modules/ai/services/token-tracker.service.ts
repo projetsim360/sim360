@@ -106,7 +106,7 @@ export class TokenTrackerService {
 
     if (quota.currentMonthInput >= quota.monthlyInputLimit) {
       throw new ForbiddenException(
-        `Quota de tokens d'entree mensuel atteint (${quota.monthlyInputLimit} tokens)`,
+        `Quota de tokens d'entrée mensuel atteint (${quota.monthlyInputLimit} tokens)`,
       );
     }
 

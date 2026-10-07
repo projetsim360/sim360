@@ -16,6 +16,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {Plus, CheckSquare, ListTodo, Settings, HelpCircle, LogOut, Moon, Sun } from "@/components/keenicons/icons";
+import { getApiOrigin } from '@/lib/asset-url';
 
 interface UserDropdownMenuProps {
   isCollapsed?: boolean;
@@ -29,7 +30,7 @@ export function UserDropdownMenu({ isCollapsed = false }: UserDropdownMenuProps)
   const initials = user
     ? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
     : '?';
-  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
+  const apiBase = getApiOrigin();
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");

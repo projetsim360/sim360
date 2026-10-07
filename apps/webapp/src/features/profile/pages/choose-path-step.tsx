@@ -135,7 +135,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
 
     completeOnboarding.mutate(undefined, {
       onSuccess: () => {
-        toast.success('Onboarding termine. Bienvenue sur Simex pro !');
+        toast.success('Onboarding terminé. Bienvenue sur Simex pro !');
         navigate('/simulations');
       },
       onError: () => {
@@ -179,7 +179,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
       <div>
         <h3 className="font-display text-[14.5px] font-bold text-[var(--brand-700)]">Secteur de votre simulation</h3>
         <p className="mb-3 mt-0.5 text-xs text-muted-foreground">
-          Basé sur votre domaine et l'analyse IA — modifiable.
+          Basé sur votre domaine et l'analyse de votre profil — modifiable.
         </p>
         <SectorSelector
           value={selectedSector}
@@ -201,7 +201,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
         <div className="flex-1">
           <p className="text-sm font-bold text-[var(--brand-700)]">Proposer un projet personnalisé</p>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            Décrivez votre propre projet, notre IA génère un scénario sur mesure.
+            Décrivez votre propre projet, nous générons un scénario sur mesure.
           </p>
         </div>
         <Button variant="outline" size="sm" onClick={() => setShowCustomDialog(true)}>

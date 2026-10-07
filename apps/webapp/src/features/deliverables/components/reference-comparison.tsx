@@ -110,7 +110,7 @@ export function ReferenceComparison({
       <div className="flex items-center justify-between px-1">
         <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
           <KeenIcon icon="eye" style="duotone" className="size-4 text-primary" />
-          Comparaison avec la reference
+          Comparaison avec la référence
         </h3>
         <Badge variant={coverageBadgeVariant} appearance="light" size="sm">
           Score de couverture : {coverageScore}%
@@ -143,7 +143,7 @@ export function ReferenceComparison({
             <CardHeader className="pb-2 bg-primary/5 rounded-t-lg">
               <CardTitle className="text-sm flex items-center gap-2 text-primary">
                 <KeenIcon icon="abstract-26" style="duotone" className="size-4" />
-                Reference IA
+                Référence attendue
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
@@ -179,7 +179,7 @@ export function ReferenceComparison({
             <CardHeader className="pb-2 bg-primary/5 rounded-t-lg">
               <CardTitle className="text-sm flex items-center gap-2 text-primary">
                 <KeenIcon icon="abstract-26" style="duotone" className="size-4" />
-                Reference IA
+                Référence attendue
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">

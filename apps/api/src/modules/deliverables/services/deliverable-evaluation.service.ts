@@ -151,32 +151,32 @@ export class DeliverableEvaluationService {
         .join(', ');
 
       const result = await this.aiService.complete({
-        prompt: `Genere un compte-rendu de reunion structure en markdown a partir des informations suivantes :
+        prompt: `Génère un compte-rendu de réunion structuré en markdown à partir des informations suivantes :
 
-## Informations de la reunion
+## Informations de la réunion
 - **Titre** : ${meeting.title}
 - **Type** : ${meeting.type}
 - **Objectifs** : ${meeting.objectives.join(', ')}
 - **Participants** : ${participantsList}
-- **Duree** : ${meeting.durationMinutes} minutes
+- **Durée** : ${meeting.durationMinutes} minutes
 
-## Messages echanges
+## Messages échangés
 ${messagesText}
 
-${meeting.summary ? `## Resume existant\n${meeting.summary.summary}` : ''}
+${meeting.summary ? `## Résumé existant\n${meeting.summary.summary}` : ''}
 
 ## Instructions
-Redige un compte-rendu professionnel incluant :
-1. En-tete (date, participants, objectifs)
-2. Points abordes
-3. Decisions prises
-4. Actions a mener (qui, quoi, quand)
+Rédige un compte-rendu professionnel incluant :
+1. En-tête (date, participants, objectifs)
+2. Points abordés
+3. Décisions prises
+4. Actions à mener (qui, quoi, quand)
 5. Points en suspens
-6. Prochaines etapes
+6. Prochaines étapes
 
-Reponds uniquement en markdown, en francais.`,
+Réponds uniquement en markdown, en français.`,
         systemPrompt:
-          'Tu es un assistant specialise dans la redaction de comptes-rendus de reunions professionnels. Tu produis des documents structures, precis et exploitables.',
+          'Tu es un assistant spécialisé dans la rédaction de comptes-rendus de réunions professionnels. Tu produis des documents structurés, précis et exploitables. Réponds en français correct, avec les accents.',
         maxTokens: 3000,
         temperature: 0.5,
         trackingContext: {
@@ -225,12 +225,12 @@ Reponds uniquement en markdown, en francais.`,
   ): Promise<EvaluationResult> {
     const evaluationCriteria = template?.evaluationCriteria
       ? JSON.stringify(template.evaluationCriteria, null, 2)
-      : 'Criteres generiques : exhaustivite, clarte, alignement PMI, qualite redactionnelle';
+      : 'Critères génériques : exhaustivité, clarté, alignement PMI, qualité rédactionnelle';
 
-    const pmiProcess = template?.pmiProcess || 'Non specifie';
+    const pmiProcess = template?.pmiProcess || 'Non spécifié';
 
     const result = await this.aiService.complete({
-      prompt: `Evalue le livrable suivant selon les criteres fournis.
+      prompt: `Évalue le livrable suivant selon les critères fournis.
 
 ## Livrable
 - **Titre** : ${deliverable.title}
@@ -240,38 +240,38 @@ Reponds uniquement en markdown, en francais.`,
 ## Contenu du livrable
 ${deliverable.content || '(vide)'}
 
-${template ? `## Template de reference\n${template.content}` : ''}
+${template ? `## Template de référence\n${template.content}` : ''}
 
-## Criteres d'evaluation
+## Critères d'évaluation
 ${evaluationCriteria}
 
-## Processus PMI associe
+## Processus PMI associé
 ${pmiProcess}
 
 ## Instructions
-Evalue ce livrable et retourne un JSON avec exactement cette structure :
+évalué ce livrable et retourne un JSON avec exactement cette structure :
 {
   "score": <nombre entre 0 et 100>,
   "grade": "<A, B, C, D ou F>",
   "positives": ["<points positifs>"],
-  "improvements": ["<points a ameliorer>"],
-  "missingElements": ["<elements manquants>"],
-  "incorrectElements": ["<elements incorrects ou errones>"],
-  "recommendations": ["<recommandations pour la prochaine revision>"],
+  "improvements": ["<points à améliorer>"],
+  "missingElements": ["<éléments manquants>"],
+  "incorrectElements": ["<éléments incorrects ou erronés>"],
+  "recommendations": ["<recommandations pour la prochaine révision>"],
   "pmiOutputsCovered": ["<outputs PMI couverts par ce livrable>"],
-  "pmiOutputsMissing": ["<outputs PMI qui devraient etre presents mais sont absents>"]
+  "pmiOutputsMissing": ["<outputs PMI qui devraient être présents mais sont absents>"]
 }
 
-Baremes :
+Barèmes :
 - A (90-100) : Excellent, quasi-professionnel
-- B (75-89) : Bon, quelques ameliorations mineures
-- C (60-74) : Acceptable, ameliorations significatives necessaires
+- B (75-89) : Bon, quelques améliorations mineures
+- C (60-74) : Acceptable, améliorations significatives nécessaires
 - D (40-59) : Insuffisant, manques importants
-- F (0-39) : Tres insuffisant, a refaire completement
+- F (0-39) : Très insuffisant, à refaire complètement
 
-Reponds UNIQUEMENT avec le JSON, sans commentaire ni markdown.`,
+Réponds UNIQUEMENT avec le JSON, sans commentaire ni markdown.`,
       systemPrompt:
-        'Tu es un evaluateur PMI expert et pedagogue. Tu evalues les livrables de gestion de projet selon les standards PMBOK 7eme edition. Tu es exigeant mais constructif. Reponds toujours en francais. Reponds UNIQUEMENT avec le JSON demande.',
+        'Tu es un évaluateur PMI expert et pédagogue. Tu évalues les livrables de gestion de projet selon les standards PMBOK 7e édition. Tu es exigeant mais constructif. Réponds toujours en français. Réponds UNIQUEMENT avec le JSON demandé.',
       maxTokens: 2000,
       temperature: 0.3,
       trackingContext: {
@@ -318,14 +318,14 @@ Reponds UNIQUEMENT avec le JSON, sans commentaire ni markdown.`,
       return {
         score: 50,
         grade: 'D',
-        positives: ['Le livrable a ete soumis'],
+        positives: ['Le livrable a été soumis'],
         improvements: [
-          'Impossible d\'evaluer automatiquement. Veuillez reessayer.',
+          'Impossible d\'évaluer automatiquement. Veuillez réessayer.',
         ],
         missingElements: [],
         incorrectElements: [],
         recommendations: [
-          'Verifiez que le contenu est bien structure et complet.',
+          'Vérifiez que le contenu est bien structure et complet.',
         ],
         pmiOutputsCovered: [],
         pmiOutputsMissing: [],

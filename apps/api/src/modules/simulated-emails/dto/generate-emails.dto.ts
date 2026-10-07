@@ -3,7 +3,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class GenerateEmailsDto {
   @ApiPropertyOptional({
-    description: 'Numero de la phase pour laquelle generer les emails (defaut: phase courante)',
+    description: 'Numéro de la phase pour laquelle générer les emails (défaut: phase courante)',
     example: 1,
   })
   @IsOptional()

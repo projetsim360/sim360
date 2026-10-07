@@ -1,4 +1,4 @@
-import { useState, useEffect, useId } from 'react';
+import { useState, useEffect, useId, useMemo } from 'react';
 import { useAuth } from '@/providers/auth-provider';
 import { api } from '@/lib/api-client';
 import { toast } from 'sonner';
@@ -8,6 +8,8 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
+import { SearchableCombobox } from '@/components/common/searchable-combobox';
+import { PREFERRED_TIMEZONES, formatTimezoneLabel, getBrowserTimezone, listTimezones, normalizeTimezone } from '@/lib/timezones';
 import {
   Select,
   SelectContent,
@@ -25,7 +27,16 @@ export function Preferences() {
   const { user, refreshUser } = useAuth();
   const [loading, setLoading] = useState(false);
 
-  const [timezone, setTimezone] = useState('europe_paris');
+  const [timezone, setTimezone] = useState(() => getBrowserTimezone());
+  const timezoneOptions = useMemo(
+    () =>
+      listTimezones().map((tz) => ({
+        value: tz,
+        label: formatTimezoneLabel(tz),
+        group: PREFERRED_TIMEZONES.includes(tz) ? 'Suggestions' : 'Tous les fuseaux',
+      })),
+    [],
+  );
   const [dateFormat, setDateFormat] = useState('dd_mm_yyyy');
   const [simulationViewMode, setSimulationViewMode] = useState('modal');
   const [showSimulationNames, setShowSimulationNames] = useState(true);
@@ -34,7 +45,7 @@ export function Preferences() {
 
   useEffect(() => {
     if (user) {
-      setTimezone(user.timezone || 'europe_paris');
+      setTimezone(normalizeTimezone(user.timezone, getBrowserTimezone()));
       setDateFormat(user.dateFormat || 'dd_mm_yyyy');
       setSimulationViewMode(user.simulationViewMode || 'modal');
       setShowSimulationNames(user.showSimulationNames ?? true);
@@ -82,17 +93,13 @@ export function Preferences() {
         {/* Fuseau horaire */}
         <div className={FIELD_ROW}>
           <Label className="text-[13px] font-medium text-foreground">Fuseau horaire</Label>
-          <Select value={timezone} onValueChange={setTimezone}>
-            <SelectTrigger>
-              <SelectValue placeholder="Sélectionner" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="europe_paris">GMT +1:00 - Europe/Paris</SelectItem>
-              <SelectItem value="europe_london">GMT +0:00 - Europe/Londres</SelectItem>
-              <SelectItem value="america_new_york">GMT -5:00 - Amérique/New York</SelectItem>
-              <SelectItem value="america_los_angeles">GMT -8:00 - Amérique/Los Angeles</SelectItem>
-            </SelectContent>
-          </Select>
+          <SearchableCombobox
+            value={timezone}
+            onChange={setTimezone}
+            options={timezoneOptions}
+            searchPlaceholder="Rechercher une ville ou un fuseau…"
+            emptyText="Aucun fuseau horaire trouvé"
+          />
         </div>
 
         {/* Format de date */}

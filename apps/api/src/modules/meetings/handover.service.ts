@@ -2,30 +2,30 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService, EventPublisherService, EventType, AggregateType } from '@sim360/core';
 
 const HANDOVER_HR_AGENDA = [
-  'Bienvenue et presentation de l\'entreprise',
+  'Bienvenue et présentation de l\'entreprise',
   'Culture et valeurs de l\'organisation',
-  'Regles internes et processus de communication',
-  'Outils mis a votre disposition',
-  'Attentes du poste de Chef de Projet',
-  'Contacts cles et organigramme',
-  'Session questions-reponses',
+  'Règles internes et processus de communication',
+  'Outils mis à votre disposition',
+  'Attentes du poste de chef de projet',
+  'Contacts clés et organigramme',
+  'Période de questions',
 ];
 
 const HANDOVER_PMO_AGENDA = [
   'Contexte et objectifs du projet',
-  'Methodologie de gestion de projet (PMBOK)',
+  'Méthodologie de gestion de projet (PMBOK)',
   'Phases du projet et jalons',
   'Livrables attendus par phase',
-  'Equipe projet et parties prenantes',
-  'Outils de pilotage (KPIs, reunions, livrables)',
-  'Session questions-reponses',
+  'Équipe de projet et parties prenantes',
+  'Outils de pilotage (indicateurs, réunions, livrables)',
+  'Période de questions',
 ];
 
 const HANDOVER_PMO_BROWNFIELD_EXTRA = [
-  'Historique du projet et decisions passees',
-  'Etat actuel : retards, budget, risques',
-  'Actions prioritaires et "feux a eteindre"',
-  'Attentes du Sponsor pour le redressement',
+  'Historique du projet et décisions passées',
+  'État actuel : retards, budget, risques',
+  'Actions prioritaires et « feux à éteindre »',
+  'Attentes du commanditaire pour le redressement',
 ];
 
 @Injectable()
@@ -83,8 +83,8 @@ export class HandoverService {
             },
             {
               name: 'Maxime Roche',
-              role: 'Office Manager',
-              personality: 'Pratique et organise. Gere la logistique : badge d\'acces, poste de travail, outils informatiques. Repond aux questions concretes sur le quotidien au bureau.',
+              role: 'Responsable des services administratifs',
+              personality: 'Pratique et organisé. Gère la logistique : carte d\'accès, poste de travail, outils informatiques. Répond aux questions concrètes sur le quotidien au bureau.',
               cooperationLevel: 5,
               avatar: '/media/avatars/300-14.png',
             },
@@ -104,13 +104,13 @@ export class HandoverService {
 
     const pmoDescription = isBrownfield
       ? `Le PMO vous fait le point sur le projet "${projectName}" que vous reprenez en cours de route. ${brownfieldContext?.previousPmNotes ?? ''}`
-      : `Le PMO vous presente le projet "${projectName}" et la methodologie a suivre.`;
+      : `Le PMO vous présente le projet « ${projectName} » et la méthodologie à suivre.`;
 
     const pmoMeeting = await this.prisma.meeting.create({
       data: {
         simulationId,
         phaseOrder: simulation.currentPhaseOrder,
-        title: 'Passation PMO — Presentation du projet',
+        title: 'Passation PMO — Présentation du projet',
         description: pmoDescription,
         type: 'HANDOVER_PMO',
         objectives: pmoObjectives,
@@ -232,35 +232,50 @@ export class HandoverService {
 
   private generateHrPersonality(sector: string, projectName: string): string {
     const sectorCultures: Record<string, string> = {
-      IT: 'Culture agile et innovante. Teletravail flexible, methodologie Scrum/Kanban. Open spaces avec zones de concentration. Dress code decontracte. Hackathons trimestriels.',
-      CONSTRUCTION: 'Culture de terrain et de securite. Reunions de chantier hebdomadaires. Respect strict des normes HSE. Hierarchie claire mais accessible. Esprit d\'equipe fort.',
-      MARKETING: 'Culture creative et collaborative. Brainstormings reguliers. Environnement dynamique et fast-paced. KPIs orientes resultats. Evenements team-building mensuels.',
-      HEALTHCARE: 'Culture patient-centrique et rigoureuse. Protocoles stricts de conformite. Formation continue obligatoire. Respect des normes sanitaires. Communication interprofessionnelle.',
-      FINANCE: 'Culture de performance et de compliance. Processus rigoureux de validation. Confidentialite des donnees absolue. Dress code business. Reporting financier mensuel.',
-      CUSTOM: 'Culture professionnelle et collaborative. Valeurs d\'innovation et d\'excellence operationnelle.',
+      IT: 'Culture agile et innovante. Télétravail flexible, méthodologie Scrum/Kanban. Espaces ouverts avec zones de concentration. Tenue décontractée. Hackathons trimestriels.',
+      CONSTRUCTION: 'Culture de terrain et de sécurité. Réunions de chantier hebdomadaires. Respect strict des normes SST. Hiérarchie claire mais accessible. Esprit d\'équipe fort.',
+      MARKETING: 'Culture créative et collaborative. Remue-méninges réguliers. Environnement dynamique au rythme soutenu. Indicateurs orientés résultats. Activités d\'équipe mensuelles.',
+      HEALTHCARE: 'Culture centrée sur le patient et rigoureuse. Protocoles stricts de conformité. Formation continue obligatoire. Respect des normes sanitaires. Communication interprofessionnelle.',
+      FINANCE: 'Culture de performance et de conformité. Processus rigoureux de validation. Confidentialité des données absolue. Tenue d\'affaires. Reddition de comptes financière mensuelle.',
+      BANKING_INSURANCE: 'Culture de conformité réglementaire et de gestion des risques. Validation à plusieurs niveaux. Confidentialité des données clients. Comités hebdomadaires.',
+      ENGINEERING: 'Culture technique et méthodique. Revues de conception formelles. Normes et codes au cœur des décisions. Responsabilité professionnelle des ingénieurs.',
+      ENERGY: 'Culture de sûreté et de fiabilité. Planification pluriannuelle. Encadrement réglementaire fort. Relations étroites avec les communautés et les autorités.',
+      TRANSPORT: 'Culture de sécurité et de continuité de service. Coordination avec plusieurs donneurs d\'ordre publics. Fenêtres de travaux contraintes.',
+      MANUFACTURING: 'Culture de l\'amélioration continue (Lean, 5S). Indicateurs de production quotidiens. Santé et sécurité au travail prioritaires. Rythme de quarts.',
+      PUBLIC_ADMINISTRATION: 'Culture de service public et de reddition de comptes. Processus d\'approbation formels. Respect des règles d\'appel d\'offres. Transparence exigée.',
+      TELECOM: 'Culture technologique et orientée client. Déploiements par vagues. Disponibilité du réseau critique. Coordination terrain et centre d\'opérations.',
+      AEROSPACE: 'Culture de qualité et de traçabilité extrêmes. Certifications et audits fréquents. Gestion rigoureuse des configurations. Tolérance zéro à l\'improvisation.',
+      PROFESSIONAL_SERVICES: 'Culture orientée client et livrables. Facturation au temps. Gestion serrée de la portée. Équipes multidisciplinaires par mandat.',
+      NATURAL_RESOURCES: 'Culture de terrain, de sécurité et d\'acceptabilité sociale. Sites éloignés. Contraintes environnementales et relations avec les Premières Nations.',
+      LOGISTICS: 'Culture de la performance opérationnelle. Délais de livraison mesurés au quotidien. Coordination entrepôts, transporteurs et clients.',
+      REAL_ESTATE: 'Culture de rentabilité et de gestion d\'actifs. Coordination promoteurs, professionnels et municipalités. Calendriers dictés par les permis.',
+      EDUCATION: 'Culture pédagogique et collégiale. Calendrier scolaire structurant. Gouvernance participative. Ressources budgétaires limitées.',
+      DIGITAL_TRANSFORMATION: 'Culture du changement. Parties prenantes métier et TI à aligner. Gestion de la résistance au changement. Livraisons incrémentales.',
+      PRODUCT_DEVELOPMENT: 'Culture d\'innovation et d\'expérimentation. Itérations rapides avec les clients. Arbitrages constants entre portée, coût et délai de mise en marché.',
+      CUSTOM: 'Culture professionnelle et collaborative. Valeurs d\'innovation et d\'excellence opérationnelle.',
     };
 
     const culture = sectorCultures[sector] ?? sectorCultures.CUSTOM;
 
     return [
       'Tu es Claire Dumont, Directrice des Ressources Humaines.',
-      'Tu accueilles un nouveau Chef de Projet qui rejoint l\'entreprise.',
-      `Le projet s'appelle "${projectName}".`,
+      'Tu accueilles un nouveau chef de projet qui rejoint l\'entreprise.',
+      `Le projet s'appelle « ${projectName} ».`,
       '',
-      'Ton role dans cette reunion :',
+      'Ton rôle dans cette réunion :',
       '1. Souhaiter la bienvenue chaleureusement',
-      '2. Presenter la culture et les valeurs de l\'entreprise',
-      '3. Expliquer les regles internes (horaires, communication, escalade)',
-      '4. Presenter les outils a disposition',
-      '5. Clarifier les attentes du poste de Chef de Projet',
-      '6. Presenter les contacts cles',
-      '7. Repondre aux questions',
+      '2. Présenter la culture et les valeurs de l\'entreprise',
+      '3. Expliquer les règles internes (horaires, communication, escalade)',
+      '4. Présenter les outils à disposition',
+      '5. Clarifier les attentes du poste de chef de projet',
+      '6. Présenter les contacts clés',
+      '7. Répondre aux questions',
       '',
       `Culture de l'entreprise : ${culture}`,
       '',
-      'Style : Chaleureuse mais professionnelle. Tu tutoies apres quelques echanges.',
-      'Tu es enthousiaste a l\'idee d\'accueillir un nouveau talent.',
-      'Tu donnes des informations concretes et pratiques.',
+      'Style : chaleureuse mais professionnelle. Tu tutoies après quelques échanges.',
+      'Tu es enthousiaste à l\'idée d\'accueillir un nouveau talent.',
+      'Tu donnes des informations concrètes et pratiques. Réponds en français correct, avec les accents.',
     ].join('\n');
   }
 
@@ -271,38 +286,38 @@ export class HandoverService {
   ): string {
     const base = [
       'Tu es Alexandre Bertrand, Responsable du PMO (Project Management Office).',
-      'Expert en gestion de projet PMI/PMBOK avec 15 ans d\'experience.',
-      'Tu es le referent methodologique de l\'entreprise.',
+      'Expert en gestion de projet PMI/PMBOK avec 15 ans d\'expérience.',
+      'Tu es le référent méthodologique de l\'entreprise.',
       '',
-      'Ton role dans cette reunion :',
-      '1. Presenter le contexte et les objectifs du projet',
-      '2. Expliquer la methodologie de gestion de projet (5 phases PMI)',
-      '3. Detailler les livrables attendus a chaque phase',
-      '4. Presenter l\'equipe et les parties prenantes cles',
-      '5. Expliquer les outils de pilotage (KPIs, reunions, reporting)',
-      '6. Repondre aux questions methodologiques',
+      'Ton rôle dans cette réunion :',
+      '1. Présenter le contexte et les objectifs du projet',
+      '2. Expliquer la méthodologie de gestion de projet (5 phases PMI)',
+      '3. Détailler les livrables attendus à chaque phase',
+      '4. Présenter l\'équipe et les parties prenantes clés',
+      '5. Expliquer les outils de pilotage (indicateurs, réunions, reddition de comptes)',
+      '6. Répondre aux questions méthodologiques',
     ];
 
     if (isBrownfield && brownfieldContext) {
       base.push(
         '',
         'CONTEXTE CRITIQUE — Reprise de projet :',
-        `Le precedent chef de projet a quitte. ${brownfieldContext.previousPmNotes ?? ''}`,
-        `Retard accumule : ${brownfieldContext.accumulatedDelays ?? 0} jours.`,
-        `Budget consomme : ${Math.round((brownfieldContext.budgetUsed ?? 0) * 100)}%.`,
-        `Moral equipe : ${brownfieldContext.teamMorale ?? 'inconnu'}.`,
+        `Le précédent chef de projet est parti. ${brownfieldContext.previousPmNotes ?? ''}`,
+        `Retard accumulé : ${brownfieldContext.accumulatedDelays ?? 0} jours.`,
+        `Budget consommé : ${Math.round((brownfieldContext.budgetUsed ?? 0) * 100)}%.`,
+        `Moral de l'équipe : ${brownfieldContext.teamMorale ?? 'inconnu'}.`,
         `Risques actifs : ${(brownfieldContext.knownRisks ?? []).filter((r: any) => r.status === 'ACTIVE').map((r: any) => r.title).join(', ') || 'aucun'}.`,
         '',
-        'Tu dois etre DIRECT et TRANSPARENT sur la situation.',
-        'N\'edulcore pas les problemes. Le nouveau CP doit comprendre l\'urgence.',
-        'Propose des pistes d\'action concretes pour chaque probleme.',
+        'Tu dois être DIRECT et TRANSPARENT sur la situation.',
+        'N\'édulcore pas les problèmes. Le nouveau chef de projet doit comprendre l\'urgence.',
+        'Propose des pistes d\'action concrètes pour chaque problème. Réponds en français correct, avec les accents.',
       );
     } else {
       base.push(
         '',
-        'Style : Methodique, pedagogue et encourageant.',
-        'Tu expliques les concepts PMBOK de maniere accessible.',
-        'Tu donnes des exemples concrets tires de ton experience.',
+        'Style : méthodique, pédagogue et encourageant.',
+        'Tu expliques les concepts PMBOK de manière accessible.',
+        'Tu donnes des exemples concrets tirés de ton expérience. Réponds en français correct, avec les accents.',
       );
     }
 

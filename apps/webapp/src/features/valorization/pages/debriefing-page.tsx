@@ -17,7 +17,7 @@ export default function DebriefingPage() {
     return (
       <div className="container space-y-5">
         <Toolbar>
-          <ToolbarHeading title="Debriefing" />
+          <ToolbarHeading title="Débriefing" />
         </Toolbar>
         {/* Score + info header skeleton */}
         <Card>
@@ -73,12 +73,12 @@ export default function DebriefingPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Debriefing" />
+          <ToolbarHeading title="Débriefing" />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-sm text-destructive">
-              Impossible de charger le debriefing.
+              Impossible de charger le débriefing.
             </p>
           </CardContent>
         </Card>
@@ -89,7 +89,7 @@ export default function DebriefingPage() {
   return (
     <div className="container space-y-5">
       <Toolbar>
-        <ToolbarHeading title="Debriefing" />
+        <ToolbarHeading title="Débriefing" />
         <ToolbarActions>
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}/portfolio`}>
@@ -99,7 +99,7 @@ export default function DebriefingPage() {
           </Button>
           <Button variant="primary" size="sm" disabled>
             <KeenIcon icon="download" style="duotone" className="text-sm" />
-            Telecharger le certificat
+            Télécharger le certificat
           </Button>
         </ToolbarActions>
       </Toolbar>
@@ -123,11 +123,11 @@ export default function DebriefingPage() {
                   {data.projectName}
                 </h2>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Scenario : {data.scenarioTitle}
+                  Scénario : {data.scenarioTitle}
                 </p>
                 {data.completedAt && (
                   <p className="text-xs text-muted-foreground mt-1">
-                    Termine le{' '}
+                    Terminé le{' '}
                     {new Date(data.completedAt).toLocaleDateString('fr-FR', {
                       day: 'numeric',
                       month: 'long',
@@ -143,7 +143,7 @@ export default function DebriefingPage() {
         {/* Radar chart */}
         <Card>
           <CardHeader>
-            <CardTitle>Competences evaluees</CardTitle>
+            <CardTitle>Compétences évaluées</CardTitle>
           </CardHeader>
           <CardContent>
             <CompetencyRadarChart scores={data.competencyScores} />
@@ -159,7 +159,7 @@ export default function DebriefingPage() {
             iconColor="text-success"
           />
           <DebriefingSection
-            title="Axes d'amelioration"
+            title="Axes d'amélioration"
             items={data.improvements}
             icon="information-2"
             iconColor="text-warning"
@@ -177,28 +177,28 @@ export default function DebriefingPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <KeenIcon icon="people" style="duotone" className="text-base text-primary" />
-              Presentation finale
+              Présentation finale
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-start gap-3">
               <div className="flex-1">
                 <p className="text-sm text-foreground">
-                  L'apprenant a presente son projet devant un comite d'evaluation
-                  lors de la phase de cloture de la simulation.
+                  L'apprenant a présenté son projet devant un comité d'évaluation
+                  lors de la phase de clôture de la simulation.
                 </p>
                 {data.closureMeetingCompleted ? (
                   <div className="mt-3">
                     <Badge variant="success" appearance="light" size="sm">
                       <KeenIcon icon="check-circle" style="duotone" className="text-xs mr-1" />
-                      Presentation effectuee
+                      Présentation effectuée
                     </Badge>
                   </div>
                 ) : (
                   <div className="mt-3">
                     <Badge variant="warning" appearance="light" size="sm">
                       <KeenIcon icon="time" style="duotone" className="text-xs mr-1" />
-                      Presentation non effectuee
+                      Présentation non effectuée
                     </Badge>
                   </div>
                 )}
@@ -211,7 +211,7 @@ export default function DebriefingPage() {
         {data.debriefingSummary && (
           <Card>
             <CardHeader>
-              <CardTitle>Resume du debriefing</CardTitle>
+              <CardTitle>Résumé du débriefing</CardTitle>
             </CardHeader>
             <CardContent>
               <blockquote className="border-l-4 border-primary pl-4 italic text-sm text-foreground leading-relaxed">

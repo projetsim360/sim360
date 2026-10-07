@@ -25,7 +25,7 @@ export class ReferenceDocumentsController {
 
   @Post()
   @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
-  @ApiOperation({ summary: 'Creer un document de reference (US-1.6)' })
+  @ApiOperation({ summary: 'Créer un document de référence (US-1.6)' })
   create(
     @CurrentTenant() tenantId: string,
     @CurrentUser('id') userId: string,
@@ -36,7 +36,7 @@ export class ReferenceDocumentsController {
 
   @Put(':id')
   @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
-  @ApiOperation({ summary: 'Modifier un document de reference avec versioning (US-1.7)' })
+  @ApiOperation({ summary: 'Modifier un document de référence avec versioning (US-1.7)' })
   update(
     @CurrentTenant() tenantId: string,
     @CurrentUser('id') userId: string,
@@ -48,7 +48,7 @@ export class ReferenceDocumentsController {
 
   @Get()
   @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
-  @ApiOperation({ summary: 'Lister les documents de reference avec filtres et recherche (US-1.8)' })
+  @ApiOperation({ summary: 'Lister les documents de référence avec filtres et recherche (US-1.8)' })
   @ApiQuery({ name: 'category', enum: ReferenceDocumentCategory, required: false })
   @ApiQuery({ name: 'phase', enum: PhaseType, required: false })
   @ApiQuery({ name: 'isActive', required: false, type: Boolean })
@@ -82,7 +82,7 @@ export class ReferenceDocumentsController {
 
   @Get(':id')
   @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
-  @ApiOperation({ summary: 'Detail d\'un document de reference' })
+  @ApiOperation({ summary: 'Détail d\'un document de reference' })
   findOne(
     @CurrentTenant() tenantId: string,
     @Param('id') id: string,
@@ -92,7 +92,7 @@ export class ReferenceDocumentsController {
 
   @Get(':id/versions')
   @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
-  @ApiOperation({ summary: 'Historique des versions d\'un document de reference' })
+  @ApiOperation({ summary: 'Historique des versions d\'un document de référence' })
   findVersions(
     @CurrentTenant() tenantId: string,
     @Param('id') id: string,
@@ -114,7 +114,7 @@ export class GlossaryController {
   @Public()
   @ApiOperation({
     summary: 'Glossaire PMI public pour tooltips frontend (US-1.9)',
-    description: 'Retourne les entrees GLOSSARY actives avec term, content (definition) et example.',
+    description: 'Retourne les entrées GLOSSARY actives avec term, content (définition) et example.',
   })
   findGlossary() {
     return this.service.findGlossary();

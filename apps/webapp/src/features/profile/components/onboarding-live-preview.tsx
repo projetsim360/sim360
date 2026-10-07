@@ -91,10 +91,10 @@ function buildModel(
       const d = profile?.diagnosticData;
       const skillCount = profile?.skills?.length ?? 0;
       if (!d) {
-        return { title: 'Analyse IA', lines: [{ state: 'active', label: 'Analyse en cours…' }] };
+        return { title: 'Analyse du profil', lines: [{ state: 'active', label: 'Analyse en cours…' }] };
       }
       return {
-        title: 'Analyse IA',
+        title: 'Analyse du profil',
         lines: [
           { state: 'done', label: `Profil : ${PROFILE_TYPE_LABELS[d.profileType]}` },
           {
