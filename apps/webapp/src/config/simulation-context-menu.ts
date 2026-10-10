@@ -13,6 +13,7 @@ import {
   Award,
   Briefcase,
   FileDown,
+  ClipboardList,
 } from '@/components/keenicons/icons';
 import { type MenuConfig } from './types';
 
@@ -35,22 +36,27 @@ export const SIMULATION_CONTEXT_MENU: MenuConfig = [
     path: '/simulations/:simId',
   },
   {
-    title: 'Decisions',
+    title: 'Décisions',
     icon: CircleHelp,
     path: '/simulations/:simId/decisions',
     badgeKey: 'pendingDecisions',
   },
   {
-    title: 'Evenements',
+    title: 'Événements',
     icon: Zap,
     path: '/simulations/:simId/events',
     badgeKey: 'pendingEvents',
   },
   {
-    title: 'Reunions',
+    title: 'Réunions',
     icon: MessageSquareText,
     path: '/simulations/:simId/meetings',
     badgeKey: 'pendingMeetings',
+  },
+  {
+    title: 'Actions de suivi',
+    icon: ClipboardList,
+    path: '/simulations/:simId/actions',
   },
   {
     title: 'Emails',

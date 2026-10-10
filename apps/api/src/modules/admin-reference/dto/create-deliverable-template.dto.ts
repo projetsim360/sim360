@@ -13,7 +13,7 @@ export class CreateDeliverableTemplateDto {
   @IsNotEmpty()
   type!: string;
 
-  @ApiProperty({ description: 'Phase PMI associee', enum: PhaseType })
+  @ApiProperty({ description: 'Phase PMI associée', enum: PhaseType })
   @IsEnum(PhaseType)
   phase!: PhaseType;
 
@@ -27,7 +27,7 @@ export class CreateDeliverableTemplateDto {
   @IsNotEmpty()
   content!: string;
 
-  @ApiProperty({ description: 'Criteres d\'evaluation structures (JSON)' })
+  @ApiProperty({ description: 'Critères d\'évaluation structurés (JSON)' })
   @IsObject()
   evaluationCriteria!: Record<string, any>;
 
@@ -37,7 +37,7 @@ export class CreateDeliverableTemplateDto {
   pmiProcess?: string;
 
   @ApiPropertyOptional({
-    description: 'Niveau de difficulte',
+    description: 'Niveau de difficulté',
     enum: DeliverableTemplateDifficulty,
     default: DeliverableTemplateDifficulty.STANDARD,
   })
@@ -45,7 +45,7 @@ export class CreateDeliverableTemplateDto {
   @IsOptional()
   difficulty?: DeliverableTemplateDifficulty;
 
-  @ApiPropertyOptional({ description: 'Exemple de livrable de reference (Markdown). Visible uniquement par les admins.' })
+  @ApiPropertyOptional({ description: 'Exemple de livrable de référence (Markdown). Visible uniquement par les admins.' })
   @IsString()
   @IsOptional()
   referenceExample?: string;

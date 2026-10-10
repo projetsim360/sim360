@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Sparkles, X, MessageCircle, Layers } from 'lucide-react';
+import { Sparkles, X, MessageCircle, Layers, LifeBuoy } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -22,8 +22,9 @@ import { usePmoHistory, usePmoContext } from '@/features/pmo/api/pmo.api';
 import { useProfileAdaptation } from '@/features/profile/api/profile.api';
 import { PmoChat } from '@/features/pmo/components/pmo-chat';
 import { PmoContextPanel } from '@/features/pmo/components/pmo-context-panel';
+import { HelpAssistant } from '@/features/assistant/components/help-assistant';
 
-type Tab = 'chat' | 'contexte';
+type Tab = 'aide' | 'chat' | 'contexte';
 
 const SIM_STATUS_LABELS: Record<string, string> = {
   DRAFT: 'Brouillon',
@@ -46,7 +47,8 @@ interface PmoPanelProps {
 
 export function PmoPanel({ className }: PmoPanelProps) {
   const { pmoOpen, setPmoOpen } = useShellState();
-  const [activeTab, setActiveTab] = useState<Tab>('chat');
+  // null = automatic: PMO chat during a simulation, help otherwise.
+  const [pickedTab, setActiveTab] = useState<Tab | null>(null);
   const [overrideSimId, setOverrideSimId] = useState<string | null>(null);
 
   // Resolve the user's active simulation (only fetch while the panel is open)
@@ -107,6 +109,7 @@ export function PmoPanel({ className }: PmoPanelProps) {
       : 'En ligne';
 
   const currentSim = activeSimulations.find((s: any) => s.id === simulationId);
+  const activeTab: Tab = pickedTab ?? (simulationId ? 'chat' : 'aide');
 
   return (
     <aside
@@ -130,7 +133,7 @@ export function PmoPanel({ className }: PmoPanelProps) {
           <Sparkles className="size-[18px]" />
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-          <span className="font-display text-[15px] font-bold text-foreground">Agent PMO</span>
+          <span className="font-display text-[15px] font-bold text-foreground">Assistant</span>
           <span className="inline-flex items-center gap-1.5 truncate text-xs text-muted-foreground">
             <span
               className={cn(
@@ -182,6 +185,19 @@ export function PmoPanel({ className }: PmoPanelProps) {
       <div className="flex shrink-0 gap-1 border-b border-border px-[18px] py-3">
         <button
           type="button"
+          onClick={() => setActiveTab('aide')}
+          className={cn(
+            'inline-flex cursor-pointer items-center gap-1.5 rounded-sm border-0 px-3 py-2 text-[13px] font-semibold transition-colors duration-150',
+            activeTab === 'aide'
+              ? 'bg-[var(--brand-50)] text-[var(--brand-700)]'
+              : 'bg-transparent font-medium text-muted-foreground hover:bg-muted hover:text-foreground',
+          )}
+        >
+          <LifeBuoy className="size-3.5" />
+          Aide
+        </button>
+        <button
+          type="button"
           onClick={() => setActiveTab('chat')}
           className={cn(
             'inline-flex cursor-pointer items-center gap-1.5 rounded-sm border-0 px-3 py-2 text-[13px] font-semibold transition-colors duration-150',
@@ -191,7 +207,7 @@ export function PmoPanel({ className }: PmoPanelProps) {
           )}
         >
           <MessageCircle className="size-3.5" />
-          Chat
+          Agent PMO
         </button>
         <button
           type="button"
@@ -210,7 +226,11 @@ export function PmoPanel({ className }: PmoPanelProps) {
 
       {/* Body */}
       <div className="flex flex-1 min-h-0 flex-col overflow-hidden">
-        {!simulationId ? (
+        {activeTab === 'aide' ? (
+          <div className="flex-1 min-h-0">
+            <HelpAssistant onNavigate={() => setPmoOpen(false)} />
+          </div>
+        ) : !simulationId ? (
           <div className="flex flex-1 items-center justify-center">
             <EmptyState
               icon="abstract-26"

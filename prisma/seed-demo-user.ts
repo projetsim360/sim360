@@ -2,7 +2,7 @@
  * seed-demo-user.ts
  *
  * Cree un utilisateur demo avec un parcours COMPLET :
- * - Compte + onboarding termine (profil, questionnaire, test aptitude, diagnostic)
+ * - Compte + onboarding terminé (profil, questionnaire, test aptitude, diagnostic)
  * - 1 simulation IT avancee (phase 3/5) avec tout le contexte
  * - Decisions prises, evenements resolus, reunions terminees
  * - Livrables rediges + evalues, emails recus + repondus
@@ -87,7 +87,7 @@ async function main() {
         objective: 'reinforce',
         targetDomain: 'IT / Digital',
         experienceLevel: 'confirmed',
-        mainMotivation: 'Renforcer mes competences en gestion de projet IT pour evoluer vers un poste de PMO',
+        mainMotivation: 'Renforcer mes compétences en gestion de projet IT pour évoluer vers un poste de PMO',
       },
       aptitudeTestData: {
         answers: [
@@ -107,10 +107,10 @@ async function main() {
       profileType: ProfileType.REINFORCEMENT,
       diagnosticData: {
         profileType: 'REINFORCEMENT',
-        summary: 'Marie possede une solide experience en gestion de projet IT (5+ ans). Ses points forts sont la communication et l\'organisation. Axes d\'amelioration : gestion budgetaire et anticipation des risques.',
-        personalizedMessage: 'Bienvenue Marie ! Votre profil montre une bonne maitrise des fondamentaux. Nous allons vous challenger sur des scenarios complexes pour renforcer vos competences en gestion financiere et analyse de risques.',
-        strengths: ['Communication equipe', 'Organisation et planification', 'Leadership collaboratif', 'Methodologie Agile'],
-        areasForImprovement: ['Gestion budgetaire avancee', 'Analyse quantitative des risques', 'Negociation fournisseurs'],
+        summary: 'Marie possède une solide expérience en gestion de projet IT (5+ ans). Ses points forts sont la communication et l\'organisation. Axes d\'amélioration : gestion budgétaire et anticipation des risques.',
+        personalizedMessage: 'Bienvenue Marie ! Votre profil montre une bonne maîtrise des fondamentaux. Nous allons vous challenger sur des scénarios complexes pour renforcer vos compétences en gestion financière et analyse de risques.',
+        strengths: ['Communication équipe', 'Organisation et planification', 'Leadership collaboratif', 'Méthodologie Agile'],
+        areasForImprovement: ['Gestion budgétaire avancée', 'Analyse quantitative des risques', 'Négociation fournisseurs'],
         suggestedSector: 'IT',
         suggestedDifficulty: 'HARD',
       },
@@ -119,10 +119,10 @@ async function main() {
         { name: 'Gestion des risques', currentLevel: 'basic', targetLevel: 'advanced', gap: 66 },
         { name: 'Communication', currentLevel: 'advanced', targetLevel: 'advanced', gap: 0 },
         { name: 'Leadership', currentLevel: 'intermediate', targetLevel: 'advanced', gap: 33 },
-        { name: 'Gestion budgetaire', currentLevel: 'basic', targetLevel: 'intermediate', gap: 50 },
-        { name: 'Methodologie PMI/Agile', currentLevel: 'intermediate', targetLevel: 'advanced', gap: 33 },
+        { name: 'Gestion budgétaire', currentLevel: 'basic', targetLevel: 'intermediate', gap: 50 },
+        { name: 'Méthodologie PMI/Agile', currentLevel: 'intermediate', targetLevel: 'advanced', gap: 33 },
         { name: 'Gestion parties prenantes', currentLevel: 'intermediate', targetLevel: 'advanced', gap: 33 },
-        { name: 'Suivi et controle', currentLevel: 'intermediate', targetLevel: 'advanced', gap: 33 },
+        { name: 'Suivi et contrôle', currentLevel: 'intermediate', targetLevel: 'advanced', gap: 33 },
       ],
       suggestedSector: 'IT',
       selectedSector: 'it',
@@ -131,7 +131,7 @@ async function main() {
       completedAt: daysAgo(13),
     },
   });
-  console.log('Profil + onboarding cree');
+  console.log('Profil + onboarding créé');
 
   // ─── 4. Scenario IT (reutiliser le seed existant) ──────
   const scenario = await prisma.scenario.findFirst({
@@ -148,7 +148,7 @@ async function main() {
       name: 'Refonte Plateforme E-commerce TechShop',
       client: 'TechShop International',
       sector: 'IT',
-      description: 'Migration et refonte complete de la plateforme e-commerce : nouveau design responsive, refonte du tunnel d\'achat, integration des paiements multi-devises, et mise en place d\'un back-office analytics.',
+      description: 'Migration et refonte complète de la plateforme e-commerce : nouveau design responsive, refonte du tunnel d\'achat, intégration des paiements multi-devises, et mise en place d\'un back-office analytics.',
       initialBudget: 280000,
       currentBudget: 252000,
       startDate: daysAgo(45),
@@ -157,16 +157,16 @@ async function main() {
       teamMembers: {
         create: [
           { name: 'Lucas Martin', role: 'Tech Lead', expertise: 'SENIOR', personality: 'COOPERATIVE', availability: 1.0, morale: 85, avatar: '/media/avatars/300-1.png' },
-          { name: 'Emma Bernard', role: 'Developpeuse Frontend', expertise: 'INTERMEDIATE', personality: 'COOPERATIVE', availability: 1.0, morale: 78, avatar: '/media/avatars/300-2.png' },
-          { name: 'Hugo Petit', role: 'Developpeur Backend', expertise: 'SENIOR', personality: 'ANALYTICAL', availability: 0.8, morale: 72, avatar: '/media/avatars/300-3.png' },
-          { name: 'Lea Moreau', role: 'Designer UX/UI', expertise: 'SENIOR', personality: 'CREATIVE', availability: 1.0, morale: 90, avatar: '/media/avatars/300-4.png' },
+          { name: 'Emma Bernard', role: 'Développeuse Frontend', expertise: 'INTERMEDIATE', personality: 'COOPERATIVE', availability: 1.0, morale: 78, avatar: '/media/avatars/300-2.png' },
+          { name: 'Hugo Petit', role: 'Développeur Backend', expertise: 'SENIOR', personality: 'ANALYTICAL', availability: 0.8, morale: 72, avatar: '/media/avatars/300-3.png' },
+          { name: 'Léa Moreau', role: 'Designer UX/UI', expertise: 'SENIOR', personality: 'CREATIVE', availability: 1.0, morale: 90, avatar: '/media/avatars/300-4.png' },
           { name: 'Nathan Roux', role: 'QA Engineer', expertise: 'INTERMEDIATE', personality: 'COOPERATIVE', availability: 1.0, morale: 80, avatar: '/media/avatars/300-5.png' },
-          { name: 'Chloe Leroy', role: 'Scrum Master', expertise: 'SENIOR', personality: 'ASSERTIVE', availability: 0.5, morale: 82, avatar: '/media/avatars/300-6.png' },
+          { name: 'Chloé Leroy', role: 'Scrum Master', expertise: 'SENIOR', personality: 'ASSERTIVE', availability: 0.5, morale: 82, avatar: '/media/avatars/300-6.png' },
         ],
       },
     },
   });
-  console.log(`Projet cree: ${project.name}`);
+  console.log(`Projet créé: ${project.name}`);
 
   // ─── 6. Simulation (phase 3/5, en cours) ──────────────
   const simulation = await prisma.simulation.create({
@@ -189,15 +189,15 @@ async function main() {
       },
     },
   });
-  console.log(`Simulation creee: ${simulation.id}`);
+  console.log(`Simulation créée: ${simulation.id}`);
 
   // ─── 7. Phases ─────────────────────────────────────────
   const phasesDefs = [
     { order: 0, name: 'Initiation', type: PhaseType.INITIATION, status: 'COMPLETED', startedAt: daysAgo(45), completedAt: daysAgo(38) },
     { order: 1, name: 'Planification', type: PhaseType.PLANNING, status: 'COMPLETED', startedAt: daysAgo(38), completedAt: daysAgo(25) },
-    { order: 2, name: 'Execution Sprint 1', type: PhaseType.EXECUTION, status: 'COMPLETED', startedAt: daysAgo(25), completedAt: daysAgo(10) },
-    { order: 3, name: 'Execution Sprint 2', type: PhaseType.MONITORING, status: 'ACTIVE', startedAt: daysAgo(10), completedAt: null },
-    { order: 4, name: 'Cloture', type: PhaseType.CLOSURE, status: 'LOCKED', startedAt: null, completedAt: null },
+    { order: 2, name: 'Exécution Sprint 1', type: PhaseType.EXECUTION, status: 'COMPLETED', startedAt: daysAgo(25), completedAt: daysAgo(10) },
+    { order: 3, name: 'Exécution Sprint 2', type: PhaseType.MONITORING, status: 'ACTIVE', startedAt: daysAgo(10), completedAt: null },
+    { order: 4, name: 'Clôture', type: PhaseType.CLOSURE, status: 'LOCKED', startedAt: null, completedAt: null },
   ];
 
   for (const p of phasesDefs) {
@@ -205,7 +205,7 @@ async function main() {
       data: { simulationId: simulation.id, ...p },
     });
   }
-  console.log('Phases creees (5 phases, 3 completees, 1 active)');
+  console.log('Phases créées (5 phases, 3 complétées, 1 active)');
 
   // ─── 8. KPI Snapshots (evolution realiste) ─────────────
   const kpiSnapshots = [
@@ -224,74 +224,74 @@ async function main() {
   await prisma.simulationKpiSnapshot.createMany({
     data: kpiSnapshots.map((s) => ({ simulationId: simulation.id, ...s })),
   });
-  console.log(`KPI snapshots crees (${kpiSnapshots.length} points)`);
+  console.log(`KPI snapshots créés (${kpiSnapshots.length} points)`);
 
   // ─── 9. Decisions (6 decisions, dont 1 en attente) ─────
   const decisions = [
     {
-      phaseOrder: 0, title: 'Choix de la methodologie projet',
-      context: 'Le client TechShop souhaite une livraison rapide avec des demonstrations regulieres. L\'equipe a l\'habitude de travailler en cascade. Quel framework adopter ?',
+      phaseOrder: 0, title: 'Choix de la méthodologie projet',
+      context: 'Le client TechShop souhaite une livraison rapide avec des démonstrations régulières. L\'équipe a l\'habitude de travailler en cascade. Quel framework adopter ?',
       options: [
-        { label: 'Scrum avec sprints de 2 semaines', description: 'Framework agile avec demonstrations regulieres au client', kpiImpact: { schedule: 5, quality: 3, teamMorale: 5 } },
-        { label: 'Cascade classique', description: 'Approche sequentielle avec livrables par phase', kpiImpact: { schedule: -5, quality: 5, teamMorale: -3 } },
+        { label: 'Scrum avec sprints de 2 semaines', description: 'Framework agile avec démonstrations régulières au client', kpiImpact: { schedule: 5, quality: 3, teamMorale: 5 } },
+        { label: 'Cascade classique', description: 'Approche séquentielle avec livrables par phase', kpiImpact: { schedule: -5, quality: 5, teamMorale: -3 } },
         { label: 'Kanban', description: 'Flux continu avec limite de WIP', kpiImpact: { schedule: 3, quality: 2, teamMorale: 3 } },
-        { label: 'SAFe', description: 'Framework scaled agile pour grandes equipes', kpiImpact: { budget: -8, schedule: -3, teamMorale: -5 } },
+        { label: 'SAFe', description: 'Framework scaled agile pour grandes équipes', kpiImpact: { budget: -8, schedule: -3, teamMorale: -5 } },
       ],
       selectedOption: 0, decidedAt: daysAgo(42),
       kpiImpact: { schedule: 5, quality: 3, teamMorale: 5 },
     },
     {
-      phaseOrder: 1, title: 'Strategie de migration des donnees',
-      context: 'L\'ancien systeme contient 500 000 produits et 2 millions de comptes clients. La migration doit etre planifiee avec soin pour eviter toute perte de donnees.',
+      phaseOrder: 1, title: 'Stratégie de migration des données',
+      context: 'L\'ancien système contient 500 000 produits et 2 millions de comptes clients. La migration doit être planifiée avec soin pour éviter toute perte de données.',
       options: [
-        { label: 'Migration incrementale par lots', description: 'Migrer par categories de produits sur 3 sprints', kpiImpact: { budget: -3, schedule: -5, quality: 8 } },
+        { label: 'Migration incrémentale par lots', description: 'Migrer par catégories de produits sur 3 sprints', kpiImpact: { budget: -3, schedule: -5, quality: 8 } },
         { label: 'Big bang durant un week-end', description: 'Tout migrer en une fois pendant une maintenance', kpiImpact: { budget: 5, schedule: 5, quality: -5, riskLevel: 15 } },
-        { label: 'Double run pendant 1 mois', description: 'Les deux systemes en parallele puis bascule progressive', kpiImpact: { budget: -10, quality: 5, riskLevel: -5 } },
+        { label: 'Double run pendant 1 mois', description: 'Les deux systèmes en parallèle puis bascule progressive', kpiImpact: { budget: -10, quality: 5, riskLevel: -5 } },
       ],
       selectedOption: 0, decidedAt: daysAgo(33),
       kpiImpact: { budget: -3, schedule: -5, quality: 8 },
     },
     {
       phaseOrder: 1, title: 'Choix du prestataire paiement',
-      context: 'TechShop opere dans 5 pays europeens. Il faut choisir un prestataire de paiement multi-devises compatible PCI-DSS.',
+      context: 'TechShop opère dans 5 pays européens. Il faut choisir un prestataire de paiement multi-devises compatible PCI-DSS.',
       options: [
         { label: 'Stripe', description: 'Solution flexible, API moderne, commission 1.4% + 0.25EUR', kpiImpact: { budget: -2, schedule: 3, quality: 3 } },
-        { label: 'Adyen', description: 'Solution enterprise, support multi-devises natif, tarif negocie', kpiImpact: { budget: -5, quality: 5 } },
-        { label: 'Developpement interne', description: 'Integration directe des banques, controle total', kpiImpact: { budget: -15, schedule: -10, quality: -3, riskLevel: 10 } },
+        { label: 'Adyen', description: 'Solution enterprise, support multi-devises natif, tarif négocié', kpiImpact: { budget: -5, quality: 5 } },
+        { label: 'Développement interne', description: 'Intégration directe des banques, contrôle total', kpiImpact: { budget: -15, schedule: -10, quality: -3, riskLevel: 10 } },
       ],
       selectedOption: 0, decidedAt: daysAgo(30),
       kpiImpact: { budget: -2, schedule: 3, quality: 3 },
     },
     {
-      phaseOrder: 2, title: 'Gestion du depart d\'Emma (Frontend)',
-      context: 'Emma Bernard, developpeuse frontend, annonce qu\'elle quitte l\'equipe dans 2 semaines pour un autre poste. Le sprint est a mi-parcours et elle porte 40% des taches frontend.',
+      phaseOrder: 2, title: 'Gestion du départ d\'Emma (Frontend)',
+      context: 'Emma Bernard, développeuse frontend, annonce qu\'elle quitte l\'équipe dans 2 semaines pour un autre poste. Le sprint est à mi-parcours et elle porte 40% des tâches frontend.',
       options: [
-        { label: 'Recruter un remplacant en urgence', description: 'Contacter les ESN pour un profil disponible rapidement', kpiImpact: { budget: -8, schedule: -3, teamMorale: -2 } },
-        { label: 'Redistribuer les taches dans l\'equipe', description: 'Charge supplementaire pour Lucas et les autres', kpiImpact: { schedule: -8, teamMorale: -10 } },
-        { label: 'Negocier un delai avec le client', description: 'Reporter la deadline du sprint de 2 semaines', kpiImpact: { schedule: -5, teamMorale: 3 } },
-        { label: 'Faire appel a un freelance senior', description: 'Freelance React/Next.js disponible sous 48h', kpiImpact: { budget: -12, schedule: -2, quality: -2 } },
+        { label: 'Recruter un remplaçant en urgence', description: 'Contacter les ESN pour un profil disponible rapidement', kpiImpact: { budget: -8, schedule: -3, teamMorale: -2 } },
+        { label: 'Redistribuer les tâches dans l\'équipe', description: 'Charge supplémentaire pour Lucas et les autres', kpiImpact: { schedule: -8, teamMorale: -10 } },
+        { label: 'Négocier un délai avec le client', description: 'Reporter la deadline du sprint de 2 semaines', kpiImpact: { schedule: -5, teamMorale: 3 } },
+        { label: 'Faire appel à un freelance senior', description: 'Freelance React/Next.js disponible sous 48h', kpiImpact: { budget: -12, schedule: -2, quality: -2 } },
       ],
       selectedOption: 3, decidedAt: daysAgo(18),
       kpiImpact: { budget: -12, schedule: -2, quality: -2 },
     },
     {
       phaseOrder: 3, title: 'Priorisation du backlog Sprint 2',
-      context: 'Le Product Owner demande d\'integrer 3 nouvelles fonctionnalites (wishlist, comparateur, avis verifies) qui n\'etaient pas prevues. L\'equipe estime qu\'il faudrait un sprint supplementaire.',
+      context: 'Le Product Owner demande d\'intégrer 3 nouvelles fonctionnalités (wishlist, comparateur, avis vérifiés) qui n\'étaient pas prévues. L\'équipe estime qu\'il faudrait un sprint supplémentaire.',
       options: [
-        { label: 'Accepter les 3 features, reporter les tests', description: 'Integrer tout mais reduire la phase de QA', kpiImpact: { schedule: -5, quality: -10, riskLevel: 8 } },
-        { label: 'Negocier : 1 feature maintenant, 2 en sprint 3', description: 'Prioriser la wishlist, reporter comparateur et avis', kpiImpact: { schedule: -2, quality: 2 } },
-        { label: 'Refuser les changements de perimetre', description: 'Appliquer strictement le change control process', kpiImpact: { teamMorale: -5, quality: 5 } },
-        { label: 'Demander un budget supplementaire', description: 'Presenter un avenant au client pour couvrir le surcout', kpiImpact: { budget: 5, schedule: -3 } },
+        { label: 'Accepter les 3 features, reporter les tests', description: 'Intégrer tout mais réduire la phase de QA', kpiImpact: { schedule: -5, quality: -10, riskLevel: 8 } },
+        { label: 'Négocier : 1 feature maintenant, 2 en sprint 3', description: 'Prioriser la wishlist, reporter comparateur et avis', kpiImpact: { schedule: -2, quality: 2 } },
+        { label: 'Refuser les changements de périmètre', description: 'Appliquer strictement le change control process', kpiImpact: { teamMorale: -5, quality: 5 } },
+        { label: 'Demander un budget supplémentaire', description: 'Présenter un avenant au client pour couvrir le surcoût', kpiImpact: { budget: 5, schedule: -3 } },
       ],
       selectedOption: 1, decidedAt: daysAgo(3),
       kpiImpact: { schedule: -2, quality: 2 },
     },
     {
-      phaseOrder: 3, title: 'Incident de securite sur l\'environnement de staging',
-      context: 'L\'equipe QA a detecte une faille XSS sur le formulaire de paiement en staging. Le client demande un rapport d\'impact et un plan de remediation sous 24h.',
+      phaseOrder: 3, title: 'Incident de sécurité sur l\'environnement de staging',
+      context: 'L\'équipe QA a détecté une faille XSS sur le formulaire de paiement en staging. Le client demande un rapport d\'impact et un plan de remédiation sous 24h.',
       options: [
-        { label: 'Arreter le sprint pour corriger immediatement', description: 'Mobiliser toute l\'equipe sur le fix de securite', kpiImpact: { schedule: -8, quality: 10, riskLevel: -15 } },
-        { label: 'Corriger en parallele du sprint', description: 'Hugo se concentre sur le fix, le reste continue', kpiImpact: { schedule: -3, quality: 5, riskLevel: -8 } },
+        { label: 'Arrêter le sprint pour corriger immédiatement', description: 'Mobiliser toute l\'équipe sur le fix de sécurité', kpiImpact: { schedule: -8, quality: 10, riskLevel: -15 } },
+        { label: 'Corriger en parallèle du sprint', description: 'Hugo se concentre sur le fix, le reste continue', kpiImpact: { schedule: -3, quality: 5, riskLevel: -8 } },
         { label: 'Reporter au sprint 3', description: 'Documenter et planifier la correction pour plus tard', kpiImpact: { riskLevel: 15, quality: -5 } },
       ],
       selectedOption: null, decidedAt: null,
@@ -313,39 +313,39 @@ async function main() {
       },
     });
   }
-  console.log(`Decisions creees (${decisions.length}, dont 1 en attente)`);
+  console.log(`Décisions créées (${decisions.length}, dont 1 en attente)`);
 
   // ─── 10. Evenements aleatoires ─────────────────────────
   const events = [
     {
-      phaseOrder: 1, type: RandomEventType.RISK, title: 'Fuite de donnees chez un sous-traitant',
-      description: 'Un sous-traitant hebergeant les maquettes a subi une breche de securite. Les designs du nouveau site ont ete exposes pendant 48h. Le client exige un audit de securite complet.',
+      phaseOrder: 1, type: RandomEventType.RISK, title: 'Fuite de données chez un sous-traitant',
+      description: 'Un sous-traitant hébergeant les maquettes a subi une brèche de sécurité. Les designs du nouveau site ont été exposés pendant 48h. Le client exige un audit de sécurité complet.',
       severity: Severity.HIGH,
       options: [
-        { label: 'Audit interne rapide', description: 'Verifier nos propres systemes en 2 jours', kpiImpact: { budget: -3, schedule: -2, riskLevel: -5 } },
-        { label: 'Audit externe certifie', description: 'Faire appel a un cabinet specialise (10 jours)', kpiImpact: { budget: -8, schedule: -5, riskLevel: -15 } },
+        { label: 'Audit interne rapide', description: 'Vérifier nos propres systèmes en 2 jours', kpiImpact: { budget: -3, schedule: -2, riskLevel: -5 } },
+        { label: 'Audit externe certifié', description: 'Faire appel à un cabinet spécialisé (10 jours)', kpiImpact: { budget: -8, schedule: -5, riskLevel: -15 } },
       ],
       selectedOption: 1, resolvedAt: daysAgo(32),
       kpiImpact: { budget: -8, schedule: -5, riskLevel: -15 },
     },
     {
       phaseOrder: 2, type: RandomEventType.OPPORTUNITY, title: 'Partenariat avec une marketplace',
-      description: 'Amazon propose une integration gratuite de leur SDK marketplace pour TechShop, ce qui permettrait d\'elargir la base client. Cela necessite 1 semaine de dev supplementaire.',
+      description: 'Amazon propose une intégration gratuite de leur SDK marketplace pour TechShop, ce qui permettrait d\'élargir la base client. Cela nécessite 1 semaine de dev supplémentaire.',
       severity: Severity.MEDIUM,
       options: [
-        { label: 'Accepter le partenariat', description: 'Integrer le SDK dans le sprint en cours', kpiImpact: { budget: 5, schedule: -5, quality: -2 } },
-        { label: 'Reporter a la V2', description: 'Decliner pour le moment, revisiter apres le lancement', kpiImpact: {} },
+        { label: 'Accepter le partenariat', description: 'Intégrer le SDK dans le sprint en cours', kpiImpact: { budget: 5, schedule: -5, quality: -2 } },
+        { label: 'Reporter à la V2', description: 'Décliner pour le moment, revisiter après le lancement', kpiImpact: {} },
       ],
       selectedOption: 1, resolvedAt: daysAgo(20),
       kpiImpact: {},
     },
     {
-      phaseOrder: 3, type: RandomEventType.RISK, title: 'Indisponibilite du serveur de staging',
-      description: 'Le fournisseur cloud signale une maintenance imprevue de 48h sur la region EU-West. L\'equipe QA ne peut plus tester.',
+      phaseOrder: 3, type: RandomEventType.RISK, title: 'Indisponibilité du serveur de staging',
+      description: 'Le fournisseur cloud signale une maintenance imprévue de 48h sur la région EU-West. L\'équipe QA ne peut plus tester.',
       severity: Severity.HIGH,
       options: [
-        { label: 'Deployer sur une region alternative', description: 'Reconfigurer le CI/CD pour EU-Central (4h de travail)', kpiImpact: { budget: -2, schedule: -1 } },
-        { label: 'Attendre la fin de la maintenance', description: 'L\'equipe QA travaille sur la documentation', kpiImpact: { schedule: -3, teamMorale: -5 } },
+        { label: 'Déployer sur une région alternative', description: 'Reconfigurer le CI/CD pour EU-Central (4h de travail)', kpiImpact: { budget: -2, schedule: -1 } },
+        { label: 'Attendre la fin de la maintenance', description: 'L\'équipe QA travaille sur la documentation', kpiImpact: { schedule: -3, teamMorale: -5 } },
       ],
       selectedOption: 0, resolvedAt: daysAgo(5),
       kpiImpact: { budget: -2, schedule: -1 },
@@ -368,13 +368,13 @@ async function main() {
       },
     });
   }
-  console.log(`Evenements aleatoires crees (${events.length})`);
+  console.log(`Événements aléatoires créés (${events.length})`);
 
   // ─── 11. Reunions (3 terminees, 1 planifiee) ──────────
   const meetingDefs = [
     {
       phaseOrder: 0, title: 'Kick-off projet TechShop', type: 'KICKOFF', status: 'COMPLETED' as const,
-      objectives: ['Presenter le projet', 'Definir les roles', 'Valider le planning macro'],
+      objectives: ['Présenter le projet', 'Définir les rôles', 'Valider le planning macro'],
       startedAt: daysAgo(44), completedAt: daysAgo(44),
       participants: [
         { name: 'Pierre Durand', role: 'Sponsor (DG TechShop)', personality: 'ASSERTIVE', cooperationLevel: 4 },
@@ -382,20 +382,20 @@ async function main() {
         { name: 'Lucas Martin', role: 'Tech Lead', personality: 'COOPERATIVE', cooperationLevel: 4 },
       ],
       messages: [
-        { role: 'system', content: 'Reunion de kick-off du projet de refonte e-commerce TechShop.' },
-        { role: 'assistant', content: 'Bonjour a tous ! Je suis ravi de lancer officiellement ce projet de refonte. Pierre, souhaitez-vous rappeler les enjeux strategiques ?' },
+        { role: 'system', content: 'Réunion de kick-off du projet de refonte e-commerce TechShop.' },
+        { role: 'assistant', content: 'Bonjour à tous ! Je suis ravi de lancer officiellement ce projet de refonte. Pierre, souhaitez-vous rappeler les enjeux stratégiques ?' },
         { role: 'user', content: 'Bonjour ! Oui, Pierre, pouvez-vous nous donner le contexte business et les objectifs principaux ?' },
-        { role: 'assistant', content: 'Pierre Durand : "Merci Marie. TechShop perd 15% de parts de marche depuis 2 ans a cause d\'une plateforme vieillissante. L\'objectif est de doubler le taux de conversion et d\'ouvrir 3 nouveaux marches europeens d\'ici la fin de l\'annee. Le budget est de 280K EUR, non negociable."' },
-        { role: 'user', content: 'Merci Pierre. Sophie, quelles sont les priorites fonctionnelles cote produit ?' },
-        { role: 'assistant', content: 'Sophie Blanc : "Les priorites sont : 1) Refonte complete du tunnel d\'achat (mobile first), 2) Integration paiements multi-devises, 3) Nouveau back-office analytics pour le marketing. J\'ai prepare un backlog initial de 87 user stories."' },
-        { role: 'user', content: 'Lucas, est-ce que l\'equipe technique a des preoccupations sur la stack ou l\'architecture ?' },
-        { role: 'assistant', content: 'Lucas Martin : "Oui, la migration depuis l\'ancien systeme Magento vers Next.js + Node.js est un gros chantier. Je recommande une approche progressive avec un strangler pattern. Il faudra aussi prevoir la migration des 500K produits et 2M de comptes."' },
-        { role: 'user', content: 'Tres bien. Je propose de valider le planning suivant : Sprint 0 pour le setup technique, puis 4 sprints de dev de 2 semaines chacun. On prevoit une demo client toutes les 2 semaines. Des objections ?' },
-        { role: 'assistant', content: 'Sophie : "Ca me va, mais il faut absolument un environnement de demo stable des le sprint 1."\nPierre : "D\'accord. Je veux un reporting hebdomadaire sur les KPIs projet."\nLucas : "OK pour moi. Je commence le setup de l\'infra des demain."' },
+        { role: 'assistant', content: 'Pierre Durand : "Merci Marie. TechShop perd 15% de parts de marché depuis 2 ans à cause d\'une plateforme vieillissante. L\'objectif est de doubler le taux de conversion et d\'ouvrir 3 nouveaux marchés européens d\'ici la fin de l\'année. Le budget est de 280K EUR, non négociable."' },
+        { role: 'user', content: 'Merci Pierre. Sophie, quelles sont les priorités fonctionnelles côté produit ?' },
+        { role: 'assistant', content: 'Sophie Blanc : "Les priorités sont : 1) Refonte complète du tunnel d\'achat (mobile first), 2) Intégration paiements multi-devises, 3) Nouveau back-office analytics pour le marketing. J\'ai préparé un backlog initial de 87 user stories."' },
+        { role: 'user', content: 'Lucas, est-ce que l\'équipe technique a des préoccupations sur la stack ou l\'architecture ?' },
+        { role: 'assistant', content: 'Lucas Martin : "Oui, la migration depuis l\'ancien système Magento vers Next.js + Node.js est un gros chantier. Je recommande une approche progressive avec un strangler pattern. Il faudra aussi prévoir la migration des 500K produits et 2M de comptes."' },
+        { role: 'user', content: 'Très bien. Je propose de valider le planning suivant : Sprint 0 pour le setup technique, puis 4 sprints de dev de 2 semaines chacun. On prévoit une démo client toutes les 2 semaines. Des objections ?' },
+        { role: 'assistant', content: 'Sophie : "Ca me va, mais il faut absolument un environnement de démo stable des le sprint 1."\nPierre : "D\'accord. Je veux un reporting hebdomadaire sur les KPIs projet."\nLucas : "OK pour moi. Je commence le setup de l\'infra des demain."' },
       ],
       summary: {
-        summary: 'Kick-off reussi. Le projet vise a doubler le taux de conversion et ouvrir 3 marches EU. Budget 280K, methodologie Scrum, 5 sprints prevus. Stack cible : Next.js + Node.js avec migration progressive.',
-        keyDecisions: ['Methodologie Scrum validee', 'Demo client bi-hebdomadaire', 'Migration progressive (strangler pattern)', 'Reporting hebdomadaire au sponsor'],
+        summary: 'Kick-off réussi. Le projet vise à doubler le taux de conversion et ouvrir 3 marchés EU. Budget 280K, méthodologie Scrum, 5 sprints prévus. Stack cible : Next.js + Node.js avec migration progressive.',
+        keyDecisions: ['Méthodologie Scrum validée', 'Demo client bi-hebdomadaire', 'Migration progressive (strangler pattern)', 'Reporting hebdomadaire au sponsor'],
         actionItems: [
           { assignee: 'Lucas', action: 'Setup infrastructure et CI/CD', deadline: 'Sprint 0' },
           { assignee: 'Sophie', action: 'Finaliser le backlog et prioriser', deadline: 'Sprint 0' },
@@ -405,35 +405,35 @@ async function main() {
     },
     {
       phaseOrder: 1, title: 'Revue de planification Sprint 1', type: 'STEERING', status: 'COMPLETED' as const,
-      objectives: ['Valider le scope Sprint 1', 'Identifier les risques', 'Definir les criteres de Done'],
+      objectives: ['Valider le scope Sprint 1', 'Identifier les risques', 'Définir les critères de Done'],
       startedAt: daysAgo(36), completedAt: daysAgo(36),
       participants: [
         { name: 'Sophie Blanc', role: 'Product Owner', personality: 'COOPERATIVE', cooperationLevel: 5 },
         { name: 'Lucas Martin', role: 'Tech Lead', personality: 'COOPERATIVE', cooperationLevel: 4 },
-        { name: 'Chloe Leroy', role: 'Scrum Master', personality: 'ASSERTIVE', cooperationLevel: 4 },
+        { name: 'Chloé Leroy', role: 'Scrum Master', personality: 'ASSERTIVE', cooperationLevel: 4 },
       ],
       messages: [
-        { role: 'system', content: 'Reunion de planification Sprint 1.' },
-        { role: 'assistant', content: 'Chloe Leroy : "Bonjour a tous. On a 14 user stories candidates pour le Sprint 1. Notre velocite estimee est de 45 points. Sophie, peux-tu nous presenter les priorites ?"' },
-        { role: 'user', content: 'Avant cela, j\'aimerais qu\'on fasse un point sur les risques identifies lors du kick-off. Lucas, ou en est le setup technique ?' },
-        { role: 'assistant', content: 'Lucas : "Le CI/CD est en place, l\'environnement de staging est operationnel. Par contre, j\'ai identifie un risque sur la migration Magento : les schemas de donnees sont tres differents, ca va prendre plus de temps que prevu."' },
+        { role: 'system', content: 'Réunion de planification Sprint 1.' },
+        { role: 'assistant', content: 'Chloé Leroy : "Bonjour à tous. On a 14 user stories candidates pour le Sprint 1. Notre vélocité estimée est de 45 points. Sophie, peux-tu nous présenter les priorités ?"' },
+        { role: 'user', content: 'Avant cela, j\'aimerais qu\'on fasse un point sur les risques identifiés lors du kick-off. Lucas, où en est le setup technique ?' },
+        { role: 'assistant', content: 'Lucas : "Le CI/CD est en place, l\'environnement de staging est opérationnel. Par contre, j\'ai identifié un risque sur la migration Magento : les schémas de données sont très différents, ca va prendre plus de temps que prévu."' },
         { role: 'user', content: 'OK, je note ce risque. On va l\'ajouter au registre. Sophie, on priorise les stories du tunnel d\'achat pour ce sprint ?' },
-        { role: 'assistant', content: 'Sophie : "Oui, exactement. Les 5 stories du tunnel d\'achat + 3 stories de l\'authentification. Ca fait 38 points, ca laisse de la marge pour les imprevus."\nChloe : "Parfait. Je suggere qu\'on garde 7 points de buffer. Marie, tu valides ?"' },
-        { role: 'user', content: 'Oui, 38 points + buffer ca me va. On definit le Definition of Done : code review, tests unitaires > 80%, demo PO validee. Lucas, c\'est realiste ?' },
-        { role: 'assistant', content: 'Lucas : "Oui, on peut tenir ca. Je mets en place SonarQube pour le suivi qualite automatise."' },
+        { role: 'assistant', content: 'Sophie : "Oui, exactement. Les 5 stories du tunnel d\'achat + 3 stories de l\'authentification. Ca fait 38 points, ca laisse de la marge pour les imprévus."\nChloé : "Parfait. Je suggère qu\'on garde 7 points de buffer. Marie, tu valides ?"' },
+        { role: 'user', content: 'Oui, 38 points + buffer ca me va. On définit le Définition of Done : code review, tests unitaires > 80%, démo PO validée. Lucas, c\'est réaliste ?' },
+        { role: 'assistant', content: 'Lucas : "Oui, on peut tenir ca. Je mets en place SonarQube pour le suivi qualité automatisé."' },
       ],
       summary: {
-        summary: 'Sprint 1 scope : 8 stories (38 points) focus tunnel achat + authentification. Risque identifie sur migration Magento. Buffer de 7 points. DoD valide.',
-        keyDecisions: ['Scope Sprint 1 : 38 points + 7 buffer', 'Priorite tunnel achat + auth', 'SonarQube pour qualite code'],
+        summary: 'Sprint 1 scope : 8 stories (38 points) focus tunnel achat + authentification. Risque identifié sur migration Magento. Buffer de 7 points. DoD validé.',
+        keyDecisions: ['Scope Sprint 1 : 38 points + 7 buffer', 'Priorité tunnel achat + auth', 'SonarQube pour qualité code'],
         actionItems: [
-          { assignee: 'Marie', action: 'Mettre a jour le registre des risques (migration Magento)', deadline: 'J+1' },
+          { assignee: 'Marie', action: 'Mettre à jour le registre des risques (migration Magento)', deadline: 'J+1' },
           { assignee: 'Lucas', action: 'Configurer SonarQube', deadline: 'J+2' },
         ],
       },
     },
     {
-      phaseOrder: 2, title: 'Comite de pilotage mi-sprint 2', type: 'STEERING', status: 'COMPLETED' as const,
-      objectives: ['Bilan sprint 1', 'Impact depart Emma', 'Ajustement planning'],
+      phaseOrder: 2, title: 'Comité de pilotage mi-sprint 2', type: 'STEERING', status: 'COMPLETED' as const,
+      objectives: ['Bilan sprint 1', 'Impact départ Emma', 'Ajustement planning'],
       startedAt: daysAgo(15), completedAt: daysAgo(15),
       participants: [
         { name: 'Pierre Durand', role: 'Sponsor', personality: 'ASSERTIVE', cooperationLevel: 3 },
@@ -441,17 +441,17 @@ async function main() {
         { name: 'Lucas Martin', role: 'Tech Lead', personality: 'COOPERATIVE', cooperationLevel: 4 },
       ],
       messages: [
-        { role: 'system', content: 'Comite de pilotage : bilan mi-parcours.' },
-        { role: 'user', content: 'Bonjour a tous. Avant de commencer, voici les metriques cles : budget consomme 28%, avancement fonctionnel 40%, velocite equipe +12% vs prevision. Par contre, nous avons un point critique a aborder : le depart d\'Emma.' },
-        { role: 'assistant', content: 'Pierre Durand : "40% d\'avancement pour 30% du temps ecoule, c\'est correct. Mais le depart d\'Emma m\'inquiete. Quel est l\'impact sur le planning ?"' },
-        { role: 'user', content: 'J\'ai fait appel a un freelance senior React qui commence lundi. L\'impact estime est de 1 semaine de retard maximum, le temps qu\'il monte en competence sur le projet.' },
-        { role: 'assistant', content: 'Lucas : "Le freelance a un bon profil, j\'ai valide ses references. Le risque est maitrise."\nPierre : "OK. Marie, je veux un plan de contingence au cas ou le freelance ne convient pas. Et je rappelle : la deadline n\'est pas negociable."' },
-        { role: 'user', content: 'Compris Pierre. J\'ai deja identifie 2 profils de backup en ESN. Sophie, ou en est le backlog pour le sprint 2 ?' },
-        { role: 'assistant', content: 'Sophie : "Sprint 2 focus sur les paiements multi-devises et le back-office. 42 points prevus. C\'est ambitieux mais faisable si le freelance est operationnel rapidement."' },
+        { role: 'system', content: 'Comité de pilotage : bilan mi-parcours.' },
+        { role: 'user', content: 'Bonjour à tous. Avant de commencer, voici les métriques clés : budget consommé 28%, avancement fonctionnel 40%, vélocité équipe +12% vs prévision. Par contre, nous avons un point critique à aborder : le départ d\'Emma.' },
+        { role: 'assistant', content: 'Pierre Durand : "40% d\'avancement pour 30% du temps écoulé, c\'est correct. Mais le départ d\'Emma m\'inquiete. Quel est l\'impact sur le planning ?"' },
+        { role: 'user', content: 'J\'ai fait appel à un freelance senior React qui commence lundi. L\'impact estimé est de 1 semaine de retard maximum, le temps qu\'il monte en compétence sur le projet.' },
+        { role: 'assistant', content: 'Lucas : "Le freelance a un bon profil, j\'ai validé ses références. Le risque est maîtrisé."\nPierre : "OK. Marie, je veux un plan de contingence au cas où le freelance ne convient pas. Et je rappelle : la deadline n\'est pas négociable."' },
+        { role: 'user', content: 'Compris Pierre. J\'ai déjà identifié 2 profils de backup en ESN. Sophie, où en est le backlog pour le sprint 2 ?' },
+        { role: 'assistant', content: 'Sophie : "Sprint 2 focus sur les paiements multi-devises et le back-office. 42 points prévus. C\'est ambitieux mais faisable si le freelance est opérationnel rapidement."' },
       ],
       summary: {
-        summary: 'Avancement 40% conforme. Depart Emma compense par un freelance senior. Risque maitrise avec plan de backup. Sprint 2 ambitieux (42 pts) focus paiements + back-office.',
-        keyDecisions: ['Freelance senior valide pour remplacer Emma', 'Plan de backup ESN en reserve', 'Sprint 2 maintenu a 42 points'],
+        summary: 'Avancement 40% conforme. Départ Emma compense par un freelance senior. Risque maîtrise avec plan de backup. Sprint 2 ambitieux (42 pts) focus paiements + back-office.',
+        keyDecisions: ['Freelance senior valide pour remplacer Emma', 'Plan de backup ESN en réserve', 'Sprint 2 maintenu à 42 points'],
         actionItems: [
           { assignee: 'Marie', action: 'Onboarding freelance + plan de contingence', deadline: 'Lundi' },
           { assignee: 'Lucas', action: 'Pair programming avec le freelance semaine 1', deadline: 'Sprint 2' },
@@ -460,7 +460,7 @@ async function main() {
     },
     {
       phaseOrder: 3, title: 'Demo client Sprint 2', type: 'REVIEW', status: 'SCHEDULED' as const,
-      objectives: ['Presenter le tunnel de paiement', 'Valider le back-office analytics', 'Recueillir les feedbacks'],
+      objectives: ['Présenter le tunnel de paiement', 'Valider le back-office analytics', 'Recueillir les feedbacks'],
       startedAt: null, completedAt: null,
       participants: [
         { name: 'Pierre Durand', role: 'Sponsor', personality: 'ASSERTIVE', cooperationLevel: 3 },
@@ -517,7 +517,7 @@ async function main() {
       });
     }
   }
-  console.log(`Reunions creees (${meetingDefs.length}, dont 1 planifiee)`);
+  console.log(`Réunions créées (${meetingDefs.length}, dont 1 planifiée)`);
 
   // ─── 12. Livrables (7, avec evaluations) ──────────────
   const deliverableDefs = [
@@ -527,28 +527,28 @@ async function main() {
       content: `# Charte de Projet — Refonte E-commerce TechShop
 
 ## 1. Contexte
-TechShop International, leader de la vente en ligne de produits tech en Europe, souhaite refondre integralement sa plateforme e-commerce pour repondre aux enjeux de croissance 2024-2025.
+TechShop International, leader de la vente en ligne de produits tech en Europe, souhaite refondre intégralement sa plateforme e-commerce pour répondre aux enjeux de croissance 2024-2025.
 
 ## 2. Objectifs
 - Doubler le taux de conversion (de 2.1% a 4.2%)
-- Ouvrir 3 nouveaux marches (DE, ES, IT)
-- Reduire le temps de chargement moyen de 4.2s a 1.5s
+- Ouvrir 3 nouveaux marchés (DE, ES, IT)
+- Réduire le temps de chargement moyen de 4.2s a 1.5s
 - Augmenter le panier moyen de 15%
 
-## 3. Perimetre
-**In scope :** Refonte front-end, nouveau tunnel d'achat, paiements multi-devises, back-office analytics, migration des donnees
-**Out of scope :** Application mobile native, programme de fidelite, marketplace tiers
+## 3. Périmètre
+**In scope :** Refonte front-end, nouveau tunnel d'achat, paiements multi-devises, back-office analytics, migration des données
+**Out of scope :** Application mobile native, programme de fidélité, marketplace tiers
 
 ## 4. Budget : 280 000 EUR
 ## 5. Planning : 5 sprints de 2 semaines (10 semaines)
-## 6. Equipe : 6 personnes + 1 PM
-## 7. Risques majeurs : Migration donnees, disponibilite equipe, complexite paiements multi-devises`,
+## 6. Équipe : 6 personnes + 1 PM
+## 7. Risques majeurs : Migration données, disponibilité équipe, complexité paiements multi-devises`,
       evaluation: {
         score: 82, grade: 'B',
-        positives: ['Objectifs SMART bien definis', 'Perimetre clair avec in/out scope', 'Budget et planning realistes'],
-        improvements: ['Manque la matrice RACI', 'Criteres de succes non mesurables pour certains objectifs'],
+        positives: ['Objectifs SMART bien définis', 'Périmètre clair avec in/out scope', 'Budget et planning réalistes'],
+        improvements: ['Manque la matrice RACI', 'Critères de succès non mesurables pour certains objectifs'],
         missingElements: ['Plan de communication', 'Processus d\'escalade'],
-        recommendations: ['Ajouter une section gouvernance', 'Detailler les jalons cles'],
+        recommendations: ['Ajouter une section gouvernance', 'Détailler les jalons clés'],
       },
     },
     {
@@ -559,7 +559,7 @@ TechShop International, leader de la vente en ligne de produits tech en Europe, 
 ## 1. Initiation (Sprint 0)
 - 1.1 Setup environnement dev/staging/prod
 - 1.2 Configuration CI/CD (GitHub Actions)
-- 1.3 Architecture technique documentee
+- 1.3 Architecture technique documentée
 
 ## 2. Sprint 1 — Tunnel d'achat
 - 2.1 Page catalogue (listing, filtres, tri)
@@ -569,7 +569,7 @@ TechShop International, leader de la vente en ligne de produits tech en Europe, 
 - 2.5 Checkout step 2 — Livraison
 
 ## 3. Sprint 2 — Paiements & Back-office
-- 3.1 Integration Stripe multi-devises
+- 3.1 Intégration Stripe multi-devises
 - 3.2 Page de confirmation et suivi commande
 - 3.3 Back-office : dashboard analytics
 - 3.4 Back-office : gestion produits
@@ -577,18 +577,18 @@ TechShop International, leader de la vente en ligne de produits tech en Europe, 
 ## 4. Sprint 3 — Migration & Tests
 - 4.1 Migration produits (500K items)
 - 4.2 Migration comptes clients (2M)
-- 4.3 Tests E2E automatises
+- 4.3 Tests E2E automatisés
 - 4.4 Tests de performance
 
 ## 5. Sprint 4 — Go-live
-- 5.1 Deploiement progressif (canary)
+- 5.1 Déploiement progressif (canary)
 - 5.2 Monitoring et alerting
 - 5.3 Documentation utilisateur
-- 5.4 Formation equipe support`,
+- 5.4 Formation équipe support`,
       evaluation: {
         score: 78, grade: 'B',
-        positives: ['Decoupage logique par sprint', 'Taches granulaires et claires', 'Inclusion des taches de test et deploiement'],
-        improvements: ['Estimation d\'effort manquante par tache', 'Dependencies entre lots non explicitees'],
+        positives: ['Découpage logique par sprint', 'Tâches granulaires et claires', 'Inclusion des tâches de test et déploiement'],
+        improvements: ['Estimation d\'effort manquante par tâche', 'Dependencies entre lots non explicitées'],
         missingElements: ['Diagramme de Gantt', 'Chemin critique', 'Estimation en story points'],
         recommendations: ['Ajouter les estimations et les dependencies', 'Identifier le chemin critique'],
       },
@@ -599,25 +599,25 @@ TechShop International, leader de la vente en ligne de produits tech en Europe, 
       content: `# Plan de Communication — Projet TechShop
 
 ## Parties prenantes
-| Partie prenante | Role | Frequence | Canal | Responsable |
+| Partie prenante | Rôle | Fréquence | Canal | Responsable |
 |---|---|---|---|---|
 | Pierre Durand | Sponsor | Hebdo | Rapport + call | Marie |
-| Sophie Blanc | Product Owner | Quotidien | Slack + daily | Chloe |
-| Equipe dev | Executants | Quotidien | Slack + standup | Chloe |
-| Equipe QA | Testeurs | Bi-hebdo | Jira + Slack | Nathan |
-| Support TechShop | Operationnel | Mensuel | Email + training | Marie |
+| Sophie Blanc | Product Owner | Quotidien | Slack + daily | Chloé |
+| Équipe dev | Exécutants | Quotidien | Slack + standup | Chloé |
+| Équipe QA | Testeurs | Bi-hebdo | Jira + Slack | Nathan |
+| Support TechShop | Opérationnel | Mensuel | Email + training | Marie |
 
-## Reunions recurrentes
-- **Daily standup** : 9h30, 15min, toute l'equipe
-- **Sprint review** : fin de sprint, 1h, PO + equipe + sponsor
-- **Retrospective** : fin de sprint, 45min, equipe
+## Réunions recurrentes
+- **Daily standup** : 9h30, 15min, toute l'équipe
+- **Sprint review** : fin de sprint, 1h, PO + équipe + sponsor
+- **Retrospective** : fin de sprint, 45min, équipe
 - **COPIL** : bi-mensuel, 1h, sponsor + PM + PO + Tech Lead`,
       evaluation: {
         score: 85, grade: 'A',
-        positives: ['Matrice de communication complete', 'Frequences adaptees par partie prenante', 'Canaux de communication bien definis'],
+        positives: ['Matrice de communication complète', 'Fréquences adaptées par partie prenante', 'Canaux de communication bien définis'],
         improvements: ['Manque un plan de gestion des conflits', 'Pas de processus d\'escalade formalise'],
-        missingElements: ['Modeles de rapports'],
-        recommendations: ['Ajouter les modeles de reporting'],
+        missingElements: ['Modèles de rapports'],
+        recommendations: ['Ajouter les modèles de reporting'],
       },
     },
     {
@@ -625,20 +625,20 @@ TechShop International, leader de la vente en ligne de produits tech en Europe, 
       dueDate: daysAgo(12), submittedAt: daysAgo(13), revisionNumber: 1,
       content: `# Registre des Risques — Projet TechShop
 
-| # | Risque | Probabilite | Impact | Score | Mitigation | Responsable | Statut |
+| # | Risque | Probabilité | Impact | Score | Mitigation | Responsable | Statut |
 |---|--------|-------------|--------|-------|-----------|-------------|--------|
-| R1 | Migration donnees complexe | Haute | Tres haut | 20 | Migration incrementale par lots | Lucas | En cours |
-| R2 | Depart membre equipe cle | Moyenne | Haut | 12 | Plan de backup ESN + doc technique | Marie | Realise |
-| R3 | Faille securite paiements | Faible | Critique | 15 | Audit OWASP + tests penetration | Hugo | Planifie |
-| R4 | Retard fournisseur cloud | Moyenne | Moyen | 9 | Multi-region + plan de bascule | Lucas | Actif |
-| R5 | Changement de perimetre | Haute | Moyen | 12 | Change control process strict | Marie | Actif |
-| R6 | Performance insuffisante | Moyenne | Haut | 12 | Tests de charge des Sprint 2 | Nathan | Planifie |`,
+| R1 | Migration données complexe | Haute | Très haut | 20 | Migration incrémentale par lots | Lucas | En cours |
+| R2 | Départ membre équipe clé | Moyenne | Haut | 12 | Plan de backup ESN + doc technique | Marie | Réalisé |
+| R3 | Faille sécurité paiements | Faible | Critique | 15 | Audit OWASP + tests pénétration | Hugo | Planifié |
+| R4 | Retard fournisseur cloud | Moyenne | Moyen | 9 | Multi-région + plan de bascule | Lucas | Actif |
+| R5 | Changement de périmètre | Haute | Moyen | 12 | Change control process strict | Marie | Actif |
+| R6 | Performance insuffisante | Moyenne | Haut | 12 | Tests de charge des Sprint 2 | Nathan | Planifié |`,
       evaluation: {
         score: 72, grade: 'B',
-        positives: ['Risques pertinents et bien identifies', 'Scoring correct', 'Responsables assignes'],
-        improvements: ['Manque l\'analyse quantitative (EMV)', 'Plans de contingence non detailles'],
-        missingElements: ['Matrice probabilite/impact visuelle', 'Budget reserve pour risques'],
-        recommendations: ['Calculer l\'EMV pour chaque risque', 'Definir un budget de contingence'],
+        positives: ['Risques pertinents et bien identifiés', 'Scoring correct', 'Responsables assignés'],
+        improvements: ['Manque l\'analyse quantitative (EMV)', 'Plans de contingence non détaillés'],
+        missingElements: ['Matrice probabilité/impact visuelle', 'Budget réservé pour risques'],
+        recommendations: ['Calculer l\'EMV pour chaque risque', 'Définir un budget de contingence'],
       },
     },
     {
@@ -646,38 +646,38 @@ TechShop International, leader de la vente en ligne de produits tech en Europe, 
       dueDate: daysAgo(15), submittedAt: daysAgo(16), revisionNumber: 1,
       content: `# Rapport d'Avancement — Sprint 1
 
-## Metriques cles
-- **Velocite** : 42 points / 38 prevus (+10.5%)
-- **Budget consomme** : 22% (62K / 280K)
-- **Defauts detectes** : 12 (8 corriges, 4 mineurs en backlog)
+## Métriques clés
+- **Vélocité** : 42 points / 38 prévus (+10.5%)
+- **Budget consommé** : 22% (62K / 280K)
+- **Défauts détectés** : 12 (8 corrigés, 4 mineurs en backlog)
 - **Couverture de tests** : 84%
 
-## Livrables termines
-- Catalogue produits avec filtres avances
-- Fiche produit complete (galerie, variantes, stock temps reel)
+## Livrables terminés
+- Catalogue produits avec filtres avancés
+- Fiche produit complète (galerie, variantes, stock temps réel)
 - Panier fonctionnel
-- Checkout etapes 1-2
+- Checkout étapes 1-2
 
 ## Points d'attention
-- Migration Magento plus complexe que prevu (+20% effort)
-- Performance page catalogue : 2.8s (objectif 1.5s) — optimisation prevue Sprint 2
+- Migration Magento plus complexe que prévu (+20% effort)
+- Performance page catalogue : 2.8s (objectif 1.5s) — optimisation prévue Sprint 2
 
 ## Actions Sprint 2
-- Integration Stripe multi-devises
+- Intégration Stripe multi-devises
 - Back-office analytics (phase 1)
 - Optimisation performances front-end`,
       evaluation: {
         score: 88, grade: 'A',
-        positives: ['Metriques claires et comparees aux previsions', 'Transparence sur les points d\'attention', 'Actions correctives identifiees'],
+        positives: ['Métriques claires et comparées aux prévisions', 'Transparence sur les points d\'attention', 'Actions correctives identifiées'],
         improvements: ['Ajouter l\'EVM (Earned Value Management)', 'Graphique burndown manquant'],
         missingElements: ['Courbe en S du budget'],
-        recommendations: ['Integrer l\'analyse de la valeur acquise'],
+        recommendations: ['Intégrer l\'analyse de la valeur acquise'],
       },
     },
     {
       phaseOrder: 3, title: 'Cahier de tests Sprint 2', type: 'test_plan', status: 'DRAFT' as const,
       dueDate: daysFromNow(3), submittedAt: null, revisionNumber: 0,
-      content: `# Plan de Tests — Sprint 2 (en cours de redaction)
+      content: `# Plan de Tests — Sprint 2 (en cours de rédaction)
 
 ## Scope
 - Tests fonctionnels tunnel de paiement
@@ -685,8 +685,8 @@ TechShop International, leader de la vente en ligne de produits tech en Europe, 
 - Tests de performance back-office
 
 ## TODO
-- [ ] Definir les cas de test paiement
-- [ ] Preparer les jeux de donnees
+- [ ] Définir les cas de test paiement
+- [ ] Préparer les jeux de données
 - [ ] Configurer l'environnement de test`,
       evaluation: null,
     },
@@ -732,29 +732,29 @@ TechShop International, leader de la vente en ligne de produits tech en Europe, 
       });
     }
   }
-  console.log(`Livrables crees (${deliverableDefs.length}, dont 4 evalues)`);
+  console.log(`Livrables créés (${deliverableDefs.length}, dont 4 évalués)`);
 
   // ─── 13. Emails simules (6 emails) ────────────────────
   const emailDefs = [
     {
       senderName: 'Claire Fontaine', senderRole: 'DRH', senderEmail: 'claire.fontaine@techshop.com',
-      subject: 'Bienvenue dans l\'equipe projet TechShop !', priority: 'NORMAL' as const, status: 'READ' as const,
+      subject: 'Bienvenue dans l\'équipe projet TechShop !', priority: 'NORMAL' as const, status: 'READ' as const,
       phaseOrder: 0, triggerType: 'welcome',
       body: `Chere Marie,
 
-Au nom de toute l'equipe TechShop, je suis ravie de vous accueillir en tant que cheffe de projet pour notre refonte e-commerce.
+Au nom de toute l'équipe TechShop, je suis ravie de vous accueillir en tant que cheffe de projet pour notre refonte e-commerce.
 
-Votre experience en gestion de projet IT sera un atout precieux pour mener a bien cette transformation numerique. Pierre Durand, notre DG, attend beaucoup de ce projet qui est strategique pour notre croissance 2025.
+Votre expérience en gestion de projet IT sera un atout précieux pour mener à bien cette transformation numérique. Pierre Durand, notre DG, attend beaucoup de ce projet qui est stratégique pour notre croissance 2025.
 
 Voici vos premiers interlocuteurs :
 - Sophie Blanc (Product Owner) — sophie.blanc@techshop.com
 - Lucas Martin (Tech Lead) — lucas.martin@techshop.com
 
-N'hesitez pas a me contacter si vous avez des questions d'ordre organisationnel.
+N'hésitez pas à me contacter si vous avez des questions d'ordre organisationnel.
 
-Bonne integration !
+Bonne intégration !
 Claire`,
-      userResponse: 'Merci Claire pour cet accueil chaleureux ! Je suis tres motivee par ce projet. J\'ai deja pris contact avec Sophie et Lucas pour organiser le kick-off. Pourriez-vous me transmettre l\'organigramme de l\'equipe et les procedures internes de TechShop ?',
+      userResponse: 'Merci Claire pour cet accueil chaleureux ! Je suis très motivée par ce projet. J\'ai déjà pris contact avec Sophie et Lucas pour organiser le kick-off. Pourriez-vous me transmettre l\'organigramme de l\'équipe et les procédures internes de TechShop ?',
       responseScore: 85,
     },
     {
@@ -763,7 +763,7 @@ Claire`,
       phaseOrder: 1, triggerType: 'phase_start',
       body: `Marie,
 
-Je vous rappelle que la demo du tunnel d'achat au board est prevue le 15 du mois prochain. C'est un jalon critique pour debloquer le budget de la phase 2.
+Je vous rappelle que la démo du tunnel d'achat au board est prévue le 15 du mois prochain. C'est un jalon critique pour débloquer le budget de la phase 2.
 
 Les KPIs que je suivrai personnellement :
 1. Temps de chargement < 2s
@@ -773,8 +773,8 @@ Les KPIs que je suivrai personnellement :
 Je compte sur vous.
 
 Pierre Durand
-Directeur General`,
-      userResponse: 'Pierre, merci pour ce rappel. Je vous confirme que nous sommes en bonne voie pour la demo. Le tunnel d\'achat est fonctionnel a 80% et la couverture de tests est a 84%. Je vous enverrai un rapport detaille vendredi.',
+Directeur Général`,
+      userResponse: 'Pierre, merci pour ce rappel. Je vous confirme que nous sommes en bonne voie pour la démo. Le tunnel d\'achat est fonctionnel à 80% et la couverture de tests est à 84%. Je vous enverrai un rapport détaillé vendredi.',
       responseScore: 90,
     },
     {
@@ -783,45 +783,45 @@ Directeur General`,
       phaseOrder: 3, triggerType: 'change_request',
       body: `Bonjour Marie,
 
-Suite aux retours utilisateurs de la beta, nous aimerions ajouter 3 fonctionnalites au scope :
-1. Wishlist (liste de souhaits) — impact estime : 8 points
-2. Comparateur de produits — impact estime : 13 points
-3. Avis verifies (integration Trustpilot) — impact estime : 5 points
+Suite aux retours utilisateurs de la beta, nous aimerions ajouter 3 fonctionnalités au scope :
+1. Wishlist (liste de souhaits) — impact estimé : 8 points
+2. Comparateur de produits — impact estimé : 13 points
+3. Avis vérifiés (intégration Trustpilot) — impact estimé : 5 points
 
-Total : 26 points supplementaires.
+Total : 26 points supplémentaires.
 
-Je sais que c'est un changement de perimetre, mais les retours utilisateurs sont tres clairs sur ces besoins.
+Je sais que c'est un changement de périmètre, mais les retours utilisateurs sont très clairs sur ces besoins.
 
 Qu'en pensez-vous ?
 
 Sophie`,
-      userResponse: 'Sophie, merci pour ces retours precieux. Je comprends l\'importance de ces features pour les utilisateurs. Apres analyse avec l\'equipe, je propose : 1) Wishlist integree au Sprint 2 actuel (compatible avec notre capacite), 2) Comparateur et avis Trustpilot planifies pour le Sprint 3. Cela necessite un avenant formel au scope — je prepare le document de change request pour validation du sponsor.',
+      userResponse: 'Sophie, merci pour ces retours précieux. Je comprends l\'importance de ces features pour les utilisateurs. Après analyse avec l\'équipe, je propose : 1) Wishlist intégrée au Sprint 2 actuel (compatible avec notre capacité), 2) Comparateur et avis Trustpilot planifiés pour le Sprint 3. Cela nécessite un avenant formel au scope — je prépare le document de change request pour validation du sponsor.',
       responseScore: 92,
     },
     {
-      senderName: 'Hugo Petit', senderRole: 'Membre equipe', senderEmail: 'hugo.petit@techshop.com',
-      subject: 'URGENT — Faille XSS detectee en staging', priority: 'URGENT' as const, status: 'UNREAD' as const,
+      senderName: 'Hugo Petit', senderRole: 'Membre équipe', senderEmail: 'hugo.petit@techshop.com',
+      subject: 'URGENT — Faille XSS détectée en staging', priority: 'URGENT' as const, status: 'UNREAD' as const,
       phaseOrder: 3, triggerType: 'event_reaction',
       body: `Marie,
 
-Je viens de detecter une vulnerabilite XSS sur le formulaire de paiement en staging. Un attaquant pourrait injecter du code malveillant dans le champ "nom du titulaire de carte".
+Je viens de détecter une vulnérabilité XSS sur le formulaire de paiement en staging. Un attaquant pourrait injecter du code malveillant dans le champ "nom du titulaire de carte".
 
-Niveau de severite : CRITIQUE
-Impact potentiel : Vol de donnees de paiement
-Environnement affecte : Staging uniquement (pas encore en prod)
+Niveau de sévérité : CRITIQUE
+Impact potentiel : Vol de données de paiement
+Environnement affecté : Staging uniquement (pas encore en prod)
 
-J'ai deja :
+J'ai déjà :
 - Documente la faille dans notre outil de ticketing
-- Bloque le deploiement automatique vers la prod
-- Prepare un correctif (PR #247) en attente de review
+- Bloque le déploiement automatique vers la prod
+- Préparé un correctif (PR #247) en attente de review
 
-Il faut prendre une decision rapidement : est-ce qu'on arrete le sprint pour traiter ca en priorite ?
+Il faut prendre une décision rapidement : est-ce qu'on arrête le sprint pour traiter ça en priorité ?
 
 Hugo`,
       userResponse: null, responseScore: null,
     },
     {
-      senderName: 'Nathan Roux', senderRole: 'Membre equipe', senderEmail: 'nathan.roux@techshop.com',
+      senderName: 'Nathan Roux', senderRole: 'Membre équipe', senderEmail: 'nathan.roux@techshop.com',
       subject: 'Rapport de tests Sprint 1 — 84% couverture', priority: 'NORMAL' as const, status: 'READ' as const,
       phaseOrder: 2, triggerType: 'decision_followup',
       body: `Bonjour Marie,
@@ -829,14 +829,14 @@ Hugo`,
 Voici le bilan des tests Sprint 1 :
 - Tests unitaires : 312 passes, 0 fails, couverture 84%
 - Tests E2E : 28 scenarios, 26 passes, 2 flaky (en investigation)
-- Tests de performance : page catalogue 2.8s (objectif 1.5s) — a optimiser
+- Tests de performance : page catalogue 2.8s (objectif 1.5s) — à optimiser
 
-Les 2 tests flaky concernent le panier en mode mobile. J'ai identifie la cause : un timing issue avec l'animation CSS. Correction prevue Sprint 2.
+Les 2 tests flaky concernent le panier en mode mobile. J'ai identifié la cause : un timing issue avec l'animation CSS. Correction prévue Sprint 2.
 
-La performance du catalogue est le point d'attention principal. Lucas a propose d'implementer du lazy loading et de la mise en cache cote serveur.
+La performance du catalogue est le point d'attention principal. Lucas a proposé d'implémenter du lazy loading et de la mise en cache côté serveur.
 
 Nathan`,
-      userResponse: 'Merci Nathan pour ce rapport detaille. 84% de couverture c\'est bien, on vise 90% pour le Sprint 2. Pour la performance catalogue, je valide l\'approche de Lucas (lazy loading + cache). Peux-tu ajouter des tests de charge specifiques pour valider l\'objectif de 1.5s ?',
+      userResponse: 'Merci Nathan pour ce rapport détaillé. 84% de couverture c\'est bien, on vise 90% pour le Sprint 2. Pour la performance catalogue, je valide l\'approche de Lucas (lazy loading + cache). Peux-tu ajouter des tests de charge spécifiques pour valider l\'objectif de 1.5s ?',
       responseScore: 88,
     },
     {
@@ -845,10 +845,10 @@ Nathan`,
       phaseOrder: 3, triggerType: 'decision_followup',
       body: `Marie,
 
-Merci pour le rapport. Je note que le budget est a 72% du prevu et les delais a 65%. C'est preoccupant.
+Merci pour le rapport. Je note que le budget est à 72% du prévu et les délais à 65%. C'est préoccupant.
 
-Pouvez-vous me preparer un plan de rattrapage pour le prochain COPIL ? Je veux comprendre :
-1. Les causes exactes du depassement
+Pouvez-vous me préparer un plan de rattrapage pour le prochain COPIL ? Je veux comprendre :
+1. Les causes exactes du dépassement
 2. Les options pour revenir dans les clous
 3. L'impact sur la date de go-live
 
@@ -878,7 +878,7 @@ Pierre`,
       },
     });
   }
-  console.log(`Emails simules crees (${emailDefs.length}, dont 2 non lus)`);
+  console.log(`Emails simulés créés (${emailDefs.length}, dont 2 non lus)`);
 
   // ─── 14. Conversation PMO ──────────────────────────────
   const pmoConversation = await prisma.pmoConversation.create({
@@ -886,19 +886,19 @@ Pierre`,
       simulationId: simulation.id,
       messages: {
         create: [
-          { role: 'system', content: 'Conversation initialisee. Agent PMO pret pour la simulation TechShop.', createdAt: daysAgo(44) },
-          { role: 'assistant', content: 'Bonjour Marie ! Je suis votre agent PMO pour le projet TechShop. Je suis la pour vous accompagner tout au long de la simulation. N\'hesitez pas a me poser des questions sur la gestion de projet, les livrables a produire, ou les bonnes pratiques PMI.\n\nJe vois que vous etes en phase d\'Initiation. Votre premier livrable a rendre est la **Charte de projet**. Avez-vous besoin d\'aide pour la rediger ?', createdAt: daysAgo(44) },
-          { role: 'user', content: 'Oui, quels sont les elements essentiels d\'une charte de projet selon le PMBOK ?', createdAt: daysAgo(44) },
-          { role: 'assistant', content: 'Excellente question ! Selon le PMBOK (6e edition), la charte de projet doit contenir :\n\n1. **Justification du projet** — pourquoi ce projet existe\n2. **Objectifs mesurables** — criteres SMART\n3. **Exigences de haut niveau** — besoins cles des parties prenantes\n4. **Description du projet** — perimetre macro\n5. **Risques de haut niveau** — principaux risques identifies\n6. **Jalons cles** — dates importantes\n7. **Budget resumé**\n8. **Criteres de succes** — comment on mesure la reussite\n9. **Chef de projet designe** — vous, Marie !\n10. **Autorite du sponsor** — qui valide quoi\n\nPour TechShop, je vous suggere de bien mettre en avant les objectifs business (taux de conversion, nouveaux marches) et le perimetre clair (in/out scope). Le sponsor Pierre Durand appreciera la precision.\n\nVoulez-vous que je vous aide a structurer chaque section ?', createdAt: daysAgo(44) },
-          { role: 'user', content: 'Comment gerer le changement de perimetre demande par Sophie pour la wishlist et le comparateur ?', createdAt: daysAgo(4) },
-          { role: 'assistant', content: 'C\'est un cas classique de **change control** ! Voici la demarche recommandee :\n\n1. **Documenter la demande** — Remplissez un formulaire de Change Request avec : description, justification, impact estime (cout, delai, qualite)\n\n2. **Analyser l\'impact** — Les 26 points supplementaires representent environ 60% de la capacite d\'un sprint. C\'est significatif !\n\n3. **Proposer des options** au sponsor :\n   - **Option A** : Tout integrer → +1 sprint, +40K EUR\n   - **Option B** : Prioriser (wishlist maintenant, reste en V2) → impact minimal\n   - **Option C** : Refuser → risque d\'insatisfaction utilisateur\n\n4. **Decision du CCB** (Change Control Board) — Pierre doit valider\n\nVotre reponse a Sophie etait tres pertinente : prioriser la wishlist et reporter le reste. C\'est l\'**Option B**, qui preserve le planning tout en montrant de la flexibilite.\n\n> **Rappel PMI** : Le processus 4.6 "Maitriser les modifications" exige que tout changement soit trace et approuve formellement.\n\nAvez-vous prepare le document de Change Request ?', createdAt: daysAgo(4) },
-          { role: 'user', content: 'Pierre me demande un plan de rattrapage pour le budget et les delais. Comment structurer ca ?', createdAt: hoursAgo(5) },
-          { role: 'assistant', content: 'Voici comment structurer votre **plan de rattrapage** pour le COPIL :\n\n## 1. Diagnostic (Causes des ecarts)\n- **Budget (72%)** : Recrutement freelance (+12K), audit securite imprevue (+8K)\n- **Delais (65%)** : Depart d\'Emma (-1 semaine), complexite migration Magento (+20% effort)\n\n## 2. Options de rattrapage\n\n| Option | Budget | Delai | Risque |\n|--------|--------|-------|--------|\n| A — Crashing (heures sup) | -15K | +1 semaine | Fatigue equipe |\n| B — Fast tracking (paralleliser) | Neutre | +2 semaines | Qualite |\n| C — Reduire le scope Sprint 3 | +10K | Conforme | Fonctionnalites reportees |\n\n## 3. Recommandation\nJe vous suggere l\'**Option C** combinee avec du fast tracking cible. Concretement :\n- Reporter les features non critiques (comparateur, avis) en V2\n- Paralleliser les tests de performance avec le dev Sprint 3\n- Garder la date de go-live\n\n## 4. Plan d\'action\nIncluez un Gantt revise avec les jalons mis a jour.\n\n> **Attention** : Vous avez aussi une **decision en attente** concernant l\'incident de securite. Pierre va probablement vous interroger dessus au COPIL. Preparez votre reponse !\n\nBesoin d\'aide pour rediger le document ?', createdAt: hoursAgo(4) },
+          { role: 'system', content: 'Conversation initialisée. Agent PMO prêt pour la simulation TechShop.', createdAt: daysAgo(44) },
+          { role: 'assistant', content: 'Bonjour Marie ! Je suis votre agent PMO pour le projet TechShop. Je suis là pour vous accompagner tout au long de la simulation. N\'hésitez pas à me poser des questions sur la gestion de projet, les livrables à produire, ou les bonnes pratiques PMI.\n\nJe vois que vous êtes en phase d\'Initiation. Votre premier livrable à rendre est la **Charte de projet**. Avez-vous besoin d\'aide pour la rédiger ?', createdAt: daysAgo(44) },
+          { role: 'user', content: 'Oui, quels sont les éléments essentiels d\'une charte de projet selon le PMBOK ?', createdAt: daysAgo(44) },
+          { role: 'assistant', content: 'Excellente question ! Selon le PMBOK (6e édition), la charte de projet doit contenir :\n\n1. **Justification du projet** — pourquoi ce projet existe\n2. **Objectifs mesurables** — critères SMART\n3. **Exigences de haut niveau** — besoins clés des parties prenantes\n4. **Description du projet** — périmètre macro\n5. **Risques de haut niveau** — principaux risques identifiés\n6. **Jalons clés** — dates importantes\n7. **Budget resumé**\n8. **Critères de succès** — comment on mesure la réussite\n9. **Chef de projet désigné** — vous, Marie !\n10. **Autorité du sponsor** — qui valide quoi\n\nPour TechShop, je vous suggère de bien mettre en avant les objectifs business (taux de conversion, nouveaux marchés) et le périmètre clair (in/out scope). Le sponsor Pierre Durand appreciera la précision.\n\nVoulez-vous que je vous aide à structurer chaque section ?', createdAt: daysAgo(44) },
+          { role: 'user', content: 'Comment gérer le changement de périmètre demande par Sophie pour la wishlist et le comparateur ?', createdAt: daysAgo(4) },
+          { role: 'assistant', content: 'C\'est un cas classique de **change control** ! Voici la démarche recommandée :\n\n1. **Documenter la demande** — Remplissez un formulaire de Change Request avec : description, justification, impact estimé (coût, délai, qualité)\n\n2. **Analyser l\'impact** — Les 26 points supplémentaires représentent environ 60% de la capacité d\'un sprint. C\'est significatif !\n\n3. **Proposer des options** au sponsor :\n   - **Option A** : Tout intégrer → +1 sprint, +40K EUR\n   - **Option B** : Prioriser (wishlist maintenant, reste en V2) → impact minimal\n   - **Option C** : Refuser → risque d\'insatisfaction utilisateur\n\n4. **Décision du CCB** (Change Control Board) — Pierre doit valider\n\nVotre réponse à Sophie était très pertinente : prioriser la wishlist et reporter le reste. C\'est l\'**Option B**, qui préserve le planning tout en montrant de la flexibilité.\n\n> **Rappel PMI** : Le processus 4.6 "Maîtriser les modifications" exige que tout changement soit tracé et approuvé formellement.\n\nAvez-vous prépare le document de Change Request ?', createdAt: daysAgo(4) },
+          { role: 'user', content: 'Pierre me demande un plan de rattrapage pour le budget et les délais. Comment structurer ca ?', createdAt: hoursAgo(5) },
+          { role: 'assistant', content: 'Voici comment structurer votre **plan de rattrapage** pour le COPIL :\n\n## 1. Diagnostic (Causes des écarts)\n- **Budget (72%)** : Recrutement freelance (+12K), audit sécurité imprévue (+8K)\n- **Délais (65%)** : Départ d\'Emma (-1 semaine), complexité migration Magento (+20% effort)\n\n## 2. Options de rattrapage\n\n| Option | Budget | Délai | Risque |\n|--------|--------|-------|--------|\n| A — Crashing (heures sup) | -15K | +1 semaine | Fatigué équipe |\n| B — Fast tracking (paralléliser) | Neutre | +2 semaines | Qualité |\n| C — Réduire le scope Sprint 3 | +10K | Conforme | Fonctionnalités reportées |\n\n## 3. Recommandation\nJe vous suggère l\'**Option C** combinée avec du fast tracking cible. Concrètement :\n- Reporter les features non critiques (comparateur, avis) en V2\n- Paralléliser les tests de performance avec le dev Sprint 3\n- Garder la date de go-live\n\n## 4. Plan d\'action\nIncluez un Gantt révisé avec les jalons mis à jour.\n\n> **Attention** : Vous avez aussi une **décision en attente** concernant l\'incident de sécurité. Pierre va probablement vous interroger dessus au COPIL. Préparez votre réponse !\n\nBesoin d\'aide pour rédiger le document ?', createdAt: hoursAgo(4) },
         ],
       },
     },
   });
-  console.log(`Conversation PMO creee (${8} messages)`);
+  console.log(`Conversation PMO créée (${8} messages)`);
 
   // ─── 15. Badge de competence (simulation precedente) ──
   await prisma.competencyBadge.create({
@@ -907,7 +907,7 @@ Pierre`,
       simulationId: simulation.id,
       tenantId: tenant.id,
       title: 'Chef de Projet Junior',
-      description: 'A demontre des competences solides en planification et communication lors d\'un projet IT de complexite moyenne.',
+      description: 'À démontre des compétences solides en planification et communication lors d\'un projet IT de complexité moyenne.',
       scenarioTitle: 'Formation initiale — Projet Web',
       sector: 'IT',
       difficulty: 'INTERMEDIATE',
@@ -917,14 +917,14 @@ Pierre`,
         leadership: 72, rigueur: 80, adaptabilite: 70,
       },
       strengths: ['Communication claire avec les parties prenantes', 'Bonne structuration des livrables', 'Respect des processus PMI'],
-      improvements: ['Analyse quantitative des risques', 'Gestion budgetaire en situation de crise'],
-      recommendations: ['Suivre une formation en analyse financiere', 'Pratiquer l\'Earned Value Management'],
-      debriefingSummary: 'Marie a demontre une bonne maitrise des fondamentaux de la gestion de projet. Sa communication avec les parties prenantes est son point fort. Elle doit progresser sur l\'analyse quantitative des risques et la gestion budgetaire en situation de crise pour atteindre le niveau senior.',
+      improvements: ['Analyse quantitative des risques', 'Gestion budgétaire en situation de crise'],
+      recommendations: ['Suivre une formation en analyse financière', 'Pratiquer l\'Earned Value Management'],
+      debriefingSummary: 'Marie à démontre une bonne maîtrise des fondamentaux de la gestion de projet. Sa communication avec les parties prenantes est son point fort. Elle doit progresser sur l\'analyse quantitative des risques et la gestion budgétaire en situation de crise pour atteindre le niveau senior.',
       durationMinutes: 320,
       createdAt: daysAgo(60),
     },
   });
-  console.log('Badge de competence cree');
+  console.log('Badge de compétence créé');
 
   // ─── 16. Token usage (pour le dashboard IA) ───────────
   const operations = ['meeting_response', 'decision_analysis', 'feedback_generation', 'pmo_chat', 'deliverable_evaluation'];
@@ -943,7 +943,7 @@ Pierre`,
       },
     });
   }
-  console.log('Token usage cree (15 entrees)');
+  console.log('Token usage créé (15 entrées)');
 
   // ─── Resume ────────────────────────────────────────────
   console.log('\n========================================');
@@ -955,15 +955,15 @@ Pierre`,
   console.log('  Parcours :');
   console.log('  - Onboarding complet (profil REINFORCEMENT)');
   console.log('  - 1 simulation IT en cours (phase 3/5)');
-  console.log('  - 6 decisions (5 prises, 1 en attente)');
-  console.log('  - 3 evenements aleatoires resolus');
-  console.log('  - 4 reunions (3 terminees avec CR, 1 planifiee)');
-  console.log('  - 7 livrables (4 evalues, 1 soumis, 2 brouillons)');
-  console.log('  - 6 emails (4 avec reponse, 2 non lus)');
+  console.log('  - 6 décisions (5 prises, 1 en attente)');
+  console.log('  - 3 événements aléatoires résolus');
+  console.log('  - 4 réunions (3 terminées avec CR, 1 planifiée)');
+  console.log('  - 7 livrables (4 évalués, 1 soumis, 2 brouillons)');
+  console.log('  - 6 emails (4 avec réponse, 2 non lus)');
   console.log('  - Conversation PMO (8 messages)');
-  console.log('  - Evolution KPIs (10 snapshots)');
-  console.log('  - 1 badge de competence');
-  console.log('  - 15 entrees token usage');
+  console.log('  - Évolution KPIs (10 snapshots)');
+  console.log('  - 1 badge de compétence');
+  console.log('  - 15 entrées token usage');
   console.log('========================================\n');
 }
 

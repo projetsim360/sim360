@@ -5,13 +5,14 @@ import { LayoutGrid, MessageCircleMore } from '@/components/keenicons/icons';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/providers/auth-provider';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { getApiOrigin } from '@/lib/asset-url';
 
 export function SidebarFooter() {
   const { user } = useAuth();
   const initials = user
     ? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
     : '?';
-  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
+  const apiBase = getApiOrigin();
 
   return (
     <div className="flex flex-center justify-between shrink-0 ps-4 pe-3.5 mb-3.5">

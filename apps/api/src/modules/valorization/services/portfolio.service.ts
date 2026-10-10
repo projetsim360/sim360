@@ -55,8 +55,8 @@ export class PortfolioService {
     });
 
     if (!simulation) throw new NotFoundException('Simulation introuvable');
-    if (simulation.userId !== userId) throw new ForbiddenException('Acces refuse');
-    if (simulation.tenantId !== tenantId) throw new ForbiddenException('Acces refuse');
+    if (simulation.userId !== userId) throw new ForbiddenException('Accès refusé');
+    if (simulation.tenantId !== tenantId) throw new ForbiddenException('Accès refusé');
 
     // Compute deliverable stats
     const deliverables = simulation.userDeliverables;
@@ -261,15 +261,15 @@ export class PortfolioService {
   </style>
 </head>
 <body>
-  <h1>Portfolio de competences</h1>
-  <p><strong>Scenario:</strong> ${portfolio.simulation?.scenario?.title ?? 'N/A'}</p>
+  <h1>Portfolio de compétences</h1>
+  <p><strong>Scénario:</strong> ${portfolio.simulation?.scenario?.title ?? 'N/A'}</p>
   <p><strong>Projet:</strong> ${portfolio.simulation?.project?.name ?? 'N/A'}</p>
 
   <div class="stats">
     <div class="stat"><div class="stat-value">${stats.totalDeliverables ?? 0}</div><div class="stat-label">Livrables</div></div>
-    <div class="stat"><div class="stat-value">${stats.evaluatedDeliverables ?? 0}</div><div class="stat-label">Evalues</div></div>
+    <div class="stat"><div class="stat-value">${stats.evaluatedDeliverables ?? 0}</div><div class="stat-label">Évalués</div></div>
     <div class="stat"><div class="stat-value">${stats.averageDeliverableScore ? Math.round(stats.averageDeliverableScore) : 'N/A'}</div><div class="stat-label">Score moyen</div></div>
-    <div class="stat"><div class="stat-value">${stats.validatedDeliverables ?? 0}</div><div class="stat-label">Valides</div></div>
+    <div class="stat"><div class="stat-value">${stats.validatedDeliverables ?? 0}</div><div class="stat-label">Validés</div></div>
   </div>
 
   <h2>Livrables</h2>
@@ -289,7 +289,7 @@ export class PortfolioService {
     .join('\n')}
 
   <footer style="margin-top:40px;padding-top:20px;border-top:1px solid #e5e7eb;font-size:12px;color:#9ca3af">
-    Genere par ProjectSim360 — ${new Date().toLocaleDateString('fr-FR')}
+    généré par ProjectSim360 — ${new Date().toLocaleDateString('fr-FR')}
   </footer>
 </body>
 </html>`;

@@ -8,6 +8,7 @@ import { KeenIcon } from '@/components/keenicons';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Skeleton } from '@/components/ui/skeleton';
 import { simulationApi } from '@/features/simulation/api/simulation.api';
+import { getSectorIcon } from '@/features/simulation/config/sectors';
 
 interface SimulationSummary {
   id: string;
@@ -23,23 +24,14 @@ const STATUS_CONFIG: Record<string, { label: string; variant: 'secondary' | 'pri
   ONBOARDING: { label: 'Passation', variant: 'info' },
   IN_PROGRESS: { label: 'En cours', variant: 'primary' },
   PAUSED: { label: 'En pause', variant: 'warning' },
-  COMPLETED: { label: 'Terminee', variant: 'success' },
-  ABANDONED: { label: 'Abandonnee', variant: 'destructive' },
+  COMPLETED: { label: 'Terminée', variant: 'success' },
+  ABANDONED: { label: 'Abandonnée', variant: 'destructive' },
 };
 
 const DIFFICULTY_LABELS: Record<string, string> = {
-  BEGINNER: 'Debutant',
-  INTERMEDIATE: 'Intermediaire',
-  ADVANCED: 'Avance',
-};
-
-const SECTOR_ICONS: Record<string, string> = {
-  IT: 'technology-2',
-  CONSTRUCTION: 'home',
-  MARKETING: 'chart-line',
-  HEALTHCARE: 'heart',
-  FINANCE: 'dollar',
-  CUSTOM: 'element-11',
+  BEGINNER: 'Débutant',
+  INTERMEDIATE: 'Intermédiaire',
+  ADVANCED: 'Avancé',
 };
 
 export default function PortfolioListPage() {
@@ -67,7 +59,7 @@ export default function PortfolioListPage() {
         <Toolbar>
           <ToolbarHeading>
             <h1 className="text-xl font-medium text-gray-900">Portfolio</h1>
-            <p className="text-sm text-gray-700">Selectionnez une simulation pour consulter son portfolio</p>
+            <p className="text-sm text-gray-700">Sélectionnez une simulation pour consulter son portfolio</p>
           </ToolbarHeading>
         </Toolbar>
         <div className="container-fixed">
@@ -94,7 +86,7 @@ export default function PortfolioListPage() {
         <Toolbar>
           <ToolbarHeading>
             <h1 className="text-xl font-medium text-gray-900">Portfolio</h1>
-            <p className="text-sm text-gray-700">Selectionnez une simulation pour consulter son portfolio</p>
+            <p className="text-sm text-gray-700">Sélectionnez une simulation pour consulter son portfolio</p>
           </ToolbarHeading>
         </Toolbar>
         <div className="container-fixed">
@@ -113,7 +105,7 @@ export default function PortfolioListPage() {
       <Toolbar>
         <ToolbarHeading>
           <h1 className="text-xl font-medium text-gray-900">Portfolio</h1>
-          <p className="text-sm text-gray-700">Selectionnez une simulation pour consulter son portfolio</p>
+          <p className="text-sm text-gray-700">Sélectionnez une simulation pour consulter son portfolio</p>
         </ToolbarHeading>
         <ToolbarActions>
           <Button variant="outline" size="sm" asChild>
@@ -139,7 +131,7 @@ export default function PortfolioListPage() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {simulations.map((sim) => {
               const statusCfg = STATUS_CONFIG[sim.status] ?? { label: sim.status, variant: 'secondary' as const };
-              const sectorIcon = SECTOR_ICONS[sim.scenario.sector] ?? 'element-11';
+              const sectorIcon = getSectorIcon(sim.scenario.sector);
 
               return (
                 <Card key={sim.id} className="flex flex-col">
@@ -178,7 +170,7 @@ export default function PortfolioListPage() {
 
                     {sim.completedAt && (
                       <p className="text-xs text-muted-foreground">
-                        Terminee le{' '}
+                        Terminée le{' '}
                         {new Date(sim.completedAt).toLocaleDateString('fr-FR', {
                           day: 'numeric',
                           month: 'long',

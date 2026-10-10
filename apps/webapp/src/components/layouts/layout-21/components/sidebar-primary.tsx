@@ -42,6 +42,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
+import { getApiOrigin } from '@/lib/asset-url';
 
 export function SidebarPrimary() {
   const { resolvedTheme, setTheme } = useTheme();
@@ -50,7 +51,7 @@ export function SidebarPrimary() {
   const initials = user
     ? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
     : '?';
-  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
+  const apiBase = getApiOrigin();
   
   const toggleTheme = () => {
     setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');

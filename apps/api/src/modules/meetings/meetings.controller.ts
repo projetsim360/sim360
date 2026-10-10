@@ -10,10 +10,10 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { Response } from 'express';
-import { JwtAuthGuard, CurrentUser, CurrentTenant } from '@sim360/core';
+import { JwtAuthGuard, CurrentUser, CurrentTenant, Auditable } from '@sim360/core';
 import { MeetingsService } from './meetings.service';
 import { HandoverService } from './handover.service';
-import { SendMessageDto, CreateRealtimeSessionsDto } from './dto';
+import { SendMessageDto, CreateRealtimeSessionsDto, CreateCustomMeetingDto } from './dto';
 
 @ApiTags('Meetings')
 @ApiBearerAuth()
@@ -40,6 +40,18 @@ export class MeetingsController {
     return this.meetingsService.findAllBySimulation(simId, user.id, { type, phaseOrder, status });
   }
 
+  @Post('simulations/:simId/meetings')
+  @Auditable('MEETING_CREATED', 'Meeting')
+  @ApiOperation({ summary: 'Plan a custom meeting (subject, objectives, duration, participants)' })
+  createCustom(
+    @Param('simId') simId: string,
+    @Body() dto: CreateCustomMeetingDto,
+    @CurrentUser() user: any,
+    @CurrentTenant() tenantId: string,
+  ) {
+    return this.meetingsService.createCustom(simId, user.id, tenantId, dto);
+  }
+
   @Get('meetings/:id')
   @ApiOperation({ summary: 'Get meeting details' })
   findOne(@Param('id') id: string, @CurrentUser() user: any) {
@@ -50,6 +62,13 @@ export class MeetingsController {
   @ApiOperation({ summary: 'Start a meeting' })
   start(@Param('id') id: string, @CurrentUser() user: any) {
     return this.meetingsService.start(id, user.id);
+  }
+
+  @Post('meetings/:id/open')
+  @Auditable('MEETING_OPENED', 'Meeting')
+  @ApiOperation({ summary: 'Generate the facilitator opening statement (idempotent)' })
+  open(@Param('id') id: string, @CurrentUser() user: any) {
+    return this.meetingsService.open(id, user.id);
   }
 
   @Post('meetings/:id/messages')

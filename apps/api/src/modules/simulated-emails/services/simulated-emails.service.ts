@@ -203,12 +203,12 @@ export class SimulatedEmailsService {
     const email = await this.findEmailOrThrow(emailId, simulationId, tenantId);
 
     if (email.status === EmailStatus.RESPONDED) {
-      throw new BadRequestException('Cet email a deja recu une reponse');
+      throw new BadRequestException('Cet email a déjà reçu une réponse');
     }
 
     if (email.status === EmailStatus.ARCHIVED) {
       throw new BadRequestException(
-        'Impossible de repondre a un email archive',
+        'Impossible de répondre à un email archivé',
       );
     }
 
@@ -271,7 +271,7 @@ export class SimulatedEmailsService {
     const email = await this.findEmailOrThrow(emailId, simulationId, tenantId);
 
     if (email.status === EmailStatus.ARCHIVED) {
-      throw new BadRequestException('Cet email est deja archive');
+      throw new BadRequestException('Cet email est déjà archivé');
     }
 
     return this.prisma.simulatedEmail.update({
@@ -385,7 +385,7 @@ export class SimulatedEmailsService {
 
     if (existing) {
       throw new BadRequestException(
-        'L\'email de bienvenue a deja ete genere pour cette simulation',
+        'L\'email de bienvenue a déjà été généré pour cette simulation',
       );
     }
 
@@ -454,7 +454,7 @@ export class SimulatedEmailsService {
 
     if (targetPhase < 1) {
       throw new BadRequestException(
-        'La simulation doit etre demarree avant de generer des emails',
+        'La simulation doit être démarrée avant de générer des emails',
       );
     }
 
@@ -470,7 +470,7 @@ export class SimulatedEmailsService {
 
     if (existingCount > 0) {
       throw new BadRequestException(
-        `Les emails de la phase ${targetPhase} ont deja ete generes`,
+        `Les emails de la phase ${targetPhase} ont déjà été générés`,
       );
     }
 
@@ -547,7 +547,7 @@ export class SimulatedEmailsService {
     });
 
     if (!event) {
-      throw new NotFoundException('Evenement introuvable');
+      throw new NotFoundException('Événement introuvable');
     }
 
     const generated = await this.emailGenerator.generateEventEmail(

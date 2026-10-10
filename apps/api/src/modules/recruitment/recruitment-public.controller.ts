@@ -23,7 +23,7 @@ export class RecruitmentPublicController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Auditable('recruitment.candidate.join', 'CandidateResult')
-  @ApiOperation({ summary: 'Rejoindre une campagne et demarrer la simulation' })
+  @ApiOperation({ summary: 'Rejoindre une campagne et démarrer la simulation' })
   joinCampaign(
     @Param('slug') slug: string,
     @CurrentUser('id') userId: string,

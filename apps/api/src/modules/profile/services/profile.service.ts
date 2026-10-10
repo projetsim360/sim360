@@ -175,7 +175,7 @@ export class ProfileService {
 
     if (!profile.diagnosticData) {
       throw new BadRequestException(
-        'Le diagnostic doit etre genere avant de personnaliser les competences',
+        'Le diagnostic doit être généré avant de personnaliser les compétences',
       );
     }
 
@@ -284,13 +284,13 @@ export class ProfileService {
 
     if (!profile.profileType) {
       throw new BadRequestException(
-        'Le diagnostic doit etre genere avant de completer l\'onboarding',
+        'Le diagnostic doit être généré avant de compléter l\'onboarding',
       );
     }
 
     if (!profile.selectedSector) {
       throw new BadRequestException(
-        'Un secteur doit etre selectionne avant de completer l\'onboarding',
+        'Un secteur doit être sélectionné avant de compléter l\'onboarding',
       );
     }
 

@@ -6,6 +6,7 @@ import { NotificationsSheet } from '../../layout-1/shared/topbar/notifications-s
 import { ChatSheet } from '../../layout-1/shared/topbar/chat-sheet';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { useAuth } from '@/providers/auth-provider';
+import { getApiOrigin } from '@/lib/asset-url';
 
 export function SidebarFooter() {
   const { user } = useAuth();
@@ -14,7 +15,7 @@ export function SidebarFooter() {
     ? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
     : '?';
 
-  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
+  const apiBase = getApiOrigin();
 
   return (
     <div className="flex flex-center justify-between shrink-0 ps-4 pe-3.5 h-14">

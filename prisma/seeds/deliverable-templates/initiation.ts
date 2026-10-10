@@ -4,14 +4,14 @@ export const initiationTemplates: DeliverableTemplateData[] = [
   // ─── 01. Etude d'Opportunite / Business Case ─────────────
   {
     id: 'seed-tpl-business-case',
-    title: "Etude d'Opportunite",
+    title: "Étude d'Opportunité",
     type: 'business-case',
     phase: 'INITIATION',
     description:
-      "Document de justification du projet. Presente le probleme, analyse les options et recommande une solution aux decideurs.",
+      "Document de justification du projet. Présente le problème, analyse les options et recommande une solution aux décideurs.",
     pmiProcess: '1.2',
     difficulty: 'STANDARD',
-    content: `# Etude d'Opportunite
+    content: `# Étude d'Opportunité
 
 | Champ | Valeur |
 |---|---|
@@ -26,105 +26,105 @@ export const initiationTemplates: DeliverableTemplateData[] = [
 
 | Version | Auteur | Description | Date |
 |---|---|---|---|
-| 1.0 | {{userName}} | Creation initiale | {{currentDate}} |
+| 1.0 | {{userName}} | Création initiale | {{currentDate}} |
 
 ---
 
-## 1. Sommaire executif
+## 1. Sommaire exécutif
 
-[Synthetisez en quelques paragraphes l'ensemble de l'etude : le probleme identifie, la solution recommandee, les couts estimes, les benefices attendus et la recommandation finale. Cette section est a rediger en dernier.]
+[Synthétisez en quelques paragraphes l'ensemble de l'étude : le problème identifié, la solution recommandée, les coûts estimés, les bénéfices attendus et la recommandation finale. Cette section est à rédiger en dernier.]
 
-## 2. Etat du probleme ou de l'opportunite
+## 2. État du problème ou de l'opportunité
 
-### 2.1 Enonce du probleme
-[Decrivez brievement le probleme ou l'opportunite en lien avec la strategie de l'organisation.]
+### 2.1 Énoncé du problème
+[Décrivez brièvement le problème ou l'opportunité en lien avec la stratégie de l'organisation.]
 
-### 2.2 Analyse detaillee
-[Detaillez l'impact quantifie du probleme : couts actuels, pertes, inefficacites. Listez les objectifs SMART que le projet devrait atteindre.]
+### 2.2 Analyse détaillée
+[Détaillez l'impact quantifié du problème : coûts actuels, pertes, inefficacités. Listez les objectifs SMART que le projet devrait atteindre.]
 
 **Contexte du projet :**
 > {{projectDescription}}
 
-**Objectifs identifies :**
-- [ ] Objectif 1 : [A completer]
-- [ ] Objectif 2 : [A completer]
-- [ ] Objectif 3 : [A completer]
+**Objectifs identifiés :**
+- [ ] Objectif 1 : [À compléter]
+- [ ] Objectif 2 : [À compléter]
+- [ ] Objectif 3 : [À compléter]
 
 ## 3. Analyse des options
 
-[Pour chaque option (y compris "ne rien faire"), decrivez les avantages, couts et risques.]
+[Pour chaque option (y compris "ne rien faire"), décrivez les avantages, coûts et risques.]
 
-| Option | Description | Avantages | Couts estimes | Risques |
+| Option | Description | Avantages | Coûts estimés | Risques |
 |---|---|---|---|---|
-| Option 0 : Ne rien faire | Maintien du statu quo | Aucun investissement | [Couts indirects] | [Risques] |
-| Option 1 | [A completer] | [A completer] | [A completer] | [A completer] |
-| Option 2 | [A completer] | [A completer] | [A completer] | [A completer] |
+| Option 0 : Ne rien faire | Maintien du statu quo | Aucun investissement | [Coûts indirects] | [Risques] |
+| Option 1 | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| Option 2 | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
 ## 4. Recommandation
 
-[Indiquez l'option recommandee avec une justification cout-benefice.]
+[Indiquez l'option recommandée avec une justification coût-bénéfice.]
 
 ## 5. Livrables attendus
 
 [Listez les livrables principaux et leur alignement avec les objectifs.]
 
-| Livrable | Objectif associe | Critere d'acceptation |
+| Livrable | Objectif associé | Critère d'acceptation |
 |---|---|---|
-| [A completer] | [A completer] | [A completer] |
+| [À compléter] | [À compléter] | [À compléter] |
 
 ## 6. Ressources et parties prenantes
 
-### 6.1 Budget previsionnel
-- **Budget initial estime** : {{initialBudget}} EUR
-- **Repartition** : [A detailler]
+### 6.1 Budget prévisionnel
+- **Budget initial estimé** : {{initialBudget}} EUR
+- **Répartition** : [À détailler]
 
-### 6.2 Equipe projet
+### 6.2 Équipe projet
 {{teamMembers}}
 
-### 6.3 Parties prenantes cles
-| Partie prenante | Role | Interet | Influence |
+### 6.3 Parties prenantes clés
+| Partie prenante | Rôle | Intérêt | Influence |
 |---|---|---|---|
-| {{sponsorName}} | Sponsor | Eleve | Eleve |
-| [A completer] | [A completer] | [A completer] | [A completer] |
+| {{sponsorName}} | Sponsor | Élevé | Élevé |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
-## 7. Evaluation des risques
+## 7. Évaluation des risques
 
-| Risque | Probabilite | Impact | Mesure d'attenuation |
+| Risque | Probabilité | Impact | Mesure d'atténuation |
 |---|---|---|---|
-| [A completer] | Faible/Moyen/Eleve | Faible/Moyen/Eleve | [A completer] |
+| [À compléter] | Faible/Moyen/Élevé | Faible/Moyen/Élevé | [À compléter] |
 
 ## 8. Impact en cas de refus
 
-[Decrivez les consequences du maintien du statu quo si le projet n'est pas approuve.]
+[Décrivez les conséquences du maintien du statu quo si le projet n'est pas approuvé.]
 
-## 9. Criteres de reussite et KPI
+## 9. Critères de réussite et KPI
 
-| KPI | Cible | Methode de mesure |
+| KPI | Cible | Méthode de mesure |
 |---|---|---|
 | Respect du budget | < {{initialBudget}} EUR | Suivi mensuel |
-| Respect des delais | < {{deadlineDays}} jours | Jalons |
-| ROI | > [X]% | Calcul a 12 mois |
-| Satisfaction utilisateurs | > [X]/10 | Enquete |
+| Respect des délais | < {{deadlineDays}} jours | Jalons |
+| ROI | > [X]% | Calcul à 12 mois |
+| Satisfaction utilisateurs | > [X]/10 | Enquête |
 `,
     evaluationCriteria: {
       sections: [
         {
           id: 'executive-summary',
-          name: 'Sommaire executif',
+          name: 'Sommaire exécutif',
           weight: 15,
           criteria: [
-            { label: 'Synthese claire', description: 'Le sommaire resume efficacement le probleme, la solution et la recommandation', maxPoints: 10 },
-            { label: 'Chiffres cles', description: 'Les couts, benefices et ROI sont mentionnes', maxPoints: 5 },
+            { label: 'Synthèse claire', description: 'Le sommaire résume efficacement le problème, la solution et la recommandation', maxPoints: 10 },
+            { label: 'Chiffres clés', description: 'Les coûts, bénéfices et ROI sont mentionnés', maxPoints: 5 },
           ],
         },
         {
           id: 'problem-analysis',
-          name: 'Analyse du probleme',
+          name: 'Analyse du problème',
           weight: 20,
           criteria: [
-            { label: 'Probleme clairement enonce', description: "Le probleme est decrit avec precision et lie a la strategie de l'organisation", maxPoints: 10 },
-            { label: 'Impact quantifie', description: 'Les couts, pertes ou inefficacites sont chiffres', maxPoints: 5 },
-            { label: 'Objectifs SMART', description: 'Les objectifs sont Specifiques, Mesurables, Atteignables, Realistes, Temporels', maxPoints: 5 },
+            { label: 'Problème clairement énoncé', description: "Le problème est décrit avec précision et lie à la stratégie de l'organisation", maxPoints: 10 },
+            { label: 'Impact quantifié', description: 'Les coûts, pertes ou inefficacités sont chiffrés', maxPoints: 5 },
+            { label: 'Objectifs SMART', description: 'Les objectifs sont Spécifiques, Mesurables, Atteignables, Réalistes, Temporels', maxPoints: 5 },
           ],
         },
         {
@@ -132,9 +132,9 @@ export const initiationTemplates: DeliverableTemplateData[] = [
           name: 'Analyse des options',
           weight: 20,
           criteria: [
-            { label: 'Options multiples', description: 'Au moins 3 options sont presentees (dont statu quo)', maxPoints: 8 },
-            { label: 'Analyse equilibree', description: 'Chaque option a des avantages, couts et risques identifies', maxPoints: 7 },
-            { label: 'Justification', description: "La recommandation est justifiee par rapport aux autres options", maxPoints: 5 },
+            { label: 'Options multiples', description: 'Au moins 3 options sont présentées (dont statu quo)', maxPoints: 8 },
+            { label: 'Analyse équilibrée', description: 'Chaque option a des avantages, coûts et risques identifiés', maxPoints: 7 },
+            { label: 'Justification', description: "La recommandation est justifiée par rapport aux autres options", maxPoints: 5 },
           ],
         },
         {
@@ -142,9 +142,9 @@ export const initiationTemplates: DeliverableTemplateData[] = [
           name: 'Livrables et ressources',
           weight: 20,
           criteria: [
-            { label: 'Livrables identifies', description: 'Les livrables sont listes avec criteres d\'acceptation', maxPoints: 7 },
-            { label: 'Budget detaille', description: 'Le budget est reparti par poste', maxPoints: 7 },
-            { label: 'Parties prenantes', description: 'Les parties prenantes cles sont identifiees avec interet/influence', maxPoints: 6 },
+            { label: 'Livrables identifiés', description: 'Les livrables sont listes avec critères d\'acceptation', maxPoints: 7 },
+            { label: 'Budget détaillé', description: 'Le budget est réparti par poste', maxPoints: 7 },
+            { label: 'Parties prenantes', description: 'Les parties prenantes clés sont identifiées avec intérêt/influence', maxPoints: 6 },
           ],
         },
         {
@@ -152,9 +152,9 @@ export const initiationTemplates: DeliverableTemplateData[] = [
           name: 'Risques et KPI',
           weight: 25,
           criteria: [
-            { label: 'Risques identifies', description: 'Au moins 3 risques avec probabilite, impact et mesures', maxPoints: 10 },
-            { label: 'Impact refus', description: 'Les consequences du statu quo sont clairement decrites', maxPoints: 5 },
-            { label: 'KPI mesurables', description: 'Criteres de reussite chiffres avec methode de mesure', maxPoints: 10 },
+            { label: 'Risques identifiés', description: 'Au moins 3 risques avec probabilité, impact et mesures', maxPoints: 10 },
+            { label: 'Impact refus', description: 'Les conséquences du statu quo sont clairement décrites', maxPoints: 5 },
+            { label: 'KPI mesurables', description: 'Critères de réussite chiffres avec méthode de mesure', maxPoints: 10 },
           ],
         },
       ],
@@ -162,29 +162,29 @@ export const initiationTemplates: DeliverableTemplateData[] = [
       maxScore: 100,
       pmiOutputs: ['1.2 Business Case', '1.2.1 Business Needs', '1.2.2 Analysis of the Situation'],
     },
-    referenceExample: `# Etude d'Opportunite — Projet SAP30/CMRL
+    referenceExample: `# Étude d'Opportunité — Projet SAP30/CMRL
 
-## 1. Sommaire executif
-Le centre de production automobile CMRL utilise actuellement un ERP obsolete (SAP R/3 4.6C) dont le support editeur cesse en decembre. La migration vers SAP S/4HANA permettra de moderniser les processus metier, reduire les couts de maintenance de 35% et ameliorer la productivite de 20%. L'investissement total de 515K EUR sera rentabilise en 18 mois avec un ROI projete de 145%.
+## 1. Sommaire exécutif
+Le centre de production automobile CMRL utilise actuellement un ERP obsolète (SAP R/3 4.6C) dont le support éditeur cesse en décembre. La migration vers SAP S/4HANA permettra de moderniser les processus métier, réduire les coûts de maintenance de 35% et améliorer la productivité de 20%. L'investissement total de 515K EUR sera rentabilisé en 18 mois avec un ROI projeté de 145%.
 
-## 2. Etat du probleme
-**Probleme** : Le systeme ERP actuel ne repond plus aux exigences reglementaires et operationnelles. Les processus manuels de consolidation representent 120h/mois de travail improductif.
+## 2. État du problème
+**Problème** : Le système ERP actuel ne répond plus aux exigences réglementaires et opérationnelles. Les processus manuels de consolidation représentent 120h/mois de travail improductif.
 
 **Objectifs SMART** :
 - Migrer 100% des modules (FI/CO/SD/MM/PP) avant le 31/12
-- Reduire les couts de maintenance IT de 35% (de 310K a 200K/an)
-- Eliminer les 120h/mois de traitements manuels
-- Former 85 utilisateurs cles en 3 mois
+- Réduire les coûts de maintenance IT de 35% (de 310K a 200K/an)
+- Éliminer les 120h/mois de traitements manuels
+- Former 85 utilisateurs clés en 3 mois
 
 ## 3. Analyse des options
-| Option | Couts | ROI 3 ans |
+| Option | Coûts | ROI 3 ans |
 |---|---|---|
 | Ne rien faire | 930K (maintenance) | -100% |
 | Migration SAP S/4HANA | 515K | +145% |
 | ERP alternatif (Oracle) | 720K | +85% |
 
 ## 4. Recommandation
-Migration SAP S/4HANA : meilleur ROI, competences internes existantes, continuite fonctionnelle.
+Migration SAP S/4HANA : meilleur ROI, compétences internes existantes, continuité fonctionnelle.
 `,
   },
 
@@ -195,7 +195,7 @@ Migration SAP S/4HANA : meilleur ROI, competences internes existantes, continuit
     type: 'charter',
     phase: 'INITIATION',
     description:
-      "Document fondateur qui autorise formellement le projet. Definit le perimetre, les objectifs, les contraintes et l'autorite du chef de projet.",
+      "Document fondateur qui autorisé formellement le projet. Définit le périmètre, les objectifs, les contraintes et l'autorité du chef de projet.",
     pmiProcess: '4.1',
     difficulty: 'STANDARD',
     content: `# Charte Projet
@@ -214,101 +214,101 @@ Migration SAP S/4HANA : meilleur ROI, competences internes existantes, continuit
 
 | Version | Auteur | Description | Date |
 |---|---|---|---|
-| 1.0 | {{userName}} | Creation initiale | {{currentDate}} |
+| 1.0 | {{userName}} | Création initiale | {{currentDate}} |
 
 ---
 
-## 1. Presentation et motivation du projet
+## 1. Présentation et motivation du projet
 
-[Decrivez le contexte du projet, les raisons de son lancement et le lien avec la strategie de l'organisation. Faites reference a l'etude d'opportunite approuvee.]
+[Décrivez le contexte du projet, les raisons de son lancement et le lien avec la stratégie de l'organisation. Faites référence à l'étude d'opportunité approuvée.]
 
 > {{projectDescription}}
 
-## 2. Objectifs et indicateurs cles de performance
+## 2. Objectifs et indicateurs clés de performance
 
-[Definissez les objectifs SMART du projet avec des KPI mesurables.]
+[Définissez les objectifs SMART du projet avec des KPI mesurables.]
 
 | Objectif | KPI | Cible |
 |---|---|---|
-| Respecter le budget | Ecart budgetaire | < 10% de {{initialBudget}} EUR |
-| Respecter les delais | Ecart calendaire | < {{deadlineDays}} jours |
-| [A completer] | [A completer] | [A completer] |
+| Respecter le budget | Écart budgétaire | < 10% de {{initialBudget}} EUR |
+| Respecter les délais | Écart calendaire | < {{deadlineDays}} jours |
+| [À compléter] | [À compléter] | [À compléter] |
 
-## 3. Perimetre du projet
+## 3. Périmètre du projet
 
-### 3.1 En perimetre
-[Listez precisement ce qui est inclus dans le projet.]
-- [A completer]
-- [A completer]
+### 3.1 En périmètre
+[Listez précisément ce qui est inclus dans le projet.]
+- [À compléter]
+- [À compléter]
 
-### 3.2 Hors perimetre
+### 3.2 Hors périmètre
 [Listez explicitement ce qui est exclu.]
-- [A completer]
-- [A completer]
+- [À compléter]
+- [À compléter]
 
-## 4. Hypotheses et contraintes
+## 4. Hypothèses et contraintes
 
-### 4.1 Hypotheses
-[Conditions supposees vraies pour la planification.]
-- [A completer]
+### 4.1 Hypothèses
+[Conditions supposées vraies pour la planification.]
+- [À compléter]
 
 ### 4.2 Contraintes
-[Limites imposees : temps, budget, reglementation, ressources.]
+[Limites imposées : temps, budget, réglementation, ressources.]
 - Budget : {{initialBudget}} EUR
-- Delai : {{deadlineDays}} jours
-- [A completer]
+- Délai : {{deadlineDays}} jours
+- [À compléter]
 
-## 5. Livrables et reception
+## 5. Livrables et réception
 
-| Livrable | Destinataire | Critere d'acceptation |
+| Livrable | Destinataire | Critère d'acceptation |
 |---|---|---|
-| [A completer] | [A completer] | [A completer] |
+| [À compléter] | [À compléter] | [À compléter] |
 
-## 6. Estimation des ressources financieres
+## 6. Estimation des ressources financières
 
-| Poste | Montant estime |
+| Poste | Montant estimé |
 |---|---|
-| Ressources internes | [A completer] |
-| Prestataires externes | [A completer] |
-| Materiel / Licences | [A completer] |
+| Ressources internes | [À compléter] |
+| Prestataires externes | [À compléter] |
+| Matériel / Licences | [À compléter] |
 | **Total** | **{{initialBudget}} EUR** |
 
-## 7. Echeancier
+## 7. Échéancier
 
-| Jalon | Lot de travail | Date prevue | Description |
+| Jalon | Lot de travail | Date prévue | Description |
 |---|---|---|---|
-| M1 | Lancement | [A completer] | Kick-off du projet |
-| M2 | [A completer] | [A completer] | [A completer] |
-| M3 | [A completer] | [A completer] | [A completer] |
-| Mfinal | Cloture | [A completer] | Recette et mise en production |
+| M1 | Lancement | [À compléter] | Kick-off du projet |
+| M2 | [À compléter] | [À compléter] | [À compléter] |
+| M3 | [À compléter] | [À compléter] | [À compléter] |
+| Mfinal | Clôture | [À compléter] | Recette et mise en production |
 
 ## 8. Risques majeurs
 
-| Risque | Impact | Mesure d'attenuation |
+| Risque | Impact | Mesure d'atténuation |
 |---|---|---|
-| [A completer] | Eleve | [A completer] |
-| [A completer] | Moyen | [A completer] |
+| [À compléter] | Élevé | [À compléter] |
+| [À compléter] | Moyen | [À compléter] |
 
 ## 9. Chef de projet
 
 **Nom** : {{userName}}
 
-**Niveau d'autorite** :
+**Niveau d'autorité** :
 - [ ] Gestion du budget dans la limite de [X] EUR
-- [ ] Constitution de l'equipe projet
-- [ ] Arbitrages operationnels
-- [ ] Escalade vers le sponsor pour les decisions strategiques
+- [ ] Constitution de l'équipe projet
+- [ ] Arbitrages opérationnels
+- [ ] Escalade vers le sponsor pour les décisions stratégiques
 
 ## 10. Parties prenantes
 
-### 10.1 Equipe projet
+### 10.1 Équipe projet
 {{teamMembers}}
 
 ### 10.2 Parties prenantes externes
-| Nom | Role / Service | Interet | Influence |
+| Nom | Rôle / Service | Intérêt | Influence |
 |---|---|---|---|
-| {{sponsorName}} | Sponsor | Eleve | Eleve |
-| [A completer] | [A completer] | [A completer] | [A completer] |
+| {{sponsorName}} | Sponsor | Élevé | Élevé |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
 ## 11. Approbations
 
@@ -316,17 +316,17 @@ Migration SAP S/4HANA : meilleur ROI, competences internes existantes, continuit
 |---|---|---|---|
 | Sponsor | {{sponsorName}} | | |
 | Chef de projet | {{userName}} | | |
-| [A completer] | [A completer] | | |
+| [À compléter] | [À compléter] | | |
 `,
     evaluationCriteria: {
       sections: [
         {
           id: 'context-motivation',
-          name: 'Presentation et motivation',
+          name: 'Présentation et motivation',
           weight: 15,
           criteria: [
-            { label: 'Contexte clair', description: 'Le contexte est decrit avec precision et reference les documents anterieurs', maxPoints: 8 },
-            { label: 'Lien strategique', description: "Le lien avec la strategie de l'organisation est explicite", maxPoints: 7 },
+            { label: 'Contexte clair', description: 'Le contexte est décrit avec précision et référence les documents antérieurs', maxPoints: 8 },
+            { label: 'Lien stratégique', description: "Le lien avec la stratégie de l'organisation est explicite", maxPoints: 7 },
           ],
         },
         {
@@ -334,28 +334,28 @@ Migration SAP S/4HANA : meilleur ROI, competences internes existantes, continuit
           name: 'Objectifs et KPI',
           weight: 20,
           criteria: [
-            { label: 'Objectifs SMART', description: 'Les objectifs sont Specifiques, Mesurables, Atteignables, Realistes, Temporels', maxPoints: 10 },
-            { label: 'KPI mesurables', description: 'Chaque objectif a un KPI et une cible chiffree', maxPoints: 10 },
+            { label: 'Objectifs SMART', description: 'Les objectifs sont Spécifiques, Mesurables, Atteignables, Réalistes, Temporels', maxPoints: 10 },
+            { label: 'KPI mesurables', description: 'Chaque objectif a un KPI et une cible chiffrée', maxPoints: 10 },
           ],
         },
         {
           id: 'scope',
-          name: 'Perimetre',
+          name: 'Périmètre',
           weight: 20,
           criteria: [
-            { label: 'Perimetre inclus', description: 'Le perimetre est clairement defini avec les livrables principaux', maxPoints: 10 },
-            { label: 'Hors perimetre', description: 'Les exclusions sont explicites pour eviter toute ambiguite', maxPoints: 5 },
-            { label: 'Hypotheses et contraintes', description: 'Les hypotheses et contraintes sont listees et realistes', maxPoints: 5 },
+            { label: 'Périmètre inclus', description: 'Le périmètre est clairement défini avec les livrables principaux', maxPoints: 10 },
+            { label: 'Hors périmètre', description: 'Les exclusions sont explicites pour éviter toute ambiguïté', maxPoints: 5 },
+            { label: 'Hypothèses et contraintes', description: 'Les hypothèses et contraintes sont listées et réalistes', maxPoints: 5 },
           ],
         },
         {
           id: 'planning-resources',
-          name: 'Echeancier et ressources',
+          name: 'Échéancier et ressources',
           weight: 20,
           criteria: [
-            { label: 'Jalons identifies', description: 'Au moins 4 jalons avec dates et descriptions', maxPoints: 7 },
-            { label: 'Budget reparti', description: 'Le budget est ventile par poste', maxPoints: 7 },
-            { label: 'Livrables avec criteres', description: "Chaque livrable a un destinataire et un critere d'acceptation", maxPoints: 6 },
+            { label: 'Jalons identifiés', description: 'Au moins 4 jalons avec dates et descriptions', maxPoints: 7 },
+            { label: 'Budget réparti', description: 'Le budget est ventilé par poste', maxPoints: 7 },
+            { label: 'Livrables avec critères', description: "Chaque livrable a un destinataire et un critère d'acceptation", maxPoints: 6 },
           ],
         },
         {
@@ -363,10 +363,10 @@ Migration SAP S/4HANA : meilleur ROI, competences internes existantes, continuit
           name: 'Gouvernance et risques',
           weight: 25,
           criteria: [
-            { label: 'Equipe et roles', description: 'L\'equipe projet est listee avec roles et responsabilites', maxPoints: 8 },
-            { label: 'Parties prenantes', description: 'Matrice interet/influence des parties prenantes', maxPoints: 7 },
-            { label: 'Risques majeurs', description: 'Au moins 3 risques avec impact et mesures d\'attenuation', maxPoints: 5 },
-            { label: 'Approbations', description: 'La section approbations est complete avec les bons signataires', maxPoints: 5 },
+            { label: 'Équipe et rôles', description: 'L\'équipe projet est listée avec rôles et responsabilités', maxPoints: 8 },
+            { label: 'Parties prenantes', description: 'Matrice intérêt/influence des parties prenantes', maxPoints: 7 },
+            { label: 'Risques majeurs', description: 'Au moins 3 risques avec impact et mesures d\'atténuation', maxPoints: 5 },
+            { label: 'Approbations', description: 'La section approbations est complète avec les bons signataires', maxPoints: 5 },
           ],
         },
       ],
@@ -376,20 +376,20 @@ Migration SAP S/4HANA : meilleur ROI, competences internes existantes, continuit
     },
     referenceExample: `# Charte Projet — SAP30/CMRL
 
-## 1. Presentation
-Le projet SAP30 vise a migrer le systeme ERP du centre CMRL de SAP R/3 vers SAP S/4HANA. Cette migration est justifiee par la fin du support editeur et la necessite de moderniser les processus metier (cf. Etude d'Opportunite v2.0 approuvee le 15/01).
+## 1. Présentation
+Le projet SAP30 vise à migrer le système ERP du centre CMRL de SAP R/3 vers SAP S/4HANA. Cette migration est justifiée par la fin du support éditeur et la nécessite de moderniser les processus métier (cf. Étude d'Opportunité v2.0 approuvée le 15/01).
 
 ## 2. Objectifs et KPI
 | Objectif | KPI | Cible |
 |---|---|---|
 | Migrer les modules | Taux de couverture fonctionnelle | 100% des 5 modules |
-| Respecter le budget | Ecart budgetaire | < 5% de 515K EUR |
-| Tenir les delais | Date de go-live | 31/12 au plus tard |
+| Respecter le budget | Écart budgétaire | < 5% de 515K EUR |
+| Tenir les délais | Date de go-live | 31/12 au plus tard |
 | Satisfaire les utilisateurs | Score NPS | > 7/10 |
 
-## 3. Perimetre
-**Inclus** : Migration FI, CO, SD, MM, PP ; formation 85 utilisateurs ; recette integree
-**Exclus** : Migration des donnees historiques > 3 ans ; developpements specifiques BI
+## 3. Périmètre
+**Inclus** : Migration FI, CO, SD, MM, PP ; formation 85 utilisateurs ; recette intégrée
+**Exclus** : Migration des données historiques > 3 ans ; développements spécifiques BI
 `,
   },
 
@@ -400,7 +400,7 @@ Le projet SAP30 vise a migrer le systeme ERP du centre CMRL de SAP R/3 vers SAP 
     type: 'stakeholder-register',
     phase: 'INITIATION',
     description:
-      "Identifie et analyse toutes les parties prenantes du projet avec leur niveau d'interet, d'influence et la strategie d'engagement associee.",
+      "Identifié et analyse toutes les parties prenantes du projet avec leur niveau d'intérêt, d'influence et la stratégie d'engagement associée.",
     pmiProcess: '13.1',
     difficulty: 'DISCOVERY',
     content: `# Registre des Parties Prenantes
@@ -415,40 +415,40 @@ Le projet SAP30 vise a migrer le systeme ERP du centre CMRL de SAP R/3 vers SAP 
 
 ## 1. Identification des parties prenantes
 
-| # | Nom | Role / Fonction | Organisation | Contact |
+| # | Nom | Rôle / Fonction | Organisation | Contact |
 |---|---|---|---|---|
 | 1 | {{sponsorName}} | Sponsor | {{clientName}} | [Email] |
 | 2 | {{userName}} | Chef de projet | {{clientName}} | [Email] |
 {{teamMembers}}
-| [N] | [A completer] | [A completer] | [A completer] | [A completer] |
+| [N] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
-## 2. Matrice Interet / Influence
+## 2. Matrice Intérêt / Influence
 
-| Partie prenante | Interet (1-5) | Influence (1-5) | Quadrant | Strategie d'engagement |
+| Partie prenante | Intérêt (1-5) | Influence (1-5) | Quadrant | Stratégie d'engagement |
 |---|---|---|---|---|
-| {{sponsorName}} | 5 | 5 | Acteur-cle | Gerer de pres, impliquer dans les decisions |
-| {{userName}} | 5 | 4 | Acteur du projet | Communication reguliere, reporting |
-| [A completer] | [1-5] | [1-5] | [A determiner] | [A completer] |
+| {{sponsorName}} | 5 | 5 | Acteur-clé | Gérer de près, impliquer dans les décisions |
+| {{userName}} | 5 | 4 | Acteur du projet | Communication régulière, reporting |
+| [À compléter] | [1-5] | [1-5] | [À déterminer] | [À compléter] |
 
-### Legende des quadrants
-- **Acteur-cle** (Interet eleve, Influence elevee) : Gerer de pres
-- **Acteur du projet** (Interet eleve, Influence faible) : Tenir informe
-- **Acteur attentif** (Interet faible, Influence elevee) : Satisfaire
-- **Acteur passif** (Interet faible, Influence faible) : Surveiller
+### Légende des quadrants
+- **Acteur-clé** (Intérêt élevé, Influence élevée) : Gérer de près
+- **Acteur du projet** (Intérêt élevé, Influence faible) : Tenir informé
+- **Acteur attentif** (Intérêt faible, Influence élevée) : Satisfaire
+- **Acteur passif** (Intérêt faible, Influence faible) : Surveiller
 
 ## 3. Plan d'engagement par partie prenante
 
-| Partie prenante | Niveau actuel | Niveau souhaite | Actions d'engagement | Frequence |
+| Partie prenante | Niveau actuel | Niveau souhaite | Actions d'engagement | Fréquence |
 |---|---|---|---|---|
-| {{sponsorName}} | Soutien | Leader | Comite de pilotage | Bi-mensuel |
-| [A completer] | Neutre/Resistant/Soutien | [A completer] | [A completer] | [A completer] |
+| {{sponsorName}} | Soutien | Leader | Comité de pilotage | Bi-mensuel |
+| [À compléter] | Neutre/Resistant/Soutien | [À compléter] | [À compléter] | [À compléter] |
 
 ## 4. Besoins en communication
 
-| Partie prenante | Information attendue | Format | Frequence | Responsable |
+| Partie prenante | Information attendue | Format | Fréquence | Responsable |
 |---|---|---|---|---|
-| {{sponsorName}} | Avancement global, budget, risques | Rapport + reunion | Bi-mensuel | Chef de projet |
-| [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
+| {{sponsorName}} | Avancement global, budget, risques | Rapport + réunion | Bi-mensuel | Chef de projet |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 `,
     evaluationCriteria: {
       sections: [
@@ -457,17 +457,17 @@ Le projet SAP30 vise a migrer le systeme ERP du centre CMRL de SAP R/3 vers SAP 
           name: 'Identification',
           weight: 30,
           criteria: [
-            { label: 'Completude', description: 'Toutes les parties prenantes cles sont identifiees (sponsor, equipe, clients, fournisseurs)', maxPoints: 15 },
-            { label: 'Informations completes', description: 'Chaque partie prenante a un nom, role, organisation et contact', maxPoints: 15 },
+            { label: 'Complétude', description: 'Toutes les parties prenantes clés sont identifiées (sponsor, équipe, clients, fournisseurs)', maxPoints: 15 },
+            { label: 'Informations complètes', description: 'Chaque partie prenante a un nom, rôle, organisation et contact', maxPoints: 15 },
           ],
         },
         {
           id: 'analysis',
-          name: 'Analyse interet/influence',
+          name: 'Analyse intérêt/influence',
           weight: 30,
           criteria: [
-            { label: 'Notation coherente', description: 'Les scores interet/influence sont realistes et justifies', maxPoints: 15 },
-            { label: 'Classification correcte', description: 'Le quadrant est correctement attribue selon les scores', maxPoints: 15 },
+            { label: 'Notation cohérente', description: 'Les scores intérêt/influence sont réalistes et justifiés', maxPoints: 15 },
+            { label: 'Classification correcte', description: 'Le quadrant est correctement attribué selon les scores', maxPoints: 15 },
           ],
         },
         {
@@ -475,8 +475,8 @@ Le projet SAP30 vise a migrer le systeme ERP du centre CMRL de SAP R/3 vers SAP 
           name: 'Plan d\'engagement',
           weight: 25,
           criteria: [
-            { label: 'Strategies adaptees', description: 'Chaque quadrant a une strategie d\'engagement coherente', maxPoints: 15 },
-            { label: 'Actions concretes', description: 'Les actions sont specifiques et planifiees dans le temps', maxPoints: 10 },
+            { label: 'Stratégies adaptées', description: 'Chaque quadrant a une stratégie d\'engagement cohérente', maxPoints: 15 },
+            { label: 'Actions concrètes', description: 'Les actions sont spécifiques et planifiées dans le temps', maxPoints: 10 },
           ],
         },
         {
@@ -484,7 +484,7 @@ Le projet SAP30 vise a migrer le systeme ERP du centre CMRL de SAP R/3 vers SAP 
           name: 'Besoins en communication',
           weight: 15,
           criteria: [
-            { label: 'Besoins identifies', description: 'Chaque partie prenante a des besoins de communication definis', maxPoints: 15 },
+            { label: 'Besoins identifiés', description: 'Chaque partie prenante a des besoins de communication définis', maxPoints: 15 },
           ],
         },
       ],
@@ -495,13 +495,13 @@ Le projet SAP30 vise a migrer le systeme ERP du centre CMRL de SAP R/3 vers SAP 
     referenceExample: `# Registre Parties Prenantes — SAP30/CMRL
 
 ## Identification
-| # | Nom | Role | Interet | Influence | Strategie |
+| # | Nom | Rôle | Intérêt | Influence | Stratégie |
 |---|---|---|---|---|---|
-| 1 | M. Dupont | Sponsor / DG | 5 | 5 | COPIL bi-mensuel, alertes immediates |
+| 1 | M. Dupont | Sponsor / DG | 5 | 5 | COPIL bi-mensuel, alertes immédiates |
 | 2 | Mme Martin | Chef de projet | 5 | 4 | Reporting quotidien |
-| 3 | M. Leroy | DSI | 4 | 5 | Comite technique hebdo |
-| 4 | Equipe Finance | Utilisateurs FI/CO | 4 | 2 | Formation + support |
-| 5 | Fournisseur SAP | Editeur | 3 | 3 | Reunions mensuelles |
+| 3 | M. Leroy | DSI | 4 | 5 | Comité technique hebdo |
+| 4 | Équipe Finance | Utilisateurs FI/CO | 4 | 2 | Formation + support |
+| 5 | Fournisseur SAP | Éditeur | 3 | 3 | Réunions mensuelles |
 `,
   },
 
@@ -512,7 +512,7 @@ Le projet SAP30 vise a migrer le systeme ERP du centre CMRL de SAP R/3 vers SAP 
     type: 'risk-register',
     phase: 'INITIATION',
     description:
-      "Document vivant qui identifie, analyse et suit les risques du projet avec leurs mesures preventives et correctives.",
+      "Document vivant qui identifie, analyse et suit les risques du projet avec leurs mesures préventives et correctives.",
     pmiProcess: '11.2',
     difficulty: 'STANDARD',
     content: `# Registre des Risques
@@ -521,27 +521,27 @@ Le projet SAP30 vise a migrer le systeme ERP du centre CMRL de SAP R/3 vers SAP 
 |---|---|
 | **Projet** | {{projectName}} |
 | **Chef de projet** | {{userName}} |
-| **Date de mise a jour** | {{currentDate}} |
+| **Date de mise à jour** | {{currentDate}} |
 
 ---
 
 ## 1. Identification des risques
 
-| ID | Categorie | Description du risque | Cause(s) | Consequence(s) |
+| ID | Catégorie | Description du risque | Cause(s) | Conséquence(s) |
 |---|---|---|---|---|
-| R01 | [Technique/Humain/Financier/Planning/Externe] | [A completer] | [A completer] | [A completer] |
-| R02 | [A completer] | [A completer] | [A completer] | [A completer] |
-| R03 | [A completer] | [A completer] | [A completer] | [A completer] |
+| R01 | [Technique/Humain/Financier/Planning/Externe] | [À compléter] | [À compléter] | [À compléter] |
+| R02 | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| R03 | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
 ## 2. Analyse qualitative
 
-| ID | Probabilite (1-5) | Impact (1-5) | Criticite (P x I) | Priorite |
+| ID | Probabilité (1-5) | Impact (1-5) | Criticité (P x I) | Priorité |
 |---|---|---|---|---|
-| R01 | [1-5] | [1-5] | [Auto] | Critique/Majeur/Modere/Mineur |
-| R02 | [1-5] | [1-5] | [Auto] | [A determiner] |
-| R03 | [1-5] | [1-5] | [Auto] | [A determiner] |
+| R01 | [1-5] | [1-5] | [Auto] | Critique/Majeur/Modéré/Mineur |
+| R02 | [1-5] | [1-5] | [Auto] | [À déterminer] |
+| R03 | [1-5] | [1-5] | [Auto] | [À déterminer] |
 
-### Matrice de criticite
+### Matrice de criticité
 |  | Impact 1 | Impact 2 | Impact 3 | Impact 4 | Impact 5 |
 |---|---|---|---|---|---|
 | **Proba 5** | 5 | 10 | 15 | 20 | **25** |
@@ -550,20 +550,20 @@ Le projet SAP30 vise a migrer le systeme ERP du centre CMRL de SAP R/3 vers SAP 
 | **Proba 2** | 2 | 4 | 6 | 8 | **10** |
 | **Proba 1** | 1 | 2 | 3 | 4 | 5 |
 
-*Legende : **Gras** = risque critique (>= 9)*
+*Légende : **Gras** = risque critique (>= 9)*
 
-## 3. Plan de reponse aux risques
+## 3. Plan de réponse aux risques
 
-| ID | Strategie | Actions preventives | Actions correctives | Responsable | Echeance |
+| ID | Stratégie | Actions préventives | Actions correctives | Responsable | Échéance |
 |---|---|---|---|---|---|
-| R01 | Attenuer/Eviter/Transferer/Accepter | [A completer] | [A completer] | [A completer] | [A completer] |
-| R02 | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
+| R01 | Atténuer/Éviter/Transférer/Accepter | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| R02 | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
 ## 4. Suivi des risques
 
-| ID | Statut | Date derniere revue | Evolution | Commentaire |
+| ID | Statut | Date dernière revue | Évolution | Commentaire |
 |---|---|---|---|---|
-| R01 | Ouvert/En cours/Clos | {{currentDate}} | Stable/En hausse/En baisse | [A completer] |
+| R01 | Ouvert/En cours/Clos | {{currentDate}} | Stable/En hausse/En baisse | [À compléter] |
 `,
     evaluationCriteria: {
       sections: [
@@ -572,8 +572,8 @@ Le projet SAP30 vise a migrer le systeme ERP du centre CMRL de SAP R/3 vers SAP 
           name: 'Identification des risques',
           weight: 25,
           criteria: [
-            { label: 'Nombre suffisant', description: 'Au moins 5 risques identifies couvrant differentes categories', maxPoints: 10 },
-            { label: 'Description precise', description: 'Chaque risque a une cause et une consequence clairement definies', maxPoints: 15 },
+            { label: 'Nombre suffisant', description: 'Au moins 5 risques identifiés couvrant différentes catégories', maxPoints: 10 },
+            { label: 'Description précise', description: 'Chaque risque a une cause et une conséquence clairement définies', maxPoints: 15 },
           ],
         },
         {
@@ -581,18 +581,18 @@ Le projet SAP30 vise a migrer le systeme ERP du centre CMRL de SAP R/3 vers SAP 
           name: 'Analyse qualitative',
           weight: 25,
           criteria: [
-            { label: 'Notation coherente', description: 'Les scores de probabilite et impact sont realistes', maxPoints: 10 },
-            { label: 'Priorisation correcte', description: 'La criticite est correctement calculee et la priorite attribuee', maxPoints: 15 },
+            { label: 'Notation cohérente', description: 'Les scores de probabilité et impact sont réalistes', maxPoints: 10 },
+            { label: 'Priorisation correcte', description: 'La criticité est correctement calculée et la priorité attribuée', maxPoints: 15 },
           ],
         },
         {
           id: 'response',
-          name: 'Plan de reponse',
+          name: 'Plan de réponse',
           weight: 35,
           criteria: [
-            { label: 'Strategie appropriee', description: 'La strategie (Attenuer/Eviter/Transferer/Accepter) est pertinente pour chaque risque', maxPoints: 10 },
-            { label: 'Actions concretes', description: 'Actions preventives et correctives sont specifiques et realisables', maxPoints: 15 },
-            { label: 'Responsables designes', description: 'Chaque action a un responsable et une echeance', maxPoints: 10 },
+            { label: 'Stratégie appropriée', description: 'La stratégie (Atténuer/Éviter/Transférer/Accepter) est pertinente pour chaque risque', maxPoints: 10 },
+            { label: 'Actions concrètes', description: 'Actions préventives et correctives sont spécifiques et réalisables', maxPoints: 15 },
+            { label: 'Responsables désignés', description: 'Chaque action a un responsable et une échéance', maxPoints: 10 },
           ],
         },
         {
@@ -600,7 +600,7 @@ Le projet SAP30 vise a migrer le systeme ERP du centre CMRL de SAP R/3 vers SAP 
           name: 'Suivi',
           weight: 15,
           criteria: [
-            { label: 'Tableau de suivi', description: 'Le suivi est structure avec statut, date et evolution', maxPoints: 15 },
+            { label: 'Tableau de suivi', description: 'Le suivi est structure avec statut, date et évolution', maxPoints: 15 },
           ],
         },
       ],
@@ -610,27 +610,27 @@ Le projet SAP30 vise a migrer le systeme ERP du centre CMRL de SAP R/3 vers SAP 
     },
     referenceExample: `# Registre des Risques — SAP30/CMRL
 
-| ID | Risque | P | I | C | Strategie | Action preventive | Responsable |
+| ID | Risque | P | I | C | Stratégie | Action préventive | Responsable |
 |---|---|---|---|---|---|---|---|
-| R01 | Resistance au changement des utilisateurs Finance | 4 | 4 | 16 | Attenuer | Programme de conduite du changement + champions internes | RH + Chef de projet |
-| R02 | Depassement budget prestataires | 3 | 5 | 15 | Transferer | Contrat forfaitaire avec penalites | Achats |
-| R03 | Indisponibilite expert SAP interne | 3 | 4 | 12 | Attenuer | Backup identifie + documentation croisee | DSI |
-| R04 | Retard migration donnees | 4 | 3 | 12 | Eviter | Migration incrementale avec checkpoints | Equipe technique |
-| R05 | Incompatibilite interfaces legacy | 2 | 5 | 10 | Attenuer | PoC interfaces en phase de planification | Architecte |
+| R01 | Résistance au changement des utilisateurs Finance | 4 | 4 | 16 | Atténuer | Programme de conduite du changement + champions internes | RH + Chef de projet |
+| R02 | Dépassement budget prestataires | 3 | 5 | 15 | Transférer | Contrat forfaitaire avec pénalités | Achats |
+| R03 | Indisponibilité expert SAP interne | 3 | 4 | 12 | Atténuer | Backup identifié + documentation croisée | DSI |
+| R04 | Retard migration données | 4 | 3 | 12 | Éviter | Migration incrémentale avec checkpoints | Équipe technique |
+| R05 | Incompatibilité interfaces legacy | 2 | 5 | 10 | Atténuer | PoC interfaces en phase de planification | Architecte |
 `,
   },
 
   // ─── 05. Support Reunion de Lancement (Kick-off) ──────────
   {
     id: 'seed-tpl-kickoff',
-    title: 'Support Reunion de Lancement',
+    title: 'Support Réunion de Lancement',
     type: 'kickoff-presentation',
     phase: 'INITIATION',
     description:
-      "Presentation du kick-off projet. Communique le contexte, l'equipe, la gouvernance et le planning initial a toutes les parties prenantes.",
+      "Présentation du kick-off projet. Communique le contexte, l'équipe, la gouvernance et le planning initial a toutes les parties prenantes.",
     pmiProcess: '4.1',
     difficulty: 'ADVANCED',
-    content: `# Reunion de Lancement — {{projectName}}
+    content: `# Réunion de Lancement — {{projectName}}
 
 **Date** : {{currentDate}}
 **Chef de projet** : {{userName}}
@@ -639,39 +639,39 @@ Le projet SAP30 vise a migrer le systeme ERP du centre CMRL de SAP R/3 vers SAP 
 
 ## Ordre du jour
 
-1. Contexte et benefices attendus
+1. Contexte et bénéfices attendus
 2. Objectifs et KPI
-3. Equipe projet et parties prenantes
+3. Équipe projet et parties prenantes
 4. Matrice RACI
 5. Phases du projet et macro-planning
 6. Analyse des risques
 7. Budget
-8. Gouvernance (comites)
-9. Questions / Prochaines etapes
+8. Gouvernance (comités)
+9. Questions / Prochaines étapes
 
 ---
 
 ## 1. Contexte du projet
 
-[Decrivez le probleme, les raisons du projet, et les conditions d'approbation (budget, delai, livrables).]
+[Décrivez le problème, les raisons du projet, et les conditions d'approbation (budget, délai, livrables).]
 
 > {{projectDescription}}
 
-## 2. Benefices attendus
+## 2. Bénéfices attendus
 
-[Listez les benefices quantifies (references a l'etude d'opportunite).]
-- [A completer]
-- [A completer]
+[Listez les bénéfices quantifiés (références à l'étude d'opportunité).]
+- [À compléter]
+- [À compléter]
 
 ## 3. Objectifs et KPI
 
 | KPI | Cible |
 |---|---|
 | Budget | < {{initialBudget}} EUR |
-| Delai | < {{deadlineDays}} jours |
-| [A completer] | [A completer] |
+| Délai | < {{deadlineDays}} jours |
+| [À compléter] | [À compléter] |
 
-## 4. Equipe projet
+## 4. Équipe projet
 
 {{teamMembers}}
 
@@ -679,45 +679,45 @@ Le projet SAP30 vise a migrer le systeme ERP du centre CMRL de SAP R/3 vers SAP 
 
 ## 5. Phases et macro-planning
 
-| Phase | Description | Date debut | Date fin |
+| Phase | Description | Date début | Date fin |
 |---|---|---|---|
-| Initiation | Cadrage et lancement | [A completer] | [A completer] |
-| Planification | Specification et planification detaillee | [A completer] | [A completer] |
-| Execution | Realisation et deploiement | [A completer] | [A completer] |
-| Controle | Suivi et ajustements | [A completer] | [A completer] |
-| Cloture | Recette et bilan | [A completer] | [A completer] |
+| Initiation | Cadrage et lancement | [À compléter] | [À compléter] |
+| Planification | Spécification et planification détaillée | [À compléter] | [À compléter] |
+| Exécution | Réalisation et déploiement | [À compléter] | [À compléter] |
+| Contrôle | Suivi et ajustements | [À compléter] | [À compléter] |
+| Clôture | Recette et bilan | [À compléter] | [À compléter] |
 
 ## 6. Risques majeurs
 
-| Risque | Severite | Probabilite | Action preventive |
+| Risque | Sévérité | Probabilité | Action préventive |
 |---|---|---|---|
-| [A completer] | Elevee/Moyenne/Faible | Elevee/Moyenne/Faible | [A completer] |
+| [À compléter] | Élevée/Moyenne/Faible | Élevée/Moyenne/Faible | [À compléter] |
 
 ## 7. Budget
 
 | Poste | BUILD | RUN / an |
 |---|---|---|
-| Ressources internes | [A completer] | [A completer] |
-| Prestataires | [A completer] | [A completer] |
-| Materiel / Licences | [A completer] | [A completer] |
-| **Total** | **[A completer]** | **[A completer]** |
+| Ressources internes | [À compléter] | [À compléter] |
+| Prestataires | [À compléter] | [À compléter] |
+| Matériel / Licences | [À compléter] | [À compléter] |
+| **Total** | **[À compléter]** | **[À compléter]** |
 
 ## 8. Gouvernance
 
-### Comite de pilotage (COPIL)
-- **Mission** : Decisions strategiques, arbitrages budget/perimetre
-- **Frequence** : [Bi-mensuel/Mensuel]
-- **Participants** : Sponsor, Chef de projet, [A completer]
+### Comité de pilotage (COPIL)
+- **Mission** : Décisions stratégiques, arbitrages budget/périmètre
+- **Fréquence** : [Bi-mensuel/Mensuel]
+- **Participants** : Sponsor, Chef de projet, [À compléter]
 
-### Comite de projet
-- **Mission** : Suivi operationnel, coordination des equipes
-- **Frequence** : [Hebdomadaire]
-- **Participants** : Chef de projet, coordinateurs, [A completer]
+### Comité de projet
+- **Mission** : Suivi opérationnel, coordination des équipes
+- **Fréquence** : [Hebdomadaire]
+- **Participants** : Chef de projet, coordinateurs, [À compléter]
 
-## 9. Prochaines etapes
+## 9. Prochaines étapes
 
-- [ ] [Action 1] — Responsable : [Nom] — Echeance : [Date]
-- [ ] [Action 2] — Responsable : [Nom] — Echeance : [Date]
+- [ ] [Action 1] — Responsable : [Nom] — Échéance : [Date]
+- [ ] [Action 2] — Responsable : [Nom] — Échéance : [Date]
 `,
     evaluationCriteria: {
       sections: [
@@ -726,17 +726,17 @@ Le projet SAP30 vise a migrer le systeme ERP du centre CMRL de SAP R/3 vers SAP 
           name: 'Contexte et objectifs',
           weight: 20,
           criteria: [
-            { label: 'Contexte complet', description: 'Le probleme, les raisons et les conditions d\'approbation sont presentes', maxPoints: 10 },
+            { label: 'Contexte complet', description: 'Le problème, les raisons et les conditions d\'approbation sont présentés', maxPoints: 10 },
             { label: 'KPI chiffres', description: 'Au moins 4 KPI avec cibles mesurables', maxPoints: 10 },
           ],
         },
         {
           id: 'team-governance',
-          name: 'Equipe et gouvernance',
+          name: 'Équipe et gouvernance',
           weight: 25,
           criteria: [
-            { label: 'Equipe complete', description: 'Tous les membres et le sponsor sont identifies avec leurs roles', maxPoints: 10 },
-            { label: 'Comites definis', description: 'Au moins 2 comites avec mission, frequence et participants', maxPoints: 15 },
+            { label: 'Équipe complète', description: 'Tous les membres et le sponsor sont identifiés avec leurs rôles', maxPoints: 10 },
+            { label: 'Comités définis', description: 'Au moins 2 comités avec mission, fréquence et participants', maxPoints: 15 },
           ],
         },
         {
@@ -744,8 +744,8 @@ Le projet SAP30 vise a migrer le systeme ERP du centre CMRL de SAP R/3 vers SAP 
           name: 'Planning et phases',
           weight: 20,
           criteria: [
-            { label: 'Phases identifiees', description: 'Les 5 phases sont presentes avec dates estimees', maxPoints: 10 },
-            { label: 'Budget ventile', description: 'Budget BUILD vs RUN avec totaux', maxPoints: 10 },
+            { label: 'Phases identifiées', description: 'Les 5 phases sont présentés avec dates estimées', maxPoints: 10 },
+            { label: 'Budget ventilé', description: 'Budget BUILD vs RUN avec totaux', maxPoints: 10 },
           ],
         },
         {
@@ -753,15 +753,15 @@ Le projet SAP30 vise a migrer le systeme ERP du centre CMRL de SAP R/3 vers SAP 
           name: 'Risques',
           weight: 20,
           criteria: [
-            { label: 'Risques identifies', description: 'Au moins 3 risques avec severite, probabilite et actions', maxPoints: 20 },
+            { label: 'Risques identifiés', description: 'Au moins 3 risques avec sévérité, probabilité et actions', maxPoints: 20 },
           ],
         },
         {
           id: 'next-steps',
-          name: 'Prochaines etapes',
+          name: 'Prochaines étapes',
           weight: 15,
           criteria: [
-            { label: 'Actions concretes', description: 'Actions de suivi avec responsables et echeances', maxPoints: 15 },
+            { label: 'Actions concrètes', description: 'Actions de suivi avec responsables et échéances', maxPoints: 15 },
           ],
         },
       ],
@@ -772,20 +772,20 @@ Le projet SAP30 vise a migrer le systeme ERP du centre CMRL de SAP R/3 vers SAP 
     referenceExample: `# Kick-off — SAP30/CMRL
 
 ## Contexte
-Migration ERP obsolete → SAP S/4HANA. Fin support editeur en decembre. 515K EUR approuves.
+Migration ERP obsolète → SAP S/4HANA. Fin support éditeur en décembre. 515K EUR approuvés.
 
 ## KPI
 | KPI | Cible |
 |---|---|
-| Budget | < 515K EUR (< 5% ecart) |
+| Budget | < 515K EUR (< 5% écart) |
 | Go-live | 31/12 |
 | Couverture modules | 100% (FI/CO/SD/MM/PP) |
 | NPS utilisateurs | > 7/10 |
 
 ## Gouvernance
 - COPIL bi-mensuel (DG + DSI + Chef de projet)
-- Comite projet hebdo (Chef de projet + coordinateurs domaines)
-- Comite technique hebdo (DSI + architecte + expert SAP)
+- Comité projet hebdo (Chef de projet + coordinateurs domaines)
+- Comité technique hebdo (DSI + architecte + expert SAP)
 `,
   },
 ];

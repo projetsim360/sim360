@@ -37,9 +37,9 @@ export function ShareBadgeDialog({
     try {
       const result = await shareMutation.mutateAsync(badgeId);
       setCurrentShareUrl(result.shareUrl || `${window.location.origin}/badges/${badgeId}/verify`);
-      toast.success('Lien de partage genere avec succes');
+      toast.success('Lien de partage généré avec succès');
     } catch {
-      toast.error('Erreur lors de la generation du lien');
+      toast.error('Erreur lors de la génération du lien');
     }
   };
 
@@ -63,8 +63,8 @@ export function ShareBadgeDialog({
         <DialogHeader>
           <DialogTitle>Partager ce badge</DialogTitle>
           <DialogDescription>
-            Generez un lien de verification public pour partager votre badge
-            de competence.
+            Générez un lien de vérification public pour partager votre badge
+            de compétence.
           </DialogDescription>
         </DialogHeader>
         <DialogBody className="space-y-4">
@@ -77,7 +77,7 @@ export function ShareBadgeDialog({
               className="w-full"
             >
               <KeenIcon icon="share" style="duotone" className="text-sm mr-2" />
-              {shareMutation.isPending ? 'Generation...' : 'Generer un lien de partage'}
+              {shareMutation.isPending ? 'Génération...' : 'Générer un lien de partage'}
             </Button>
           ) : (
             <div className="space-y-3">

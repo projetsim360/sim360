@@ -65,7 +65,7 @@ export class ProjectsService {
   async updateDeliverable(projectId: string, deliverableId: string, userId: string, dto: UpdateDeliverableDto) {
     const project = await this.prisma.project.findUnique({ where: { id: projectId } });
     if (!project) throw new NotFoundException('Projet introuvable');
-    if (project.userId !== userId) throw new ForbiddenException('Acces refuse');
+    if (project.userId !== userId) throw new ForbiddenException('Accès refusé');
 
     const deliverable = await this.prisma.deliverable.findUnique({ where: { id: deliverableId } });
     if (!deliverable || deliverable.projectId !== projectId) {

@@ -20,9 +20,9 @@ const SEVERITY_VARIANT: Record<string, 'info' | 'warning' | 'destructive'> = {
 
 const KPI_LABELS: Record<string, string> = {
   budget: 'Budget',
-  schedule: 'Delai',
-  quality: 'Qualite',
-  teamMorale: 'Moral equipe',
+  schedule: 'Délai',
+  quality: 'Qualité',
+  teamMorale: 'Moral équipe',
   riskLevel: 'Niveau risque',
 };
 
@@ -71,10 +71,10 @@ export default function RandomEventPage() {
       const evt = simData.randomEvents?.find((e: RandomEvent) => e.id === evtId);
       if (evt) setEvent(evt);
       setSubmitted(true);
-      toast.success('Reaction enregistree.');
+      toast.success('Réaction enregistrée.');
     } catch (err: any) {
       setError(err.message);
-      toast.error("Erreur lors de l'enregistrement de la reaction.");
+      toast.error("Erreur lors de l'enregistrement de la réaction.");
     } finally {
       setSubmitting(false);
     }
@@ -99,14 +99,14 @@ export default function RandomEventPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Evenement" />
+          <ToolbarHeading title="Événement" />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-destructive text-sm">{error || 'Evenement introuvable.'}</p>
+            <p className="text-destructive text-sm">{error || 'Événement introuvable.'}</p>
             <Button variant="link" asChild>
               <Link to={id ? `/simulations/${id}` : '/simulations'}>
-                Retour a la simulation
+                Retour à la simulation
               </Link>
             </Button>
           </CardContent>
@@ -118,11 +118,11 @@ export default function RandomEventPage() {
   return (
     <div className="container">
       <Toolbar>
-        <ToolbarHeading title="Evenement aleatoire" />
+        <ToolbarHeading title="Événement aléatoire" />
         <ToolbarActions>
           <Button variant="outline" asChild>
             <Link to={`/simulations/${id}`}>
-              <KeenIcon icon="arrow-left" style="duotone" className="size-4" /> Retour a la simulation
+              <KeenIcon icon="arrow-left" style="duotone" className="size-4" /> Retour à la simulation
             </Link>
           </Button>
         </ToolbarActions>
@@ -148,7 +148,7 @@ export default function RandomEventPage() {
       {/* Options */}
       {event.options.length > 0 && (
         <div className="space-y-3 mb-5">
-          <h3 className="text-sm font-semibold">Reponses possibles</h3>
+          <h3 className="text-sm font-semibold">Réponses possibles</h3>
           {event.options.map((option, index) => {
             const isSelected = selectedOption === index;
             const isChosen = submitted && event.selectedOption === index;
@@ -224,7 +224,7 @@ export default function RandomEventPage() {
             </Link>
           </Button>
           <Button onClick={handleConfirm} disabled={selectedOption === null || submitting}>
-            {submitting ? 'Validation...' : 'Confirmer la reponse'}
+            {submitting ? 'Validation...' : 'Confirmer la réponse'}
           </Button>
         </div>
       )}
@@ -232,7 +232,7 @@ export default function RandomEventPage() {
       {/* Post-response result */}
       {submitted && (
         <div className="mt-5 text-center">
-          <p className="text-sm text-success mb-3">Reponse enregistree.</p>
+          <p className="text-sm text-success mb-3">Réponse enregistrée.</p>
           <Button asChild>
             <Link to={`/simulations/${id}`}>
               Retour au tableau de bord

@@ -10,13 +10,13 @@ import { useCampaignPublicInfo, useJoinCampaign } from '../api/recruitment.api';
 const INFO_CARDS = [
   {
     icon: 'chart-simple',
-    title: 'Decisions strategiques',
-    description: 'Prenez des decisions critiques qui impactent le projet : budget, planning, ressources et risques.',
+    title: 'Décisions stratégiques',
+    description: 'Prenez des décisions critiques qui impactent le projet : budget, planning, ressources et risques.',
   },
   {
     icon: 'people',
-    title: 'Reunions virtuelles',
-    description: 'Participez a des reunions avec des parties prenantes simulees par IA et defendez vos choix.',
+    title: 'Réunions virtuelles',
+    description: 'Participez à des réunions avec des parties prenantes simulées et défendez vos choix.',
   },
   {
     icon: 'document',
@@ -34,10 +34,10 @@ export default function JoinCampaignPage() {
   const handleStart = async () => {
     try {
       const result = await joinMutation.mutateAsync(slug!);
-      toast.success('Evaluation demarree avec succes');
+      toast.success('Évaluation démarrée avec succès');
       navigate(`/simulations/${result.simulationId}`);
     } catch {
-      toast.error("Erreur lors du demarrage de l'evaluation. Veuillez vous connecter.");
+      toast.error("Erreur lors du démarrage de l'évaluation. Veuillez vous connecter.");
       navigate(`/auth/sign-in?redirect=/recruitment/join/${slug}`);
     }
   };
@@ -60,7 +60,7 @@ export default function JoinCampaignPage() {
             </div>
             <h2 className="text-lg font-semibold">Campagne introuvable</h2>
             <p className="text-sm text-muted-foreground text-center">
-              Ce lien de campagne n'est pas valide ou a expire.
+              Ce lien de campagne n'est pas valide ou a expiré.
             </p>
           </CardContent>
         </Card>
@@ -94,9 +94,9 @@ export default function JoinCampaignPage() {
             <div className="w-16 h-16 rounded-full bg-warning/10 flex items-center justify-center">
               <KeenIcon icon="lock" style="duotone" className="size-8 text-warning" />
             </div>
-            <h2 className="text-lg font-semibold">Campagne terminee</h2>
+            <h2 className="text-lg font-semibold">Campagne terminée</h2>
             <p className="text-sm text-muted-foreground text-center">
-              Cette campagne de recrutement est terminee et n'accepte plus de nouvelles candidatures.
+              Cette campagne de recrutement est terminée et n'accepte plus de nouvelles candidatures.
             </p>
           </CardContent>
         </Card>
@@ -117,7 +117,7 @@ export default function JoinCampaignPage() {
           </Badge>
           <h1 className="text-2xl font-bold text-foreground mt-2">{info.title}</h1>
           <p className="text-base text-muted-foreground">
-            Evaluation par simulation de gestion de projet
+            Évaluation par simulation de gestion de projet
           </p>
         </div>
 
@@ -146,9 +146,9 @@ export default function JoinCampaignPage() {
             <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Vous allez piloter un projet fictif pendant environ 1 heure.
-                Vous serez confronte a des situations realistes : decisions strategiques,
-                reunions d'equipe, evenements imprevus et livrables a produire.
-                Vos actions seront evaluees par une IA pour produire un rapport 360.
+                Vous serez confronté à des situations réalistes : décisions stratégiques,
+                réunions d'équipe, événements imprévus et livrables à produire.
+                Vos actions seront évaluées pour produire un rapport 360.
               </p>
             </div>
           </CardContent>
@@ -179,17 +179,17 @@ export default function JoinCampaignPage() {
                 <KeenIcon icon="time" style="duotone" className="size-4 text-primary" />
               </div>
               <div>
-                <p className="text-sm font-medium">Duree estimee</p>
+                <p className="text-sm font-medium">Durée estimée</p>
                 <p className="text-sm text-muted-foreground">~1 heure</p>
               </div>
             </div>
 
             <div className="rounded-lg border border-border bg-accent/30 p-4">
-              <h4 className="text-sm font-semibold mb-2">Comment ca fonctionne ?</h4>
+              <h4 className="text-sm font-semibold mb-2">Comment ça fonctionne ?</h4>
               <ol className="space-y-2 text-sm text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs shrink-0">1</span>
-                  Connectez-vous ou creez un compte
+                  Connectez-vous ou créez un compte
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs shrink-0">2</span>
@@ -197,17 +197,17 @@ export default function JoinCampaignPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs shrink-0">3</span>
-                  Prenez des decisions, gerez des reunions et des evenements
+                  Prenez des décisions, gérez des réunions et des événements
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs shrink-0">4</span>
-                  Recevez votre rapport d'evaluation 360
+                  Recevez votre rapport d'évaluation 360
                 </li>
               </ol>
             </div>
 
             <p className="text-sm text-muted-foreground text-center">
-              Vous serez guide etape par etape tout au long de la simulation.
+              Vous serez guidé étape par étape tout au long de la simulation.
             </p>
 
             <Button
@@ -220,12 +220,12 @@ export default function JoinCampaignPage() {
               {joinMutation.isPending ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                  Demarrage...
+                  Démarrage...
                 </>
               ) : (
                 <>
                   <KeenIcon icon="rocket" style="duotone" className="size-5" />
-                  Commencer l'evaluation
+                  Commencer l'évaluation
                 </>
               )}
             </Button>
@@ -235,12 +235,12 @@ export default function JoinCampaignPage() {
         {/* Footer with recruiter note (US-8.1) */}
         <div className="text-center space-y-2">
           <p className="text-sm text-muted-foreground">
-            Propulse par Simex pro - Evaluation par simulation de gestion de projet
+            Propulsé par Simex pro - Évaluation par simulation de gestion de projet
           </p>
           <p className="text-sm text-muted-foreground">
-            Vous etes recruteur ?{' '}
+            Vous êtes recruteur ?{' '}
             <Link to="/contact" className="text-primary hover:underline font-medium">
-              Contactez-nous pour creer votre espace entreprise.
+              Contactez-nous pour créer votre espace entreprise.
             </Link>
           </p>
         </div>

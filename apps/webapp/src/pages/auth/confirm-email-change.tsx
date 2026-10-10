@@ -23,11 +23,11 @@ export function ConfirmEmailChangePage() {
       .get<{ message: string }>(`/auth/confirm-email-change?token=${token}`)
       .then((res) => {
         setStatus('success');
-        setMessage(res.message || 'Votre adresse email a ete mise a jour avec succes.');
+        setMessage(res.message || 'Votre adresse email a été mise à jour avec succès.');
       })
       .catch((err: any) => {
         setStatus('error');
-        setMessage(err.message || 'Le lien de confirmation est invalide ou a expire.');
+        setMessage(err.message || 'Le lien de confirmation est invalide ou a expiré.');
       });
   }, [searchParams]);
 

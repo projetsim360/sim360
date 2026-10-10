@@ -46,6 +46,9 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-sim360}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-sim360_prod}
       REDIS_HOST: redis
       REDIS_PORT: 6379
+    volumes:
+      # Uploaded files (avatars). Must persist across redeploys.
+      - api-uploads:/app/uploads
     ports:
       - "${API_PORT:-3001}:3001"
     depends_on:
@@ -74,6 +77,7 @@ services:
 volumes:
   postgres-data:
   redis-data:
+  api-uploads:
 
 networks:
   sim360-network:

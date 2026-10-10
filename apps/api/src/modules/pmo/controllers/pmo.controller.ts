@@ -78,7 +78,7 @@ export class PmoController {
   @Get('history')
   @ApiOperation({ summary: 'Historique de conversation PMO pagine' })
   @ApiParam({ name: 'simulationId', description: 'ID de la simulation' })
-  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Numero de page' })
+  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Numéro de page' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Nombre de messages par page' })
   getHistory(
     @Param('simulationId') simulationId: string,

@@ -84,8 +84,8 @@ export default function InterviewGuidePage() {
               </div>
               <div className="text-sm text-muted-foreground space-y-1">
                 <p>
-                  Ce guide a ete genere par l'IA en se basant sur les resultats de la simulation
-                  du candidat. Il propose des questions ciblees pour approfondir l'evaluation
+                  Ce guide a été généré automatiquement à partir des résultats de la simulation
+                  du candidat. Il propose des questions ciblées pour approfondir l'évaluation
                   lors d'un entretien en personne.
                 </p>
                 <p>
@@ -133,7 +133,7 @@ export default function InterviewGuidePage() {
               <EmptyState
                 icon="question-2"
                 title="Guide non disponible"
-                description="Le guide d'entretien sera genere une fois que le candidat aura termine sa simulation."
+                description="Le guide d'entretien sera généré une fois que le candidat aura terminé sa simulation."
               />
             </CardContent>
           </Card>

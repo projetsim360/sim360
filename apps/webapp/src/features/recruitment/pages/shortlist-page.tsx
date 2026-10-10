@@ -69,7 +69,7 @@ export default function ShortlistPage() {
   return (
     <div className="container space-y-5">
       <Toolbar>
-        <ToolbarHeading title="Shortlist IA" />
+        <ToolbarHeading title="Shortlist" />
         <ToolbarActions>
           {selectedForCompare.length === 2 && (
             <Button variant="primary" size="sm" onClick={handleCompare}>
@@ -111,7 +111,7 @@ export default function ShortlistPage() {
                     Sur {shortlist.totalCandidates} candidats, voici les {shortlist.candidates.length} que nous recommandons
                   </p>
                   <p className="text-sm text-muted-foreground mt-0.5">
-                    Selectionnez 2 candidats pour les comparer
+                    Sélectionnez 2 candidats pour les comparer
                   </p>
                 </div>
               </div>
@@ -211,7 +211,7 @@ export default function ShortlistPage() {
 
         {selectedForCompare.length > 0 && selectedForCompare.length < 2 && (
           <p className="text-sm text-muted-foreground text-center">
-            Selectionnez un deuxieme candidat pour lancer la comparaison.
+            Sélectionnez un deuxième candidat pour lancer la comparaison.
           </p>
         )}
     </div>

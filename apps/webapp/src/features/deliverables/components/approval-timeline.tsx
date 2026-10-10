@@ -32,12 +32,12 @@ const STATUS_CONFIG: Record<
     dotColor: 'bg-gray-400',
   },
   APPROVED: {
-    label: 'Approuve',
+    label: 'Approuvé',
     variant: 'success',
     dotColor: 'bg-green-500',
   },
   REJECTED: {
-    label: 'Rejete',
+    label: 'Rejeté',
     variant: 'destructive',
     dotColor: 'bg-red-500',
   },

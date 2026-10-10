@@ -27,10 +27,9 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // Serve uploaded files in development
-  if (config.get<string>('NODE_ENV', 'development') === 'development') {
-    app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads' });
-  }
+  // Serve uploaded files (avatars, ...) in every environment. In production the
+  // webapp's nginx proxies /uploads/ here, and /app/uploads must be a persistent volume.
+  app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads' });
 
   // Global prefix
   app.setGlobalPrefix(prefix, {

@@ -102,14 +102,14 @@ export class RecruitmentService {
     });
 
     if (!campaign) throw new NotFoundException('Campagne introuvable');
-    if (campaign.tenantId !== tenantId) throw new ForbiddenException('Acces refuse');
+    if (campaign.tenantId !== tenantId) throw new ForbiddenException('Accès refusé');
     return campaign;
   }
 
   async update(id: string, tenantId: string, dto: UpdateCampaignDto) {
     const campaign = await this.findOne(id, tenantId);
     if (campaign.status !== CampaignStatus.DRAFT) {
-      throw new BadRequestException('Seule une campagne en brouillon peut etre modifiee');
+      throw new BadRequestException('Seule une campagne en brouillon peut être modifiée');
     }
 
     const updated = await this.prisma.recruitmentCampaign.update({
@@ -133,10 +133,10 @@ export class RecruitmentService {
   async publish(id: string, tenantId: string, recruiterId: string) {
     const campaign = await this.findOne(id, tenantId);
     if (campaign.status !== CampaignStatus.DRAFT) {
-      throw new BadRequestException('Seule une campagne en brouillon peut etre publiee');
+      throw new BadRequestException('Seule une campagne en brouillon peut être publiée');
     }
     if (!campaign.generatedScenarioId) {
-      throw new BadRequestException('Le scenario doit etre genere avant la publication');
+      throw new BadRequestException('Le scénario doit être généré avant la publication');
     }
 
     const updated = await this.prisma.recruitmentCampaign.update({
@@ -161,7 +161,7 @@ export class RecruitmentService {
   async close(id: string, tenantId: string, recruiterId: string) {
     const campaign = await this.findOne(id, tenantId);
     if (campaign.status !== CampaignStatus.ACTIVE) {
-      throw new BadRequestException('Seule une campagne active peut etre fermee');
+      throw new BadRequestException('Seule une campagne active peut être fermée');
     }
 
     const updated = await this.prisma.recruitmentCampaign.update({
@@ -186,7 +186,7 @@ export class RecruitmentService {
   async archive(id: string, tenantId: string, recruiterId: string) {
     const campaign = await this.findOne(id, tenantId);
     if (campaign.status !== CampaignStatus.CLOSED) {
-      throw new BadRequestException('Seule une campagne fermee peut etre archivee');
+      throw new BadRequestException('Seule une campagne fermée peut être archivée');
     }
 
     const updated = await this.prisma.recruitmentCampaign.update({
@@ -277,7 +277,7 @@ export class RecruitmentService {
 
     if (!candidate) throw new NotFoundException('Candidat introuvable');
     if (candidate.campaignId !== campaignId) {
-      throw new BadRequestException('Ce candidat n\'appartient pas a cette campagne');
+      throw new BadRequestException('Ce candidat n\'appartient pas à cette campagne');
     }
 
     return candidate;

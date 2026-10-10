@@ -13,14 +13,15 @@ export class EventAiService {
   ): Promise<string> {
     const result = await this.aiService.complete({
       prompt: [
-        `Genere une description immersive pour cet evenement imprevu dans une simulation de gestion de projet.`,
+        `Génère une description immersive pour cet événement imprévu dans une simulation de gestion de projet.`,
+        `Réponds en français correct, avec les accents.`,
         ``,
-        `Evenement: "${event.title}"`,
-        `Type: ${event.type}, Severite: ${event.severity}`,
+        `Événement: "${event.title}"`,
+        `Type: ${event.type}, Sévérité: ${event.severity}`,
         `Phase actuelle: ${phaseName}`,
-        `KPIs: Budget ${kpis.budget}, Delai ${kpis.schedule}, Qualite ${kpis.quality}, Moral ${kpis.teamMorale}, Risque ${kpis.riskLevel}`,
+        `KPIs: Budget ${kpis.budget}, Délai ${kpis.schedule}, Qualité ${kpis.quality}, Moral ${kpis.teamMorale}, Risque ${kpis.riskLevel}`,
         ``,
-        `Redige 2-3 phrases immersives qui decrivent la situation de maniere realiste et engageante. Adapte le ton a la severite.`,
+        `Rédige 2-3 phrases immersives qui décrivent la situation de manière réaliste et engageante. Adapte le ton à la sévérité.`,
       ].join('\n'),
       maxTokens: 150,
       temperature: 0.7,

@@ -34,6 +34,7 @@ model Tenant {
   simulations            Simulation[]
   aiTokenQuota           AiTokenQuota?
   recruitmentCampaigns   RecruitmentCampaign[]
+  actionItems            ActionItem[]
 
   @@map("tenants")
 }
@@ -97,7 +98,7 @@ model User {
 
   // Settings - Preferences
   profileVisibility    Boolean @default(true)
-  timezone             String? @default("europe_paris")
+  timezone             String? @default("America/Toronto") // IANA id
   dateFormat           String? @default("dd_mm_yyyy")
   simulationViewMode   String? @default("modal")
   showSimulationNames  Boolean @default(true)
@@ -357,6 +358,21 @@ enum Sector {
   HEALTHCARE
   FINANCE
   CUSTOM
+  ENGINEERING
+  ENERGY
+  TRANSPORT
+  MANUFACTURING
+  PUBLIC_ADMINISTRATION
+  TELECOM
+  AEROSPACE
+  PROFESSIONAL_SERVICES
+  BANKING_INSURANCE
+  NATURAL_RESOURCES
+  LOGISTICS
+  REAL_ESTATE
+  EDUCATION
+  DIGITAL_TRANSFORMATION
+  PRODUCT_DEVELOPMENT
 }
 
 enum PhaseType {
@@ -583,6 +599,7 @@ model Simulation {
   competencyBadges CompetencyBadge[]
   candidateResult    CandidateResult?
   mentoringSessions  MentoringSession[]
+  actionItems        ActionItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -806,10 +823,18 @@ model Meeting {
   status          MeetingStatus @default(SCHEDULED)
   startedAt       DateTime?
   completedAt     DateTime?
+  /// True when planned by the learner (custom meeting) rather than instantiated from a template
+  isCustom        Boolean       @default(false)
+  createdById     String?
+  /// Sector label for custom meetings (overrides the scenario sector in prompts)
+  sector          String?
+  /// Stakes / issues to address, free text (custom meetings)
+  stakes          String?       @db.Text
 
   participants MeetingParticipant[]
   messages     MeetingMessage[]
   summary      MeetingSummary?
+  actionItems  ActionItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -827,6 +852,14 @@ model MeetingParticipant {
   personality      String?
   cooperationLevel Int     @default(3)
   avatar           String?
+  /// EXECUTIVE | SENIOR | INTERMEDIATE | JUNIOR — drives register and who opens the meeting
+  seniority          String?
+  /// What this participant wants out of the meeting
+  objectives         String? @db.Text
+  /// Operational constraints the participant defends (budget, staffing, regulation...)
+  constraints        String? @db.Text
+  /// e.g. "direct et chiffré", "diplomate", "technique"
+  communicationStyle String?
 
   messages MeetingMessage[]
 
@@ -856,10 +889,48 @@ model MeetingSummary {
   summary      String   @db.Text
   keyDecisions String[]
   actionItems  Json?
+  /// Set once summary.actionItems have been copied into ActionItem rows
+  actionItemsImported Boolean @default(false)
   kpiImpact    Json?
   createdAt    DateTime @default(now())
 
   @@map("meeting_summaries")
+}
+
+// ─── Follow-up actions ──────────────────────────────────
+
+enum ActionItemStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+  CANCELLED
+}
+
+/// Follow-up action ("Actions de suivi"), seeded from a meeting summary or created by the learner.
+model ActionItem {
+  id           String           @id @default(cuid())
+  tenantId     String
+  tenant       Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  simulationId String
+  simulation   Simulation       @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+  meetingId    String?
+  meeting      Meeting?         @relation(fields: [meetingId], references: [id], onDelete: SetNull)
+  title        String           @db.Text
+  assignee     String?
+  dueDate      DateTime?
+  /// Free-text deadline produced by the summary ("fin de semaine") when no date is set
+  dueLabel     String?
+  status       ActionItemStatus @default(TODO)
+  /// MEETING_SUMMARY | USER
+  source       String           @default("USER")
+  createdById  String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@index([tenantId])
+  @@index([simulationId])
+  @@index([meetingId])
+  @@map("action_items")
 }
 
 // ─── PMO Conversations (EPIC 3) ─────────────────────────

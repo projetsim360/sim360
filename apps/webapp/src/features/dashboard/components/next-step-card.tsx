@@ -15,25 +15,25 @@ const STEP_CONFIG: Record<
 > = {
   pending_decisions: {
     icon: 'question-2',
-    getTitle: (n) => `Vous avez ${n} decision${n > 1 ? 's' : ''} en attente`,
+    getTitle: (n) => `Vous avez ${n} décision${n > 1 ? 's' : ''} en attente`,
     color: 'text-[#4b2f95] dark:text-brand-400',
     bgIcon: 'bg-primary/15 dark:bg-primary/20',
   },
   pending_events: {
     icon: 'flash',
-    getTitle: () => 'Un evenement necessite votre attention',
+    getTitle: () => 'Un événement nécessite votre attention',
     color: 'text-warning',
     bgIcon: 'bg-warning/15 dark:bg-warning/20',
   },
   pending_meetings: {
     icon: 'message-text',
-    getTitle: () => 'Une reunion est planifiee',
+    getTitle: () => 'Une réunion est planifiée',
     color: 'text-info',
     bgIcon: 'bg-info/15 dark:bg-info/20',
   },
   pending_deliverables: {
     icon: 'document',
-    getTitle: () => 'Un livrable attend d\'etre soumis',
+    getTitle: () => 'Un livrable attend d\'être soumis',
     color: 'text-[#4b2f95] dark:text-brand-400',
     bgIcon: 'bg-primary/15 dark:bg-primary/20',
   },
@@ -45,13 +45,13 @@ const STEP_CONFIG: Record<
   },
   debriefing_available: {
     icon: 'teacher',
-    getTitle: () => 'Consultez votre debriefing',
+    getTitle: () => 'Consultez votre débriefing',
     color: 'text-success',
     bgIcon: 'bg-success/15 dark:bg-success/20',
   },
   all_clear: {
     icon: 'check-circle',
-    getTitle: () => 'Tout est a jour !',
+    getTitle: () => 'Tout est à jour !',
     color: 'text-success',
     bgIcon: 'bg-success/15 dark:bg-success/20',
   },
@@ -78,10 +78,10 @@ export function NextStepCard({ data }: NextStepCardProps) {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-0.5">
-            {isAllClear ? 'Statut' : 'Prochaine etape'}
+            {isAllClear ? 'Statut' : 'Prochaine étape'}
           </p>
           <h3 className={cn('text-sm font-bold', config?.color ?? 'text-foreground')}>
-            {config?.getTitle(data?.count ?? 0) ?? 'Prochaine etape'}
+            {config?.getTitle(data?.count ?? 0) ?? 'Prochaine étape'}
           </h3>
           {data?.simulationName && (
             <p className="text-xs text-muted-foreground mt-0.5 truncate">

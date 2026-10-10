@@ -45,8 +45,8 @@ import {
 } from '../api/mentoring.api';
 
 const SESSION_TYPES = [
-  { value: 'DEBRIEFING', label: 'Debriefing' },
-  { value: 'CAREER_COACHING', label: 'Coaching carriere' },
+  { value: 'DEBRIEFING', label: 'Débriefing' },
+  { value: 'CAREER_COACHING', label: 'Coaching carrière' },
   { value: 'INTERVIEW_PREP', label: 'Preparation entretien' },
 ] as const;
 
@@ -90,12 +90,12 @@ export default function MentorDashboardPage() {
       },
       {
         onSuccess: () => {
-          toast.success('Session creee avec succes');
+          toast.success('Session créée avec succès');
           setDialogOpen(false);
           form.reset();
         },
         onError: () => {
-          toast.error('Erreur lors de la creation de la session');
+          toast.error('Erreur lors de la création de la session');
         },
       },
     );
@@ -113,7 +113,7 @@ export default function MentorDashboardPage() {
         <ToolbarHeading>
           <h1 className="text-xl font-medium text-gray-900">Espace Mentor</h1>
           <p className="text-sm text-gray-700">
-            Gerez vos evaluations et sessions de mentorat
+            Gérez vos évaluations et sessions de mentorat
           </p>
         </ToolbarHeading>
         <ToolbarActions>
@@ -153,7 +153,7 @@ export default function MentorDashboardPage() {
                   <div className="text-2xl font-bold">{reviews.length}</div>
                 )}
                 <div className="text-xs text-muted-foreground">
-                  Evaluations en attente
+                  Évaluations en attente
                 </div>
               </div>
             </CardContent>
@@ -201,7 +201,7 @@ export default function MentorDashboardPage() {
                   </div>
                 )}
                 <div className="text-xs text-muted-foreground">
-                  Sessions terminees
+                  Sessions terminées
                 </div>
               </div>
             </CardContent>
@@ -213,7 +213,7 @@ export default function MentorDashboardPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <KeenIcon icon="clipboard-check" style="duotone" />
-              Evaluations en attente de review
+              Évaluations en attente de review
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -225,7 +225,7 @@ export default function MentorDashboardPage() {
               </div>
             ) : reviews.length === 0 ? (
               <div className="text-sm text-muted-foreground py-4 text-center">
-                Aucune evaluation en attente
+                Aucune évaluation en attente
               </div>
             ) : (
               <div className="space-y-2">
@@ -239,12 +239,12 @@ export default function MentorDashboardPage() {
                         {review.deliverable?.title ?? 'Livrable'}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        Score IA : {review.score}/100 — Grade : {review.grade}
+                        Score automatique : {review.score}/100 — Grade : {review.grade}
                       </div>
                     </div>
                     <Button variant="outline" size="sm" asChild>
                       <Link to={`/mentoring/review/${review.id}`}>
-                        Evaluer
+                        Évaluer
                       </Link>
                     </Button>
                   </div>
@@ -286,10 +286,10 @@ export default function MentorDashboardPage() {
                       </div>
                       <div className="text-xs text-muted-foreground">
                         {session.status === 'COMPLETED'
-                          ? 'Terminee'
+                          ? 'Terminée'
                           : session.status === 'IN_PROGRESS'
                             ? 'En cours'
-                            : 'Planifiee'}
+                            : 'Planifiée'}
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -304,10 +304,10 @@ export default function MentorDashboardPage() {
                         size="sm"
                       >
                         {session.status === 'COMPLETED'
-                          ? 'Terminee'
+                          ? 'Terminée'
                           : session.status === 'IN_PROGRESS'
                             ? 'En cours'
-                            : 'Planifiee'}
+                            : 'Planifiée'}
                       </Badge>
                       <Button variant="outline" size="sm" asChild>
                         <Link to={`/mentoring/session/${session.id}`}>
@@ -415,7 +415,7 @@ export default function MentorDashboardPage() {
               size="sm"
               disabled={createSession.isPending}
             >
-              {createSession.isPending ? 'Creation...' : 'Creer'}
+              {createSession.isPending ? 'Création...' : 'Créer'}
             </Button>
           </DialogFooter>
         </DialogContent>

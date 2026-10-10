@@ -133,7 +133,7 @@ export function EmailFilterPopover({
               htmlFor="filter-score-min"
               className="text-sm text-foreground cursor-pointer"
             >
-              Score IA ≥ 70
+              Score ≥ 70
             </Label>
             <Switch
               id="filter-score-min"

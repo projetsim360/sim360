@@ -27,7 +27,7 @@ export default function BadgeVerifyPage() {
               Badge non valide
             </h1>
             <p className="text-sm text-muted-foreground">
-              Ce badge n'existe pas ou le lien de verification est invalide.
+              Ce badge n'existe pas ou le lien de vérification est invalide.
             </p>
           </CardContent>
         </Card>
@@ -46,7 +46,7 @@ export default function BadgeVerifyPage() {
             <div className="flex items-center justify-center gap-2 text-success">
               <KeenIcon icon="shield-tick" style="duotone" className="text-2xl" />
               <span className="text-sm font-semibold uppercase tracking-wide">
-                Badge verifie par Simex pro
+                Badge vérifié par Simex pro
               </span>
             </div>
 
@@ -88,7 +88,7 @@ export default function BadgeVerifyPage() {
         {/* Competency radar */}
         <Card>
           <CardHeader>
-            <CardTitle>Competences evaluees</CardTitle>
+            <CardTitle>Compétences évaluées</CardTitle>
           </CardHeader>
           <CardContent>
             <CompetencyRadarChart scores={badge.competencyScores} />
@@ -97,8 +97,8 @@ export default function BadgeVerifyPage() {
 
         {/* Footer */}
         <p className="text-center text-sm text-muted-foreground">
-          Ce badge a ete genere par la plateforme Simex pro.
-          Il atteste des competences en gestion de projet evaluees lors d'une simulation.
+          Ce badge a été généré par la plateforme Simex pro.
+          Il atteste des compétences en gestion de projet évaluées lors d'une simulation.
         </p>
       </div>
     </div>

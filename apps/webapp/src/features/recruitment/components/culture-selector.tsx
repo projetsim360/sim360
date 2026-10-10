@@ -12,21 +12,21 @@ const CULTURE_OPTIONS: Array<{
     value: 'STRICT',
     label: 'Stricte / Predictive',
     description:
-      'Processus rigoureux, planification detaillee, respect strict des delais et du perimetre. Ideal pour les environnements reglementaires.',
+      'Processus rigoureux, planification détaillée, respect strict des délais et du périmètre. Idéal pour les environnements réglementaires.',
     icon: 'shield-tick',
   },
   {
     value: 'AGILE',
     label: 'Agile / Iterative',
     description:
-      'Sprints courts, adaptation continue, livraisons incrementales. Favorise la reactivite et le feedback rapide.',
+      'Sprints courts, adaptation continue, livraisons incrémentales. Favorise la réactivité et le feedback rapide.',
     icon: 'arrows-loop',
   },
   {
     value: 'COLLABORATIVE',
     label: 'Collaborative / Hybride',
     description:
-      'Equilibre entre structure et flexibilite. Communication ouverte, prise de decision partagee, focus sur le consensus.',
+      'Équilibre entre structure et flexibilité. Communication ouverte, prise de décision partagée, focus sur le consensus.',
     icon: 'people',
   },
 ];

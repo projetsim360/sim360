@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Switch } from '@/components/ui/switch';
 import { useAuth } from '@/providers/auth-provider';
+import { getApiOrigin } from '@/lib/asset-url';
 
 const I18N_LANGUAGES = [
   {
@@ -55,7 +56,7 @@ export function UserDropdownMenu({ trigger }: { trigger: ReactNode }) {
   const initials = user
     ? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
     : '?';
-  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
+  const apiBase = getApiOrigin();
 
   return (
     <DropdownMenu>

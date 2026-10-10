@@ -82,7 +82,7 @@ export function PmoFab({ simulationId, pendingActionsCount = 0 }: PmoFabProps) {
                   Je suis votre Agent PMO
                 </p>
                 <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                  Si vous avez besoin de conseils, d'aide sur vos livrables ou pour prendre une decision, je suis la !
+                  Si vous avez besoin de conseils, d'aide sur vos livrables ou pour prendre une décision, je suis là !
                 </p>
               </div>
             </div>

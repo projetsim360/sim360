@@ -20,9 +20,9 @@ export class ValorizationController {
 
   @Get('simulations/:simId/debriefing')
   @Auditable('DEBRIEFING_VIEW', 'CompetencyBadge')
-  @ApiOperation({ summary: 'Obtenir ou generer le debriefing d\'une simulation' })
+  @ApiOperation({ summary: 'Obtenir ou générer le debriefing d\'une simulation' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
-  @ApiQuery({ name: 'force', required: false, description: 'Forcer la regeneration (true/false)' })
+  @ApiQuery({ name: 'force', required: false, description: 'Forcer la régénération (true/false)' })
   getDebriefing(
     @Param('simId') simId: string,
     @CurrentUser() user: any,
@@ -39,7 +39,7 @@ export class ValorizationController {
 
   @Get('simulations/:simId/portfolio')
   @Auditable('PORTFOLIO_VIEW', 'CompetencyBadge')
-  @ApiOperation({ summary: 'Obtenir les donnees du portfolio d\'une simulation' })
+  @ApiOperation({ summary: 'Obtenir les données du portfolio d\'une simulation' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
   getPortfolio(
     @Param('simId') simId: string,
@@ -51,7 +51,7 @@ export class ValorizationController {
 
   @Get('simulations/:simId/cv-suggestions')
   @Auditable('CV_SUGGESTIONS_VIEW', 'CompetencyBadge')
-  @ApiOperation({ summary: 'Obtenir ou generer les suggestions CV d\'une simulation' })
+  @ApiOperation({ summary: 'Obtenir ou générer les suggestions CV d\'une simulation' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
   getCvSuggestions(
     @Param('simId') simId: string,
@@ -106,9 +106,9 @@ export class ValorizationController {
   }
 
   @Get('simulations/:simId/portfolio/best')
-  @ApiOperation({ summary: 'Obtenir les meilleurs livrables filtres par score' })
+  @ApiOperation({ summary: 'Obtenir les meilleurs livrables filtrés par score' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
-  @ApiQuery({ name: 'minScore', required: false, description: 'Score minimum (defaut: 70)' })
+  @ApiQuery({ name: 'minScore', required: false, description: 'Score minimum (défaut: 70)' })
   getBestDeliverables(
     @Param('simId') simId: string,
     @CurrentUser() user: any,

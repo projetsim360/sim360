@@ -5,13 +5,14 @@ import { AppsDropdownMenu } from '../../layout-1/shared/topbar/apps-dropdown-men
 import { UserDropdownMenu } from '../../layout-1/shared/topbar/user-dropdown-menu';
 import { useAuth } from '@/providers/auth-provider';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { getApiOrigin } from '@/lib/asset-url';
 
 export function SidebarFooter() {
   const { user } = useAuth();
   const initials = user
     ? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
     : '?';
-  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
+  const apiBase = getApiOrigin();
 
   return (
     <div className="flex flex-col gap-5 items-center shrink-0 pb-5">

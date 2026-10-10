@@ -62,7 +62,7 @@ export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
           </span>
           <p className="font-display text-base font-bold text-[var(--brand-700)]">Analyse de votre profil…</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            Notre IA évalue vos compétences et prépare votre diagnostic.
+            Nous évaluons vos compétences et préparons votre diagnostic.
           </p>
           <div className="mx-auto mt-5 max-w-sm space-y-2.5">
             <Skeleton className="h-3 w-full" />
@@ -93,7 +93,7 @@ export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
           </span>
           <div>
             <div className="text-[11px] font-bold uppercase tracking-wide text-[var(--brand-200)]">
-              Profil détecté par l'IA
+              Profil détecté automatiquement
             </div>
             {diagnostic?.profileType && (
               <div className="mt-1 font-display text-[22px] font-extrabold">

@@ -42,7 +42,7 @@ export default function PmoChatPage() {
         <EmptyState
           icon="robot"
           title="Agent PMO"
-          description="Selectionnez une simulation pour commencer a discuter avec votre agent PMO."
+          description="Sélectionnez une simulation pour commencer à discuter avec votre agent PMO."
         />
       </div>
     );

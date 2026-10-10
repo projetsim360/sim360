@@ -11,7 +11,7 @@ const STATUS_CONFIG: Record<string, { label: string; variant: 'secondary' | 'pri
   IN_PROGRESS: { label: 'En cours', variant: 'primary' },
   DELIVERED: { label: 'Livre', variant: 'primary' },
   ACCEPTED: { label: 'Accepte', variant: 'success' },
-  REJECTED: { label: 'Rejete', variant: 'destructive' },
+  REJECTED: { label: 'Rejeté', variant: 'destructive' },
 };
 
 export default function ProjectDeliverablesPage() {
@@ -34,7 +34,7 @@ export default function ProjectDeliverablesPage() {
   return (
     <div className="container">
       <Toolbar>
-        <ToolbarHeading title="Livrables du projet" description={`${accepted}/${deliverables.length} acceptes (${progress}%)`} />
+        <ToolbarHeading title="Livrables du projet" description={`${accepted}/${deliverables.length} acceptés (${progress}%)`} />
       </Toolbar>
 
       {loading ? (
@@ -73,7 +73,7 @@ export default function ProjectDeliverablesPage() {
 
                   {d.qualityScore !== null && (
                     <div className="mt-2 flex items-center gap-2 text-sm">
-                      <span className="text-muted-foreground">Qualite :</span>
+                      <span className="text-muted-foreground">Qualité :</span>
                       <span className={`font-medium ${d.qualityScore >= 70 ? 'text-success' : d.qualityScore >= 40 ? 'text-warning' : 'text-destructive'}`}>
                         {d.qualityScore}%
                       </span>

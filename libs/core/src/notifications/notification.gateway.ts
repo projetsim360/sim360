@@ -8,6 +8,7 @@ import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { isAccessTokenPayload } from '../auth/jwt-payload.util';
 
 @WebSocketGateway({
   namespace: '/notifications',
@@ -43,6 +44,10 @@ export class NotificationGateway
 
       const secret = this.configService.get<string>('auth.jwtSecret');
       const payload = await this.jwtService.verifyAsync(token, { secret });
+      if (!isAccessTokenPayload(payload)) {
+        client.disconnect();
+        return;
+      }
       const userId = payload.sub;
 
       client.data.userId = userId;

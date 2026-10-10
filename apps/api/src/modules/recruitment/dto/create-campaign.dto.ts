@@ -4,12 +4,12 @@ import { Type } from 'class-transformer';
 import { CultureType } from '@prisma/client';
 
 export class RequiredSkillDto {
-  @ApiProperty({ description: 'Nom de la competence' })
+  @ApiProperty({ description: 'Nom de la compétence' })
   @IsString()
   @IsNotEmpty()
   skill!: string;
 
-  @ApiProperty({ description: 'Poids de la competence (1-10)', minimum: 1, maximum: 10 })
+  @ApiProperty({ description: 'Poids de la compétence (1-10)', minimum: 1, maximum: 10 })
   @IsInt()
   @Min(1)
   @Max(10)
@@ -22,25 +22,25 @@ export class CreateCampaignDto {
   @IsNotEmpty()
   title!: string;
 
-  @ApiProperty({ description: 'Intitule du poste' })
+  @ApiProperty({ description: 'Intitulé du poste' })
   @IsString()
   @IsNotEmpty()
   jobTitle!: string;
 
-  @ApiProperty({ description: 'Description du poste (min 10 caracteres)' })
+  @ApiProperty({ description: 'Description du poste (min 10 caractères)' })
   @IsString()
   @IsNotEmpty()
-  @MinLength(10, { message: 'La description doit faire au moins 10 caracteres' })
+  @MinLength(10, { message: 'La description doit faire au moins 10 caractères' })
   jobDescription!: string;
 
-  @ApiProperty({ description: 'Competences requises avec ponderation (min 1)', type: [RequiredSkillDto] })
+  @ApiProperty({ description: 'Compétences requises avec pondération (min 1)', type: [RequiredSkillDto] })
   @IsArray()
-  @ArrayMinSize(1, { message: 'Ajoutez au moins une competence' })
+  @ArrayMinSize(1, { message: 'Ajoutez au moins une compétence' })
   @ValidateNested({ each: true })
   @Type(() => RequiredSkillDto)
   requiredSkills!: RequiredSkillDto[];
 
-  @ApiProperty({ description: 'Niveau d\'experience requis (junior, confirmed, senior)' })
+  @ApiProperty({ description: 'Niveau d\'expérience requis (junior, confirmed, senior)' })
   @IsString()
   @IsNotEmpty()
   experienceLevel!: string;

@@ -408,7 +408,7 @@ export function Sidebar({ className }: SidebarProps) {
               Mode coach activé
             </p>
             <p className="mb-3 text-[12px] leading-[1.45] text-[var(--shell-fg-muted)]">
-              Feedback IA détaillé après chaque livrable, accès au plan de progression personnalisé.
+              Retour détaillé après chaque livrable, accès au plan de progression personnalisé.
             </p>
             <div className="mb-3 inline-flex items-center gap-1.5 text-[11px] text-[var(--shell-fg)]">
               <Sparkles className="size-3.5 text-[var(--accent-400)]" />

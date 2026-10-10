@@ -27,7 +27,7 @@ function getDeliverableSteps(status: string): WorkflowStep[] {
             : 'upcoming',
     },
     {
-      label: isRejected ? 'Rejete' : 'Evalue',
+      label: isRejected ? 'Rejeté' : 'Évalué',
       status: isRejected
         ? 'disabled'
         : status === 'EVALUATED'
@@ -46,7 +46,7 @@ function getDeliverableSteps(status: string): WorkflowStep[] {
             : 'upcoming',
     },
     {
-      label: 'Valide',
+      label: 'Validé',
       status:
         status === 'VALIDATED'
           ? 'completed'

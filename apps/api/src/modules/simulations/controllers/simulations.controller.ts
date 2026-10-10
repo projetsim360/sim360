@@ -20,7 +20,7 @@ export class SimulationsController {
 
   @Post()
   @Auditable('simulation.create', 'Simulation')
-  @ApiOperation({ summary: 'Lancer une simulation a partir d\'un scenario' })
+  @ApiOperation({ summary: 'Lancer une simulation à partir d\'un scénario' })
   create(
     @Body() dto: CreateSimulationDto,
     @CurrentUser('id') userId: string,
@@ -41,7 +41,7 @@ export class SimulationsController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Detail d\'une simulation' })
+  @ApiOperation({ summary: 'Détail d\'une simulation' })
   findOne(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.simulationsService.findOne(id, userId);
   }
@@ -69,7 +69,7 @@ export class SimulationsController {
 
   @Post(':id/decisions/:decId/choose')
   @Auditable('decision.make', 'Decision')
-  @ApiOperation({ summary: 'Prendre une decision' })
+  @ApiOperation({ summary: 'Prendre une décision' })
   makeDecision(
     @Param('id') simId: string,
     @Param('decId') decId: string,
@@ -81,7 +81,7 @@ export class SimulationsController {
 
   @Post(':id/events/:evtId/respond')
   @Auditable('event.respond', 'RandomEvent')
-  @ApiOperation({ summary: 'Reagir a un evenement aleatoire' })
+  @ApiOperation({ summary: 'Réagir à un événement aléatoire' })
   respondToEvent(
     @Param('id') simId: string,
     @Param('evtId') evtId: string,
@@ -93,7 +93,7 @@ export class SimulationsController {
 
   @Post(':id/decisions/:decId/rollback')
   @Auditable('decision.rollback', 'Decision')
-  @ApiOperation({ summary: 'Annuler une decision (retour en arriere, limite par profil)' })
+  @ApiOperation({ summary: 'Annuler une décision (retour en arrière, limité par profil)' })
   rollbackDecision(
     @Param('id') simId: string,
     @Param('decId') decId: string,
@@ -107,7 +107,7 @@ export class SimulationsController {
   @ApiOperation({ summary: 'Compteurs d\'actions en attente pour une simulation' })
   @ApiResponse({
     status: 200,
-    description: 'Compteurs retournes avec succes',
+    description: 'Compteurs retournés avec succès',
     schema: {
       type: 'object',
       properties: {
@@ -124,7 +124,7 @@ export class SimulationsController {
     },
   })
   @ApiResponse({ status: 404, description: 'Simulation introuvable' })
-  @ApiResponse({ status: 403, description: 'Acces refuse (tenant mismatch)' })
+  @ApiResponse({ status: 403, description: 'Accès refusé (tenant mismatch)' })
   getCounts(
     @Param('id') id: string,
     @CurrentUser('id') userId: string,
@@ -134,7 +134,7 @@ export class SimulationsController {
   }
 
   @Get(':id/dashboard')
-  @ApiOperation({ summary: 'Dashboard detaille d\'une simulation (KPIs, phase, actions en attente)' })
+  @ApiOperation({ summary: 'Dashboard détaillé d\'une simulation (KPIs, phase, actions en attente)' })
   getSimulationDashboard(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.simulationsService.getSimulationDashboard(id, userId);
   }
@@ -160,7 +160,7 @@ export class SimulationsController {
   // ─── Stakeholder identification (Greenfield) ─────────────
 
   @Post(':id/stakeholders/suggest')
-  @ApiOperation({ summary: 'Suggerer des parties prenantes via IA (Greenfield)' })
+  @ApiOperation({ summary: 'Suggérer des parties prenantes via IA (Greenfield)' })
   suggestStakeholders(
     @Param('id') id: string,
     @CurrentUser('id') userId: string,
@@ -172,7 +172,7 @@ export class SimulationsController {
 
   @Post(':id/stakeholders/apply')
   @Auditable('STAKEHOLDERS_APPLY', 'Simulation')
-  @ApiOperation({ summary: 'Appliquer les parties prenantes selectionnees au projet' })
+  @ApiOperation({ summary: 'Appliquer les parties prenantes sélectionnées au projet' })
   applyStakeholders(
     @Param('id') id: string,
     @CurrentUser('id') userId: string,

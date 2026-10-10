@@ -4,6 +4,7 @@ import { MessageSquarePlus, History, Settings, HelpCircle, LogOut, Moon, Sun } f
 import { useTheme } from "next-themes";
 import { useLayout } from "./context";
 import { useAuth } from "@/providers/auth-provider";
+import { getApiOrigin } from '@/lib/asset-url';
 
 interface UserDropdownMenuProps {
   isCollapsed?: boolean;
@@ -17,7 +18,7 @@ export function UserDropdownMenu({ isCollapsed = false }: UserDropdownMenuProps)
   const initials = user
     ? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
     : '?';
-  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
+  const apiBase = getApiOrigin();
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");

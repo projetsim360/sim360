@@ -62,15 +62,15 @@ export default function CandidateReportPage() {
     ? [
         { axis: 'Hard Skills', value: candidate.report360.hardSkills.score },
         { axis: 'Soft Skills', value: candidate.report360.softSkills.score },
-        { axis: 'Fiabilite', value: candidate.report360.reliability.score },
-        { axis: 'Adaptabilite', value: candidate.report360.adaptability.score },
+        { axis: 'Fiabilité', value: candidate.report360.reliability.score },
+        { axis: 'Adaptabilité', value: candidate.report360.adaptability.score },
         { axis: 'Leadership', value: candidate.report360.leadership.score },
       ]
     : [
         { axis: 'Hard Skills', value: candidate.hardSkillsScore ?? 0 },
         { axis: 'Soft Skills', value: candidate.softSkillsScore ?? 0 },
-        { axis: 'Fiabilite', value: candidate.reliabilityScore ?? 0 },
-        { axis: 'Adaptabilite', value: candidate.adaptabilityScore ?? 0 },
+        { axis: 'Fiabilité', value: candidate.reliabilityScore ?? 0 },
+        { axis: 'Adaptabilité', value: candidate.adaptabilityScore ?? 0 },
         { axis: 'Leadership', value: candidate.leadershipScore ?? 0 },
       ];
 
@@ -124,14 +124,14 @@ export default function CandidateReportPage() {
                   <TooltipTrigger asChild>
                     <div className="w-full mt-6 space-y-2 cursor-help">
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Compatibilite</span>
+                        <span className="text-muted-foreground">Compatibilité</span>
                         <span className="font-semibold">{Math.round(candidate.matchPercentage)}%</span>
                       </div>
                       <Progress value={candidate.matchPercentage} className="h-2" />
                     </div>
                   </TooltipTrigger>
                   <TooltipContent variant="light" className="max-w-[280px]">
-                    Pourcentage d'adequation entre les competences du candidat et les exigences du poste.
+                    Pourcentage d'adéquation entre les compétences du candidat et les exigences du poste.
                   </TooltipContent>
                 </Tooltip>
               )}
@@ -141,7 +141,7 @@ export default function CandidateReportPage() {
           {/* Radar chart */}
           <Card className="md:col-span-2">
             <CardHeader>
-              <CardTitle className="text-sm">Profil de competences</CardTitle>
+              <CardTitle className="text-sm">Profil de compétences</CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -176,8 +176,8 @@ export default function CandidateReportPage() {
             {[
               { key: 'hardSkills' as const, label: 'Hard Skills', icon: 'code' },
               { key: 'softSkills' as const, label: 'Soft Skills', icon: 'people' },
-              { key: 'reliability' as const, label: 'Fiabilite', icon: 'shield-tick' },
-              { key: 'adaptability' as const, label: 'Adaptabilite', icon: 'arrows-loop' },
+              { key: 'reliability' as const, label: 'Fiabilité', icon: 'shield-tick' },
+              { key: 'adaptability' as const, label: 'Adaptabilité', icon: 'arrows-loop' },
               { key: 'leadership' as const, label: 'Leadership', icon: 'crown' },
             ].map(({ key, label, icon }) => (
               <Card key={key}>
@@ -219,7 +219,7 @@ export default function CandidateReportPage() {
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm text-muted-foreground">Aucun point fort identifie.</p>
+                <p className="text-sm text-muted-foreground">Aucun point fort identifié.</p>
               )}
             </CardContent>
           </Card>
@@ -227,7 +227,7 @@ export default function CandidateReportPage() {
             <CardHeader>
               <CardTitle className="text-sm flex items-center gap-2">
                 <KeenIcon icon="information-2" style="duotone" className="size-4 text-warning" />
-                Points d'amelioration
+                Points d'amélioration
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -241,7 +241,7 @@ export default function CandidateReportPage() {
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm text-muted-foreground">Aucun point d'amelioration identifie.</p>
+                <p className="text-sm text-muted-foreground">Aucun point d'amélioration identifié.</p>
               )}
             </CardContent>
           </Card>
@@ -253,7 +253,7 @@ export default function CandidateReportPage() {
             <CardHeader>
               <CardTitle className="text-sm flex items-center gap-2">
                 <KeenIcon icon="chart-simple" style="duotone" className="size-4 text-primary" />
-                Adequation au poste
+                Adéquation au poste
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-5">
@@ -271,13 +271,13 @@ export default function CandidateReportPage() {
                 >
                   <span className="text-2xl font-bold">{Math.round(candidate.matchPercentage)}%</span>
                 </div>
-                <p className="text-sm font-medium">Compatibilite avec le poste</p>
+                <p className="text-sm font-medium">Compatibilité avec le poste</p>
               </div>
 
               {/* Gap analysis: required vs demonstrated */}
               {campaign?.requiredSkills && campaign.requiredSkills.length > 0 && candidate.competencyScores && (
                 <div className="space-y-3">
-                  <h4 className="text-sm font-semibold">Analyse des ecarts</h4>
+                  <h4 className="text-sm font-semibold">Analyse des écarts</h4>
                   {campaign.requiredSkills.map((req) => {
                     const demonstrated = candidate.competencyScores?.[req.skill] ?? 0;
                     const requiredNormalized = req.weight * 10; // weight 1-10 -> 10-100 (poids: 1 = peu important, 10 = critique)
@@ -293,7 +293,7 @@ export default function CandidateReportPage() {
                               </span>
                             </TooltipTrigger>
                             <TooltipContent variant="light" className="max-w-[240px]">
-                              Poids de la competence : {req.weight}/10. 1 = peu important, 10 = critique pour le poste.
+                              Poids de la compétence : {req.weight}/10. 1 = peu important, 10 = critique pour le poste.
                             </TooltipContent>
                           </Tooltip>
                           <span className={cn(
@@ -316,7 +316,7 @@ export default function CandidateReportPage() {
                               <span className="text-[10px] text-muted-foreground w-8 text-right">{requiredNormalized}%</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className="text-[10px] text-muted-foreground w-16">Demontre</span>
+                              <span className="text-[10px] text-muted-foreground w-16">Démontré</span>
                               <div className="flex-1 h-1.5 bg-accent rounded-full overflow-hidden">
                                 <div
                                   className={cn(
@@ -345,7 +345,7 @@ export default function CandidateReportPage() {
             <CardHeader>
               <CardTitle className="text-sm flex items-center gap-2">
                 <KeenIcon icon="artificial-intelligence" style="duotone" className="size-4 text-primary" />
-                Analyse IA
+                Analyse détaillée
               </CardTitle>
             </CardHeader>
             <CardContent>

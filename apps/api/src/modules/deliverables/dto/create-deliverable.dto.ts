@@ -33,7 +33,7 @@ export class CreateDeliverableDto {
   type!: string;
 
   @ApiProperty({
-    description: 'Ordre de la phase associee',
+    description: 'Ordre de la phase associée',
     example: 1,
   })
   @IsInt()

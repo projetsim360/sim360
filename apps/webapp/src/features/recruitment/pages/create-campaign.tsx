@@ -30,11 +30,11 @@ import type { SkillWeight, CultureType } from '../types/recruitment.types';
 // Schema
 // ---------------------------------------------------------------------------
 const campaignSchema = z.object({
-  title: z.string().min(3, 'Le titre doit contenir au moins 3 caracteres'),
+  title: z.string().min(3, 'Le titre doit contenir au moins 3 caractères'),
   jobTitle: z.string().min(2, 'Le poste est requis'),
-  jobDescription: z.string().min(10, 'La description doit contenir au moins 10 caracteres'),
-  experienceLevel: z.string().min(1, "Le niveau d'experience est requis"),
-  projectTypes: z.array(z.string()).min(1, 'Selectionnez au moins un type de projet'),
+  jobDescription: z.string().min(10, 'La description doit contenir au moins 10 caractères'),
+  experienceLevel: z.string().min(1, "Le niveau d'expérience est requis"),
+  projectTypes: z.array(z.string()).min(1, 'Sélectionnez au moins un type de projet'),
   culture: z.enum(['STRICT', 'AGILE', 'COLLABORATIVE']),
   cultureDescription: z.string().optional(),
   maxCandidates: z.number().min(1).optional(),
@@ -44,15 +44,15 @@ type CampaignFormData = z.infer<typeof campaignSchema>;
 
 const STEPS = [
   { label: 'Informations', icon: 'document' },
-  { label: 'Competences', icon: 'award' },
+  { label: 'Compétences', icon: 'award' },
   { label: 'Culture', icon: 'people' },
-  { label: 'Parametres', icon: 'setting-2' },
-  { label: 'Resume', icon: 'check' },
+  { label: 'Paramètres', icon: 'setting-2' },
+  { label: 'Résumé', icon: 'check' },
 ];
 
 const EXPERIENCE_LEVELS = [
   { value: 'JUNIOR', label: 'Junior (0-2 ans)' },
-  { value: 'INTERMEDIATE', label: 'Intermediaire (2-5 ans)' },
+  { value: 'INTERMEDIATE', label: 'Intermédiaire (2-5 ans)' },
   { value: 'SENIOR', label: 'Senior (5-10 ans)' },
   { value: 'EXPERT', label: 'Expert (10+ ans)' },
 ];
@@ -89,7 +89,7 @@ export default function CreateCampaignPage() {
 
     for (const file of files) {
       if (documents.length + validFiles.length >= MAX_FILES) {
-        toast.error(`Maximum ${MAX_FILES} fichiers autorises`);
+        toast.error(`Maximum ${MAX_FILES} fichiers autorisés`);
         break;
       }
       if (!ACCEPTED_TYPES.includes(file.type)) {
@@ -152,10 +152,10 @@ export default function CreateCampaignPage() {
         requiredSkills: skills,
         documents: documents.map((f) => f.name),
       });
-      toast.success('Campagne creee avec succes');
+      toast.success('Campagne créée avec succès');
       navigate(`/recruitment/campaigns/${result.id}`);
     } catch {
-      toast.error('Erreur lors de la creation de la campagne');
+      toast.error('Erreur lors de la création de la campagne');
     }
   };
 
@@ -256,7 +256,7 @@ export default function CreateCampaignPage() {
                         <FormLabel>Description du poste</FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Decrivez les responsabilites, le contexte et les attentes..."
+                            placeholder="Décrivez les responsabilités, le contexte et les attentes..."
                             rows={5}
                             {...field}
                           />
@@ -270,11 +270,11 @@ export default function CreateCampaignPage() {
                     name="experienceLevel"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Niveau d'experience</FormLabel>
+                        <FormLabel>Niveau d'expérience</FormLabel>
                         <Select value={field.value} onValueChange={field.onChange}>
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Selectionnez un niveau" />
+                              <SelectValue placeholder="Sélectionnez un niveau" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -322,11 +322,11 @@ export default function CreateCampaignPage() {
             {step === 1 && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Competences requises</CardTitle>
+                  <CardTitle>Compétences requises</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Ajoutez les competences cles et ajustez leur poids relatif (1 = faible, 10 = critique).
+                    Ajoutez les compétences clés et ajustez leur poids relatif (1 = faible, 10 = critique).
                   </p>
                   <SkillsInput value={skills} onChange={setSkills} />
                 </CardContent>
@@ -341,8 +341,8 @@ export default function CreateCampaignPage() {
                 </CardHeader>
                 <CardContent className="space-y-5">
                   <p className="text-sm text-muted-foreground">
-                    Selectionnez la culture de gestion de projet qui correspond a votre organisation.
-                    Le scenario de simulation sera adapte en consequence.
+                    Sélectionnez la culture de gestion de projet qui correspond à votre organisation.
+                    Le scénario de simulation sera adapté en conséquence.
                   </p>
                   <FormField
                     control={form.control}
@@ -364,10 +364,10 @@ export default function CreateCampaignPage() {
                     name="cultureDescription"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Precisions supplementaires (optionnel)</FormLabel>
+                        <FormLabel>Précisions supplémentaires (optionnel)</FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Decrivez les specificites de votre culture projet..."
+                            placeholder="Décrivez les spécificités de votre culture projet..."
                             rows={3}
                             {...field}
                           />
@@ -381,7 +381,7 @@ export default function CreateCampaignPage() {
                   <div className="space-y-3">
                     <FormLabel>Documents internes (optionnel)</FormLabel>
                     <p className="text-sm text-muted-foreground">
-                      Ajoutez des documents de reference pour enrichir le scenario (PDF, DOCX). Maximum {MAX_FILES} fichiers, 10 Mo chacun.
+                      Ajoutez des documents de référence pour enrichir le scénario (PDF, DOCX). Maximum {MAX_FILES} fichiers, 10 Mo chacun.
                     </p>
 
                     <div
@@ -401,7 +401,7 @@ export default function CreateCampaignPage() {
                       />
                       <KeenIcon icon="folder-up" style="duotone" className="size-8 text-muted-foreground mx-auto mb-2" />
                       <p className="text-sm text-muted-foreground">
-                        Cliquez ou deposez vos fichiers ici
+                        Cliquez ou déposez vos fichiers ici
                       </p>
                       <p className="text-sm text-muted-foreground mt-1">
                         PDF ou DOCX - {documents.length}/{MAX_FILES} fichiers
@@ -440,7 +440,7 @@ export default function CreateCampaignPage() {
                     <div className="flex items-start gap-2 rounded-lg bg-warning/10 border border-warning/20 p-3">
                       <KeenIcon icon="information-2" style="duotone" className="size-4 text-warning mt-0.5 shrink-0" />
                       <p className="text-sm text-warning">
-                        Assurez-vous d'anonymiser les donnees sensibles avant de telecharger vos documents.
+                        Assurez-vous d'anonymiser les données sensibles avant de télécharger vos documents.
                       </p>
                     </div>
                   </div>
@@ -452,7 +452,7 @@ export default function CreateCampaignPage() {
             {step === 3 && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Parametres</CardTitle>
+                  <CardTitle>Paramètres</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-5">
                   <FormField
@@ -465,7 +465,7 @@ export default function CreateCampaignPage() {
                           <Input
                             type="number"
                             min={1}
-                            placeholder="Illimite"
+                            placeholder="Illimité"
                             value={field.value ?? ''}
                             onChange={(e) =>
                               field.onChange(e.target.value ? Number(e.target.value) : undefined)
@@ -480,10 +480,10 @@ export default function CreateCampaignPage() {
                     <div className="flex items-start gap-3">
                       <KeenIcon icon="information-2" style="duotone" className="size-5 text-primary mt-0.5" />
                       <div className="text-sm text-muted-foreground space-y-1">
-                        <p>La campagne sera creee en mode <strong>Brouillon</strong>.</p>
+                        <p>La campagne sera créée en mode <strong>Brouillon</strong>.</p>
                         <p>
-                          Vous pourrez la publier depuis sa page de detail.
-                          Un lien unique sera genere pour inviter les candidats.
+                          Vous pourrez la publier depuis sa page de détail.
+                          Un lien unique sera généré pour inviter les candidats.
                         </p>
                       </div>
                     </div>
@@ -496,7 +496,7 @@ export default function CreateCampaignPage() {
             {step === 4 && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Resume de la campagne</CardTitle>
+                  <CardTitle>Résumé de la campagne</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -512,7 +512,7 @@ export default function CreateCampaignPage() {
                           <span className="font-medium">{form.getValues('jobTitle')}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Experience</span>
+                          <span className="text-muted-foreground">Expérience</span>
                           <span className="font-medium">
                             {EXPERIENCE_LEVELS.find((l) => l.value === form.getValues('experienceLevel'))?.label}
                           </span>
@@ -530,7 +530,7 @@ export default function CreateCampaignPage() {
                       </div>
                     </div>
                     <div className="space-y-3">
-                      <h4 className="text-sm font-semibold">Competences ({skills.length})</h4>
+                      <h4 className="text-sm font-semibold">Compétences ({skills.length})</h4>
                       <div className="flex flex-wrap gap-2">
                         {skills.map((s, i) => (
                           <Badge key={i} variant="primary" appearance="light" size="sm">
@@ -609,7 +609,7 @@ export default function CreateCampaignPage() {
                   ) : (
                     <>
                       <KeenIcon icon="check" style="duotone" className="size-4" />
-                      Creer la campagne
+                      Créer la campagne
                     </>
                   )}
                 </Button>

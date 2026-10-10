@@ -21,17 +21,18 @@ export class FeedbackAiService {
 
     const result = await this.aiService.complete({
       prompt: [
-        `Genere un bilan pedagogique pour cette phase de simulation de gestion de projet.`,
+        `Génère un bilan pédagogique pour cette phase de simulation de gestion de projet.`,
+        `Réponds en français correct, avec les accents.`,
         ``,
         `Phase: "${phase.name}" (phase ${phase.order + 1})`,
         ``,
-        `Decisions prises:`,
-        decisionsText || '(aucune decision)',
+        `Décisions prises:`,
+        decisionsText || '(aucune décision)',
         ``,
-        `KPIs en debut de phase: Budget ${kpisBefore.budget}, Delai ${kpisBefore.schedule}, Qualite ${kpisBefore.quality}, Moral ${kpisBefore.teamMorale}, Risque ${kpisBefore.riskLevel}`,
-        `KPIs en fin de phase: Budget ${kpisAfter.budget}, Delai ${kpisAfter.schedule}, Qualite ${kpisAfter.quality}, Moral ${kpisAfter.teamMorale}, Risque ${kpisAfter.riskLevel}`,
+        `KPIs en début de phase: Budget ${kpisBefore.budget}, Délai ${kpisBefore.schedule}, Qualité ${kpisBefore.quality}, Moral ${kpisBefore.teamMorale}, Risque ${kpisBefore.riskLevel}`,
+        `KPIs en fin de phase: Budget ${kpisAfter.budget}, Délai ${kpisAfter.schedule}, Qualité ${kpisAfter.quality}, Moral ${kpisAfter.teamMorale}, Risque ${kpisAfter.riskLevel}`,
         ``,
-        `Redige un bilan en 4-5 phrases: ce qui a bien fonctionne, les points a ameliorer, et un conseil pour la phase suivante.`,
+        `Rédige un bilan en 4-5 phrases: ce qui a bien fonctionne, les points à améliorer, et un conseil pour la phase suivante.`,
       ].join('\n'),
       maxTokens: 400,
       temperature: 0.5,
@@ -55,31 +56,32 @@ export class FeedbackAiService {
         const decText = phaseDecisions
           .map((d) => `  - "${d.title}" → "${d.options[d.selectedOption]?.label}"`)
           .join('\n');
-        return `Phase ${p.order + 1} "${p.name}":\n${decText || '  (aucune decision)'}`;
+        return `Phase ${p.order + 1} "${p.name}":\n${decText || '  (aucune décision)'}`;
       })
       .join('\n\n');
 
     const result = await this.aiService.complete({
       prompt: [
-        `Genere un rapport final pedagogique pour cette simulation de gestion de projet.`,
+        `Génère un rapport final pédagogique pour cette simulation de gestion de projet.`,
+        `Réponds en français correct, avec les accents.`,
         ``,
-        `Scenario: "${scenarioTitle}"`,
+        `Scénario: "${scenarioTitle}"`,
         `Score final: ${finalScore.toFixed(1)}/100`,
         ``,
         `KPIs finaux:`,
         `- Budget: ${finalKpis.budget}/100`,
-        `- Delai: ${finalKpis.schedule}/100`,
-        `- Qualite: ${finalKpis.quality}/100`,
-        `- Moral equipe: ${finalKpis.teamMorale}/100`,
+        `- Délai: ${finalKpis.schedule}/100`,
+        `- Qualité: ${finalKpis.quality}/100`,
+        `- Moral équipe: ${finalKpis.teamMorale}/100`,
         `- Niveau risque: ${finalKpis.riskLevel}/100`,
         ``,
-        `Historique des decisions par phase:`,
+        `Historique des décisions par phase:`,
         phaseSummaries,
         ``,
-        `Redige un rapport en 8-10 phrases comprenant:`,
-        `1. Appreciation globale de la performance`,
+        `Rédige un rapport en 8-10 phrases comprenant:`,
+        `1. Appréciation globale de la performance`,
         `2. Points forts (2-3)`,
-        `3. Axes d'amelioration (2-3)`,
+        `3. Axes d'amélioration (2-3)`,
         `4. Conseil principal pour progresser`,
       ].join('\n'),
       maxTokens: 600,

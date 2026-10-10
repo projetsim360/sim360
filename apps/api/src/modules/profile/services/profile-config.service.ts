@@ -97,13 +97,13 @@ export class ProfileConfigService {
     const basicProcesses = [
       'Charte de projet',
       'Registre des parties prenantes',
-      'Structure de decoupage du travail (WBS)',
+      'Structure de découpage du travail (WBS)',
     ];
 
     const intermediateProcesses = [
       ...basicProcesses,
       'Registre des risques',
-      'Echeancier du projet',
+      'Échéancier du projet',
       'Budget du projet',
     ];
 
@@ -112,7 +112,7 @@ export class ProfileConfigService {
       'Plan de management du projet',
       'Matrice RACI',
       'Plan de communication',
-      'Plan qualite',
+      'Plan qualité',
       'Registre des changements',
       'Plan de management des risques',
       'Cahier de recette',
@@ -125,13 +125,13 @@ export class ProfileConfigService {
       'Valeur acquise (EVM)',
       'Simulation Monte Carlo',
       'Analyse quantitative des risques',
-      'Tableau de bord strategique',
+      'Tableau de bord stratégique',
       'Analyse des alternatives',
       'Benchmarking',
       'Matrice de priorisation',
       'Diagramme de flux de valeur',
       'Lean Six Sigma',
-      'Analyse de la capacite organisationnelle',
+      'Analyse de la capacité organisationnelle',
     ];
 
     switch (type) {

@@ -100,6 +100,14 @@ export default function MeetingsListPage() {
           { label: 'Réunions' },
         ]}
         title="Réunions"
+        actions={
+          <Button variant="primary" size="sm" asChild>
+            <Link to={`/simulations/${simId}/meetings/new`}>
+              <KeenIcon icon="calendar-add" style="duotone" />
+              Planifier une réunion
+            </Link>
+          </Button>
+        }
         subtitle={`${meetings.length} réunion${meetings.length > 1 ? 's' : ''}${filteredMeetings.length !== meetings.length ? ` · ${filteredMeetings.length} affichée${filteredMeetings.length > 1 ? 's' : ''}` : ''}`}
       />
 
@@ -174,7 +182,7 @@ export default function MeetingsListPage() {
               <EmptyState
                 icon="message-text"
                 title="Aucune réunion"
-                description="Les réunions sont planifiées pour chaque phase. Avancez dans la simulation pour les voir apparaître."
+                description="Les réunions sont planifiées pour chaque phase. Vous pouvez aussi planifier la vôtre : sujet, objectifs, durée et participants."
               />
             </CardContent>
           </Card>

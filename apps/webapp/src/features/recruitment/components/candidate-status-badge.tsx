@@ -5,8 +5,8 @@ const STATUS_CONFIG: Record<CandidateStatus, { label: string; variant: 'secondar
   PENDING: { label: 'En attente', variant: 'secondary' },
   PROFILING: { label: 'Profilage', variant: 'info' },
   IN_PROGRESS: { label: 'En cours', variant: 'primary' },
-  COMPLETED: { label: 'Termine', variant: 'success' },
-  ABANDONED: { label: 'Abandonne', variant: 'destructive' },
+  COMPLETED: { label: 'Terminé', variant: 'success' },
+  ABANDONED: { label: 'Abandonné', variant: 'destructive' },
 };
 
 interface CandidateStatusBadgeProps {

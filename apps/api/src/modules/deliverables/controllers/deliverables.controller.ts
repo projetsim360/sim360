@@ -69,7 +69,7 @@ export class DeliverablesController {
 
   @Post('simulations/:simId/deliverables')
   @Auditable('DELIVERABLE_CREATE', 'UserDeliverable')
-  @ApiOperation({ summary: 'Creer un nouveau livrable (brouillon)' })
+  @ApiOperation({ summary: 'Créer un nouveau livrable (brouillon)' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
   create(
     @Param('simId') simId: string,
@@ -121,7 +121,7 @@ export class DeliverablesController {
 
   @Post('simulations/:simId/deliverables/:id/submit')
   @Auditable('DELIVERABLE_SUBMIT', 'UserDeliverable')
-  @ApiOperation({ summary: 'Soumettre le livrable pour evaluation IA' })
+  @ApiOperation({ summary: 'Soumettre le livrable pour évaluation IA' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
   @ApiParam({ name: 'id', description: 'ID du livrable' })
   submit(
@@ -136,7 +136,7 @@ export class DeliverablesController {
   // ─── US-4.4: Get template ────────────────────────────────
 
   @Get('simulations/:simId/deliverables/:id/template')
-  @ApiOperation({ summary: 'Obtenir le template associe au livrable' })
+  @ApiOperation({ summary: 'Obtenir le template associé au livrable' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
   @ApiParam({ name: 'id', description: 'ID du livrable' })
   getTemplate(
@@ -151,7 +151,7 @@ export class DeliverablesController {
   // ─── US-4.5: Get evaluation ───────────────────────────────
 
   @Get('simulations/:simId/deliverables/:id/evaluation')
-  @ApiOperation({ summary: 'Obtenir la derniere evaluation du livrable' })
+  @ApiOperation({ summary: 'Obtenir la dernière évaluation du livrable' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
   @ApiParam({ name: 'id', description: 'ID du livrable' })
   getEvaluation(
@@ -172,7 +172,7 @@ export class DeliverablesController {
 
   @Get('simulations/:simId/deliverables/:id/reference')
   @ApiOperation({
-    summary: 'Obtenir l\'exemple de reference (uniquement apres evaluation)',
+    summary: 'Obtenir l\'exemple de référence (uniquement après évaluation)',
   })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
   @ApiParam({ name: 'id', description: 'ID du livrable' })
@@ -194,7 +194,7 @@ export class DeliverablesController {
 
   @Post('simulations/:simId/deliverables/:id/revise')
   @Auditable('DELIVERABLE_REVISE', 'UserDeliverable')
-  @ApiOperation({ summary: 'Remettre un livrable evalue en mode revision' })
+  @ApiOperation({ summary: 'Remettre un livrable évalué en mode revision' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
   @ApiParam({ name: 'id', description: 'ID du livrable' })
   revise(
@@ -211,10 +211,10 @@ export class DeliverablesController {
   @Post('simulations/:simId/meetings/:meetingId/create-minutes')
   @Auditable('DELIVERABLE_CREATE_MINUTES', 'UserDeliverable')
   @ApiOperation({
-    summary: 'Creer un livrable compte-rendu pre-rempli pour une reunion',
+    summary: 'Créer un livrable compte-rendu pré-rempli pour une réunion',
   })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
-  @ApiParam({ name: 'meetingId', description: 'ID de la reunion' })
+  @ApiParam({ name: 'meetingId', description: 'ID de la réunion' })
   createMeetingMinutes(
     @Param('simId') simId: string,
     @Param('meetingId') meetingId: string,
@@ -233,7 +233,7 @@ export class DeliverablesController {
 
   @Post('simulations/:simId/deliverables/:id/assign')
   @Auditable('DELIVERABLE_ASSIGN', 'UserDeliverable')
-  @ApiOperation({ summary: 'Assigner un livrable a un expert IA de l\'equipe' })
+  @ApiOperation({ summary: 'Assigner un livrable à un expert IA de l\'équipe' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
   @ApiParam({ name: 'id', description: 'ID du livrable' })
   assignToExpert(
@@ -252,7 +252,7 @@ export class DeliverablesController {
 
   @Post('simulations/:simId/deliverables/:id/request-revision')
   @Auditable('DELIVERABLE_REQUEST_REVISION', 'UserDeliverable')
-  @ApiOperation({ summary: 'Demander a l\'expert IA de reviser le livrable' })
+  @ApiOperation({ summary: 'Demander à l\'expert IA de réviser le livrable' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
   @ApiParam({ name: 'id', description: 'ID du livrable' })
   requestRevision(
@@ -271,7 +271,7 @@ export class DeliverablesController {
 
   @Post('simulations/:simId/deliverables/:id/approval-chain')
   @Auditable('DELIVERABLE_DEFINE_APPROVAL', 'UserDeliverable')
-  @ApiOperation({ summary: 'Definir la chaine d\'approbation (Sponsor, Client, etc.)' })
+  @ApiOperation({ summary: 'Définir la chaîne d\'approbation (Sponsor, Client, etc.)' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
   @ApiParam({ name: 'id', description: 'ID du livrable' })
   defineApprovalChain(
@@ -290,7 +290,7 @@ export class DeliverablesController {
 
   @Post('simulations/:simId/deliverables/:id/submit-approval')
   @Auditable('DELIVERABLE_SUBMIT_APPROVAL', 'UserDeliverable')
-  @ApiOperation({ summary: 'Soumettre le livrable pour approbation par la chaine' })
+  @ApiOperation({ summary: 'Soumettre le livrable pour approbation par la chaîne' })
   @ApiParam({ name: 'simId', description: 'ID de la simulation' })
   @ApiParam({ name: 'id', description: 'ID du livrable' })
   submitForApproval(

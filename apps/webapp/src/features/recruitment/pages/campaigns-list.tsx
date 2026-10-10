@@ -14,8 +14,8 @@ const STATUS_TABS: Array<{ value: string; label: string }> = [
   { value: 'all', label: 'Toutes' },
   { value: 'DRAFT', label: 'Brouillon' },
   { value: 'ACTIVE', label: 'Actives' },
-  { value: 'CLOSED', label: 'Cloturees' },
-  { value: 'ARCHIVED', label: 'Archivees' },
+  { value: 'CLOSED', label: 'Clôturées' },
+  { value: 'ARCHIVED', label: 'Archivées' },
 ];
 
 export default function CampaignsListPage() {
@@ -67,7 +67,7 @@ export default function CampaignsListPage() {
               <EmptyState
                 icon="briefcase"
                 title="Aucune campagne"
-                description="Creez votre premiere campagne pour evaluer des candidats par simulation."
+                description="Créez votre première campagne pour évaluer des candidats par simulation."
                 action={{ label: 'Nouvelle campagne', href: '/recruitment/campaigns/new' }}
               />
             </CardContent>
@@ -83,7 +83,7 @@ export default function CampaignsListPage() {
                       <TableHead>Poste</TableHead>
                       <TableHead>Statut</TableHead>
                       <TableHead className="text-center">Candidats</TableHead>
-                      <TableHead className="text-center">Termines</TableHead>
+                      <TableHead className="text-center">Terminés</TableHead>
                       <TableHead className="text-right">Score moy.</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>

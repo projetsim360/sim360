@@ -12,7 +12,7 @@ export class BadgesController {
   constructor(private readonly badgeService: BadgeService) {}
 
   @Get('users/me/badges')
-  @ApiOperation({ summary: 'Lister les badges de l\'utilisateur connecte' })
+  @ApiOperation({ summary: 'Lister les badges de l\'utilisateur connecté' })
   getMyBadges(
     @CurrentUser() user: any,
     @CurrentTenant() tenantId: string,
@@ -21,7 +21,7 @@ export class BadgesController {
   }
 
   @Get('badges/:id')
-  @ApiOperation({ summary: 'Obtenir le detail d\'un badge' })
+  @ApiOperation({ summary: 'Obtenir le détail d\'un badge' })
   @ApiParam({ name: 'id', description: 'ID du badge' })
   getBadge(
     @Param('id') id: string,
@@ -33,7 +33,7 @@ export class BadgesController {
 
   @Post('badges/:id/share')
   @Auditable('BADGE_SHARE', 'CompetencyBadge')
-  @ApiOperation({ summary: 'Partager un badge (generer un lien public)' })
+  @ApiOperation({ summary: 'Partager un badge (générer un lien public)' })
   @ApiParam({ name: 'id', description: 'ID du badge' })
   shareBadge(
     @Param('id') id: string,
@@ -46,7 +46,7 @@ export class BadgesController {
 
   @Public()
   @Get('badges/:id/verify')
-  @ApiOperation({ summary: 'Verifier un badge via son token de partage (endpoint public)' })
+  @ApiOperation({ summary: 'Vérifier un badge via son token de partage (endpoint public)' })
   @ApiParam({ name: 'id', description: 'Token de partage du badge' })
   verifyBadge(@Param('id') shareToken: string) {
     return this.badgeService.verify(shareToken);

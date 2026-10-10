@@ -60,8 +60,8 @@ const SORT_OPTIONS = [
   { value: 'globalScore', label: 'Score global' },
   { value: 'hardSkillsScore', label: 'Hard Skills' },
   { value: 'softSkillsScore', label: 'Soft Skills' },
-  { value: 'reliabilityScore', label: 'Fiabilite' },
-  { value: 'adaptabilityScore', label: 'Adaptabilite' },
+  { value: 'reliabilityScore', label: 'Fiabilité' },
+  { value: 'adaptabilityScore', label: 'Adaptabilité' },
   { value: 'leadershipScore', label: 'Leadership' },
 ] as const;
 
@@ -95,7 +95,7 @@ export default function CampaignDetailPage() {
   const handlePublish = async () => {
     try {
       await publishMutation.mutateAsync(id!);
-      toast.success('Campagne publiee ! Partagez le lien avec vos candidats.');
+      toast.success('Campagne publiée ! Partagez le lien avec vos candidats.');
     } catch {
       toast.error('Erreur lors de la publication');
     }
@@ -104,16 +104,16 @@ export default function CampaignDetailPage() {
   const handleClose = async () => {
     try {
       await closeMutation.mutateAsync(id!);
-      toast.success('Campagne cloturee.');
+      toast.success('Campagne clôturée.');
     } catch {
-      toast.error('Erreur lors de la cloture');
+      toast.error('Erreur lors de la clôture');
     }
   };
 
   const handleArchive = async () => {
     try {
       await archiveMutation.mutateAsync(id!);
-      toast.success('Campagne archivee.');
+      toast.success('Campagne archivée.');
     } catch {
       toast.error("Erreur lors de l'archivage");
     }
@@ -179,12 +179,12 @@ export default function CampaignDetailPage() {
           )}
           {isAlmostFull && (
             <Badge variant="warning" appearance="light" size="sm">
-              Bientot complet
+              Bientôt complet
             </Badge>
           )}
           <DisabledWithTooltip
             disabled={campaign.status !== 'ACTIVE'}
-            reason={campaign.status === 'DRAFT' ? 'Publiez la campagne pour acceder a la shortlist' : 'Campagne non active'}
+            reason={campaign.status === 'DRAFT' ? 'Publiez la campagne pour accéder à la shortlist' : 'Campagne non active'}
           >
             <Button variant="outline" size="sm" asChild={campaign.status === 'ACTIVE'}>
               {campaign.status === 'ACTIVE' ? (
@@ -272,7 +272,7 @@ export default function CampaignDetailPage() {
             </TabsTrigger>
             <TabsTrigger value="settings">
               <KeenIcon icon="setting-2" style="duotone" className="size-4" />
-              Parametres
+              Paramètres
             </TabsTrigger>
           </TabsList>
 
@@ -297,7 +297,7 @@ export default function CampaignDetailPage() {
                   <StatCard label="Total candidats" value={dashboard.totalCandidates} icon="people" color="bg-primary/10 text-primary" />
                   <StatCard label="En attente" value={dashboard.pending} icon="time" color="bg-warning/10 text-warning" />
                   <StatCard label="En cours" value={dashboard.inProgress} icon="loading" color="bg-info/10 text-info" />
-                  <StatCard label="Termines" value={dashboard.completed} icon="check-circle" color="bg-success/10 text-success" />
+                  <StatCard label="Terminés" value={dashboard.completed} icon="check-circle" color="bg-success/10 text-success" />
                   <StatCard label="Abandonnes" value={dashboard.abandoned} icon="cross-circle" color="bg-destructive/10 text-destructive" />
                   <StatCard
                     label="Score moyen"
@@ -357,7 +357,7 @@ export default function CampaignDetailPage() {
                             </span>
                           </div>
                           <p className="text-sm text-muted-foreground">
-                            {dashboard.averageScore !== null ? 'sur 100' : 'Aucun resultat'}
+                            {dashboard.averageScore !== null ? 'sur 100' : 'Aucun résultat'}
                           </p>
                         </div>
                       </CardContent>
@@ -385,7 +385,7 @@ export default function CampaignDetailPage() {
                     description={
                       campaign.status === 'DRAFT'
                         ? 'Publiez la campagne et partagez le lien pour recevoir des candidatures.'
-                        : 'Les candidats apparaitront ici quand ils rejoindront la campagne. Partagez le lien !'
+                        : 'Les candidats apparaîtront ici quand ils rejoindront la campagne. Partagez le lien !'
                     }
                   />
                 </CardContent>
@@ -394,7 +394,7 @@ export default function CampaignDetailPage() {
               <div className="space-y-4">
                 {/* US-10.6: Sort by competence */}
                 <div className="flex items-center justify-end gap-2">
-                  <span className="text-sm text-muted-foreground">Trier par competence :</span>
+                  <span className="text-sm text-muted-foreground">Trier par compétence :</span>
                   <Select value={sortBy} onValueChange={(val) => setSortBy(val as SortKey)}>
                     <SelectTrigger className="w-full sm:w-[180px] h-9 text-xs">
                       <SelectValue />
@@ -426,11 +426,11 @@ export default function CampaignDetailPage() {
                                   <span className="cursor-help">Match</span>
                                 </TooltipTrigger>
                                 <TooltipContent variant="light" className="max-w-[280px]">
-                                  Pourcentage d'adequation entre les competences du candidat et les exigences du poste.
+                                  Pourcentage d'adéquation entre les compétences du candidat et les exigences du poste.
                                 </TooltipContent>
                               </Tooltip>
                             </TableHead>
-                            <TableHead className="text-right">Debut</TableHead>
+                            <TableHead className="text-right">Début</TableHead>
                             <TableHead className="text-right">Fin</TableHead>
                             <TableHead className="text-right">Actions</TableHead>
                           </TableRow>
@@ -528,7 +528,7 @@ export default function CampaignDetailPage() {
                       <p className="font-medium">{campaign.jobTitle}</p>
                     </div>
                     <div>
-                      <span className="text-muted-foreground">Experience</span>
+                      <span className="text-muted-foreground">Expérience</span>
                       <p className="font-medium">{campaign.experienceLevel}</p>
                     </div>
                     <div>
@@ -538,11 +538,11 @@ export default function CampaignDetailPage() {
                         </TooltipTrigger>
                         <TooltipContent variant="light" className="max-w-[300px]">
                           {campaign.culture === 'AGILE'
-                            ? 'Environnement agile : favorise l\'adaptabilite, la collaboration et les iterations rapides.'
+                            ? 'Environnement agile : favorise l\'adaptabilité, la collaboration et les itérations rapides.'
                             : campaign.culture === 'STRICT'
-                              ? 'Environnement strict : processus formalises, hierarchie claire et respect des procedures.'
+                              ? 'Environnement strict : processus formalisés, hiérarchie claire et respect des procédures.'
                               : campaign.culture === 'COLLABORATIVE'
-                                ? 'Environnement collaboratif : travail d\'equipe, communication ouverte et prise de decision collective.'
+                                ? 'Environnement collaboratif : travail d\'équipe, communication ouverte et prise de décision collective.'
                                 : 'Type de culture organisationnelle de l\'entreprise.'}
                         </TooltipContent>
                       </Tooltip>
@@ -550,7 +550,7 @@ export default function CampaignDetailPage() {
                     </div>
                     <div>
                       <span className="text-muted-foreground">Max candidats</span>
-                      <p className="font-medium">{campaign.maxCandidates ?? 'Illimite'}</p>
+                      <p className="font-medium">{campaign.maxCandidates ?? 'Illimité'}</p>
                     </div>
                   </div>
                   <div>
@@ -559,7 +559,7 @@ export default function CampaignDetailPage() {
                   </div>
                   {campaign.requiredSkills.length > 0 && (
                     <div>
-                      <span className="text-muted-foreground">Competences</span>
+                      <span className="text-muted-foreground">Compétences</span>
                       <div className="flex flex-wrap gap-2 mt-1">
                         {campaign.requiredSkills.map((s, i) => (
                           <Tooltip key={i}>
@@ -597,7 +597,7 @@ export default function CampaignDetailPage() {
                           <AlertDialogTitle>Publier la campagne ?</AlertDialogTitle>
                           <AlertDialogDescription>
                             La campagne sera accessible via un lien public.
-                            Les candidats pourront commencer leur evaluation.
+                            Les candidats pourront commencer leur évaluation.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
@@ -613,28 +613,28 @@ export default function CampaignDetailPage() {
                       <AlertDialogTrigger asChild>
                         <Button variant="destructive" size="sm">
                           <KeenIcon icon="lock" style="duotone" className="size-4" />
-                          Cloturer la campagne
+                          Clôturer la campagne
                         </Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Cloturer la campagne ?</AlertDialogTitle>
+                          <AlertDialogTitle>Clôturer la campagne ?</AlertDialogTitle>
                           <AlertDialogDescription>
                             Plus aucun candidat ne pourra s'inscrire.
-                            Les evaluations en cours pourront se terminer.
+                            Les évaluations en cours pourront se terminer.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Annuler</AlertDialogCancel>
-                          <AlertDialogAction onClick={handleClose}>Cloturer</AlertDialogAction>
+                          <AlertDialogAction onClick={handleClose}>Clôturer</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
                   ) : campaign.status === 'DRAFT' ? (
-                    <DisabledWithTooltip disabled reason="Disponible apres publication">
+                    <DisabledWithTooltip disabled reason="Disponible après publication">
                       <Button variant="destructive" size="sm">
                         <KeenIcon icon="lock" style="duotone" className="size-4" />
-                        Cloturer la campagne
+                        Clôturer la campagne
                       </Button>
                     </DisabledWithTooltip>
                   ) : null}
@@ -651,8 +651,8 @@ export default function CampaignDetailPage() {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Archiver la campagne ?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            La campagne sera deplacee dans les archives.
-                            Les donnees resteront consultables.
+                            La campagne sera déplacée dans les archives.
+                            Les données resteront consultables.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>

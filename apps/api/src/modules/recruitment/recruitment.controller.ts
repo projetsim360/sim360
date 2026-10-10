@@ -27,7 +27,7 @@ export class RecruitmentController {
   @Post()
   @Roles(UserRole.MANAGER, UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @Auditable('recruitment.campaign.create', 'RecruitmentCampaign')
-  @ApiOperation({ summary: 'Creer une campagne de recrutement' })
+  @ApiOperation({ summary: 'Créer une campagne de recrutement' })
   create(
     @CurrentTenant() tenantId: string,
     @CurrentUser('id') userId: string,
@@ -49,7 +49,7 @@ export class RecruitmentController {
 
   @Get(':id')
   @Roles(UserRole.MANAGER, UserRole.ADMIN, UserRole.SUPER_ADMIN)
-  @ApiOperation({ summary: 'Detail d\'une campagne' })
+  @ApiOperation({ summary: 'Détail d\'une campagne' })
   findOne(
     @Param('id') id: string,
     @CurrentTenant() tenantId: string,
@@ -72,7 +72,7 @@ export class RecruitmentController {
   @Post(':id/generate-scenario')
   @Roles(UserRole.MANAGER, UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @Auditable('recruitment.scenario.generate', 'RecruitmentCampaign')
-  @ApiOperation({ summary: 'Generer le scenario IA pour la campagne' })
+  @ApiOperation({ summary: 'Générer le scénario IA pour la campagne' })
   generateScenario(
     @Param('id') id: string,
     @CurrentTenant() tenantId: string,
@@ -145,7 +145,7 @@ export class RecruitmentController {
   @Post(':id/candidates/:candidateId/generate-report')
   @Roles(UserRole.MANAGER, UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @Auditable('recruitment.report.generate', 'CandidateResult')
-  @ApiOperation({ summary: 'Generer le rapport 360 d\'un candidat via IA' })
+  @ApiOperation({ summary: 'Générer le rapport 360 d\'un candidat via IA' })
   generateReport360(
     @Param('id') _campaignId: string,
     @Param('candidateId') candidateId: string,
@@ -158,7 +158,7 @@ export class RecruitmentController {
   @Get(':id/shortlist')
   @Roles(UserRole.MANAGER, UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @Auditable('recruitment.shortlist.generate', 'RecruitmentCampaign')
-  @ApiOperation({ summary: 'Generer la short-list des meilleurs candidats' })
+  @ApiOperation({ summary: 'Générer la short-list des meilleurs candidats' })
   generateShortlist(
     @Param('id') id: string,
     @CurrentTenant() tenantId: string,
@@ -184,7 +184,7 @@ export class RecruitmentController {
   @Get(':id/candidates/:candidateId/interview-guide')
   @Roles(UserRole.MANAGER, UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @Auditable('recruitment.interview-guide.generate', 'CandidateResult')
-  @ApiOperation({ summary: 'Generer un guide d\'entretien personnalise' })
+  @ApiOperation({ summary: 'Générer un guide d\'entretien personnalisé' })
   generateInterviewGuide(
     @Param('id') _campaignId: string,
     @Param('candidateId') candidateId: string,
@@ -196,7 +196,7 @@ export class RecruitmentController {
 
   @Get(':id/dashboard')
   @Roles(UserRole.MANAGER, UserRole.ADMIN, UserRole.SUPER_ADMIN)
-  @ApiOperation({ summary: 'Dashboard temps reel de la campagne' })
+  @ApiOperation({ summary: 'Dashboard temps réel de la campagne' })
   getDashboard(
     @Param('id') id: string,
     @CurrentTenant() tenantId: string,

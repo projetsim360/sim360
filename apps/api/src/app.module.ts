@@ -24,6 +24,7 @@ import { SimulatedEmailsModule } from './modules/simulated-emails/simulated-emai
 import { ValorizationModule } from './modules/valorization/valorization.module';
 import { RecruitmentModule } from './modules/recruitment/recruitment.module';
 import { MentoringModule } from './modules/mentoring/mentoring.module';
+import { ActionItemsModule } from './modules/action-items/action-items.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { MentoringModule } from './modules/mentoring/mentoring.module';
     ValorizationModule,
     RecruitmentModule,
     MentoringModule,
+    ActionItemsModule,
   ],
   providers: [
     {

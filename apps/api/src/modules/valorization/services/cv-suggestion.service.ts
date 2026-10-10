@@ -26,8 +26,8 @@ export class CvSuggestionService {
     });
 
     if (!simulation) throw new NotFoundException('Simulation introuvable');
-    if (simulation.userId !== userId) throw new ForbiddenException('Acces refuse');
-    if (simulation.tenantId !== tenantId) throw new ForbiddenException('Acces refuse');
+    if (simulation.userId !== userId) throw new ForbiddenException('Accès refusé');
+    if (simulation.tenantId !== tenantId) throw new ForbiddenException('Accès refusé');
 
     // Check if CV suggestions already exist in the badge
     const existingBadge = await this.prisma.competencyBadge.findFirst({
@@ -40,7 +40,7 @@ export class CvSuggestionService {
 
     if (!existingBadge) {
       throw new NotFoundException(
-        'Aucun badge trouve pour cette simulation. Generez d\'abord le debriefing.',
+        'Aucun badge trouvé pour cette simulation. Générez d\'abord le debriefing.',
       );
     }
 
@@ -118,20 +118,20 @@ export class CvSuggestionService {
   private getSystemPrompt(profileType?: string | null): string {
     const isZeroExp = profileType === 'ZERO_EXPERIENCE';
 
-    return `Tu es un coach carriere specialise en gestion de projet. Tu aides des apprenants a valoriser leur experience de simulation sur leur CV.
+    return `Tu es un coach carrière spécialisé en gestion de projet. Tu aides des apprenants à valoriser leur expérience de simulation sur leur CV. Réponds en français correct, avec les accents.
 
-${isZeroExp ? `IMPORTANT : Cet apprenant n'a AUCUNE experience professionnelle prealable. Tu dois :
-- Generer une section "Experience" complete basee sur la simulation
-- Formuler les lignes comme une vraie experience de stage/projet
-- Mettre en avant les competences transversales demontrees` : `Cet apprenant a deja de l'experience. Tu dois :
-- Proposer des lignes a ajouter a la section "Experience" existante
-- Formuler les competences de maniere a completer le profil existant`}
+${isZeroExp ? `IMPORTANT : Cet apprenant n'a AUCUNE expérience professionnelle préalable. Tu dois :
+- Générer une section "Expérience" complète basée sur la simulation
+- Formuler les lignes comme une vraie expérience de stage/projet
+- Mettre en avant les compétences transversales démontrées` : `Cet apprenant a déjà de l'expérience. Tu dois :
+- Proposer des lignes à ajouter à la section "Expérience" existante
+- Formuler les compétences de manière à compléter le profil existant`}
 
-Tu dois repondre UNIQUEMENT en JSON valide, sans texte autour, avec exactement cette structure :
+Tu dois répondre UNIQUEMENT en JSON valide, sans texte autour, avec exactement cette structure :
 {
-  "experienceLines": ["<3-5 lignes a ajouter a la section Experience>"],
-  "skillsToHighlight": ["<5-8 competences a mettre en avant>"]${isZeroExp ? `,
-  "firstCvDraft": "<section Experience complete pour un premier CV, 100-200 mots>"` : ''}
+  "experienceLines": ["<3-5 lignes à ajouter à la section Expérience>"],
+  "skillsToHighlight": ["<5-8 compétences à mettre en avant>"]${isZeroExp ? `,
+  "firstCvDraft": "<section Expérience complète pour un premier CV, 100-200 mots>"` : ''}
 }`;
   }
 
@@ -139,13 +139,13 @@ Tu dois repondre UNIQUEMENT en JSON valide, sans texte autour, avec exactement c
     const sections: string[] = [];
 
     sections.push(`## Contexte de la simulation`);
-    sections.push(`Scenario: ${simulation.scenario.title}`);
-    sections.push(`Secteur: ${simulation.scenario.sector} | Difficulte: ${simulation.scenario.difficulty}`);
+    sections.push(`Scénario: ${simulation.scenario.title}`);
+    sections.push(`Secteur: ${simulation.scenario.sector} | Difficulté: ${simulation.scenario.difficulty}`);
     if (simulation.scenario.description) {
       sections.push(`Description: ${simulation.scenario.description}`);
     }
 
-    sections.push(`\n## Resultats`);
+    sections.push(`\n## Résultats`);
     sections.push(`Score global: ${badge.globalScore}/100`);
     if (badge.competencyScores) {
       const scores = badge.competencyScores as Record<string, number>;
@@ -155,13 +155,13 @@ Tu dois repondre UNIQUEMENT en JSON valide, sans texte autour, avec exactement c
     }
 
     if (badge.strengths?.length) {
-      sections.push(`\n## Points forts identifies`);
+      sections.push(`\n## Points forts identifiés`);
       badge.strengths.forEach((s: string) => sections.push(`- ${s}`));
     }
 
     if (simulation.kpis) {
       sections.push(`\n## KPIs finaux`);
-      sections.push(`Budget: ${simulation.kpis.budget}/100, Delai: ${simulation.kpis.schedule}/100, Qualite: ${simulation.kpis.quality}/100`);
+      sections.push(`Budget: ${simulation.kpis.budget}/100, Délai: ${simulation.kpis.schedule}/100, Qualité: ${simulation.kpis.quality}/100`);
     }
 
     if (simulation.userDeliverables?.length) {
@@ -193,7 +193,7 @@ Tu dois repondre UNIQUEMENT en JSON valide, sans texte autour, avec exactement c
     } catch (error: any) {
       this.logger.error(`Failed to parse CV suggestions: ${error.message}`);
       return {
-        experienceLines: ['Gestion de projet simulee — competences en planification, communication et gestion des risques'],
+        experienceLines: ['Gestion de projet simulée — compétences en planification, communication et gestion des risques'],
         skillsToHighlight: ['Gestion de projet', 'Planification', 'Communication', 'Gestion des risques'],
       };
     }

@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { ScenarioPhaseStrip } from './scenario-phase-strip';
 import { ScenarioBrownfieldBanner } from './scenario-brownfield-banner';
 import type { Scenario } from '../types/simulation.types';
+import { getSectorLabel } from '../config/sectors';
 
 const DIFFICULTY_LABELS: Record<string, string> = {
   BEGINNER: 'Débutant',
@@ -78,7 +79,7 @@ export function ScenarioDialogContent({
           )}
           {isGenerated && (
             <span className="rounded-full bg-[var(--brand-100)] px-2.5 py-0.5 text-[11px] font-semibold text-[var(--brand-700)]">
-              Généré par l'IA
+              Généré automatiquement
             </span>
           )}
         </div>
@@ -91,7 +92,7 @@ export function ScenarioDialogContent({
         <div className="mt-3 flex flex-wrap gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-white px-2.5 py-1 text-xs text-[var(--neutral-500)]">
             <KeenIcon icon="folder" style="duotone" className="text-[10px] leading-none" />
-            {scenario.sector}
+            {getSectorLabel(scenario.sector)}
           </span>
           {scenario._count?.simulations !== undefined && scenario._count.simulations > 0 && (
             <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-white px-2.5 py-1 text-xs text-[var(--neutral-500)]">
@@ -157,7 +158,7 @@ export function ScenarioDialogContent({
               {isGenerated && (
                 <div className="rounded-lg border border-[var(--brand-100)] bg-[var(--brand-50)] p-3">
                   <p className="text-xs leading-relaxed text-[var(--brand-700)]">
-                    Ce scénario a été généré par l'IA et adapté à votre profil. Vous pouvez le lancer directement.
+                    Ce scénario a été généré automatiquement et adapté à votre profil. Vous pouvez le lancer directement.
                   </p>
                 </div>
               )}

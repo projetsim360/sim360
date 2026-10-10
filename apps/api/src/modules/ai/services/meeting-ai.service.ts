@@ -2,111 +2,57 @@ import { Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { AiService } from '../ai.service';
 
-interface ParticipantContext {
-  name: string;
-  role: string;
-  personality: string;
-  expertise: string;
-  morale: number;
-}
+import {
+  ChatTurn,
+  MeetingPromptContext,
+  PromptParticipant,
+  appendUserTurn,
+  buildOpeningInstruction,
+  buildParticipantSystemPrompt,
+} from './meeting-prompts';
 
-interface MeetingContext {
-  scenarioTitle: string;
-  phaseName: string;
-  kpis: Record<string, number>;
-  projectDescription?: string;
+type TrackingContext = { tenantId: string; userId: string; simulationId?: string; operation: string; metadata?: Record<string, unknown> };
+
+/** A transcript line for summaries: `speaker` is the display name ("Chef de projet", "Marie — DAF"). */
+export interface TranscriptLine {
+  role: 'user' | 'assistant';
+  content: string;
+  speaker?: string;
 }
 
 interface MessageEvent {
   data: string;
 }
 
+function formatTranscript(history: TranscriptLine[], userLabel: string): string {
+  return history
+    .map((m) => `${m.speaker ?? (m.role === 'user' ? userLabel : 'Participant')}: ${m.content}`)
+    .join('\n');
+}
+
 @Injectable()
 export class MeetingAiService {
   constructor(private aiService: AiService) {}
 
-  buildParticipantSystemPrompt(participant: ParticipantContext, context: MeetingContext): string {
-    const cooperationInstructions = this.buildCooperationInstructions(participant);
-
-    return [
-      `Tu es ${participant.name}, ${participant.role} dans un projet de gestion.`,
-      `Personnalite: ${participant.personality}. Expertise: ${participant.expertise}. Moral actuel: ${participant.morale}/100.`,
-      ``,
-      `Contexte du projet: "${context.scenarioTitle}" — Phase: ${context.phaseName}.`,
-      context.projectDescription ? `Description: ${context.projectDescription}` : '',
-      ``,
-      `KPIs actuels:`,
-      `- Budget: ${context.kpis.budget}/100`,
-      `- Delai: ${context.kpis.schedule}/100`,
-      `- Qualite: ${context.kpis.quality}/100`,
-      `- Moral equipe: ${context.kpis.teamMorale}/100`,
-      `- Niveau risque: ${context.kpis.riskLevel}/100`,
-      ``,
-      `Instructions:`,
-      `- Reponds en tant que ce personnage avec sa personnalite.`,
-      `- Reste concis (2-4 phrases max).`,
-      `- Prends en compte les KPIs pour orienter tes preoccupations.`,
-      `- Ne sors jamais du role.`,
-      cooperationInstructions,
-    ]
-      .filter(Boolean)
-      .join('\n');
+  buildParticipantSystemPrompt(participant: PromptParticipant, context: MeetingPromptContext): string {
+    return buildParticipantSystemPrompt(participant, context);
   }
 
-  private buildCooperationInstructions(participant: ParticipantContext): string {
-    const morale = participant.morale;
-    const personality = participant.personality.toUpperCase();
-
-    if (personality === 'RESISTANT' || morale < 40) {
-      return [
-        ``,
-        `Comportement conflictuel:`,
-        `- Tu es frustre et sceptique. Exprime des doutes sur les decisions prises.`,
-        `- Conteste les propositions du chef de projet si elles te semblent risquees.`,
-        `- Signale les problemes sans proposer de solutions. Sois direct et parfois sec.`,
-        `- Si le moral est bas (${morale}/100), montre ton mecontentement ouvertement.`,
-      ].join('\n');
-    }
-
-    if (personality === 'NEUTRAL' || (morale >= 40 && morale < 60)) {
-      return [
-        ``,
-        `Comportement neutre:`,
-        `- Tu es pragmatique. Tu donnes ton avis factuel sans t'engager emotionnellement.`,
-        `- Tu peux exprimer des reserves ou des desaccords si les KPIs sont mauvais.`,
-        `- Tu poses des questions difficiles mais restes professionnel.`,
-      ].join('\n');
-    }
-
-    // COOPERATIVE or high morale
-    return [
-      ``,
-      `Comportement cooperatif:`,
-      `- Tu es constructif et propose des solutions. Tu soutiens les bonnes decisions.`,
-      `- Si un KPI est critique (<30), exprime de l'inquietude de maniere constructive.`,
-    ].join('\n');
-  }
+  // No systemPromptCacheKey on purpose: the prompt depends on live KPIs, the meeting and
+  // the other participants, and a name-based key leaked prompts across simulations.
 
   async generateResponse(
-    participant: ParticipantContext,
-    context: MeetingContext,
-    history: Array<{ role: 'user' | 'assistant'; content: string }>,
+    participant: PromptParticipant,
+    context: MeetingPromptContext,
+    history: ChatTurn[],
     userMessage: string,
-    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string; metadata?: Record<string, unknown> },
+    trackingContext?: TrackingContext,
   ): Promise<string> {
-    const systemPrompt = this.buildParticipantSystemPrompt(participant, context);
-
-    const messages: Array<{ role: 'user' | 'assistant'; content: string }> = [
-      ...history.slice(-20),
-      { role: 'user', content: userMessage },
-    ];
-
     const result = await this.aiService.complete({
       prompt: userMessage,
-      systemPrompt,
-      systemPromptCacheKey: `meeting:${participant.name}:${context.phaseName}`,
-      messages,
-      maxTokens: 200,
+      systemPrompt: this.buildParticipantSystemPrompt(participant, context),
+      messages: appendUserTurn(history, userMessage),
+      maxTokens: 220,
       temperature: 0.8,
       trackingContext,
     });
@@ -115,50 +61,58 @@ export class MeetingAiService {
   }
 
   streamResponse(
-    participant: ParticipantContext,
-    context: MeetingContext,
-    history: Array<{ role: 'user' | 'assistant'; content: string }>,
+    participant: PromptParticipant,
+    context: MeetingPromptContext,
+    history: ChatTurn[],
     userMessage: string,
-    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string; metadata?: Record<string, unknown> },
+    trackingContext?: TrackingContext,
   ): Observable<MessageEvent> {
-    const systemPrompt = this.buildParticipantSystemPrompt(participant, context);
-
-    const messages: Array<{ role: 'user' | 'assistant'; content: string }> = [
-      ...history.slice(-20),
-      { role: 'user', content: userMessage },
-    ];
-
     return this.aiService.streamWithAnthropic({
       prompt: userMessage,
-      systemPrompt,
-      systemPromptCacheKey: `meeting:${participant.name}:${context.phaseName}`,
-      messages,
-      maxTokens: 200,
+      systemPrompt: this.buildParticipantSystemPrompt(participant, context),
+      messages: appendUserTurn(history, userMessage),
+      maxTokens: 220,
       temperature: 0.8,
       trackingContext,
     });
   }
 
+  /** Opening statement by the facilitator, so a meeting never starts in silence. */
+  async generateOpening(
+    facilitator: PromptParticipant,
+    context: MeetingPromptContext,
+    trackingContext?: TrackingContext,
+  ): Promise<string> {
+    const instruction = buildOpeningInstruction(context, facilitator);
+    const result = await this.aiService.complete({
+      prompt: instruction,
+      systemPrompt: buildParticipantSystemPrompt(facilitator, context, { maxSentences: '3 à 5 phrases' }),
+      messages: [{ role: 'user', content: `[Note de séance] ${instruction}` }],
+      maxTokens: 300,
+      temperature: 0.7,
+      trackingContext,
+    });
+    return result.content.trim();
+  }
+
   async generateSummary(
     meetingTitle: string,
-    history: Array<{ role: 'user' | 'assistant'; content: string }>,
+    history: TranscriptLine[],
     kpis: Record<string, number>,
-    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string; metadata?: Record<string, unknown> },
+    trackingContext?: TrackingContext,
   ): Promise<string> {
-    const conversationText = history
-      .map((m) => `${m.role === 'user' ? 'Utilisateur' : 'Participant'}: ${m.content}`)
-      .join('\n');
+    const conversationText = formatTranscript(history, 'Utilisateur');
 
     const result = await this.aiService.complete({
       prompt: [
-        `Resume cette reunion "${meetingTitle}".`,
+        `Résume cette réunion « ${meetingTitle} ».`,
         ``,
         `Conversation:`,
         conversationText,
         ``,
-        `KPIs actuels: Budget ${kpis.budget}, Delai ${kpis.schedule}, Qualite ${kpis.quality}, Moral ${kpis.teamMorale}, Risque ${kpis.riskLevel}.`,
+        `Indicateurs actuels : budget ${kpis.budget}, délai ${kpis.schedule}, qualité ${kpis.quality}, moral ${kpis.teamMorale}, risque ${kpis.riskLevel}.`,
         ``,
-        `Fournis exactement 3 points cles en format bullet points. Sois concis et factuel.`,
+        `Fournis exactement 3 points clés sous forme de puces. Sois concis et factuel. Écris en français correct, avec les accents.`,
       ].join('\n'),
       maxTokens: 300,
       temperature: 0.3,
@@ -170,42 +124,40 @@ export class MeetingAiService {
 
   async generateStructuredSummary(
     meetingTitle: string,
-    history: Array<{ role: 'user' | 'assistant'; content: string }>,
+    history: TranscriptLine[],
     kpis: Record<string, number>,
     participantNames: string[],
-    trackingContext?: { tenantId: string; userId: string; simulationId?: string; operation: string; metadata?: Record<string, unknown> },
+    trackingContext?: TrackingContext,
   ): Promise<{
     summary: string;
     keyDecisions: string[];
     actionItems: Array<{ task: string; assignee: string; deadline?: string }>;
     kpiImpact: Record<string, number>;
   }> {
-    const conversationText = history
-      .map((m) => `${m.role === 'user' ? 'Chef de projet' : 'Participant'}: ${m.content}`)
-      .join('\n');
+    const conversationText = formatTranscript(history, 'Chef de projet');
 
     const result = await this.aiService.complete({
       prompt: [
-        `Analyse cette reunion "${meetingTitle}" et produis un compte-rendu structure.`,
+        `Analyse cette réunion « ${meetingTitle} » et produis un compte rendu structuré, en français correct avec les accents.`,
         ``,
         `Participants: ${participantNames.join(', ')}`,
         ``,
         `Conversation:`,
         conversationText,
         ``,
-        `KPIs actuels: Budget ${kpis.budget}/100, Delai ${kpis.schedule}/100, Qualite ${kpis.quality}/100, Moral ${kpis.teamMorale}/100, Risque ${kpis.riskLevel}/100.`,
+        `Indicateurs actuels : budget ${kpis.budget}/100, délai ${kpis.schedule}/100, qualité ${kpis.quality}/100, moral ${kpis.teamMorale}/100, risque ${kpis.riskLevel}/100.`,
         ``,
-        `Reponds UNIQUEMENT avec un objet JSON valide (sans markdown, sans backticks) avec cette structure exacte:`,
+        `Réponds UNIQUEMENT avec un objet JSON valide (sans markdown, sans backticks) avec cette structure exacte :`,
         `{`,
-        `  "summary": "Resume en 3-5 phrases de la reunion",`,
-        `  "keyDecisions": ["Decision 1", "Decision 2"],`,
-        `  "actionItems": [{"task": "Description de la tache", "assignee": "Nom du responsable", "deadline": "Echeance estimee"}],`,
+        `  "summary": "Résumé de la réunion en 3 à 5 phrases",`,
+        `  "keyDecisions": ["Décision 1", "Décision 2"],`,
+        `  "actionItems": [{"task": "Description de l'action", "assignee": "Nom du responsable", "deadline": "Échéance (ex. : fin de semaine, J+10)"}],`,
         `  "kpiImpact": {"budget": 0, "schedule": 0, "quality": 0, "teamMorale": 0, "riskLevel": 0}`,
         `}`,
         ``,
-        `Pour kpiImpact, estime l'impact de cette reunion sur chaque KPI (valeur entre -10 et +10).`,
-        `Pour actionItems, identifie 2-4 actions concretes issues de la conversation avec un responsable parmi les participants.`,
-        `Pour keyDecisions, identifie 1-3 decisions prises pendant la reunion.`,
+        `Pour kpiImpact, estime l'impact de cette réunion sur chaque indicateur (valeur entre -10 et +10).`,
+        `Pour actionItems, identifie 2 à 4 actions concrètes issues de la conversation, avec un responsable parmi les participants ou le chef de projet.`,
+        `Pour keyDecisions, identifie 1 à 3 décisions prises pendant la réunion.`,
       ].join('\n'),
       maxTokens: 800,
       temperature: 0.2,

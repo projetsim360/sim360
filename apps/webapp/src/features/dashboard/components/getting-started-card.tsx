@@ -19,10 +19,10 @@ interface StepItem {
 }
 
 const STEPS: StepItem[] = [
-  { key: 'profileCompleted', label: 'Profil', description: 'Completez votre profil', icon: 'profile-circle', link: '/onboarding' },
-  { key: 'firstSimulationLaunched', label: 'Simulation', description: 'Lancez votre premiere simulation', icon: 'rocket', link: '/simulations/new' },
+  { key: 'profileCompleted', label: 'Profil', description: 'Complétez votre profil', icon: 'profile-circle', link: '/onboarding' },
+  { key: 'firstSimulationLaunched', label: 'Simulation', description: 'Lancez votre première simulation', icon: 'rocket', link: '/simulations/new' },
   { key: 'firstDeliverableSubmitted', label: 'Livrable', description: 'Soumettez un livrable', icon: 'document' },
-  { key: 'firstDebriefingViewed', label: 'Debriefing', description: 'Consultez votre debriefing', icon: 'teacher' },
+  { key: 'firstDebriefingViewed', label: 'Débriefing', description: 'Consultez votre débriefing', icon: 'teacher' },
   { key: 'firstPortfolioShared', label: 'Portfolio', description: 'Partagez votre portfolio', icon: 'share', link: '/profile/badges' },
 ];
 
@@ -81,7 +81,7 @@ export function GettingStartedCard({ data }: GettingStartedCardProps) {
             </div>
             <div>
               <p className="text-sm font-semibold text-foreground">Bravo ! Vous avez tout explore</p>
-              <p className="text-xs text-muted-foreground">Vous maitrisez les bases de la plateforme</p>
+              <p className="text-xs text-muted-foreground">Vous maîtrisez les bases de la plateforme</p>
             </div>
           </div>
           <Button variant="ghost" size="sm" onClick={() => setDismissed(true)}>

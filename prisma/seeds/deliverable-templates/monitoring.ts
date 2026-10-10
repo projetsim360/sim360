@@ -4,21 +4,21 @@ export const monitoringTemplates: DeliverableTemplateData[] = [
   // ─── 01. Suivi Budgetaire ──────────────────────────────────
   {
     id: 'seed-tpl-budget-tracking',
-    title: 'Suivi Budgetaire',
+    title: 'Suivi Budgétaire',
     type: 'budget-tracking',
     phase: 'MONITORING',
     description:
-      "Tableau de suivi financier du projet integrant les indicateurs EVM (Earned Value Management). Permet de piloter les couts, detecter les ecarts et prevoir le budget a terminaison.",
+      "Tableau de suivi financier du projet intégrant les indicateurs EVM (Earned Value Management). Permet de piloter les coûts, détecter les écarts et prévoir le budget a terminaison.",
     pmiProcess: '7.4',
     difficulty: 'STANDARD',
-    content: `# Suivi Budgetaire
+    content: `# Suivi Budgétaire
 
 | Champ | Valeur |
 |---|---|
 | **Projet** | {{projectName}} |
 | **Code** | {{projectCode}} |
 | **Chef de projet** | {{userName}} |
-| **Periode** | {{currentDate}} |
+| **Période** | {{currentDate}} |
 
 ---
 
@@ -26,126 +26,126 @@ export const monitoringTemplates: DeliverableTemplateData[] = [
 
 | Version | Auteur | Description | Date |
 |---|---|---|---|
-| 1.0 | {{userName}} | Creation initiale | {{currentDate}} |
+| 1.0 | {{userName}} | Création initiale | {{currentDate}} |
 
 ---
 
-## 1. Synthese financiere
+## 1. Synthèse financière
 
 | Indicateur | Valeur |
 |---|---|
 | **Budget initial (BAC)** | {{initialBudget}} EUR |
-| **Budget revise** | [A completer] EUR |
-| **Depenses a date (AC)** | [A completer] EUR |
-| **Valeur acquise (EV)** | [A completer] EUR |
-| **% consomme** | [A completer]% |
-| **% avancement physique** | [A completer]% |
+| **Budget révisé** | [À compléter] EUR |
+| **Dépenses à date (AC)** | [À compléter] EUR |
+| **Valeur acquise (EV)** | [À compléter] EUR |
+| **% consommé** | [À compléter]% |
+| **% avancement physique** | [À compléter]% |
 
-**Commentaire general** : [Synthetisez la situation financiere du projet en quelques lignes : tendance, alertes, actions en cours.]
+**Commentaire général** : [Synthétisez la situation financière du projet en quelques lignes : tendance, alertes, actions en cours.]
 
-## 2. Detail par poste budgetaire
+## 2. Détail par poste budgétaire
 
 ### 2.1 Ressources humaines
 
-| Poste | Budget prevu | Engage | Consomme | Reste a depenser | Ecart |
+| Poste | Budget prévu | Engage | Consommé | Reste à dépenser | Écart |
 |---|---|---|---|---|---|
-| Chef de projet | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
-| Equipe interne | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
-| **Sous-total RH** | **[A completer]** | **[A completer]** | **[A completer]** | **[A completer]** | **[A completer]** |
+| Chef de projet | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| Équipe interne | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| **Sous-total RH** | **[À compléter]** | **[À compléter]** | **[À compléter]** | **[À compléter]** | **[À compléter]** |
 
 ### 2.2 Prestataires externes
 
-| Prestataire | Budget prevu | Engage | Consomme | Reste a depenser | Ecart |
+| Prestataire | Budget prévu | Engage | Consommé | Reste à dépenser | Écart |
 |---|---|---|---|---|---|
-| [A completer] | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
-| **Sous-total Prestataires** | **[A completer]** | **[A completer]** | **[A completer]** | **[A completer]** | **[A completer]** |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| **Sous-total Prestataires** | **[À compléter]** | **[À compléter]** | **[À compléter]** | **[À compléter]** | **[À compléter]** |
 
-### 2.3 Materiel et infrastructure
+### 2.3 Matériel et infrastructure
 
-| Poste | Budget prevu | Engage | Consomme | Reste a depenser | Ecart |
+| Poste | Budget prévu | Engage | Consommé | Reste à dépenser | Écart |
 |---|---|---|---|---|---|
-| [A completer] | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
-| **Sous-total Materiel** | **[A completer]** | **[A completer]** | **[A completer]** | **[A completer]** | **[A completer]** |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| **Sous-total Matériel** | **[À compléter]** | **[À compléter]** | **[À compléter]** | **[À compléter]** | **[À compléter]** |
 
 ### 2.4 Licences et logiciels
 
-| Poste | Budget prevu | Engage | Consomme | Reste a depenser | Ecart |
+| Poste | Budget prévu | Engage | Consommé | Reste à dépenser | Écart |
 |---|---|---|---|---|---|
-| [A completer] | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
-| **Sous-total Licences** | **[A completer]** | **[A completer]** | **[A completer]** | **[A completer]** | **[A completer]** |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| **Sous-total Licences** | **[À compléter]** | **[À compléter]** | **[À compléter]** | **[À compléter]** | **[À compléter]** |
 
-### 2.5 Recapitulatif
+### 2.5 Récapitulatif
 
-| Poste | Budget prevu | Consomme | Reste | Ecart |
+| Poste | Budget prévu | Consommé | Reste | Écart |
 |---|---|---|---|---|
-| Ressources humaines | [A completer] | [A completer] | [A completer] | [A completer] |
-| Prestataires | [A completer] | [A completer] | [A completer] | [A completer] |
-| Materiel | [A completer] | [A completer] | [A completer] | [A completer] |
-| Licences | [A completer] | [A completer] | [A completer] | [A completer] |
-| **TOTAL** | **{{initialBudget}} EUR** | **[A completer]** | **[A completer]** | **[A completer]** |
+| Ressources humaines | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| Prestataires | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| Matériel | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| Licences | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| **TOTAL** | **{{initialBudget}} EUR** | **[À compléter]** | **[À compléter]** | **[À compléter]** |
 
 ## 3. Indicateurs EVM (Earned Value Management)
 
-| Indicateur | Formule | Valeur | Interpretation |
+| Indicateur | Formule | Valeur | Interprétation |
 |---|---|---|---|
-| **BAC** (Budget at Completion) | Budget initial | {{initialBudget}} EUR | Budget total prevu |
-| **PV** (Planned Value) | Valeur planifiee a date | [A completer] EUR | Travail prevu a cette date |
-| **EV** (Earned Value) | Valeur acquise a date | [A completer] EUR | Travail reellement accompli |
-| **AC** (Actual Cost) | Cout reel a date | [A completer] EUR | Depenses reelles |
-| **SV** (Schedule Variance) | EV - PV | [A completer] EUR | > 0 = avance, < 0 = retard |
-| **CV** (Cost Variance) | EV - AC | [A completer] EUR | > 0 = economie, < 0 = depassement |
-| **SPI** (Schedule Performance Index) | EV / PV | [A completer] | > 1 = avance, < 1 = retard |
-| **CPI** (Cost Performance Index) | EV / AC | [A completer] | > 1 = economie, < 1 = depassement |
-| **EAC** (Estimate at Completion) | BAC / CPI | [A completer] EUR | Prevision budget final |
-| **ETC** (Estimate to Complete) | EAC - AC | [A completer] EUR | Reste a depenser estime |
-| **VAC** (Variance at Completion) | BAC - EAC | [A completer] EUR | Ecart prevu a terminaison |
+| **BAC** (Budget at Completion) | Budget initial | {{initialBudget}} EUR | Budget total prévu |
+| **PV** (Planned Value) | Valeur planifiée à date | [À compléter] EUR | Travail prévu à cette date |
+| **EV** (Earned Value) | Valeur acquise à date | [À compléter] EUR | Travail réellement accompli |
+| **AC** (Actual Cost) | Coût réel à date | [À compléter] EUR | Dépenses réelles |
+| **SV** (Schedule Variance) | EV - PV | [À compléter] EUR | > 0 = avance, < 0 = retard |
+| **CV** (Cost Variance) | EV - AC | [À compléter] EUR | > 0 = économie, < 0 = dépassement |
+| **SPI** (Schedule Performance Index) | EV / PV | [À compléter] | > 1 = avance, < 1 = retard |
+| **CPI** (Cost Performance Index) | EV / AC | [À compléter] | > 1 = économie, < 1 = dépassement |
+| **EAC** (Estimate at Completion) | BAC / CPI | [À compléter] EUR | Prévision budget final |
+| **ETC** (Estimate to Complete) | EAC - AC | [À compléter] EUR | Reste à dépenser estimé |
+| **VAC** (Variance at Completion) | BAC - EAC | [À compléter] EUR | Écart prévu à terminaison |
 
 ## 4. Courbe en S
 
-[Inserez ou decrivez la courbe en S avec les 3 courbes : PV (valeur planifiee), EV (valeur acquise) et AC (cout reel). Indiquez la date de reference et les tendances observees.]
+[Insérez ou décrivez la courbe en S avec les 3 courbes : PV (valeur planifiée), EV (valeur acquise) et AC (coût réel). Indiquez la date de référence et les tendances observées.]
 
-| Mois | PV cumule | EV cumule | AC cumule |
+| Mois | PV cumulé | EV cumulé | AC cumulé |
 |---|---|---|---|
-| M1 | [A completer] | [A completer] | [A completer] |
-| M2 | [A completer] | [A completer] | [A completer] |
-| M3 | [A completer] | [A completer] | [A completer] |
-| M4 | [A completer] | [A completer] | [A completer] |
-| M5 | [A completer] | [A completer] | [A completer] |
-| M6 | [A completer] | [A completer] | [A completer] |
+| M1 | [À compléter] | [À compléter] | [À compléter] |
+| M2 | [À compléter] | [À compléter] | [À compléter] |
+| M3 | [À compléter] | [À compléter] | [À compléter] |
+| M4 | [À compléter] | [À compléter] | [À compléter] |
+| M5 | [À compléter] | [À compléter] | [À compléter] |
+| M6 | [À compléter] | [À compléter] | [À compléter] |
 
 ## 5. Alertes et actions correctives
 
-| # | Alerte | Severite | Impact budget | Action corrective | Responsable | Echeance |
+| # | Alerte | Sévérité | Impact budget | Action corrective | Responsable | Échéance |
 |---|---|---|---|---|---|---|
-| A01 | [A completer] | Critique/Majeure/Mineure | [A completer] EUR | [A completer] | [A completer] | [A completer] |
-| A02 | [A completer] | [A completer] | [A completer] EUR | [A completer] | [A completer] | [A completer] |
+| A01 | [À compléter] | Critique/Majeure/Mineure | [À compléter] EUR | [À compléter] | [À compléter] | [À compléter] |
+| A02 | [À compléter] | [À compléter] | [À compléter] EUR | [À compléter] | [À compléter] | [À compléter] |
 
-## 6. Previsions et recommandations
+## 6. Prévisions et recommandations
 
-[Analysez la tendance financiere et formulez des recommandations : ajustements budgetaires, re-estimations, demandes de budget supplementaire, economies possibles.]
+[Analysez la tendance financière et formulez des recommandations : ajustements budgétaires, re-estimations, demandes de budget supplémentaire, économies possibles.]
 
-- **Tendance generale** : [A completer]
-- **Recommandation 1** : [A completer]
-- **Recommandation 2** : [A completer]
+- **Tendance générale** : [À compléter]
+- **Recommandation 1** : [À compléter]
+- **Recommandation 2** : [À compléter]
 `,
     evaluationCriteria: {
       sections: [
         {
           id: 'financial-summary',
-          name: 'Synthese financiere',
+          name: 'Synthèse financière',
           weight: 15,
           criteria: [
-            { label: 'Vue d\'ensemble claire', description: 'Les chiffres cles (budget, depenses, reste) sont presentes de maniere synthetique', maxPoints: 8 },
-            { label: 'Commentaire pertinent', description: 'Le commentaire general resume la situation avec les tendances et alertes', maxPoints: 7 },
+            { label: 'Vue d\'ensemble claire', description: 'Les chiffres clés (budget, dépenses, reste) sont présentés de manière synthétique', maxPoints: 8 },
+            { label: 'Commentaire pertinent', description: 'Le commentaire général resume la situation avec les tendances et alertes', maxPoints: 7 },
           ],
         },
         {
           id: 'budget-breakdown',
-          name: 'Detail par poste',
+          name: 'Détail par poste',
           weight: 20,
           criteria: [
-            { label: 'Postes couverts', description: 'Les 4 postes (RH, prestataires, materiel, licences) sont detailles', maxPoints: 10 },
-            { label: 'Chiffres coherents', description: 'Les montants sont coherents entre les sous-totaux et le total', maxPoints: 10 },
+            { label: 'Postes couverts', description: 'Les 4 postes (RH, prestataires, matériel, licences) sont détaillés', maxPoints: 10 },
+            { label: 'Chiffres cohérents', description: 'Les montants sont cohérents entre les sous-totaux et le total', maxPoints: 10 },
           ],
         },
         {
@@ -153,9 +153,9 @@ export const monitoringTemplates: DeliverableTemplateData[] = [
           name: 'Indicateurs EVM',
           weight: 30,
           criteria: [
-            { label: 'Indicateurs complets', description: 'Les 11 indicateurs EVM sont calcules (BAC, PV, EV, AC, SV, CV, SPI, CPI, EAC, ETC, VAC)', maxPoints: 15 },
-            { label: 'Calculs corrects', description: 'Les formules sont correctement appliquees et les valeurs coherentes', maxPoints: 10 },
-            { label: 'Interpretation', description: 'Chaque indicateur a une interpretation pertinente', maxPoints: 5 },
+            { label: 'Indicateurs complets', description: 'Les 11 indicateurs EVM sont calculés (BAC, PV, EV, AC, SV, CV, SPI, CPI, EAC, ETC, VAC)', maxPoints: 15 },
+            { label: 'Calculs corrects', description: 'Les formules sont correctement appliquées et les valeurs cohérentes', maxPoints: 10 },
+            { label: 'Interprétation', description: 'Chaque indicateur a une interprétation pertinente', maxPoints: 5 },
           ],
         },
         {
@@ -163,8 +163,8 @@ export const monitoringTemplates: DeliverableTemplateData[] = [
           name: 'Courbe en S',
           weight: 15,
           criteria: [
-            { label: 'Donnees temporelles', description: 'Les valeurs PV, EV, AC sont fournies mois par mois', maxPoints: 8 },
-            { label: 'Analyse de tendance', description: 'L\'evolution temporelle est commentee avec les ecarts visibles', maxPoints: 7 },
+            { label: 'Données temporelles', description: 'Les valeurs PV, EV, AC sont fournies mois par mois', maxPoints: 8 },
+            { label: 'Analyse de tendance', description: 'L\'évolution temporelle est commentée avec les écarts visibles', maxPoints: 7 },
           ],
         },
         {
@@ -172,9 +172,9 @@ export const monitoringTemplates: DeliverableTemplateData[] = [
           name: 'Alertes et recommandations',
           weight: 20,
           criteria: [
-            { label: 'Alertes identifiees', description: 'Les ecarts significatifs sont signales avec severite et impact chiffre', maxPoints: 10 },
-            { label: 'Actions correctives', description: 'Des actions concretes sont proposees avec responsable et echeance', maxPoints: 5 },
-            { label: 'Recommandations', description: 'Les previsions et recommandations sont argumentees et realisables', maxPoints: 5 },
+            { label: 'Alertes identifiées', description: 'Les écarts significatifs sont signalés avec sévérité et impact chiffre', maxPoints: 10 },
+            { label: 'Actions correctives', description: 'Des actions concrètes sont proposées avec responsable et échéance', maxPoints: 5 },
+            { label: 'Recommandations', description: 'Les prévisions et recommandations sont argumentées et réalisables', maxPoints: 5 },
           ],
         },
       ],
@@ -182,28 +182,28 @@ export const monitoringTemplates: DeliverableTemplateData[] = [
       maxScore: 100,
       pmiOutputs: ['7.4.3.1 Work Performance Information', '7.4.3.2 Cost Forecasts', '7.4.3.3 Change Requests'],
     },
-    referenceExample: `# Suivi Budgetaire — Projet SAP30/CMRL (Mois 4)
+    referenceExample: `# Suivi Budgétaire — Projet SAP30/CMRL (Mois 4)
 
-## Synthese financiere
-Budget initial : 515 000 EUR. Depenses a date : 245 000 EUR (47,6%). Avancement physique : 55%. Le projet est en avance sur le budget grace a la negociation des tarifs prestataires.
+## Synthèse financière
+Budget initial : 515 000 EUR. Dépenses à date : 245 000 EUR (47,6%). Avancement physique : 55%. Le projet est en avance sur le budget grâce à la négociation des tarifs prestataires.
 
 ## Indicateurs EVM
-| Indicateur | Valeur | Interpretation |
+| Indicateur | Valeur | Interprétation |
 |---|---|---|
-| BAC | 515 000 EUR | Budget approuve |
-| PV | 280 000 EUR | Travail planifie a M4 |
+| BAC | 515 000 EUR | Budget approuvé |
+| PV | 280 000 EUR | Travail planifié à M4 |
 | EV | 283 250 EUR | 55% x 515K |
-| AC | 245 000 EUR | Cout reel |
-| SV | +3 250 EUR | Legerement en avance |
-| CV | +38 250 EUR | Economie significative |
+| AC | 245 000 EUR | Coût réel |
+| SV | +3 250 EUR | Légèrement en avance |
+| CV | +38 250 EUR | Économie significative |
 | SPI | 1.01 | En ligne |
-| CPI | 1.16 | Tres bon (economie 16%) |
-| EAC | 443 965 EUR | Prevision finale favorable |
+| CPI | 1.16 | Très bon (économie 16%) |
+| EAC | 443 965 EUR | Prévision finale favorable |
 
 ## Alertes
-| Alerte | Severite | Action |
+| Alerte | Sévérité | Action |
 |---|---|---|
-| Risque depassement poste formation | Majeure | Re-negocier le contrat formateur — Resp: RH — Echeance: 15/06 |
+| Risque dépassement poste formation | Majeure | Re-négocier le contrat formateur — Resp: RH — Échéance: 15/06 |
 `,
   },
 
@@ -214,7 +214,7 @@ Budget initial : 515 000 EUR. Depenses a date : 245 000 EUR (47,6%). Avancement 
     type: 'dashboard-report',
     phase: 'MONITORING',
     description:
-      "Dashboard de synthese du projet presentant les indicateurs globaux (scope, cout, delai, qualite), l'avancement par phase, les risques et actions prioritaires.",
+      "Dashboard de synthèse du projet présentant les indicateurs globaux (scope, coût, délai, qualité), l'avancement par phase, les risques et actions prioritaires.",
     pmiProcess: '4.5',
     difficulty: 'STANDARD',
     content: `# Tableau de Bord Projet
@@ -224,7 +224,7 @@ Budget initial : 515 000 EUR. Depenses a date : 245 000 EUR (47,6%). Avancement 
 | **Projet** | {{projectName}} |
 | **Code** | {{projectCode}} |
 | **Chef de projet** | {{userName}} |
-| **Periode de reporting** | {{currentDate}} |
+| **Période de reporting** | {{currentDate}} |
 
 ---
 
@@ -232,7 +232,7 @@ Budget initial : 515 000 EUR. Depenses a date : 245 000 EUR (47,6%). Avancement 
 
 | Version | Auteur | Description | Date |
 |---|---|---|---|
-| 1.0 | {{userName}} | Creation initiale | {{currentDate}} |
+| 1.0 | {{userName}} | Création initiale | {{currentDate}} |
 
 ---
 
@@ -240,72 +240,72 @@ Budget initial : 515 000 EUR. Depenses a date : 245 000 EUR (47,6%). Avancement 
 
 | Dimension | Statut (RAG) | Tendance | Commentaire |
 |---|---|---|---|
-| **Perimetre (Scope)** | 🟢 Vert / 🟠 Orange / 🔴 Rouge | ↗ ↘ → | [A completer] |
-| **Couts (Cost)** | 🟢 Vert / 🟠 Orange / 🔴 Rouge | ↗ ↘ → | [A completer] |
-| **Delais (Schedule)** | 🟢 Vert / 🟠 Orange / 🔴 Rouge | ↗ ↘ → | [A completer] |
-| **Qualite (Quality)** | 🟢 Vert / 🟠 Orange / 🔴 Rouge | ↗ ↘ → | [A completer] |
+| **Périmètre (Scope)** | 🟢 Vert / 🟠 Orange / 🔴 Rouge | ↗ ↘ → | [À compléter] |
+| **Coûts (Cost)** | 🟢 Vert / 🟠 Orange / 🔴 Rouge | ↗ ↘ → | [À compléter] |
+| **Délais (Schedule)** | 🟢 Vert / 🟠 Orange / 🔴 Rouge | ↗ ↘ → | [À compléter] |
+| **Qualité (Quality)** | 🟢 Vert / 🟠 Orange / 🔴 Rouge | ↗ ↘ → | [À compléter] |
 
-### Legende RAG
-- **Vert** : Conforme au plan, aucun ecart significatif
-- **Orange** : Ecart modere, actions correctives en cours
-- **Rouge** : Ecart critique, escalade necessaire
+### Légende RAG
+- **Vert** : Conforme au plan, aucun écart significatif
+- **Orange** : Écart modéré, actions correctives en cours
+- **Rouge** : Écart critique, escalade nécessaire
 
 ## 2. Avancement par phase
 
-| Phase | % Avancement | Statut | Date debut | Date fin prevue | Date fin reelle |
+| Phase | % Avancement | Statut | Date début | Date fin prévue | Date fin réelle |
 |---|---|---|---|---|---|
-| Initiation | [A completer]% | Termine/En cours/A venir | [A completer] | [A completer] | [A completer] |
-| Planification | [A completer]% | [A completer] | [A completer] | [A completer] | [A completer] |
-| Execution | [A completer]% | [A completer] | [A completer] | [A completer] | [A completer] |
-| Controle | [A completer]% | [A completer] | [A completer] | [A completer] | [A completer] |
-| Cloture | [A completer]% | [A completer] | [A completer] | [A completer] | [A completer] |
+| Initiation | [À compléter]% | Terminé/En cours/À venir | [À compléter] | [À compléter] | [À compléter] |
+| Planification | [À compléter]% | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| Exécution | [À compléter]% | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| Contrôle | [À compléter]% | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| Clôture | [À compléter]% | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
-**Avancement global** : [A completer]%
+**Avancement global** : [À compléter]%
 
-## 3. Synthese budgetaire
+## 3. Synthèse budgétaire
 
 | Indicateur | Valeur |
 |---|---|
 | Budget total | {{initialBudget}} EUR |
-| Depenses a date | [A completer] EUR |
-| Reste a depenser | [A completer] EUR |
-| CPI | [A completer] |
-| Prevision a terminaison (EAC) | [A completer] EUR |
+| Dépenses à date | [À compléter] EUR |
+| Reste à dépenser | [À compléter] EUR |
+| CPI | [À compléter] |
+| Prévision à terminaison (EAC) | [À compléter] EUR |
 
 ## 4. Top 5 des risques
 
-| # | Risque | Probabilite | Impact | Criticite | Responsable | Action en cours |
+| # | Risque | Probabilité | Impact | Criticité | Responsable | Action en cours |
 |---|---|---|---|---|---|---|
-| 1 | [A completer] | Elevee/Moyenne/Faible | Eleve/Moyen/Faible | [P x I] | [A completer] | [A completer] |
-| 2 | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
-| 3 | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
-| 4 | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
-| 5 | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
+| 1 | [À compléter] | Élevée/Moyenne/Faible | Élevé/Moyen/Faible | [P x I] | [À compléter] | [À compléter] |
+| 2 | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| 3 | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| 4 | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| 5 | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
 ## 5. Top 5 des actions
 
-| # | Action | Priorite | Responsable | Echeance | Statut |
+| # | Action | Priorité | Responsable | Échéance | Statut |
 |---|---|---|---|---|---|
-| 1 | [A completer] | Haute/Moyenne/Basse | [A completer] | [A completer] | En cours/En retard/Termine |
-| 2 | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
-| 3 | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
-| 4 | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
-| 5 | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
+| 1 | [À compléter] | Haute/Moyenne/Basse | [À compléter] | [À compléter] | En cours/En retard/Terminé |
+| 2 | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| 3 | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| 4 | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| 5 | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
 ## 6. Prochains jalons
 
-| Jalon | Date prevue | Responsable | Statut |
+| Jalon | Date prévue | Responsable | Statut |
 |---|---|---|---|
-| [A completer] | [A completer] | [A completer] | En temps/A risque/En retard |
-| [A completer] | [A completer] | [A completer] | [A completer] |
-| [A completer] | [A completer] | [A completer] | [A completer] |
+| [À compléter] | [À compléter] | [À compléter] | En temps/A risque/En retard |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
 ## 7. Points d'attention
 
-[Listez les sujets necessitant une attention particuliere ou une decision du management.]
+[Listez les sujets nécessitant une attention particulière ou une décision du management.]
 
-- [A completer]
-- [A completer]
+- [À compléter]
+- [À compléter]
 `,
     evaluationCriteria: {
       sections: [
@@ -314,9 +314,9 @@ Budget initial : 515 000 EUR. Depenses a date : 245 000 EUR (47,6%). Avancement 
           name: 'Indicateurs globaux',
           weight: 25,
           criteria: [
-            { label: 'RAG complet', description: 'Les 4 dimensions (scope, cout, delai, qualite) ont un statut RAG attribue', maxPoints: 10 },
-            { label: 'Commentaires pertinents', description: 'Chaque dimension a un commentaire explicatif coherent avec le statut', maxPoints: 10 },
-            { label: 'Tendances', description: 'Les tendances sont indiquees et refletent la realite du projet', maxPoints: 5 },
+            { label: 'RAG complet', description: 'Les 4 dimensions (scope, coût, délai, qualité) ont un statut RAG attribué', maxPoints: 10 },
+            { label: 'Commentaires pertinents', description: 'Chaque dimension a un commentaire explicatif cohérent avec le statut', maxPoints: 10 },
+            { label: 'Tendances', description: 'Les tendances sont indiquées et reflètent la réalité du projet', maxPoints: 5 },
           ],
         },
         {
@@ -324,8 +324,8 @@ Budget initial : 515 000 EUR. Depenses a date : 245 000 EUR (47,6%). Avancement 
           name: 'Avancement par phase',
           weight: 20,
           criteria: [
-            { label: 'Phases detaillees', description: 'Les 5 phases sont presentees avec pourcentage et dates', maxPoints: 10 },
-            { label: 'Coherence', description: 'L\'avancement global est coherent avec les phases individuelles', maxPoints: 10 },
+            { label: 'Phases détaillées', description: 'Les 5 phases sont présentées avec pourcentage et dates', maxPoints: 10 },
+            { label: 'Cohérence', description: 'L\'avancement global est cohérent avec les phases individuelles', maxPoints: 10 },
           ],
         },
         {
@@ -333,8 +333,8 @@ Budget initial : 515 000 EUR. Depenses a date : 245 000 EUR (47,6%). Avancement 
           name: 'Risques et actions',
           weight: 25,
           criteria: [
-            { label: 'Top 5 risques', description: '5 risques sont identifies avec probabilite, impact, criticite et responsable', maxPoints: 15 },
-            { label: 'Top 5 actions', description: '5 actions sont listees avec priorite, responsable, echeance et statut', maxPoints: 10 },
+            { label: 'Top 5 risques', description: '5 risques sont identifiés avec probabilité, impact, criticité et responsable', maxPoints: 15 },
+            { label: 'Top 5 actions', description: '5 actions sont listées avec priorité, responsable, échéance et statut', maxPoints: 10 },
           ],
         },
         {
@@ -342,8 +342,8 @@ Budget initial : 515 000 EUR. Depenses a date : 245 000 EUR (47,6%). Avancement 
           name: 'Jalons et budget',
           weight: 20,
           criteria: [
-            { label: 'Jalons identifies', description: 'Au moins 3 prochains jalons avec dates et responsables', maxPoints: 10 },
-            { label: 'Synthese budgetaire', description: 'Les indicateurs financiers cles sont presents et coherents', maxPoints: 10 },
+            { label: 'Jalons identifiés', description: 'Au moins 3 prochains jalons avec dates et responsables', maxPoints: 10 },
+            { label: 'Synthèse budgétaire', description: 'Les indicateurs financiers clés sont présents et cohérents', maxPoints: 10 },
           ],
         },
         {
@@ -351,7 +351,7 @@ Budget initial : 515 000 EUR. Depenses a date : 245 000 EUR (47,6%). Avancement 
           name: 'Points d\'attention',
           weight: 10,
           criteria: [
-            { label: 'Sujets identifies', description: 'Les points necessitant une decision ou une attention sont clairement formules', maxPoints: 10 },
+            { label: 'Sujets identifiés', description: 'Les points nécessitant une décision ou une attention sont clairement formulés', maxPoints: 10 },
           ],
         },
       ],
@@ -364,23 +364,23 @@ Budget initial : 515 000 EUR. Depenses a date : 245 000 EUR (47,6%). Avancement 
 ## Indicateurs globaux
 | Dimension | Statut | Tendance | Commentaire |
 |---|---|---|---|
-| Perimetre | Vert | → | Perimetre stable, aucune demande de changement |
-| Couts | Vert | ↗ | CPI 1.16, economie de 38K EUR |
-| Delais | Orange | ↘ | Retard 5 jours sur migration MM, rattrapage en cours |
-| Qualite | Vert | → | 0 defaut bloquant en recette |
+| Périmètre | Vert | → | Périmètre stable, aucune demande de changement |
+| Coûts | Vert | ↗ | CPI 1.16, économie de 38K EUR |
+| Délais | Orange | ↘ | Retard 5 jours sur migration MM, rattrapage en cours |
+| Qualité | Vert | → | 0 défaut bloquant en recette |
 
 ## Top 5 Risques
 | # | Risque | P | I | C | Action |
 |---|---|---|---|---|---|
-| 1 | Resistance utilisateurs Finance | 4 | 4 | 16 | Champions internes designes |
-| 2 | Retard migration donnees | 4 | 3 | 12 | Migration incrementale |
-| 3 | Indisponibilite expert SAP | 3 | 4 | 12 | Backup forme |
+| 1 | Résistance utilisateurs Finance | 4 | 4 | 16 | Champions internes désignés |
+| 2 | Retard migration données | 4 | 3 | 12 | Migration incrémentale |
+| 3 | Indisponibilité expert SAP | 3 | 4 | 12 | Backup formé |
 
 ## Prochains jalons
 | Jalon | Date | Statut |
 |---|---|---|
 | Fin migration SD | 15/06 | En temps |
-| Debut recette integree | 01/07 | En temps |
+| Début recette intégrée | 01/07 | En temps |
 | Formation vague 1 | 15/07 | A risque |
 `,
   },
@@ -392,7 +392,7 @@ Budget initial : 515 000 EUR. Depenses a date : 245 000 EUR (47,6%). Avancement 
     type: 'flash-report',
     phase: 'MONITORING',
     description:
-      "Rapport de synthese rapide (1 page) pour communiquer le statut du projet. Presente le statut global, les faits marquants, les vigilances et les decisions attendues.",
+      "Rapport de synthèse rapide (1 page) pour communiquer le statut du projet. Présente le statut global, les faits marquants, les vigilances et les décisions attendues.",
     pmiProcess: '4.5',
     difficulty: 'DISCOVERY',
     content: `# Rapport Flash — {{projectName}}
@@ -408,49 +408,49 @@ Budget initial : 515 000 EUR. Depenses a date : 245 000 EUR (47,6%). Avancement 
 
 ## 1. Statut global
 
-**Etat du projet** : [Vert / Orange / Rouge]
+**État du projet** : [Vert / Orange / Rouge]
 
 [Expliquez en 2-3 phrases la situation globale du projet.]
 
 | Dimension | Statut |
 |---|---|
-| Perimetre | 🟢 / 🟠 / 🔴 |
+| Périmètre | 🟢 / 🟠 / 🔴 |
 | Budget | 🟢 / 🟠 / 🔴 |
-| Delais | 🟢 / 🟠 / 🔴 |
-| Qualite | 🟢 / 🟠 / 🔴 |
+| Délais | 🟢 / 🟠 / 🔴 |
+| Qualité | 🟢 / 🟠 / 🔴 |
 
-## 2. Faits marquants de la periode
+## 2. Faits marquants de la période
 
-[Listez les 3 a 5 faits marquants de la periode ecoulee.]
+[Listez les 3 à 5 faits marquants de la période écoulée.]
 
-- [A completer]
-- [A completer]
-- [A completer]
+- [À compléter]
+- [À compléter]
+- [À compléter]
 
 ## 3. Points de vigilance
 
-[Identifiez les sujets a surveiller dans les prochaines semaines.]
+[Identifiez les sujets à surveiller dans les prochaines semaines.]
 
-| Point de vigilance | Impact potentiel | Action envisagee |
+| Point de vigilance | Impact potentiel | Action envisagée |
 |---|---|---|
-| [A completer] | [A completer] | [A completer] |
-| [A completer] | [A completer] | [A completer] |
+| [À compléter] | [À compléter] | [À compléter] |
+| [À compléter] | [À compléter] | [À compléter] |
 
-## 4. Decisions attendues
+## 4. Décisions attendues
 
-[Listez les decisions que le management doit prendre.]
+[Listez les décisions que le management doit prendre.]
 
-| Decision a prendre | Demandeur | Echeance souhaitee | Impact si non decidee |
+| Décision à prendre | Demandeur | Échéance souhaitée | Impact si non décidée |
 |---|---|---|---|
-| [A completer] | [A completer] | [A completer] | [A completer] |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
-## 5. Prochaines etapes
+## 5. Prochaines étapes
 
-[Listez les activites cles des 2 prochaines semaines.]
+[Listez les activités clés des 2 prochaines semaines.]
 
-- [ ] [A completer] — Responsable : [Nom] — Echeance : [Date]
-- [ ] [A completer] — Responsable : [Nom] — Echeance : [Date]
-- [ ] [A completer] — Responsable : [Nom] — Echeance : [Date]
+- [ ] [À compléter] — Responsable : [Nom] — Échéance : [Date]
+- [ ] [À compléter] — Responsable : [Nom] — Échéance : [Date]
+- [ ] [À compléter] — Responsable : [Nom] — Échéance : [Date]
 `,
     evaluationCriteria: {
       sections: [
@@ -459,8 +459,8 @@ Budget initial : 515 000 EUR. Depenses a date : 245 000 EUR (47,6%). Avancement 
           name: 'Statut global',
           weight: 25,
           criteria: [
-            { label: 'Statut RAG clair', description: 'Le statut global et par dimension est clairement attribue (Vert/Orange/Rouge)', maxPoints: 10 },
-            { label: 'Synthese coherente', description: 'L\'explication du statut est concise et coherente avec les indicateurs', maxPoints: 15 },
+            { label: 'Statut RAG clair', description: 'Le statut global et par dimension est clairement attribué (Vert/Orange/Rouge)', maxPoints: 10 },
+            { label: 'Synthèse cohérente', description: 'L\'explication du statut est concise et cohérente avec les indicateurs', maxPoints: 15 },
           ],
         },
         {
@@ -468,8 +468,8 @@ Budget initial : 515 000 EUR. Depenses a date : 245 000 EUR (47,6%). Avancement 
           name: 'Faits marquants',
           weight: 25,
           criteria: [
-            { label: 'Faits pertinents', description: 'Les faits marquants sont factuels et significatifs pour la periode', maxPoints: 15 },
-            { label: 'Concision', description: 'Chaque fait est exprime de maniere concise et claire', maxPoints: 10 },
+            { label: 'Faits pertinents', description: 'Les faits marquants sont factuels et significatifs pour la période', maxPoints: 15 },
+            { label: 'Concision', description: 'Chaque fait est exprimé de manière concise et claire', maxPoints: 10 },
           ],
         },
         {
@@ -477,17 +477,17 @@ Budget initial : 515 000 EUR. Depenses a date : 245 000 EUR (47,6%). Avancement 
           name: 'Points de vigilance',
           weight: 20,
           criteria: [
-            { label: 'Anticipation', description: 'Les points de vigilance sont anticipes avec impact potentiel identifie', maxPoints: 10 },
-            { label: 'Actions envisagees', description: 'Des actions preventives sont proposees pour chaque point', maxPoints: 10 },
+            { label: 'Anticipation', description: 'Les points de vigilance sont anticipés avec impact potentiel identifié', maxPoints: 10 },
+            { label: 'Actions envisagées', description: 'Des actions préventives sont proposées pour chaque point', maxPoints: 10 },
           ],
         },
         {
           id: 'decisions-next-steps',
-          name: 'Decisions et prochaines etapes',
+          name: 'Décisions et prochaines étapes',
           weight: 30,
           criteria: [
-            { label: 'Decisions formalisees', description: 'Les decisions attendues sont claires avec echeance et impact si non decidees', maxPoints: 15 },
-            { label: 'Prochaines etapes', description: 'Les prochaines etapes sont concretes avec responsables et echeances', maxPoints: 15 },
+            { label: 'Décisions formalisées', description: 'Les décisions attendues sont claires avec échéance et impact si non décidées', maxPoints: 15 },
+            { label: 'Prochaines étapes', description: 'Les prochaines étapes sont concrètes avec responsables et échéances', maxPoints: 15 },
           ],
         },
       ],
@@ -499,176 +499,176 @@ Budget initial : 515 000 EUR. Depenses a date : 245 000 EUR (47,6%). Avancement 
 
 **Statut global** : Orange
 
-Le projet avance conformement au plan sur le perimetre et le budget. Un retard de 5 jours est constate sur le module MM (migration donnees fournisseurs). Plan de rattrapage en cours.
+Le projet avance conformément au plan sur le périmètre et le budget. Un retard de 5 jours est constaté sur le module MM (migration données fournisseurs). Plan de rattrapage en cours.
 
 ## Faits marquants
-- Migration FI/CO terminee avec succes le 08/05 (recette OK)
-- Formation vague 1 planifiee (25 utilisateurs, debut 20/05)
-- Retard migration MM : complexite donnees fournisseurs sous-estimee
+- Migration FI/CO terminée avec succès le 08/05 (recette OK)
+- Formation vague 1 planifiée (25 utilisateurs, début 20/05)
+- Retard migration MM : complexité données fournisseurs sous-estimée
 
 ## Points de vigilance
 | Point | Impact | Action |
 |---|---|---|
-| Retard MM | Decalage recette integree de 1 semaine | Renfort equipe technique (2 ETP) |
-| Disponibilite salle formation | Risque report formation | Reservation salles alternatives |
+| Retard MM | Décalage recette intégrée de 1 semaine | Renfort équipe technique (2 ETP) |
+| Disponibilité salle formation | Risque report formation | Réservation salles alternatives |
 
-## Decisions attendues
-| Decision | Echeance | Impact si non decidee |
+## Décisions attendues
+| Décision | Échéance | Impact si non décidée |
 |---|---|---|
-| Validation budget renfort MM (+15K) | 15/05 | Retard supplementaire de 2 semaines |
+| Validation budget renfort MM (+15K) | 15/05 | Retard supplémentaire de 2 semaines |
 `,
   },
 
   // ─── 04. Support Comite de Projet ──────────────────────────
   {
     id: 'seed-tpl-project-committee',
-    title: 'Support Comite de Projet',
+    title: 'Support Comité de Projet',
     type: 'project-committee',
     phase: 'MONITORING',
     description:
-      "Support de presentation pour le comite de projet. Couvre l'avancement detaille, la charge equipe, les problemes operationnels, le planning actualise et les actions a valider.",
+      "Support de présentation pour le comité de projet. Couvre l'avancement détaillé, la charge équipe, les problèmes opérationnels, le planning actualisé et les actions à valider.",
     pmiProcess: '10.2',
     difficulty: 'STANDARD',
-    content: `# Comite de Projet — {{projectName}}
+    content: `# Comité de Projet — {{projectName}}
 
 **Date** : {{currentDate}}
 **Chef de projet** : {{userName}}
-**Participants** : [A completer]
+**Participants** : [À compléter]
 
 ---
 
 ## Ordre du jour
 
-1. Avancement detaille
-2. Charge equipe
-3. Problemes operationnels
-4. Planning actualise
-5. Actions a valider
-6. Prochaine reunion
+1. Avancement détaillé
+2. Charge équipe
+3. Problèmes opérationnels
+4. Planning actualisé
+5. Actions à valider
+6. Prochaine réunion
 
 ---
 
-## 1. Avancement detaille
+## 1. Avancement détaillé
 
 ### 1.1 Avancement global
 
-| Phase | % Prevu | % Reel | Ecart | Commentaire |
+| Phase | % Prévu | % Réel | Écart | Commentaire |
 |---|---|---|---|---|
-| Initiation | [A completer] | [A completer] | [A completer] | [A completer] |
-| Planification | [A completer] | [A completer] | [A completer] | [A completer] |
-| Execution | [A completer] | [A completer] | [A completer] | [A completer] |
-| Controle | [A completer] | [A completer] | [A completer] | [A completer] |
-| Cloture | [A completer] | [A completer] | [A completer] | [A completer] |
+| Initiation | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| Planification | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| Exécution | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| Contrôle | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| Clôture | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
 ### 1.2 Avancement par lot de travail
 
 | Lot | Responsable | % Avancement | Statut | Commentaire |
 |---|---|---|---|---|
-| [A completer] | [A completer] | [A completer]% | En cours/Termine/En retard | [A completer] |
-| [A completer] | [A completer] | [A completer]% | [A completer] | [A completer] |
-| [A completer] | [A completer] | [A completer]% | [A completer] | [A completer] |
+| [À compléter] | [À compléter] | [À compléter]% | En cours/Terminé/En retard | [À compléter] |
+| [À compléter] | [À compléter] | [À compléter]% | [À compléter] | [À compléter] |
+| [À compléter] | [À compléter] | [À compléter]% | [À compléter] | [À compléter] |
 
-### 1.3 Livrables de la periode
+### 1.3 Livrables de la période
 
-| Livrable | Responsable | Date prevue | Date reelle | Statut | Commentaire |
+| Livrable | Responsable | Date prévue | Date réelle | Statut | Commentaire |
 |---|---|---|---|---|---|
-| [A completer] | [A completer] | [A completer] | [A completer] | Livre/En cours/En retard | [A completer] |
-| [A completer] | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] | Livre/En cours/En retard | [À compléter] |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
-## 2. Charge equipe
+## 2. Charge équipe
 
-| Membre | Role | Charge prevue | Charge reelle | Disponibilite | Commentaire |
+| Membre | Rôle | Charge prévue | Charge réelle | Disponibilité | Commentaire |
 |---|---|---|---|---|---|
 {{teamMembers}}
-| [A completer] | [A completer] | [A completer] j/h | [A completer] j/h | [A completer]% | [A completer] |
+| [À compléter] | [À compléter] | [À compléter] j/h | [À compléter] j/h | [À compléter]% | [À compléter] |
 
 ### Alertes charge
-[Signalez les situations de surcharge ou de sous-charge et les actions envisagees.]
+[Signalez les situations de surcharge ou de sous-charge et les actions envisagées.]
 
-- [A completer]
+- [À compléter]
 
-## 3. Problemes operationnels
+## 3. Problèmes opérationnels
 
-| # | Probleme | Date detection | Impact | Priorite | Action corrective | Responsable | Statut |
+| # | Problème | Date détection | Impact | Priorité | Action corrective | Responsable | Statut |
 |---|---|---|---|---|---|---|---|
-| P01 | [A completer] | [A completer] | [A completer] | Haute/Moyenne/Basse | [A completer] | [A completer] | Ouvert/En cours/Resolu |
-| P02 | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
+| P01 | [À compléter] | [À compléter] | [À compléter] | Haute/Moyenne/Basse | [À compléter] | [À compléter] | Ouvert/En cours/Résolu |
+| P02 | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
-## 4. Planning actualise
+## 4. Planning actualisé
 
 ### 4.1 Jalons
 
-| Jalon | Date initiale | Date actuelle | Ecart | Statut |
+| Jalon | Date initiale | Date actuelle | Écart | Statut |
 |---|---|---|---|---|
-| [A completer] | [A completer] | [A completer] | [A completer] j | En temps/A risque/En retard |
-| [A completer] | [A completer] | [A completer] | [A completer] j | [A completer] |
-| [A completer] | [A completer] | [A completer] | [A completer] j | [A completer] |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] j | En temps/A risque/En retard |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] j | [À compléter] |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] j | [À compléter] |
 
 ### 4.2 Chemin critique
 
-[Identifiez les taches sur le chemin critique et les marges disponibles.]
+[Identifiez les tâches sur le chemin critique et les marges disponibles.]
 
-| Tache critique | Duree | Marge | Risque |
+| Tâche critique | Durée | Marge | Risque |
 |---|---|---|---|
-| [A completer] | [A completer] j | [A completer] j | [A completer] |
+| [À compléter] | [À compléter] j | [À compléter] j | [À compléter] |
 
-## 5. Actions a valider
+## 5. Actions à valider
 
-| # | Action proposee | Justification | Impact (cout/delai) | Decision attendue |
+| # | Action proposée | Justification | Impact (coût/délai) | Décision attendue |
 |---|---|---|---|---|
-| 1 | [A completer] | [A completer] | [A completer] | Approuver/Rejeter/Reporter |
-| 2 | [A completer] | [A completer] | [A completer] | [A completer] |
+| 1 | [À compléter] | [À compléter] | [À compléter] | Approuver/Rejeter/Reporter |
+| 2 | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
-## 6. Prochaine reunion
+## 6. Prochaine réunion
 
-- **Date** : [A completer]
-- **Ordre du jour previsionnel** : [A completer]
+- **Date** : [À compléter]
+- **Ordre du jour prévisionnel** : [À compléter]
 `,
     evaluationCriteria: {
       sections: [
         {
           id: 'detailed-progress',
-          name: 'Avancement detaille',
+          name: 'Avancement détaillé',
           weight: 25,
           criteria: [
-            { label: 'Avancement par phase', description: 'Chaque phase a un pourcentage prevu vs reel avec ecart commente', maxPoints: 10 },
-            { label: 'Lots de travail', description: 'Les lots sont detailles avec responsable, avancement et statut', maxPoints: 8 },
-            { label: 'Livrables', description: 'Les livrables de la periode sont listes avec dates et statut', maxPoints: 7 },
+            { label: 'Avancement par phase', description: 'Chaque phase a un pourcentage prévu vs réel avec écart commenté', maxPoints: 10 },
+            { label: 'Lots de travail', description: 'Les lots sont détaillés avec responsable, avancement et statut', maxPoints: 8 },
+            { label: 'Livrables', description: 'Les livrables de la période sont listes avec dates et statut', maxPoints: 7 },
           ],
         },
         {
           id: 'team-workload',
-          name: 'Charge equipe',
+          name: 'Charge équipe',
           weight: 20,
           criteria: [
-            { label: 'Charge detaillee', description: 'Chaque membre a sa charge prevue/reelle et sa disponibilite', maxPoints: 10 },
-            { label: 'Alertes charge', description: 'Les situations de surcharge/sous-charge sont signalees avec actions', maxPoints: 10 },
+            { label: 'Charge détaillée', description: 'Chaque membre a sa charge prévue/réelle et sa disponibilité', maxPoints: 10 },
+            { label: 'Alertes charge', description: 'Les situations de surcharge/sous-charge sont signalées avec actions', maxPoints: 10 },
           ],
         },
         {
           id: 'operational-issues',
-          name: 'Problemes operationnels',
+          name: 'Problèmes opérationnels',
           weight: 20,
           criteria: [
-            { label: 'Problemes identifies', description: 'Les problemes sont decrits avec impact, priorite et date de detection', maxPoints: 10 },
-            { label: 'Actions correctives', description: 'Chaque probleme a une action corrective avec responsable et statut', maxPoints: 10 },
+            { label: 'Problèmes identifiés', description: 'Les problèmes sont décrits avec impact, priorité et date de détection', maxPoints: 10 },
+            { label: 'Actions correctives', description: 'Chaque problème a une action corrective avec responsable et statut', maxPoints: 10 },
           ],
         },
         {
           id: 'updated-planning',
-          name: 'Planning actualise',
+          name: 'Planning actualisé',
           weight: 20,
           criteria: [
-            { label: 'Jalons a jour', description: 'Les jalons montrent les ecarts entre dates initiales et actuelles', maxPoints: 10 },
-            { label: 'Chemin critique', description: 'Le chemin critique est identifie avec les marges', maxPoints: 10 },
+            { label: 'Jalons à jour', description: 'Les jalons montrent les écarts entre dates initiales et actuelles', maxPoints: 10 },
+            { label: 'Chemin critique', description: 'Le chemin critique est identifié avec les marges', maxPoints: 10 },
           ],
         },
         {
           id: 'actions-to-validate',
-          name: 'Actions a valider',
+          name: 'Actions à valider',
           weight: 15,
           criteria: [
-            { label: 'Actions formalisees', description: 'Les actions sont justifiees avec impact cout/delai et decision attendue', maxPoints: 15 },
+            { label: 'Actions formalisées', description: 'Les actions sont justifiées avec impact coût/délai et décision attendue', maxPoints: 15 },
           ],
         },
       ],
@@ -676,180 +676,180 @@ Le projet avance conformement au plan sur le perimetre et le budget. Un retard d
       maxScore: 100,
       pmiOutputs: ['10.2.3.1 Project Communications', '4.5.3.1 Work Performance Reports'],
     },
-    referenceExample: `# Comite de Projet — SAP30/CMRL (22/05)
+    referenceExample: `# Comité de Projet — SAP30/CMRL (22/05)
 
 ## Avancement
-| Phase | % Prevu | % Reel | Ecart |
+| Phase | % Prévu | % Réel | Écart |
 |---|---|---|---|
-| Execution | 60% | 55% | -5% |
+| Exécution | 60% | 55% | -5% |
 
-## Charge equipe
-| Membre | Charge prevue | Charge reelle | Alerte |
+## Charge équipe
+| Membre | Charge prévue | Charge réelle | Alerte |
 |---|---|---|---|
 | Expert SAP | 20 j/h | 25 j/h | Surcharge — renfort demande |
-| Equipe technique | 40 j/h | 38 j/h | OK |
+| Équipe technique | 40 j/h | 38 j/h | OK |
 
-## Problemes
-| # | Probleme | Action | Responsable |
+## Problèmes
+| # | Problème | Action | Responsable |
 |---|---|---|---|
 | P01 | Retard migration MM | Renfort 2 ETP | DSI |
 | P02 | Bug interface SD/MM | Correctif en cours | Architecte |
 
-## Actions a valider
-| Action | Impact | Decision |
+## Actions à valider
+| Action | Impact | Décision |
 |---|---|---|
-| Budget renfort MM (+15K) | +15K EUR / rattrapage 5j retard | A approuver |
+| Budget renfort MM (+15K) | +15K EUR / rattrapage 5j retard | À approuver |
 `,
   },
 
   // ─── 05. Support Comite de Pilotage ────────────────────────
   {
     id: 'seed-tpl-steering-committee',
-    title: 'Support Comite de Pilotage',
+    title: 'Support Comité de Pilotage',
     type: 'steering-committee',
     phase: 'MONITORING',
     description:
-      "Support de presentation pour le comite de pilotage (COPIL). Presente la synthese executive, l'avancement physique et financier, les risques critiques, les demandes d'arbitrage et les prochains jalons.",
+      "Support de présentation pour le comité de pilotage (COPIL). Présente la synthèse executive, l'avancement physique et financier, les risques critiques, les demandes d'arbitrage et les prochains jalons.",
     pmiProcess: '10.2',
     difficulty: 'ADVANCED',
-    content: `# Comite de Pilotage — {{projectName}}
+    content: `# Comité de Pilotage — {{projectName}}
 
 **Date** : {{currentDate}}
 **Chef de projet** : {{userName}}
 **Sponsor** : {{sponsorName}}
-**Participants** : [A completer]
+**Participants** : [À compléter]
 
 ---
 
 ## Ordre du jour
 
-1. Synthese executive
+1. Synthèse executive
 2. Avancement (physique + financier)
 3. Risques critiques
 4. Demandes d'arbitrage
 5. Budget
 6. Prochains jalons
-7. Prochaine reunion
+7. Prochaine réunion
 
 ---
 
-## 1. Synthese executive
+## 1. Synthèse executive
 
-[En 5 a 10 lignes, resumez la situation du projet : statut global, principaux accomplissements de la periode, problemes majeurs et perspectives. Cette section doit permettre a un decideur de comprendre la situation en moins de 2 minutes.]
+[En 5 à 10 lignes, résumez la situation du projet : statut global, principaux accomplissements de la période, problèmes majeurs et perspectives. Cette section doit permettre à un décideur de comprendre la situation en moins de 2 minutes.]
 
 **Statut global** : 🟢 Vert / 🟠 Orange / 🔴 Rouge
 
-| Dimension | Statut | Evolution |
+| Dimension | Statut | Évolution |
 |---|---|---|
-| Perimetre | 🟢 / 🟠 / 🔴 | ↗ ↘ → |
-| Couts | 🟢 / 🟠 / 🔴 | ↗ ↘ → |
-| Delais | 🟢 / 🟠 / 🔴 | ↗ ↘ → |
-| Qualite | 🟢 / 🟠 / 🔴 | ↗ ↘ → |
+| Périmètre | 🟢 / 🟠 / 🔴 | ↗ ↘ → |
+| Coûts | 🟢 / 🟠 / 🔴 | ↗ ↘ → |
+| Délais | 🟢 / 🟠 / 🔴 | ↗ ↘ → |
+| Qualité | 🟢 / 🟠 / 🔴 | ↗ ↘ → |
 | Ressources | 🟢 / 🟠 / 🔴 | ↗ ↘ → |
 
 ## 2. Avancement
 
 ### 2.1 Avancement physique
 
-| Phase | % Prevu | % Realise | Ecart | Commentaire |
+| Phase | % Prévu | % Réalisé | Écart | Commentaire |
 |---|---|---|---|---|
-| Initiation | [A completer] | [A completer] | [A completer] | [A completer] |
-| Planification | [A completer] | [A completer] | [A completer] | [A completer] |
-| Execution | [A completer] | [A completer] | [A completer] | [A completer] |
-| Controle | [A completer] | [A completer] | [A completer] | [A completer] |
-| Cloture | [A completer] | [A completer] | [A completer] | [A completer] |
-| **Global** | **[A completer]** | **[A completer]** | **[A completer]** | |
+| Initiation | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| Planification | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| Exécution | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| Contrôle | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| Clôture | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| **Global** | **[À compléter]** | **[À compléter]** | **[À compléter]** | |
 
-**Faits marquants de la periode** :
-- [A completer]
-- [A completer]
-- [A completer]
+**Faits marquants de la période** :
+- [À compléter]
+- [À compléter]
+- [À compléter]
 
 ### 2.2 Avancement financier
 
 | Indicateur | Valeur | Commentaire |
 |---|---|---|
-| Budget approuve (BAC) | {{initialBudget}} EUR | |
-| Depenses a date (AC) | [A completer] EUR | [A completer]% consomme |
-| Valeur acquise (EV) | [A completer] EUR | |
-| CPI | [A completer] | > 1 = economie |
-| SPI | [A completer] | > 1 = avance |
-| Prevision a terminaison (EAC) | [A completer] EUR | |
-| Ecart a terminaison (VAC) | [A completer] EUR | |
+| Budget approuvé (BAC) | {{initialBudget}} EUR | |
+| Dépenses à date (AC) | [À compléter] EUR | [À compléter]% consommé |
+| Valeur acquise (EV) | [À compléter] EUR | |
+| CPI | [À compléter] | > 1 = économie |
+| SPI | [À compléter] | > 1 = avance |
+| Prévision à terminaison (EAC) | [À compléter] EUR | |
+| Écart à terminaison (VAC) | [À compléter] EUR | |
 
 ## 3. Risques critiques
 
-[Presentez uniquement les risques de criticite elevee (>= 12) necessitant l'attention du COPIL.]
+[Présentez uniquement les risques de criticité élevée (>= 12) nécessitant l'attention du COPIL.]
 
 | # | Risque | P | I | C | Tendance | Action en cours | Responsable |
 |---|---|---|---|---|---|---|---|
-| 1 | [A completer] | [1-5] | [1-5] | [Auto] | ↗ ↘ → | [A completer] | [A completer] |
-| 2 | [A completer] | [1-5] | [1-5] | [Auto] | ↗ ↘ → | [A completer] | [A completer] |
-| 3 | [A completer] | [1-5] | [1-5] | [Auto] | ↗ ↘ → | [A completer] | [A completer] |
+| 1 | [À compléter] | [1-5] | [1-5] | [Auto] | ↗ ↘ → | [À compléter] | [À compléter] |
+| 2 | [À compléter] | [1-5] | [1-5] | [Auto] | ↗ ↘ → | [À compléter] | [À compléter] |
+| 3 | [À compléter] | [1-5] | [1-5] | [Auto] | ↗ ↘ → | [À compléter] | [À compléter] |
 
 ## 4. Demandes d'arbitrage
 
-[Presentez les sujets necessitant une decision du COPIL. Chaque demande doit etre argumentee avec les options et impacts.]
+[Présentez les sujets nécessitant une décision du COPIL. Chaque demande doit être argumentée avec les options et impacts.]
 
 ### Arbitrage 1 : [Titre]
 
-- **Contexte** : [A completer]
+- **Contexte** : [À compléter]
 - **Options** :
-  - Option A : [A completer] — Impact : [cout/delai]
-  - Option B : [A completer] — Impact : [cout/delai]
-- **Recommandation** : [A completer]
-- **Decision attendue** : [A completer]
+  - Option A : [À compléter] — Impact : [coût/délai]
+  - Option B : [À compléter] — Impact : [coût/délai]
+- **Recommandation** : [À compléter]
+- **Décision attendue** : [À compléter]
 
 ### Arbitrage 2 : [Titre]
 
-- **Contexte** : [A completer]
+- **Contexte** : [À compléter]
 - **Options** :
-  - Option A : [A completer] — Impact : [cout/delai]
-  - Option B : [A completer] — Impact : [cout/delai]
-- **Recommandation** : [A completer]
-- **Decision attendue** : [A completer]
+  - Option A : [À compléter] — Impact : [coût/délai]
+  - Option B : [À compléter] — Impact : [coût/délai]
+- **Recommandation** : [À compléter]
+- **Décision attendue** : [À compléter]
 
 ## 5. Budget
 
-| Poste | Budget initial | Budget revise | Consomme | Reste | Ecart |
+| Poste | Budget initial | Budget révisé | Consommé | Reste | Écart |
 |---|---|---|---|---|---|
-| Ressources internes | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
-| Prestataires | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
-| Materiel / Licences | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
-| Provisions risques | [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |
-| **TOTAL** | **{{initialBudget}} EUR** | **[A completer]** | **[A completer]** | **[A completer]** | **[A completer]** |
+| Ressources internes | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| Prestataires | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| Matériel / Licences | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| Provisions risques | [À compléter] | [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| **TOTAL** | **{{initialBudget}} EUR** | **[À compléter]** | **[À compléter]** | **[À compléter]** | **[À compléter]** |
 
 ## 6. Prochains jalons
 
-| Jalon | Date prevue | Confiance | Risque principal |
+| Jalon | Date prévue | Confiance | Risque principal |
 |---|---|---|---|
-| [A completer] | [A completer] | Haute/Moyenne/Faible | [A completer] |
-| [A completer] | [A completer] | [A completer] | [A completer] |
-| [A completer] | [A completer] | [A completer] | [A completer] |
+| [À compléter] | [À compléter] | Haute/Moyenne/Faible | [À compléter] |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] |
+| [À compléter] | [À compléter] | [À compléter] | [À compléter] |
 
-## 7. Prochaine reunion
+## 7. Prochaine réunion
 
-- **Date** : [A completer]
-- **Ordre du jour previsionnel** : [A completer]
+- **Date** : [À compléter]
+- **Ordre du jour prévisionnel** : [À compléter]
 
 ---
 
-## Decisions prises en seance
+## Décisions prises en séance
 
-| # | Decision | Responsable | Echeance |
+| # | Décision | Responsable | Échéance |
 |---|---|---|---|
-| D01 | [A remplir en seance] | [A completer] | [A completer] |
-| D02 | [A remplir en seance] | [A completer] | [A completer] |
+| D01 | [À remplir en séance] | [À compléter] | [À compléter] |
+| D02 | [À remplir en séance] | [À compléter] | [À compléter] |
 `,
     evaluationCriteria: {
       sections: [
         {
           id: 'executive-summary',
-          name: 'Synthese executive',
+          name: 'Synthèse executive',
           weight: 20,
           criteria: [
-            { label: 'Synthese impactante', description: 'La situation est resumee de maniere claire et synthetique en moins de 10 lignes', maxPoints: 10 },
-            { label: 'Statut RAG complet', description: 'Les 5 dimensions (scope, cout, delai, qualite, ressources) ont un statut et une evolution', maxPoints: 10 },
+            { label: 'Synthèse impactante', description: 'La situation est résumée de manière claire et synthétique en moins de 10 lignes', maxPoints: 10 },
+            { label: 'Statut RAG complet', description: 'Les 5 dimensions (scope, coût, délai, qualité, ressources) ont un statut et une évolution', maxPoints: 10 },
           ],
         },
         {
@@ -857,9 +857,9 @@ Le projet avance conformement au plan sur le perimetre et le budget. Un retard d
           name: 'Avancement physique et financier',
           weight: 25,
           criteria: [
-            { label: 'Avancement physique', description: 'L\'avancement par phase est detaille avec ecarts commentes', maxPoints: 10 },
-            { label: 'Indicateurs EVM', description: 'Les indicateurs financiers (CPI, SPI, EAC, VAC) sont presents et corrects', maxPoints: 10 },
-            { label: 'Faits marquants', description: 'Les realisations de la periode sont factuelles et significatives', maxPoints: 5 },
+            { label: 'Avancement physique', description: 'L\'avancement par phase est détaillé avec écarts commentés', maxPoints: 10 },
+            { label: 'Indicateurs EVM', description: 'Les indicateurs financiers (CPI, SPI, EAC, VAC) sont présents et corrects', maxPoints: 10 },
+            { label: 'Faits marquants', description: 'Les réalisations de la période sont factuelles et significatives', maxPoints: 5 },
           ],
         },
         {
@@ -867,8 +867,8 @@ Le projet avance conformement au plan sur le perimetre et le budget. Un retard d
           name: 'Risques critiques',
           weight: 15,
           criteria: [
-            { label: 'Risques critiques', description: 'Seuls les risques de criticite >= 12 sont presentes avec actions et responsables', maxPoints: 10 },
-            { label: 'Tendances', description: 'L\'evolution des risques est indiquee', maxPoints: 5 },
+            { label: 'Risques critiques', description: 'Seuls les risques de criticité >= 12 sont présentés avec actions et responsables', maxPoints: 10 },
+            { label: 'Tendances', description: 'L\'évolution des risques est indiquée', maxPoints: 5 },
           ],
         },
         {
@@ -877,7 +877,7 @@ Le projet avance conformement au plan sur le perimetre et le budget. Un retard d
           weight: 25,
           criteria: [
             { label: 'Arbitrages structures', description: 'Chaque demande a un contexte, des options avec impact et une recommandation', maxPoints: 15 },
-            { label: 'Arguments factuels', description: 'Les arguments sont chiffres et objectifs pour faciliter la decision', maxPoints: 10 },
+            { label: 'Arguments factuels', description: 'Les arguments sont chiffrés et objectifs pour faciliter la décision', maxPoints: 10 },
           ],
         },
         {
@@ -885,8 +885,8 @@ Le projet avance conformement au plan sur le perimetre et le budget. Un retard d
           name: 'Budget et jalons',
           weight: 15,
           criteria: [
-            { label: 'Budget detaille', description: 'Le budget est ventile par poste avec initial/revise/consomme/ecart', maxPoints: 8 },
-            { label: 'Jalons avec confiance', description: 'Les prochains jalons ont un niveau de confiance et les risques associes', maxPoints: 7 },
+            { label: 'Budget détaillé', description: 'Le budget est ventilé par poste avec initial/révisé/consommé/écart', maxPoints: 8 },
+            { label: 'Jalons avec confiance', description: 'Les prochains jalons ont un niveau de confiance et les risques associés', maxPoints: 7 },
           ],
         },
       ],
@@ -896,8 +896,8 @@ Le projet avance conformement au plan sur le perimetre et le budget. Un retard d
     },
     referenceExample: `# COPIL — SAP30/CMRL (01/06)
 
-## Synthese executive
-Le projet SAP30 est globalement en bonne voie (statut Orange). L'avancement physique est a 55% pour 52% prevu. Le budget est maitrise (CPI 1.16). Un retard de 5 jours est constate sur le module MM, necessitant un renfort budgetaire de 15K EUR. Deux arbitrages sont presentes au COPIL.
+## Synthèse executive
+Le projet SAP30 est globalement en bonne voie (statut Orange). L'avancement physique est à 55% pour 52% prévu. Le budget est maîtrise (CPI 1.16). Un retard de 5 jours est constaté sur le module MM, nécessitant un renfort budgétaire de 15K EUR. Deux arbitrages sont présentés au COPIL.
 
 ## Avancement financier
 | Indicateur | Valeur |
@@ -910,10 +910,10 @@ Le projet SAP30 est globalement en bonne voie (statut Orange). L'avancement phys
 | EAC | 443 965 EUR |
 
 ## Arbitrage 1 : Budget renfort MM
-- **Contexte** : Retard migration MM de 5 jours, complexite donnees sous-estimee
+- **Contexte** : Retard migration MM de 5 jours, complexité données sous-estimée
 - **Option A** : Renfort 2 ETP pendant 3 semaines (+15K EUR) — Rattrapage en 10 jours
-- **Option B** : Statu quo — Retard supplementaire de 2 semaines, impact recette
-- **Recommandation** : Option A (cout marginal vs impact planning)
+- **Option B** : Statu quo — Retard supplémentaire de 2 semaines, impact recette
+- **Recommandation** : Option A (coût marginal vs impact planning)
 `,
   },
 ];

@@ -11,7 +11,7 @@ export class SubmitQuestionnaireDto {
   objective!: string;
 
   @ApiProperty({
-    description: 'Domaine cible (secteur d\'activite vise)',
+    description: 'Domaine cible (secteur d\'activité visé)',
     example: 'IT / Digital',
   })
   @IsString()
@@ -19,7 +19,7 @@ export class SubmitQuestionnaireDto {
   targetDomain!: string;
 
   @ApiProperty({
-    description: 'Niveau d\'experience en gestion de projet',
+    description: 'Niveau d\'expérience en gestion de projet',
     example: 'beginner',
     enum: ['none', 'beginner', 'intermediate', 'advanced'],
   })
@@ -36,8 +36,8 @@ export class SubmitQuestionnaireDto {
   mainMotivation!: string;
 
   @ApiPropertyOptional({
-    description: 'Informations complementaires',
-    example: 'Je suis actuellement developpeur et je souhaite evoluer vers le management de projet.',
+    description: 'Informations complémentaires',
+    example: 'Je suis actuellement développeur et je souhaite évoluer vers le management de projet.',
   })
   @IsString()
   @IsOptional()

@@ -136,7 +136,7 @@ export class PmoService {
             } catch (err) {
               this.logger.warn(`Template resolution failed: ${(err as Error).message}`);
             }
-            enrichedPrompt += `\n\n## Template demande par l'apprenant\nVoici le contenu du template "${templateMatch.title}" (type: ${templateMatch.type}), deja pre-rempli avec les donnees du projet :\n\n${resolvedContent}\n\nPresente ce template a l'apprenant en expliquant les sections a completer (marquees [A completer]) et comment les adapter a son contexte specifique.`;
+            enrichedPrompt += `\n\n## Template demandé par l'apprenant\nVoici le contenu du template "${templateMatch.title}" (type: ${templateMatch.type}), déjà pré-rempli avec les données du projet :\n\n${resolvedContent}\n\nPrésente ce template à l'apprenant en expliquant les sections à compléter (marquées [A compléter]) et comment les adapter à son contexte spécifique.`;
 
             // Emit template request event
             this.eventPublisher
@@ -345,15 +345,15 @@ export class PmoService {
 
     // Generate welcome message via AI
     const welcomeResult = await this.aiService.complete({
-      prompt: `Genere un message d'accueil pour un apprenant qui commence une simulation de gestion de projet. Le message doit inclure :
-1. Un accueil chaleureux de la part du departement RH/PMO
-2. Une presentation rapide du projet : "${projectInfo.name || 'le projet'}" pour le client "${projectInfo.client || 'le client'}" dans le secteur ${context.scenario.sector}
-3. Les objectifs principaux du scenario
-4. Les livrables attendus dans la premiere phase
-5. Une invitation a poser des questions
+      prompt: `Génère un message d'accueil pour un apprenant qui commence une simulation de gestion de projet. Le message doit inclure :
+1. Un accueil chaleureux de la part du département RH/PMO
+2. Une présentation rapide du projet : "${projectInfo.name || 'le projet'}" pour le client "${projectInfo.client || 'le client'}" dans le secteur ${context.scenario.sector}
+3. Les objectifs principaux du scénario
+4. Les livrables attendus dans la première phase
+5. Une invitation à poser des questions
 
-Reponds en francais, en markdown, de maniere professionnelle mais chaleureuse.`,
-      systemPrompt: `Tu es un PMO qui accueille un nouvel apprenant dans une simulation de gestion de projet. Le scenario est "${context.scenario.title}" de difficulte ${context.scenario.difficulty}.`,
+Réponds en français, en markdown, de manière professionnelle mais chaleureuse.`,
+      systemPrompt: `Tu es un PMO qui accueille un nouvel apprenant dans une simulation de gestion de projet. Le scénario est "${context.scenario.title}" de difficulté ${context.scenario.difficulty}. Réponds en français correct, avec les accents.`,
       maxTokens: 1500,
       temperature: 0.8,
       trackingContext: {
@@ -369,7 +369,7 @@ Reponds en francais, en markdown, de maniere professionnelle mais chaleureuse.`,
       data: {
         conversationId: conversation.id,
         role: 'system',
-        content: `Bienvenue dans la simulation "${context.scenario.title}". Votre PMO est a votre disposition pour vous guider.`,
+        content: `Bienvenue dans la simulation "${context.scenario.title}". Votre PMO est à votre disposition pour vous guider.`,
       },
     });
 

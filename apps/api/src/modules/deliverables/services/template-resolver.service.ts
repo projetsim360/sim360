@@ -71,7 +71,7 @@ export class TemplateResolverService {
       )
       .join('\n');
 
-    const teamMembers = teamRows || '| [A completer] | [A completer] | [A completer] | [A completer] | [A completer] |';
+    const teamMembers = teamRows || '| [A compléter] | [A compléter] | [A compléter] | [A compléter] | [A compléter] |';
 
     // Find sponsor from team members or use default
     const sponsor = simulation.project?.teamMembers?.find((m) =>
@@ -100,7 +100,7 @@ export class TemplateResolverService {
           '[Description du projet]',
       ),
       initialBudget: String(projectTemplate.initialBudget ?? '[Budget]'),
-      deadlineDays: String(projectTemplate.deadlineDays ?? '[Delai]'),
+      deadlineDays: String(projectTemplate.deadlineDays ?? '[Délai]'),
       teamMembers,
     };
   }

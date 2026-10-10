@@ -36,19 +36,19 @@ const TYPE_LABELS: Record<string, string> = {
   STAKEHOLDER_REGISTER: 'Registre parties prenantes',
   COMMUNICATION_PLAN: 'Plan de communication',
   STATUS_REPORT: 'Rapport d\'avancement',
-  MEETING_MINUTES: 'Compte rendu reunion',
-  LESSONS_LEARNED: 'Lecons apprises',
-  CLOSURE_REPORT: 'Rapport de cloture',
-  CUSTOM: 'Personnalise',
+  MEETING_MINUTES: 'Compte rendu réunion',
+  LESSONS_LEARNED: 'Leçons apprises',
+  CLOSURE_REPORT: 'Rapport de clôture',
+  CUSTOM: 'Personnalisé',
 };
 
 const STATUS_OPTIONS: { value: UserDeliverableStatus; label: string }[] = [
   { value: 'DRAFT', label: 'Brouillon' },
   { value: 'SUBMITTED', label: 'Soumis' },
-  { value: 'EVALUATED', label: 'Evalue' },
+  { value: 'EVALUATED', label: 'Évalué' },
   { value: 'REVISED', label: 'Revise' },
-  { value: 'VALIDATED', label: 'Valide' },
-  { value: 'REJECTED', label: 'Rejete' },
+  { value: 'VALIDATED', label: 'Validé' },
+  { value: 'REJECTED', label: 'Rejeté' },
   { value: 'PENDING_APPROVAL', label: 'En approbation' },
 ];
 
@@ -114,7 +114,7 @@ export default function DeliverablesListPage() {
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-sm text-muted-foreground">
-              Aucune simulation selectionnee.
+              Aucune simulation sélectionnée.
             </p>
           </CardContent>
         </Card>
@@ -148,7 +148,7 @@ export default function DeliverablesListPage() {
               [
                 { key: 'ALL', label: 'Tous' },
                 { key: 'SELF', label: 'Mes livrables' },
-                { key: 'DELEGATED', label: 'Delegues' },
+                { key: 'DELEGATED', label: 'Délégués' },
                 { key: 'APPROVAL', label: 'En approbation' },
               ] as const
             ).map((tab) => (
@@ -215,7 +215,7 @@ export default function DeliverablesListPage() {
                   setFilterStatus('');
                 }}
               >
-                Reinitialiser
+                Réinitialiser
               </Button>
             )}
           </div>
@@ -256,7 +256,7 @@ export default function DeliverablesListPage() {
               <EmptyState
                 icon="document"
                 title="Aucun livrable"
-                description="Les livrables apparaissent a chaque nouvelle phase. Avancez dans la simulation pour les debloquer."
+                description="Les livrables apparaissent à chaque nouvelle phase. Avancez dans la simulation pour les débloquer."
               />
             </CardContent>
           </Card>
@@ -291,7 +291,7 @@ export default function DeliverablesListPage() {
                           className="size-3.5 text-muted-foreground"
                         />
                         <span className="text-xs text-muted-foreground">
-                          Delegue a{' '}
+                          Délégué à{' '}
                           <span className="font-medium text-foreground">
                             {deliverable.assignedToMember.name}
                           </span>{' '}
@@ -339,7 +339,7 @@ export default function DeliverablesListPage() {
                   {deliverable.revisionNumber > 0 && (
                     <div className="mt-2 pt-2 border-t border-border">
                       <p className="text-[10px] text-muted-foreground">
-                        Revision {deliverable.revisionNumber}/
+                        Révision {deliverable.revisionNumber}/
                         {deliverable.maxRevisions}
                       </p>
                     </div>
@@ -359,7 +359,7 @@ export default function DeliverablesListPage() {
                           }}
                         >
                           <KeenIcon icon="people" style="duotone" className="text-xs leading-none" />
-                          Assigner a un expert
+                          Assigner à un expert
                         </Button>
                       </div>
                     )}

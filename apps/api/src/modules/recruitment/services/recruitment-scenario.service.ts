@@ -2,6 +2,7 @@ import { Injectable, Logger, NotFoundException, BadRequestException } from '@nes
 import { PrismaService, EventPublisherService, EventType, AggregateType } from '@sim360/core';
 import { RandomEventType, Severity, PhaseType, Sector, Difficulty } from '@prisma/client';
 import { AiService } from '../../ai/ai.service';
+import { SECTOR_CODES } from '../../simulations/sector-labels';
 
 interface GeneratedScenarioConfig {
   title: string;
@@ -110,44 +111,44 @@ export class RecruitmentScenarioService {
     });
 
     if (!campaign) throw new NotFoundException('Campagne introuvable');
-    if (campaign.tenantId !== tenantId) throw new BadRequestException('Acces refuse');
+    if (campaign.tenantId !== tenantId) throw new BadRequestException('Accès refusé');
     if (campaign.generatedScenarioId) {
-      throw new BadRequestException('Un scenario a deja ete genere pour cette campagne');
+      throw new BadRequestException('Un scénario a déjà été généré pour cette campagne');
     }
 
     const skills = campaign.requiredSkills as Array<{ skill: string; weight: number }>;
     const internalDocs = campaign.internalDocuments as Array<{ fileName: string; description: string }> | null;
 
-    const systemPrompt = `Tu es un expert en conception pedagogique et recrutement. Tu crees un scenario de simulation realiste pour evaluer les competences d'un candidat a un poste de gestion de projet.
+    const systemPrompt = `Tu es un expert en conception pédagogique et recrutement. Tu crées un scénario de simulation réaliste pour évaluer les compétences d'un candidat à un poste de gestion de projet.
 
-Le scenario doit :
-- Etre realiste et representatif du poste vise
-- Comporter 5 phases (Initiation, Planning, Execution, Monitoring, Closure)
-- Inclure des decisions qui testent les competences requises
-- Inclure des reunions avec des personnages ayant des personnalites variees
-- Inclure des evenements aleatoires pour tester l'adaptabilite
-- Les impacts KPI doivent etre equilibres et realistes (entre -20 et +15 par option)
-- Adapter la difficulte et le contexte au niveau d'experience requis
-- Integrer la culture d'entreprise dans les interactions et les attentes
+Le scénario doit :
+- Être réaliste et représentatif du poste visé
+- Comporter 5 phases (Initiation, Planning, Exécution, Monitoring, Closure)
+- Inclure des décisions qui testent les compétences requises
+- Inclure des réunions avec des personnages ayant des personnalités variées
+- Inclure des événements aléatoires pour tester l'adaptabilité
+- Les impacts KPI doivent être équilibrés et réalistes (entre -20 et +15 par option)
+- Adapter la difficulté et le contexte au niveau d'expérience requis
+- Intégrer la culture d'entreprise dans les interactions et les attentes
 
-Tu dois repondre UNIQUEMENT avec un objet JSON valide (sans commentaires, sans markdown).`;
+Tu dois répondre UNIQUEMENT avec un objet JSON valide (sans commentaires, sans markdown). Réponds en français correct, avec les accents.`;
 
-    const prompt = `Genere un scenario de simulation complet pour evaluer un candidat au poste suivant :
+    const prompt = `Génère un scénario de simulation complet pour évaluer un candidat au poste suivant :
 
 **Poste** : ${campaign.jobTitle}
 **Description** : ${campaign.jobDescription}
-**Competences requises** : ${skills.map((s) => `${s.skill} (poids: ${s.weight})`).join(', ')}
+**Compétences requises** : ${skills.map((s) => `${s.skill} (poids: ${s.weight})`).join(', ')}
 **Niveau d'experience** : ${campaign.experienceLevel}
 **Types de projets** : ${campaign.projectTypes.join(', ')}
 **Culture d'entreprise** : ${campaign.culture}${campaign.cultureDescription ? ` - ${campaign.cultureDescription}` : ''}
 ${internalDocs?.length ? `**Documents internes** : ${internalDocs.map((d) => `${d.fileName}: ${d.description}`).join('; ')}` : ''}
 
-Reponds avec un JSON ayant cette structure exacte :
+Réponds avec un JSON ayant cette structure exacte :
 {
   "title": "string",
   "description": "string",
   "objectives": ["string"],
-  "sector": "IT|CONSTRUCTION|MARKETING|HEALTHCARE|FINANCE|CUSTOM",
+  "sector": "${SECTOR_CODES.join('|')}",
   "difficulty": "BEGINNER|INTERMEDIATE|ADVANCED",
   "estimatedDurationHours": number,
   "competencies": ["string"],
@@ -197,7 +198,7 @@ Reponds avec un JSON ayant cette structure exacte :
       scenarioConfig = JSON.parse(jsonStr);
     } catch (error) {
       this.logger.error(`Failed to parse AI scenario response: ${result.content.substring(0, 200)}`);
-      throw new BadRequestException('Echec de la generation du scenario. Veuillez reessayer.');
+      throw new BadRequestException('Échec de la génération du scénario. Veuillez réessayer.');
     }
 
     // Create the scenario in DB within a transaction

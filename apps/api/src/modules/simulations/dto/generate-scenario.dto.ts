@@ -40,7 +40,7 @@ export class GenerateScenarioDto {
 
   @ApiPropertyOptional({
     description:
-      'Utiliser le profil utilisateur pour calibrer le scenario',
+      'Utiliser le profil utilisateur pour calibrer le scénario',
   })
   @IsOptional()
   @IsBoolean()

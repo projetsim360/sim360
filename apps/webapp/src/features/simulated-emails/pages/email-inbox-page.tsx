@@ -41,7 +41,7 @@ const FOLDER_TITLES: Record<EmailFolder, string> = {
 
 const FOLDER_SUBTITLES: Record<EmailFolder, string> = {
   inbox: 'Traitez les emails entrants de votre simulation en cours.',
-  responded: "Relisez vos réponses et le retour de l'IA.",
+  responded: "Relisez vos réponses et votre retour détaillé.",
   archived: 'Les emails que vous avez archivés.',
 };
 

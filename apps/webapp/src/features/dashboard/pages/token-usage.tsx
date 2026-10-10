@@ -37,15 +37,15 @@ function getProgressColor(percent: number): string {
 }
 
 const OPERATION_LABELS: Record<string, string> = {
-  complete: 'Completion generique',
-  meeting_respond: 'Reponse reunion (controller)',
-  meeting_stream: 'Reponse reunion (stream)',
-  meeting_summary: 'Resume reunion',
-  meeting_structured_summary: 'Resume structure',
-  decision_evaluate: 'Evaluation decision',
+  complete: 'Complétion générique',
+  meeting_respond: 'Réponse réunion (controller)',
+  meeting_stream: 'Réponse réunion (stream)',
+  meeting_summary: 'Résumé réunion',
+  meeting_structured_summary: 'Résumé structuré',
+  decision_evaluate: 'Évaluation décision',
   phase_report: 'Rapport de phase',
   final_report: 'Rapport final',
-  event_description: 'Description evenement',
+  event_description: 'Description événement',
 };
 
 export default function TokenUsagePage() {
@@ -115,7 +115,7 @@ export default function TokenUsagePage() {
       {periodLabel && (
         <div className="flex items-center gap-2 mb-5">
           <Badge variant="primary" appearance="light" size="sm">
-            Periode : {periodLabel}
+            Période : {periodLabel}
           </Badge>
           {billing && (
             <Badge variant="secondary" appearance="light" size="sm">
@@ -128,7 +128,7 @@ export default function TokenUsagePage() {
       {/* Billing total + stats */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
         <StatCard
-          label="Cout total"
+          label="Coût total"
           value={billing ? `${billing.totalCost.toFixed(2)}` : '0'}
           sub={currency}
           color="text-foreground"
@@ -151,7 +151,7 @@ export default function TokenUsagePage() {
           color="text-primary"
         />
         <StatCard
-          label="Cout / appel"
+          label="Coût / appel"
           value={billing && billing.totalCalls > 0
             ? `${(billing.totalCost / billing.totalCalls).toFixed(4)}`
             : '0'}
@@ -221,7 +221,7 @@ export default function TokenUsagePage() {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
               <KeenIcon icon="setting-2" style="duotone" className="size-4" />
-              Cout par modele
+              Coût par modèle
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -229,11 +229,11 @@ export default function TokenUsagePage() {
               <Table className="text-sm">
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="text-left">Modele</TableHead>
+                    <TableHead className="text-left">Modèle</TableHead>
                     <TableHead className="text-right">Entree</TableHead>
                     <TableHead className="text-right">Sortie</TableHead>
                     <TableHead className="text-right">Appels</TableHead>
-                    <TableHead className="text-right">Cout</TableHead>
+                    <TableHead className="text-right">Coût</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -259,7 +259,7 @@ export default function TokenUsagePage() {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
               <KeenIcon icon="category" style="duotone" className="size-4" />
-              Cout par operation
+              Coût par opération
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -271,7 +271,7 @@ export default function TokenUsagePage() {
                     <TableHead className="text-right">Entree</TableHead>
                     <TableHead className="text-right">Sortie</TableHead>
                     <TableHead className="text-right">Appels</TableHead>
-                    <TableHead className="text-right">Cout</TableHead>
+                    <TableHead className="text-right">Coût</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -297,7 +297,7 @@ export default function TokenUsagePage() {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
               <KeenIcon icon="chart-line" style="duotone" className="size-4" />
-              Cout par projet
+              Coût par projet
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -306,11 +306,11 @@ export default function TokenUsagePage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-left">Projet</TableHead>
-                    <TableHead className="text-left">Scenario</TableHead>
+                    <TableHead className="text-left">Scénario</TableHead>
                     <TableHead className="text-right">Entree</TableHead>
                     <TableHead className="text-right">Sortie</TableHead>
                     <TableHead className="text-right">Appels</TableHead>
-                    <TableHead className="text-right">Cout</TableHead>
+                    <TableHead className="text-right">Coût</TableHead>
                     <TableHead className="text-right">Part</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -354,12 +354,12 @@ export default function TokenUsagePage() {
             </div>
             <div className="text-sm text-muted-foreground space-y-1">
               <p>
-                Les couts sont calcules automatiquement a partir du tarif de chaque modele IA
+                Les coûts sont calculés automatiquement à partir du tarif de chaque modèle IA
                 avec une marge de {billing?.marginPercent ?? 30}%.
               </p>
               <p>
-                Les quotas sont reinitialises au debut de chaque mois.
-                Le cout affiche correspond a la periode en cours.
+                Les quotas sont réinitialisés au début de chaque mois.
+                Le coût affiché correspond à la période en cours.
               </p>
             </div>
           </div>

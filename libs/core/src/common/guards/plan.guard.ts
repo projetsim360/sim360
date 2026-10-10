@@ -28,7 +28,7 @@ export class PlanGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
     const tenantId = request.headers['x-tenant-id'] || request.user?.tenantId;
-    if (!tenantId) throw new ForbiddenException('Tenant non identifie');
+    if (!tenantId) throw new ForbiddenException('Tenant non identifié');
 
     const tenant = await this.prisma.tenant.findUnique({
       where: { id: tenantId },
@@ -42,7 +42,7 @@ export class PlanGuard implements CanActivate {
     if (tenantLevel < minLevel) {
       const planName = requiredPlans[0];
       throw new ForbiddenException(
-        `Cette fonctionnalite necessite le plan ${planName} ou superieur. Votre plan actuel : ${tenant.plan}`,
+        `Cette fonctionnalité nécessite le plan ${planName} ou supérieur. Votre plan actuel : ${tenant.plan}`,
       );
     }
 

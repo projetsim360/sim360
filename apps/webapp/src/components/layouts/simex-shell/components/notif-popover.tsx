@@ -107,7 +107,7 @@ export function NotifPopover({ className }: NotifPopoverProps) {
         <span className="mt-[6px] size-2 shrink-0 rounded-full border border-[var(--neutral-200)] bg-transparent" />
         <div className="flex-1 min-w-0">
           <div className="mb-0.5 text-[13px] font-semibold text-foreground">
-            Feedback IA disponible
+            Nouveau retour disponible
           </div>
           <div className="text-xs text-muted-foreground">
             hier · Cadrage périmètre

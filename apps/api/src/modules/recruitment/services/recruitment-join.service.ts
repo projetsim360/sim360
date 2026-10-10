@@ -27,7 +27,7 @@ export class RecruitmentJoinService {
 
     // Check capacity
     if (campaign.maxCandidates && campaign._count.candidateResults >= campaign.maxCandidates) {
-      throw new ForbiddenException('Le nombre maximum de candidats a ete atteint');
+      throw new ForbiddenException('Le nombre maximum de candidats a été atteint');
     }
 
     // Check user hasn't already joined
@@ -36,11 +36,11 @@ export class RecruitmentJoinService {
     });
 
     if (existing) {
-      throw new BadRequestException('Vous avez deja rejoint cette campagne');
+      throw new BadRequestException('Vous avez déjà rejoint cette campagne');
     }
 
     if (!campaign.generatedScenarioId) {
-      throw new BadRequestException('Le scenario de cette campagne n\'est pas encore pret');
+      throw new BadRequestException('Le scénario de cette campagne n\'est pas encore prêt');
     }
 
     // Load the full scenario to create a simulation
@@ -58,7 +58,7 @@ export class RecruitmentJoinService {
       },
     });
 
-    if (!scenario) throw new NotFoundException('Scenario introuvable');
+    if (!scenario) throw new NotFoundException('Scénario introuvable');
 
     const projectTemplate = scenario.projectTemplate as Record<string, any>;
     const initialKpis = scenario.initialKpis as Record<string, number>;

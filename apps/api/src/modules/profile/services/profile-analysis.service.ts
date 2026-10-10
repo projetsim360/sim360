@@ -64,12 +64,12 @@ export class ProfileAnalysisService {
 
     // Evaluate aptitude test via AI
     const evaluationResult = await this.aiService.complete({
-      prompt: `Evalue les reponses suivantes au test d'aptitude en gestion de projet.
+      prompt: `Évalue les réponses suivantes au test d'aptitude en gestion de projet.
 
-Reponses :
+Réponses :
 ${JSON.stringify(dto.answers, null, 2)}
 
-Analyse chaque reponse et fournis un resultat structure au format JSON :
+Analyse chaque réponse et fournis un résultat structure au format JSON :
 {
   "score": <number 0-100>,
   "categoryScores": {
@@ -79,12 +79,12 @@ Analyse chaque reponse et fournis un resultat structure au format JSON :
     "leadership": <number 0-100>,
     "gestionBudget": <number 0-100>
   },
-  "analysis": "<string: analyse detaillee>",
+  "analysis": "<string: analyse détaillée>",
   "recommendations": ["<string>"]
 }
 
-Reponds UNIQUEMENT avec le JSON, sans commentaire.`,
-      systemPrompt: `Tu es un expert en evaluation des competences en gestion de projet. Tu evalues les reponses d'un candidat a un test d'aptitude et fournis une analyse detaillee. Reponds toujours en JSON valide.`,
+Réponds UNIQUEMENT avec le JSON, sans commentaire.`,
+      systemPrompt: `Tu es un expert en évaluation des compétences en gestion de projet. Tu évalues les réponses d'un candidat à un test d'aptitude et fournis une analyse détaillée. Réponds toujours en JSON valide. Réponds en français correct, avec les accents.`,
       maxTokens: 1500,
       temperature: 0.3,
       trackingContext: {
@@ -149,64 +149,64 @@ Reponds UNIQUEMENT avec le JSON, sans commentaire.`,
     const contextParts: string[] = [];
 
     if (profile.cvData) {
-      contextParts.push(`## Donnees du CV\n${JSON.stringify(profile.cvData, null, 2)}`);
+      contextParts.push(`## Données du CV\n${JSON.stringify(profile.cvData, null, 2)}`);
     }
 
     if (profile.linkedinData) {
-      contextParts.push(`## Donnees LinkedIn\n${JSON.stringify(profile.linkedinData, null, 2)}`);
+      contextParts.push(`## Données LinkedIn\n${JSON.stringify(profile.linkedinData, null, 2)}`);
     }
 
     if (profile.questionnaireData) {
-      contextParts.push(`## Reponses au questionnaire\n${JSON.stringify(profile.questionnaireData, null, 2)}`);
+      contextParts.push(`## Réponses au questionnaire\n${JSON.stringify(profile.questionnaireData, null, 2)}`);
     }
 
     if (profile.aptitudeTestData) {
-      contextParts.push(`## Resultats du test d'aptitude\n${JSON.stringify(profile.aptitudeTestData, null, 2)}`);
+      contextParts.push(`## Résultats du test d'aptitude\n${JSON.stringify(profile.aptitudeTestData, null, 2)}`);
     }
 
     if (contextParts.length === 0) {
       throw new BadRequestException(
-        'Aucune donnee disponible pour generer un diagnostic. Veuillez remplir au moins le questionnaire.',
+        'Aucune donnée disponible pour générer un diagnostic. Veuillez remplir au moins le questionnaire.',
       );
     }
 
     const dataContext = contextParts.join('\n\n');
 
     const diagnosticResult = await this.aiService.complete({
-      prompt: `Analyse le profil suivant et genere un diagnostic complet.
+      prompt: `Analyse le profil suivant et génère un diagnostic complet.
 
 ${dataContext}
 
-Genere un diagnostic au format JSON strict :
+Génère un diagnostic au format JSON strict :
 {
   "profileType": "ZERO_EXPERIENCE" | "BEGINNER" | "RECONVERSION" | "REINFORCEMENT",
   "skills": [
     {
-      "name": "<nom de la competence>",
+      "name": "<nom de la compétence>",
       "currentLevel": "none" | "basic" | "intermediate" | "advanced",
       "targetLevel": "basic" | "intermediate" | "advanced",
       "gap": <number 0-100>
     }
   ],
-  "suggestedSector": "<secteur d'activite recommande>",
+  "suggestedSector": "<secteur d'activité recommandé>",
   "suggestedDifficulty": "EASY" | "MEDIUM" | "HARD" | "EXPERT",
-  "summary": "<resume du diagnostic en 2-3 phrases>",
+  "summary": "<résumé du diagnostic en 2-3 phrases>",
   "strengths": ["<point fort 1>", "<point fort 2>"],
-  "areasForImprovement": ["<axe d'amelioration 1>", "<axe d'amelioration 2>"]
+  "areasForImprovement": ["<axe d'amélioration 1>", "<axe d'amélioration 2>"]
 }
 
-Regles pour determiner profileType :
-- ZERO_EXPERIENCE : aucune experience en gestion de projet, debutant complet
-- BEGINNER : quelques notions, < 1 an d'experience
-- RECONVERSION : experience dans un autre domaine, souhaite se reconvertir en gestion de projet
-- REINFORCEMENT : experience existante en gestion de projet, souhaite renforcer ses competences
+Règles pour déterminer profileType :
+- ZERO_EXPERIENCE : aucune expérience en gestion de projet, débutant complet
+- BEGINNER : quelques notions, < 1 an d'expérience
+- RECONVERSION : expérience dans un autre domaine, souhaite se reconvertir en gestion de projet
+- REINFORCEMENT : expérience existante en gestion de projet, souhaite renforcer ses compétences
 
-Les competences doivent couvrir : planification, gestion des risques, communication, leadership, gestion budgetaire, methodologie (PMI/Agile), gestion des parties prenantes, suivi et controle.
+Les compétences doivent couvrir : planification, gestion des risques, communication, leadership, gestion budgétaire, méthodologie (PMI/Agile), gestion des parties prenantes, suivi et contrôle.
 
-Le gap est calcule comme : (targetLevel - currentLevel) / targetLevel * 100.
+Le gap est calculé comme : (targetLevel - currentLevel) / targetLevel * 100.
 
-Reponds UNIQUEMENT avec le JSON, sans commentaire.`,
-      systemPrompt: `Tu es un expert en analyse de profils pour la gestion de projet. Tu determines le type de profil d'un apprenant et identifies ses lacunes (gap analysis) pour personnaliser son parcours de formation via simulation. Reponds toujours en JSON valide.`,
+Réponds UNIQUEMENT avec le JSON, sans commentaire.`,
+      systemPrompt: `Tu es un expert en analyse de profils pour la gestion de projet. Tu détermines le type de profil d'un apprenant et identifies ses lacunes (gap analysis) pour personnaliser son parcours de formation via simulation. Réponds toujours en JSON valide. Réponds en français correct, avec les accents.`,
       maxTokens: 2000,
       temperature: 0.3,
       trackingContext: {
@@ -222,7 +222,7 @@ Reponds UNIQUEMENT avec le JSON, sans commentaire.`,
     } catch {
       this.logger.error('Failed to parse diagnostic AI response');
       throw new BadRequestException(
-        'Erreur lors de la generation du diagnostic. Veuillez reessayer.',
+        'Erreur lors de la génération du diagnostic. Veuillez réessayer.',
       );
     }
 
@@ -293,9 +293,9 @@ Reponds UNIQUEMENT avec le JSON, sans commentaire.`,
     }
 
     const extractionResult = await this.aiService.complete({
-      prompt: `Un CV a ete uploade a l'URL suivante : ${fileUrl}
+      prompt: `Un CV a été uploade a l'URL suivante : ${fileUrl}
 
-Comme tu ne peux pas acceder au fichier directement, genere une structure JSON vide a remplir manuellement par l'apprenant. Le format attendu est :
+Comme tu ne peux pas accéder au fichier directement, génère une structure JSON vide à remplir manuellement par l'apprenant. Le format attendu est :
 
 {
   "fullName": "",
@@ -322,8 +322,8 @@ Comme tu ne peux pas acceder au fichier directement, genere une structure JSON v
   }
 }
 
-Reponds UNIQUEMENT avec le JSON.`,
-      systemPrompt: `Tu es un expert en analyse de CV. Tu extrais les informations pertinentes d'un CV pour evaluer le profil d'un apprenant en gestion de projet.`,
+Réponds UNIQUEMENT avec le JSON.`,
+      systemPrompt: `Tu es un expert en analyse de CV. Tu extrais les informations pertinentes d'un CV pour évaluer le profil d'un apprenant en gestion de projet. Réponds en français correct, avec les accents.`,
       maxTokens: 1500,
       temperature: 0.2,
       trackingContext: {

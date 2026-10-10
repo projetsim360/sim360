@@ -14,6 +14,8 @@ interface MeetingChatPanelProps {
   messages: ChatMessage[];
   input: string;
   streaming: boolean;
+  /** True while the facilitator's opening statement is being prepared. */
+  opening?: boolean;
   selectedParticipant: MeetingParticipant | null;
   onInputChange: (v: string) => void;
   onSelectParticipant: (p: MeetingParticipant) => void;
@@ -28,6 +30,7 @@ export function MeetingChatPanel({
   messages,
   input,
   streaming,
+  opening = false,
   selectedParticipant,
   onInputChange,
   onSelectParticipant,
@@ -44,7 +47,18 @@ export function MeetingChatPanel({
     )}>
       <ScrollArea className="flex-1 px-3 py-3" viewportRef={scrollRef}>
         <div className="space-y-3">
-          {messages.length === 0 && (
+          {opening && messages.length === 0 && (
+            <div role="status" aria-live="polite" className="flex flex-col items-center justify-center py-12 text-center">
+              <div className={cn('size-12 rounded-2xl flex items-center justify-center mb-3', dark ? 'bg-white/8' : 'bg-[var(--brand-50)]')}>
+                <span className={cn('size-5 rounded-full border-2 border-t-transparent animate-spin', dark ? 'border-[var(--accent-300)]' : 'border-[var(--brand-500)]')} />
+              </div>
+              <p className={cn('text-sm font-medium', dark ? 'text-[var(--brand-50)]' : 'text-foreground')}>La réunion démarre…</p>
+              <p className={cn('text-xs mt-1 max-w-xs', dark ? 'text-[var(--brand-200)]' : 'text-[var(--neutral-500)]')}>
+                Les participants s'installent, l'animateur va ouvrir la séance.
+              </p>
+            </div>
+          )}
+          {!opening && messages.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <div className={cn('size-12 rounded-2xl flex items-center justify-center mb-3', dark ? 'bg-white/8' : 'bg-[var(--brand-50)]')}>
                 <KeenIcon icon="message-text" style="duotone" className={cn('size-6', dark ? 'text-[var(--accent-300)]' : 'text-[var(--brand-500)]')} />
@@ -109,14 +123,14 @@ export function MeetingChatPanel({
             }}
             placeholder={`Message pour ${selectedParticipant?.name ?? 'le participant'}…`}
             aria-label="Message pour le participant"
-            disabled={streaming}
+            disabled={streaming || opening}
             className={cn('flex-1 border-0 shadow-none focus-visible:ring-0 focus-visible:outline-none bg-transparent px-0 h-9', dark && 'text-white placeholder:text-[var(--brand-200)]')}
           />
           <Button
             variant="primary"
             size="icon"
             onClick={onSend}
-            disabled={!input.trim() || streaming}
+            disabled={!input.trim() || streaming || opening}
             title="Envoyer"
             className="shrink-0 size-8 rounded-lg bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
           >

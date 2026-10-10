@@ -128,20 +128,20 @@ export default function ReferenceDocumentsPage() {
         { id: editingDocument.id, data },
         {
           onSuccess: () => {
-            toast.success('Document mis a jour');
+            toast.success('Document mis à jour');
             setFormOpen(false);
             setEditingDocument(null);
           },
-          onError: () => toast.error('Erreur lors de la mise a jour'),
+          onError: () => toast.error('Erreur lors de la mise à jour'),
         },
       );
     } else {
       createMutation.mutate(data as CreateReferenceDocumentDto, {
         onSuccess: () => {
-          toast.success('Document cree');
+          toast.success('Document créé');
           setFormOpen(false);
         },
-        onError: () => toast.error('Erreur lors de la creation'),
+        onError: () => toast.error('Erreur lors de la création'),
       });
     }
   };
@@ -149,7 +149,7 @@ export default function ReferenceDocumentsPage() {
   return (
     <>
       <Toolbar>
-        <ToolbarHeading title="Documents de reference" />
+        <ToolbarHeading title="Documents de référence" />
         <ToolbarActions>
           <Button variant="primary" size="sm" onClick={handleCreate}>
             Nouveau document
@@ -173,10 +173,10 @@ export default function ReferenceDocumentsPage() {
               <div className="w-44">
                 <Select value={filterCategory} onValueChange={setFilterCategory}>
                   <SelectTrigger size="sm">
-                    <SelectValue placeholder="Categorie" />
+                    <SelectValue placeholder="Catégorie" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="_all">Toutes les categories</SelectItem>
+                    <SelectItem value="_all">Toutes les catégories</SelectItem>
                     {CATEGORIES.map((cat) => (
                       <SelectItem key={cat} value={cat}>
                         {CATEGORY_LABELS[cat]}
@@ -226,7 +226,7 @@ export default function ReferenceDocumentsPage() {
                     setSearch('');
                   }}
                 >
-                  Reinitialiser
+                  Réinitialiser
                 </Button>
               )}
             </div>
@@ -256,8 +256,8 @@ export default function ReferenceDocumentsPage() {
               <EmptyState
                 icon="folder"
                 title="Aucun document"
-                description="Aucun document ne correspond a vos filtres."
-                action={{ label: 'Creer un premier document', onClick: handleCreate }}
+                description="Aucun document ne correspond à vos filtres."
+                action={{ label: 'Créer un premier document', onClick: handleCreate }}
               />
             </CardContent>
           </Card>
@@ -280,7 +280,7 @@ export default function ReferenceDocumentsPage() {
                         className="px-4 py-3 text-left font-medium text-muted-foreground cursor-pointer hover:text-foreground"
                         onClick={() => handleSort('category')}
                       >
-                        Categorie{sortIcon('category')}
+                        Catégorie{sortIcon('category')}
                       </th>
                       <th
                         className="px-4 py-3 text-left font-medium text-muted-foreground cursor-pointer hover:text-foreground"
@@ -301,7 +301,7 @@ export default function ReferenceDocumentsPage() {
                         className="px-4 py-3 text-left font-medium text-muted-foreground cursor-pointer hover:text-foreground"
                         onClick={() => handleSort('updatedAt')}
                       >
-                        Modifie{sortIcon('updatedAt')}
+                        Modifié{sortIcon('updatedAt')}
                       </th>
                       <th className="px-4 py-3 text-right font-medium text-muted-foreground">
                         Actions

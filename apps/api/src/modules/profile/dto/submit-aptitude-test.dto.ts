@@ -9,7 +9,7 @@ class AptitudeAnswerDto {
   @IsNotEmpty()
   questionId!: string;
 
-  @ApiProperty({ description: 'Reponse de l\'apprenant' })
+  @ApiProperty({ description: 'Réponse de l\'apprenant' })
   @IsString()
   @IsNotEmpty()
   answer!: string;
@@ -17,7 +17,7 @@ class AptitudeAnswerDto {
 
 export class SubmitAptitudeTestDto {
   @ApiProperty({
-    description: 'Tableau des reponses au test d\'aptitude',
+    description: 'Tableau des réponses au test d\'aptitude',
     type: [AptitudeAnswerDto],
   })
   @IsArray()

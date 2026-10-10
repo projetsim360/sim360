@@ -45,10 +45,10 @@ export class DeliverableDelegationService {
     });
     if (!deliverable) throw new NotFoundException('Livrable introuvable');
     if (deliverable.simulation.userId !== userId)
-      throw new BadRequestException('Acces refuse');
+      throw new BadRequestException('Accès refusé');
     if (deliverable.status !== 'DRAFT' && deliverable.status !== 'REVISED') {
       throw new BadRequestException(
-        'Seul un livrable en brouillon ou revision peut etre delegue',
+        'Seul un livrable en brouillon ou révision peut être délégué',
       );
     }
 
@@ -61,7 +61,7 @@ export class DeliverableDelegationService {
     });
     if (!teamMember)
       throw new NotFoundException(
-        "Membre d'equipe introuvable dans ce projet",
+        "Membre d'équipe introuvable dans ce projet",
       );
 
     // 3. Update deliverable
@@ -137,16 +137,17 @@ export class DeliverableDelegationService {
     const systemPrompt = [
       `Tu es ${teamMember.name}, ${teamMember.role} dans un projet.`,
       `Niveau d'expertise : ${teamMember.expertise}.`,
-      `Personnalite : ${teamMember.personality}.`,
+      `Personnalité : ${teamMember.personality}.`,
       ``,
-      `Tu dois rediger un livrable professionnel.`,
-      `Adapte le niveau de detail et la qualite a ton expertise (${teamMember.expertise}).`,
-      `Si ta personnalite est RESISTANT, tu peux etre plus succinct ou critique.`,
-      `Si ta personnalite est COOPERATIVE, tu es thorough et bien structure.`,
+      `Tu dois rédiger un livrable professionnel.`,
+      `Réponds en français correct, avec les accents.`,
+      `Adapte le niveau de détail et la qualité à ton expertise (${teamMember.expertise}).`,
+      `Si ta personnalité est RESISTANT, tu peux être plus succinct ou critique.`,
+      `Si ta personnalité est COOPERATIVE, tu es thorough et bien structure.`,
     ].join('\n');
 
     const prompt = [
-      `Redige le livrable suivant en format Markdown :`,
+      `Rédige le livrable suivant en format Markdown :`,
       ``,
       `Titre : ${title}`,
       `Type : ${type}`,
@@ -154,9 +155,9 @@ export class DeliverableDelegationService {
         ? `Instructions du chef de projet : ${instructions}`
         : '',
       ``,
-      `Le document doit etre professionnel, structure avec des sections et sous-sections.`,
-      `Inclus les elements attendus pour ce type de livrable de gestion de projet.`,
-      `Redige en francais, entre 500 et 1500 mots.`,
+      `Le document doit être professionnel, structure avec des sections et sous-sections.`,
+      `Inclus les éléments attendus pour ce type de livrable de gestion de projet.`,
+      `Rédige en français, entre 500 et 1500 mots.`,
     ]
       .filter(Boolean)
       .join('\n');
@@ -211,18 +212,19 @@ export class DeliverableDelegationService {
       },
     });
     if (!deliverable)
-      throw new NotFoundException('Livrable delegue introuvable');
+      throw new NotFoundException('Livrable délégué introuvable');
     if (deliverable.simulation.userId !== userId)
-      throw new BadRequestException('Acces refuse');
+      throw new BadRequestException('Accès refusé');
     if (!deliverable.assignedToMember)
-      throw new BadRequestException('Aucun expert assigne');
+      throw new BadRequestException('Aucun expert assigné');
 
     const teamMember = deliverable.assignedToMember;
 
     const systemPrompt = [
       `Tu es ${teamMember.name}, ${teamMember.role}.`,
-      `Le chef de projet te demande de reviser un livrable que tu as redige.`,
-      `Voici son feedback sur ta premiere version.`,
+      `Le chef de projet te demande de réviser un livrable que tu as rédigé.`,
+      `Voici son feedback sur ta première version.`,
+      `Réponds en français correct, avec les accents.`,
     ].join('\n');
 
     const prompt = [
@@ -233,8 +235,8 @@ export class DeliverableDelegationService {
       ``,
       `Feedback du chef de projet : ${feedback}`,
       ``,
-      `Revise le document en tenant compte du feedback. Conserve la structure generale mais ameliore les points mentionnes.`,
-      `Redige en francais, format Markdown.`,
+      `Révise le document en tenant compte du feedback. Conserve la structure générale mais améliore les points mentionnés.`,
+      `Rédige en français, format Markdown.`,
     ].join('\n');
 
     const result = await this.aiService.complete({

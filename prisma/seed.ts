@@ -1,6 +1,7 @@
 import { PrismaClient, UserRole, TenantPlan, Difficulty, Sector, PhaseType, RandomEventType, Severity, ReferenceDocumentCategory, ScenarioType } from '@prisma/client';
 import bcryptjs from 'bcryptjs';
 import { seedDeliverableTemplates } from './seeds/deliverable-templates';
+import { seedSectorScenarios } from './seeds/scenarios/sector-scenarios';
 const { hashSync } = bcryptjs;
 
 const prisma = new PrismaClient();
@@ -90,50 +91,58 @@ async function main() {
 
   // ─── Scenario 1: Refonte Site E-commerce (BEGINNER) ───
 
+  // Seed-owned content: refreshed on every reseed (update) and used on first insert (create).
+  // Clean existing phases (cascade removes their templates) so a re-seed refreshes content without duplicating templates
+  await prisma.scenarioPhase.deleteMany({ where: { scenarioId: 'seed-scenario-ecommerce' } });
+
+  const scenario1Content = {
+    title: 'Refonte d\'un site e-commerce',
+    description: 'Vous êtes chef de projet pour la refonte complète d\'un site e-commerce. Le client, une PME de vente en ligne de produits artisanaux, souhaite moderniser son site pour améliorer l\'expérience utilisateur et augmenter ses ventes. Vous disposez d\'une équipe de 5 personnes et d\'un budget de 150 000 EUR.',
+    objectives: [
+      'Livrer un site e-commerce responsive et performant',
+      'Respecter le budget de 150 000 EUR',
+      'Livrer dans les délais (6 mois)',
+      'Atteindre un score de satisfaction client > 80%',
+    ],
+    sector: Sector.IT,
+    difficulty: Difficulty.BEGINNER,
+    estimatedDurationHours: 3,
+    requiredPlan: TenantPlan.FREE,
+    competencies: ['planification', 'communication', 'gestion-budget', 'leadership'],
+    isPublished: true,
+    projectTemplate: {
+      name: 'Refonte E-commerce ArtisanShop',
+      client: 'ArtisanShop SAS',
+      sector: 'IT',
+      description: 'Refonte complète du site e-commerce avec nouveau design, système de paiement, et back-office amélioré.',
+      teamSize: 5,
+      initialBudget: 150000,
+      deadlineDays: 180,
+      team: [
+        { name: 'Sophie Martin', role: 'Lead Développeur', expertise: 'SENIOR', personality: 'COOPERATIVE', morale: 80 },
+        { name: 'Thomas Dupont', role: 'Développeur Frontend', expertise: 'INTERMEDIATE', personality: 'COOPERATIVE', morale: 75 },
+        { name: 'Marie Leclerc', role: 'Designer UX/UI', expertise: 'SENIOR', personality: 'NEUTRAL', morale: 85 },
+        { name: 'Pierre Moreau', role: 'Développeur Backend', expertise: 'JUNIOR', personality: 'COOPERATIVE', morale: 70 },
+        { name: 'Julie Bernard', role: 'Testeur QA', expertise: 'INTERMEDIATE', personality: 'NEUTRAL', morale: 75 },
+      ],
+      deliverables: [
+        { name: 'Cahier des charges', description: 'Document détaillant les spécifications fonctionnelles et techniques', phaseOrder: 0 },
+        { name: 'Maquettes UI/UX', description: 'Maquettes validées pour toutes les pages principales', phaseOrder: 1 },
+        { name: 'Site en recette', description: 'Version fonctionnelle déployée en environnement de recette', phaseOrder: 2 },
+        { name: 'Rapport de tests', description: 'Rapport complet des tests fonctionnels et de performance', phaseOrder: 3 },
+        { name: 'Site en production', description: 'Site déployé et accessible aux utilisateurs finaux', phaseOrder: 4 },
+      ],
+    },
+    initialKpis: { budget: 100, schedule: 100, quality: 80, teamMorale: 75, riskLevel: 20 },
+  };
+
   const scenario1 = await prisma.scenario.upsert({
     where: { id: 'seed-scenario-ecommerce' },
-    update: {},
+    update: scenario1Content,
     create: {
       id: 'seed-scenario-ecommerce',
-      title: 'Refonte d\'un site e-commerce',
-      description: 'Vous etes chef de projet pour la refonte complete d\'un site e-commerce. Le client, une PME de vente en ligne de produits artisanaux, souhaite moderniser son site pour ameliorer l\'experience utilisateur et augmenter ses ventes. Vous disposez d\'une equipe de 5 personnes et d\'un budget de 150 000 EUR.',
-      objectives: [
-        'Livrer un site e-commerce responsive et performant',
-        'Respecter le budget de 150 000 EUR',
-        'Livrer dans les delais (6 mois)',
-        'Atteindre un score de satisfaction client > 80%',
-      ],
-      sector: Sector.IT,
-      difficulty: Difficulty.BEGINNER,
-      estimatedDurationHours: 3,
-      requiredPlan: TenantPlan.FREE,
-      competencies: ['planification', 'communication', 'gestion-budget', 'leadership'],
-      isPublished: true,
       createdById: systemUser.id,
-      projectTemplate: {
-        name: 'Refonte E-commerce ArtisanShop',
-        client: 'ArtisanShop SAS',
-        sector: 'IT',
-        description: 'Refonte complete du site e-commerce avec nouveau design, systeme de paiement, et back-office ameliore.',
-        teamSize: 5,
-        initialBudget: 150000,
-        deadlineDays: 180,
-        team: [
-          { name: 'Sophie Martin', role: 'Lead Developpeur', expertise: 'SENIOR', personality: 'COOPERATIVE', morale: 80 },
-          { name: 'Thomas Dupont', role: 'Developpeur Frontend', expertise: 'INTERMEDIATE', personality: 'COOPERATIVE', morale: 75 },
-          { name: 'Marie Leclerc', role: 'Designer UX/UI', expertise: 'SENIOR', personality: 'NEUTRAL', morale: 85 },
-          { name: 'Pierre Moreau', role: 'Developpeur Backend', expertise: 'JUNIOR', personality: 'COOPERATIVE', morale: 70 },
-          { name: 'Julie Bernard', role: 'Testeur QA', expertise: 'INTERMEDIATE', personality: 'NEUTRAL', morale: 75 },
-        ],
-        deliverables: [
-          { name: 'Cahier des charges', description: 'Document detaillant les specifications fonctionnelles et techniques', phaseOrder: 0 },
-          { name: 'Maquettes UI/UX', description: 'Maquettes validees pour toutes les pages principales', phaseOrder: 1 },
-          { name: 'Site en recette', description: 'Version fonctionnelle deployee en environnement de recette', phaseOrder: 2 },
-          { name: 'Rapport de tests', description: 'Rapport complet des tests fonctionnels et de performance', phaseOrder: 3 },
-          { name: 'Site en production', description: 'Site deploye et accessible aux utilisateurs finaux', phaseOrder: 4 },
-        ],
-      },
-      initialKpis: { budget: 100, schedule: 100, quality: 80, teamMorale: 75, riskLevel: 20 },
+      ...scenario1Content,
     },
   });
 
@@ -144,7 +153,7 @@ async function main() {
       name: 'Cadrage & Lancement',
       type: PhaseType.INITIATION,
       durationDays: 10,
-      description: 'Definir le perimetre du projet, identifier les parties prenantes et organiser le kickoff.',
+      description: 'Définir le périmètre du projet, identifier les parties prenantes et organiser le kickoff.',
       completionCriteria: { requiredMeetings: 1, requiredDecisions: 1 },
     },
     {
@@ -152,15 +161,15 @@ async function main() {
       name: 'Planification & Design',
       type: PhaseType.PLANNING,
       durationDays: 20,
-      description: 'Elaborer le planning detaille, definir l\'architecture technique et valider les maquettes.',
+      description: 'Élaborer le planning détaillé, définir l\'architecture technique et valider les maquettes.',
       completionCriteria: { requiredMeetings: 1, requiredDecisions: 2 },
     },
     {
       order: 2,
-      name: 'Developpement',
+      name: 'Développement',
       type: PhaseType.EXECUTION,
       durationDays: 60,
-      description: 'Developper les fonctionnalites du site, integrer les maquettes et mettre en place l\'infrastructure.',
+      description: 'Développer les fonctionnalités du site, intégrer les maquettes et mettre en place l\'infrastructure.',
       completionCriteria: { requiredMeetings: 2, requiredDecisions: 1 },
     },
     {
@@ -168,15 +177,15 @@ async function main() {
       name: 'Tests & Recette',
       type: PhaseType.MONITORING,
       durationDays: 20,
-      description: 'Tester toutes les fonctionnalites, corriger les bugs et valider avec le client.',
+      description: 'Tester toutes les fonctionnalités, corriger les bugs et valider avec le client.',
       completionCriteria: { requiredMeetings: 1, requiredDecisions: 1 },
     },
     {
       order: 4,
-      name: 'Deploiement & Cloture',
+      name: 'Déploiement & Clôture',
       type: PhaseType.CLOSURE,
       durationDays: 10,
-      description: 'Deployer en production, former les utilisateurs et faire le bilan du projet.',
+      description: 'Déployer en production, former les utilisateurs et faire le bilan du projet.',
       completionCriteria: { requiredMeetings: 1, requiredDecisions: 0 },
     },
   ];
@@ -186,7 +195,7 @@ async function main() {
       where: {
         scenarioId_order: { scenarioId: scenario1.id, order: phaseData.order },
       },
-      update: {},
+      update: { ...phaseData },
       create: {
         scenarioId: scenario1.id,
         ...phaseData,
@@ -198,15 +207,15 @@ async function main() {
       await prisma.meetingTemplate.create({
         data: {
           phaseId: phase.id,
-          title: 'Reunion de lancement (Kickoff)',
-          description: 'Premiere reunion avec l\'equipe projet et le client pour presenter le projet, les objectifs et le planning previsionnel.',
+          title: 'Réunion de lancement (Kickoff)',
+          description: 'Première réunion avec l\'équipe projet et le client pour présenter le projet, les objectifs et le planning prévisionnel.',
           type: 'KICKOFF',
-          objectives: ['Presenter le projet', 'Definir les roles', 'Valider le perimetre'],
+          objectives: ['Présenter le projet', 'Définir les rôles', 'Valider le périmètre'],
           durationMinutes: 45,
           participants: [
             { name: 'Claire Dubois', role: 'Client - Directrice', personality: 'Exigeante mais juste', cooperationLevel: 4 },
             { name: 'Sophie Martin', role: 'Lead Dev', personality: 'Pragmatique et directe', cooperationLevel: 5 },
-            { name: 'Marie Leclerc', role: 'Designer UX', personality: 'Creative et enthousiaste', cooperationLevel: 4 },
+            { name: 'Marie Leclerc', role: 'Designer UX', personality: 'Créative et enthousiaste', cooperationLevel: 4 },
           ],
         },
       });
@@ -214,23 +223,23 @@ async function main() {
       await prisma.decisionTemplate.create({
         data: {
           phaseId: phase.id,
-          title: 'Choix de la methodologie projet',
-          context: 'L\'equipe attend que vous definissiez la methodologie de travail. Le client souhaite un suivi regulier mais n\'est pas familier avec les methodes agiles.',
+          title: 'Choix de la méthodologie projet',
+          context: 'L\'équipe attend que vous définissiez la méthodologie de travail. Le client souhaite un suivi régulier mais n\'est pas familier avec les méthodes agiles.',
           optimalOption: 1,
           options: [
             {
               label: 'Cycle en V classique',
-              description: 'Approche sequentielle avec phases bien definies. Moins de flexibilite mais plus de previsibilite.',
+              description: 'Approche séquentielle avec phases bien définies. Moins de flexibilité mais plus de prévisibilité.',
               kpiImpact: { budget: 5, schedule: 5, quality: -5, teamMorale: -10, riskLevel: 10 },
             },
             {
-              label: 'Scrum adapte',
-              description: 'Sprints de 2 semaines avec demos regulieres au client. Formation rapide du client necessaire.',
+              label: 'Scrum adapté',
+              description: 'Sprints de 2 semaines avec démos régulières au client. Formation rapide du client nécessaire.',
               kpiImpact: { budget: -3, schedule: 0, quality: 10, teamMorale: 10, riskLevel: -5 },
             },
             {
               label: 'Kanban',
-              description: 'Flux continu avec tableau visuel. Tres flexible mais necessite une equipe autonome.',
+              description: 'Flux continu avec tableau visuel. Très flexible mais nécessite une équipe autonome.',
               kpiImpact: { budget: 0, schedule: -5, quality: 5, teamMorale: 5, riskLevel: 5 },
             },
           ],
@@ -244,13 +253,13 @@ async function main() {
         data: {
           phaseId: phase.id,
           title: 'Atelier de planification',
-          description: 'Seance de travail pour definir le planning detaille, estimer les charges et repartir les taches.',
+          description: 'Séance de travail pour définir le planning détaillé, estimer les charges et répartir les tâches.',
           type: 'STEERING',
-          objectives: ['Definir le WBS', 'Estimer les charges', 'Identifier les risques'],
+          objectives: ['Définir le WBS', 'Estimer les charges', 'Identifier les risques'],
           durationMinutes: 60,
           participants: [
-            { name: 'Sophie Martin', role: 'Lead Dev', personality: 'Pragmatique, pousse pour des estimations realistes', cooperationLevel: 5 },
-            { name: 'Thomas Dupont', role: 'Dev Frontend', personality: 'Optimiste sur les delais', cooperationLevel: 4 },
+            { name: 'Sophie Martin', role: 'Lead Dev', personality: 'Pragmatique, pousse pour des estimations réalistes', cooperationLevel: 5 },
+            { name: 'Thomas Dupont', role: 'Dev Frontend', personality: 'Optimiste sur les délais', cooperationLevel: 4 },
             { name: 'Pierre Moreau', role: 'Dev Backend', personality: 'Prudent, pose beaucoup de questions techniques', cooperationLevel: 3 },
           ],
         },
@@ -261,22 +270,22 @@ async function main() {
           {
             phaseId: phase.id,
             title: 'Choix de la stack technique',
-            context: 'L\'equipe technique propose deux approches pour la stack frontend. Le site actuel est en PHP/jQuery.',
+            context: 'L\'équipe technique propose deux approches pour la stack frontend. Le site actuel est en PHP/jQuery.',
             optimalOption: 0,
             options: [
               {
                 label: 'React + Next.js',
-                description: 'Stack moderne, performante. L\'equipe a de l\'experience. Migration complete necessaire.',
+                description: 'Stack moderne, performante. L\'équipe a de l\'expérience. Migration complète nécessaire.',
                 kpiImpact: { budget: -5, schedule: -5, quality: 15, teamMorale: 10, riskLevel: -5 },
               },
               {
                 label: 'PHP/Laravel + Livewire',
-                description: 'Proche de l\'existant, migration plus douce. Moins performant mais plus rapide a deployer.',
+                description: 'Proche de l\'existant, migration plus douce. Moins performant mais plus rapide à déployer.',
                 kpiImpact: { budget: 5, schedule: 10, quality: 0, teamMorale: -5, riskLevel: -10 },
               },
               {
                 label: 'WordPress + WooCommerce',
-                description: 'Solution cle en main, rapide a mettre en place mais limitee en personnalisation.',
+                description: 'Solution clé en main, rapide à mettre en place mais limitée en personnalisation.',
                 kpiImpact: { budget: 15, schedule: 15, quality: -15, teamMorale: -15, riskLevel: 5 },
               },
             ],
@@ -284,7 +293,7 @@ async function main() {
           {
             phaseId: phase.id,
             title: 'Gestion de la sous-traitance design',
-            context: 'Marie (designer) signale qu\'elle ne pourra pas gerer seule toutes les maquettes dans les delais. Elle propose de sous-traiter une partie.',
+            context: 'Marie (designer) signale qu\'elle ne pourra pas gérer seule toutes les maquettes dans les délais. Elle propose de sous-traiter une partie.',
             optimalOption: 1,
             options: [
               {
@@ -294,7 +303,7 @@ async function main() {
               },
               {
                 label: 'Sous-traiter les pages secondaires',
-                description: 'Marie garde les pages cles, un freelance fait les pages secondaires. Budget supplementaire de 8 000 EUR.',
+                description: 'Marie garde les pages clés, un freelance fait les pages secondaires. Budget supplémentaire de 8 000 EUR.',
                 kpiImpact: { budget: -5, schedule: 5, quality: 0, teamMorale: 5, riskLevel: 0 },
               },
             ],
@@ -312,25 +321,25 @@ async function main() {
             title: 'Daily Standup - Semaine 3',
             description: 'Point quotidien sur l\'avancement du sprint en cours.',
             type: 'STANDUP',
-            objectives: ['Partager les avancees', 'Identifier les blocages'],
+            objectives: ['Partager les avancées', 'Identifier les blocages'],
             durationMinutes: 15,
             participants: JSON.parse(JSON.stringify([
               { name: 'Sophie Martin', role: 'Lead Dev', personality: 'Directe et efficace', cooperationLevel: 5 },
-              { name: 'Thomas Dupont', role: 'Dev Frontend', personality: 'Enthousiaste mais parfois imprecis', cooperationLevel: 4 },
-              { name: 'Pierre Moreau', role: 'Dev Backend', personality: 'Technique, remonte les problemes', cooperationLevel: 4 },
+              { name: 'Thomas Dupont', role: 'Dev Frontend', personality: 'Enthousiaste mais parfois imprécis', cooperationLevel: 4 },
+              { name: 'Pierre Moreau', role: 'Dev Backend', personality: 'Technique, remonte les problèmes', cooperationLevel: 4 },
             ])),
           },
           {
             phaseId: phase.id,
-            title: 'Comite de pilotage mi-projet',
-            description: 'Revue d\'avancement avec le client et presentation de la version beta.',
+            title: 'Comité de pilotage mi-projet',
+            description: 'Revue d\'avancement avec le client et présentation de la version beta.',
             type: 'STEERING',
-            objectives: ['Presenter l\'avancement', 'Recueillir le feedback client', 'Ajuster si necessaire'],
+            objectives: ['Présenter l\'avancement', 'Recueillir le feedback client', 'Ajuster si nécessaire'],
             durationMinutes: 60,
             participants: JSON.parse(JSON.stringify([
               { name: 'Claire Dubois', role: 'Client - Directrice', personality: 'Veut voir du concret', cooperationLevel: 3 },
-              { name: 'Marc Petit', role: 'Client - Responsable technique', personality: 'Pointilleux sur les details', cooperationLevel: 4 },
-              { name: 'Sophie Martin', role: 'Lead Dev', personality: 'Presente avec assurance', cooperationLevel: 5 },
+              { name: 'Marc Petit', role: 'Client - Responsable technique', personality: 'Pointilleux sur les détails', cooperationLevel: 4 },
+              { name: 'Sophie Martin', role: 'Lead Dev', personality: 'Présente avec assurance', cooperationLevel: 5 },
             ])),
           },
         ],
@@ -340,23 +349,23 @@ async function main() {
         data: {
           phaseId: phase.id,
           title: 'Gestion du scope creep',
-          context: 'Le client demande l\'ajout d\'un module de chat en direct qui n\'etait pas prevu. Cela represente environ 3 semaines de travail supplementaire.',
+          context: 'Le client demande l\'ajout d\'un module de chat en direct qui n\'était pas prévu. Cela représente environ 3 semaines de travail supplémentaire.',
           optimalOption: 1,
           timeLimitSeconds: 120,
           options: [
             {
-              label: 'Accepter sans negocier',
-              description: 'Integrer la demande pour satisfaire le client, en absorbant le surcout.',
+              label: 'Accepter sans négocier',
+              description: 'Intégrer la demande pour satisfaire le client, en absorbant le surcoût.',
               kpiImpact: { budget: -15, schedule: -15, quality: -5, teamMorale: -10, riskLevel: 15 },
             },
             {
-              label: 'Negocier un avenant',
-              description: 'Accepter avec un budget supplementaire de 20 000 EUR et un delai etendu de 2 semaines.',
+              label: 'Négocier un avenant',
+              description: 'Accepter avec un budget supplémentaire de 20 000 EUR et un délai étendu de 2 semaines.',
               kpiImpact: { budget: -5, schedule: -5, quality: 5, teamMorale: 0, riskLevel: 5 },
             },
             {
               label: 'Refuser poliment',
-              description: 'Proposer de l\'integrer dans une V2, apres la mise en production.',
+              description: 'Proposer de l\'intégrer dans une V2, après la mise en production.',
               kpiImpact: { budget: 0, schedule: 0, quality: 0, teamMorale: 5, riskLevel: -5 },
             },
           ],
@@ -367,23 +376,23 @@ async function main() {
         data: {
           phaseId: phase.id,
           type: RandomEventType.RISK,
-          title: 'Depart d\'un developpeur',
-          description: 'Pierre Moreau, developpeur backend junior, annonce sa demission pour rejoindre une autre entreprise. Son preavis est d\'un mois.',
+          title: 'Départ d\'un développeur',
+          description: 'Pierre Moreau, développeur backend junior, annonce sa démission pour rejoindre une autre entreprise. Son préavis est d\'un mois.',
           severity: Severity.HIGH,
           probability: 0.6,
           options: [
             {
-              label: 'Recruter un remplacant en urgence',
-              description: 'Lancer un recrutement express. Cout supplementaire et temps d\'integration.',
+              label: 'Recruter un remplaçant en urgence',
+              description: 'Lancer un recrutement express. Coût supplémentaire et temps d\'intégration.',
               kpiImpact: { budget: -10, schedule: -5, quality: 0, teamMorale: -5, riskLevel: 5 },
             },
             {
-              label: 'Repartir la charge sur l\'equipe',
+              label: 'Répartir la charge sur l\'équipe',
               description: 'Sophie et Thomas absorbent le travail backend. Risque de surcharge.',
               kpiImpact: { budget: 0, schedule: -10, quality: -5, teamMorale: -15, riskLevel: 10 },
             },
             {
-              label: 'Faire appel a un freelance',
+              label: 'Faire appel à un freelance',
               description: 'Engager un freelance senior pour 2 mois. Plus cher mais plus rapide.',
               kpiImpact: { budget: -15, schedule: 0, quality: 5, teamMorale: 0, riskLevel: 0 },
             },
@@ -398,15 +407,15 @@ async function main() {
       await prisma.meetingTemplate.create({
         data: {
           phaseId: phase.id,
-          title: 'Revue qualite et recette client',
-          description: 'Presentation de la version recette au client pour validation avant mise en production.',
+          title: 'Revue qualité et recette client',
+          description: 'Présentation de la version recette au client pour validation avant mise en production.',
           type: 'STEERING',
-          objectives: ['Valider les fonctionnalites', 'Lister les corrections', 'Obtenir le GO production'],
+          objectives: ['Valider les fonctionnalités', 'Lister les corrections', 'Obtenir le GO production'],
           durationMinutes: 60,
           participants: JSON.parse(JSON.stringify([
             { name: 'Claire Dubois', role: 'Client - Directrice', personality: 'Satisfaite si le rendu est bon', cooperationLevel: 4 },
-            { name: 'Julie Bernard', role: 'QA', personality: 'Rigoureuse, presente les resultats de test', cooperationLevel: 5 },
-            { name: 'Sophie Martin', role: 'Lead Dev', personality: 'Confiante sur la qualite', cooperationLevel: 5 },
+            { name: 'Julie Bernard', role: 'QA', personality: 'Rigoureuse, présente les résultats de test', cooperationLevel: 5 },
+            { name: 'Sophie Martin', role: 'Lead Dev', personality: 'Confiante sur la qualité', cooperationLevel: 5 },
           ])),
         },
       });
@@ -414,8 +423,8 @@ async function main() {
       await prisma.decisionTemplate.create({
         data: {
           phaseId: phase.id,
-          title: 'Strategie de deploiement',
-          context: 'Le site est pret pour la production. Vous devez choisir la strategie de deploiement.',
+          title: 'Stratégie de déploiement',
+          context: 'Le site est prêt pour la production. Vous devez choisir la stratégie de déploiement.',
           optimalOption: 1,
           options: [
             {
@@ -424,8 +433,8 @@ async function main() {
               kpiImpact: { budget: 5, schedule: 5, quality: -10, teamMorale: -5, riskLevel: 15 },
             },
             {
-              label: 'Deploiement progressif (blue/green)',
-              description: 'Migration progressive avec possibilite de rollback. Plus complexe mais plus sur.',
+              label: 'Déploiement progressif (blue/green)',
+              description: 'Migration progressive avec possibilité de rollback. Plus complexe mais plus sûr.',
               kpiImpact: { budget: -5, schedule: -3, quality: 10, teamMorale: 5, riskLevel: -10 },
             },
           ],
@@ -436,19 +445,19 @@ async function main() {
         data: {
           phaseId: phase.id,
           type: RandomEventType.CONSTRAINT,
-          title: 'Faille de securite detectee',
-          description: 'L\'audit de securite revele une vulnerabilite XSS sur le formulaire de paiement. La mise en production est bloquee tant que ce n\'est pas corrige.',
+          title: 'Faille de sécurité détectée',
+          description: 'L\'audit de sécurité révèle une vulnérabilité XSS sur le formulaire de paiement. La mise en production est bloquée tant que ce n\'est pas corrigé.',
           severity: Severity.CRITICAL,
           probability: 0.4,
           options: [
             {
-              label: 'Correction immediate (sprint dedie)',
+              label: 'Correction immédiate (sprint dédié)',
               description: 'Mobiliser Sophie et Thomas pendant 3 jours pour corriger. Retard sur la production.',
               kpiImpact: { budget: -3, schedule: -5, quality: 15, teamMorale: -5, riskLevel: -20 },
             },
             {
               label: 'Patch rapide + audit complet post-production',
-              description: 'Fix rapide de la faille specifique, audit complet programme apres le lancement.',
+              description: 'Fix rapide de la faille spécifique, audit complet programmé après le lancement.',
               kpiImpact: { budget: -2, schedule: 0, quality: 5, teamMorale: 0, riskLevel: 5 },
             },
           ],
@@ -463,15 +472,15 @@ async function main() {
         data: {
           phaseId: phase.id,
           title: 'Retrospective projet',
-          description: 'Bilan du projet avec l\'equipe : ce qui a bien fonctionne, ce qui peut etre ameliore, lecons apprises.',
+          description: 'Bilan du projet avec l\'équipe : ce qui a bien fonctionné, ce qui peut être amélioré, leçons apprises.',
           type: 'RETROSPECTIVE',
-          objectives: ['Faire le bilan', 'Identifier les lecons apprises', 'Celebrer les succes'],
+          objectives: ['Faire le bilan', 'Identifier les leçons apprises', 'Célébrer les succès'],
           durationMinutes: 45,
           participants: JSON.parse(JSON.stringify([
             { name: 'Sophie Martin', role: 'Lead Dev', personality: 'Constructive et bienveillante', cooperationLevel: 5 },
             { name: 'Thomas Dupont', role: 'Dev Frontend', personality: 'Content du travail accompli', cooperationLevel: 5 },
-            { name: 'Marie Leclerc', role: 'Designer UX', personality: 'Fiere du resultat visuel', cooperationLevel: 5 },
-            { name: 'Julie Bernard', role: 'QA', personality: 'Satisfaite de la qualite finale', cooperationLevel: 5 },
+            { name: 'Marie Leclerc', role: 'Designer UX', personality: 'Fière du résultat visuel', cooperationLevel: 5 },
+            { name: 'Julie Bernard', role: 'QA', personality: 'Satisfaite de la qualité finale', cooperationLevel: 5 },
           ])),
         },
       });
@@ -480,53 +489,61 @@ async function main() {
 
   // ─── Scenario 2: Migration Cloud (INTERMEDIATE) ───
 
+  // Seed-owned content: refreshed on every reseed (update) and used on first insert (create).
+  // Clean existing phases (cascade removes their templates) so a re-seed refreshes content without duplicating templates
+  await prisma.scenarioPhase.deleteMany({ where: { scenarioId: 'seed-scenario-cloud-migration' } });
+
+  const scenario2Content = {
+    title: 'Migration infrastructure vers le Cloud',
+    description: 'Vous pilotez la migration de l\'infrastructure on-premise d\'une entreprise de services financiers vers AWS. Le projet implique la migration de 15 applications critiques, la mise en place de la sécurité cloud et la formation des équipes. Enjeu : zéro downtime sur les services critiques.',
+    objectives: [
+      'Migrer 15 applications vers AWS sans interruption de service',
+      'Respecter les normes de sécurité financière (PCI-DSS)',
+      'Former les équipes DevOps à la gestion cloud',
+      'Réduire les coûts d\'infrastructure de 30%',
+    ],
+    sector: Sector.FINANCE,
+    difficulty: Difficulty.INTERMEDIATE,
+    estimatedDurationHours: 5,
+    requiredPlan: TenantPlan.STARTER,
+    competencies: ['gestion-risques', 'communication', 'planification', 'leadership', 'gestion-parties-prenantes'],
+    isPublished: true,
+    projectTemplate: {
+      name: 'Migration Cloud FinanceSecure',
+      client: 'FinanceSecure SA',
+      sector: 'FINANCE',
+      description: 'Migration de l\'infrastructure on-premise vers AWS avec contraintes de sécurité PCI-DSS et zéro downtime.',
+      teamSize: 6,
+      initialBudget: 300000,
+      deadlineDays: 270,
+      team: [
+        { name: 'Alexandre Roux', role: 'Architecte Cloud', expertise: 'SENIOR', personality: 'COOPERATIVE', morale: 85 },
+        { name: 'Camille Petit', role: 'DevOps Engineer', expertise: 'INTERMEDIATE', personality: 'COOPERATIVE', morale: 75 },
+        { name: 'Lucas Bernard', role: 'Développeur Backend', expertise: 'SENIOR', personality: 'NEUTRAL', morale: 80 },
+        { name: 'Emma Garcia', role: 'Développeur Backend', expertise: 'INTERMEDIATE', personality: 'COOPERATIVE', morale: 70 },
+        { name: 'Hugo Leroy', role: 'DBA', expertise: 'SENIOR', personality: 'RESISTANT', morale: 60 },
+        { name: 'Léa Dubois', role: 'Ingénieure Sécurité', expertise: 'SENIOR', personality: 'NEUTRAL', morale: 80 },
+      ],
+      deliverables: [
+        { name: 'Audit infrastructure existante', phaseOrder: 0 },
+        { name: 'Plan de migration détaillé', phaseOrder: 1 },
+        { name: 'Environnement AWS configuré', phaseOrder: 2 },
+        { name: 'Applications migrées (lot 1)', phaseOrder: 2 },
+        { name: 'Applications migrées (lot 2)', phaseOrder: 2 },
+        { name: 'Rapport de conformité PCI-DSS', phaseOrder: 3 },
+        { name: 'Documentation et formation', phaseOrder: 4 },
+      ],
+    },
+    initialKpis: { budget: 100, schedule: 100, quality: 75, teamMorale: 70, riskLevel: 35 },
+  };
+
   const scenario2 = await prisma.scenario.upsert({
     where: { id: 'seed-scenario-cloud-migration' },
-    update: {},
+    update: scenario2Content,
     create: {
       id: 'seed-scenario-cloud-migration',
-      title: 'Migration infrastructure vers le Cloud',
-      description: 'Vous pilotez la migration de l\'infrastructure on-premise d\'une entreprise de services financiers vers AWS. Le projet implique la migration de 15 applications critiques, la mise en place de la securite cloud et la formation des equipes. Enjeu : zero downtime sur les services critiques.',
-      objectives: [
-        'Migrer 15 applications vers AWS sans interruption de service',
-        'Respecter les normes de securite financiere (PCI-DSS)',
-        'Former les equipes DevOps a la gestion cloud',
-        'Reduire les couts d\'infrastructure de 30%',
-      ],
-      sector: Sector.FINANCE,
-      difficulty: Difficulty.INTERMEDIATE,
-      estimatedDurationHours: 5,
-      requiredPlan: TenantPlan.STARTER,
-      competencies: ['gestion-risques', 'communication', 'planification', 'leadership', 'gestion-parties-prenantes'],
-      isPublished: true,
       createdById: systemUser.id,
-      projectTemplate: {
-        name: 'Migration Cloud FinanceSecure',
-        client: 'FinanceSecure SA',
-        sector: 'FINANCE',
-        description: 'Migration de l\'infrastructure on-premise vers AWS avec contraintes de securite PCI-DSS et zero downtime.',
-        teamSize: 6,
-        initialBudget: 300000,
-        deadlineDays: 270,
-        team: [
-          { name: 'Alexandre Roux', role: 'Architecte Cloud', expertise: 'SENIOR', personality: 'COOPERATIVE', morale: 85 },
-          { name: 'Camille Petit', role: 'DevOps Engineer', expertise: 'INTERMEDIATE', personality: 'COOPERATIVE', morale: 75 },
-          { name: 'Lucas Bernard', role: 'Developpeur Backend', expertise: 'SENIOR', personality: 'NEUTRAL', morale: 80 },
-          { name: 'Emma Garcia', role: 'Developpeur Backend', expertise: 'INTERMEDIATE', personality: 'COOPERATIVE', morale: 70 },
-          { name: 'Hugo Leroy', role: 'DBA', expertise: 'SENIOR', personality: 'RESISTANT', morale: 60 },
-          { name: 'Lea Dubois', role: 'Ingenieure Securite', expertise: 'SENIOR', personality: 'NEUTRAL', morale: 80 },
-        ],
-        deliverables: [
-          { name: 'Audit infrastructure existante', phaseOrder: 0 },
-          { name: 'Plan de migration detaille', phaseOrder: 1 },
-          { name: 'Environnement AWS configure', phaseOrder: 2 },
-          { name: 'Applications migrees (lot 1)', phaseOrder: 2 },
-          { name: 'Applications migrees (lot 2)', phaseOrder: 2 },
-          { name: 'Rapport de conformite PCI-DSS', phaseOrder: 3 },
-          { name: 'Documentation et formation', phaseOrder: 4 },
-        ],
-      },
-      initialKpis: { budget: 100, schedule: 100, quality: 75, teamMorale: 70, riskLevel: 35 },
+      ...scenario2Content,
     },
   });
 
@@ -537,7 +554,7 @@ async function main() {
       name: 'Audit & Cadrage',
       type: PhaseType.INITIATION,
       durationDays: 15,
-      description: 'Auditer l\'infrastructure existante, identifier les dependances et definir la strategie de migration.',
+      description: 'Auditer l\'infrastructure existante, identifier les dépendances et définir la stratégie de migration.',
       completionCriteria: { requiredMeetings: 1, requiredDecisions: 2 },
     },
     {
@@ -545,12 +562,12 @@ async function main() {
       name: 'Architecture & Planning',
       type: PhaseType.PLANNING,
       durationDays: 25,
-      description: 'Concevoir l\'architecture cible AWS, planifier les lots de migration et preparer les environnements.',
+      description: 'Concevoir l\'architecture cible AWS, planifier les lots de migration et préparer les environnements.',
       completionCriteria: { requiredMeetings: 1, requiredDecisions: 1 },
     },
     {
       order: 2,
-      name: 'Migration & Implementation',
+      name: 'Migration & Implémentation',
       type: PhaseType.EXECUTION,
       durationDays: 90,
       description: 'Migrer les applications par lots, configurer les services AWS et tester chaque migration.',
@@ -558,18 +575,18 @@ async function main() {
     },
     {
       order: 3,
-      name: 'Securite & Conformite',
+      name: 'Sécurité & Conformité',
       type: PhaseType.MONITORING,
       durationDays: 30,
-      description: 'Audit de securite, mise en conformite PCI-DSS, tests de penetration et monitoring.',
+      description: 'Audit de sécurité, mise en conformité PCI-DSS, tests de pénétration et monitoring.',
       completionCriteria: { requiredMeetings: 1, requiredDecisions: 1 },
     },
     {
       order: 4,
-      name: 'Formation & Cloture',
+      name: 'Formation & Clôture',
       type: PhaseType.CLOSURE,
       durationDays: 15,
-      description: 'Former les equipes, documenter les procedures et decommissionner l\'ancien infrastructure.',
+      description: 'Former les équipes, documenter les procédures et décommissionner l\'ancien infrastructure.',
       completionCriteria: { requiredMeetings: 1, requiredDecisions: 1 },
     },
   ];
@@ -579,7 +596,7 @@ async function main() {
       where: {
         scenarioId_order: { scenarioId: scenario2.id, order: phaseData.order },
       },
-      update: {},
+      update: { ...phaseData },
       create: {
         scenarioId: scenario2.id,
         ...phaseData,
@@ -591,15 +608,15 @@ async function main() {
         data: {
           phaseId: phase.id,
           title: 'Kickoff projet migration',
-          description: 'Presentation du projet aux parties prenantes cles : direction, equipe IT, RSSI.',
+          description: 'Présentation du projet aux parties prenantes clés : direction, équipe IT, RSSI.',
           type: 'KICKOFF',
-          objectives: ['Presenter la strategie', 'Obtenir le sponsorship', 'Identifier les risques'],
+          objectives: ['Présenter la stratégie', 'Obtenir le sponsorship', 'Identifier les risques'],
           durationMinutes: 60,
           participants: JSON.parse(JSON.stringify([
-            { name: 'Philippe Moreau', role: 'DSI', personality: 'Strategique, veut des resultats rapides', cooperationLevel: 3 },
+            { name: 'Philippe Moreau', role: 'DSI', personality: 'Stratégique, veut des résultats rapides', cooperationLevel: 3 },
             { name: 'Alexandre Roux', role: 'Architecte Cloud', personality: 'Expert technique, confiant', cooperationLevel: 5 },
             { name: 'Hugo Leroy', role: 'DBA', personality: 'Sceptique sur la migration des bases', cooperationLevel: 2 },
-            { name: 'Lea Dubois', role: 'Securite', personality: 'Vigilante sur la conformite', cooperationLevel: 4 },
+            { name: 'Léa Dubois', role: 'Sécurité', personality: 'Vigilante sur la conformité', cooperationLevel: 4 },
           ])),
         },
       });
@@ -608,13 +625,13 @@ async function main() {
         data: [
           {
             phaseId: phase.id,
-            title: 'Strategie de migration',
-            context: 'Vous devez definir l\'approche globale de migration. L\'architecte recommande le "lift and shift" pour aller vite, le DBA prefere le "re-platforming".',
+            title: 'Stratégie de migration',
+            context: 'Vous devez définir l\'approche globale de migration. L\'architecte recommande le "lift and shift" pour aller vite, le DBA préfère le "re-platforming".',
             optimalOption: 1,
             options: [
               {
                 label: 'Lift & Shift (rehosting)',
-                description: 'Deplacement tel quel vers le cloud. Rapide mais n\'optimise pas pour le cloud.',
+                description: 'Déplacement tel quel vers le cloud. Rapide mais n\'optimise pas pour le cloud.',
                 kpiImpact: { budget: 5, schedule: 10, quality: -10, teamMorale: 5, riskLevel: 5 },
               },
               {
@@ -624,30 +641,30 @@ async function main() {
               },
               {
                 label: 'Re-architecting complet',
-                description: 'Refonte en microservices cloud-native. Optimal mais tres couteux et long.',
+                description: 'Refonte en microservices cloud-native. Optimal mais très coûteux et long.',
                 kpiImpact: { budget: -20, schedule: -20, quality: 20, teamMorale: -10, riskLevel: 15 },
               },
             ],
           },
           {
             phaseId: phase.id,
-            title: 'Gestion de la resistance au changement',
-            context: 'Hugo (DBA) exprime ouvertement son opposition a la migration. Il craint pour son poste et refuse de cooperer pleinement. D\'autres membres commencent a douter.',
+            title: 'Gestion de la résistance au changement',
+            context: 'Hugo (DBA) exprime ouvertement son opposition à la migration. Il craint pour son poste et refuse de coopérer pleinement. D\'autres membres commencent à douter.',
             optimalOption: 0,
             options: [
               {
-                label: 'Entretien individuel et reassurance',
-                description: 'Prendre le temps d\'ecouter ses craintes, le rassurer sur son role et le former au cloud.',
+                label: 'Entretien individuel et réassurance',
+                description: 'Prendre le temps d\'écouter ses craintes, le rassurer sur son rôle et le former au cloud.',
                 kpiImpact: { budget: -2, schedule: -3, quality: 5, teamMorale: 15, riskLevel: -10 },
               },
               {
-                label: 'Imposer la decision',
-                description: 'Rappeler que la decision est prise et qu\'il doit s\'y conformer.',
+                label: 'Imposer la décision',
+                description: 'Rappeler que la décision est prise et qu\'il doit s\'y conformer.',
                 kpiImpact: { budget: 0, schedule: 5, quality: 0, teamMorale: -20, riskLevel: 10 },
               },
               {
                 label: 'Le remplacer',
-                description: 'Demander un autre DBA plus cooperatif. Risque de perte de connaissance.',
+                description: 'Demander un autre DBA plus coopératif. Risque de perte de connaissance.',
                 kpiImpact: { budget: -10, schedule: -15, quality: -5, teamMorale: -10, riskLevel: 20 },
               },
             ],
@@ -661,14 +678,14 @@ async function main() {
         data: {
           phaseId: phase.id,
           title: 'Revue d\'architecture cible',
-          description: 'Presentation de l\'architecture AWS cible avec review par l\'equipe securite.',
+          description: 'Présentation de l\'architecture AWS cible avec review par l\'équipe sécurité.',
           type: 'STEERING',
-          objectives: ['Valider l\'architecture', 'Verifier la conformite securite', 'Planifier les lots'],
+          objectives: ['Valider l\'architecture', 'Vérifier la conformité sécurité', 'Planifier les lots'],
           durationMinutes: 90,
           participants: JSON.parse(JSON.stringify([
-            { name: 'Alexandre Roux', role: 'Architecte Cloud', personality: 'Presente avec passion', cooperationLevel: 5 },
-            { name: 'Lea Dubois', role: 'Securite', personality: 'Challenge chaque choix', cooperationLevel: 4 },
-            { name: 'Hugo Leroy', role: 'DBA', personality: 'Plus cooperatif apres les echanges', cooperationLevel: 3 },
+            { name: 'Alexandre Roux', role: 'Architecte Cloud', personality: 'Présente avec passion', cooperationLevel: 5 },
+            { name: 'Léa Dubois', role: 'Sécurité', personality: 'Challenge chaque choix', cooperationLevel: 4 },
+            { name: 'Hugo Leroy', role: 'DBA', personality: 'Plus coopératif après les échanges', cooperationLevel: 3 },
             { name: 'Camille Petit', role: 'DevOps', personality: 'Pragmatique, pose les bonnes questions', cooperationLevel: 5 },
           ])),
         },
@@ -677,23 +694,23 @@ async function main() {
       await prisma.decisionTemplate.create({
         data: {
           phaseId: phase.id,
-          title: 'Choix du provider de base de donnees',
-          context: 'Pour les bases de donnees critiques (transactions financieres), il faut choisir entre Amazon RDS, Aurora et une base auto-geree sur EC2.',
+          title: 'Choix du provider de base de données',
+          context: 'Pour les bases de données critiques (transactions financières), il faut choisir entre Amazon RDS, Aurora et une base auto-gérée sur EC2.',
           optimalOption: 1,
           options: [
             {
               label: 'Amazon RDS',
-              description: 'Service manage standard. Bon rapport qualite/prix, facile a maintenir.',
+              description: 'Service managé standard. Bon rapport qualité/prix, facile à maintenir.',
               kpiImpact: { budget: 0, schedule: 5, quality: 5, teamMorale: 5, riskLevel: -5 },
             },
             {
               label: 'Amazon Aurora',
-              description: 'Performance superieure, haute disponibilite native. Plus cher mais ideal pour la finance.',
+              description: 'Performance supérieure, haute disponibilité native. Plus cher mais idéal pour la finance.',
               kpiImpact: { budget: -8, schedule: 0, quality: 15, teamMorale: 5, riskLevel: -15 },
             },
             {
               label: 'PostgreSQL auto-gere sur EC2',
-              description: 'Controle total mais maintenance lourde. Hugo le prefere.',
+              description: 'Contrôle total mais maintenance lourde. Hugo le préfère.',
               kpiImpact: { budget: 5, schedule: -10, quality: 0, teamMorale: -5, riskLevel: 15 },
             },
           ],
@@ -707,9 +724,9 @@ async function main() {
           {
             phaseId: phase.id,
             title: 'Point d\'avancement migration lot 1',
-            description: 'Revue de la migration des 5 premieres applications (lot 1).',
+            description: 'Revue de la migration des 5 premières applications (lot 1).',
             type: 'STANDUP',
-            objectives: ['Status migration', 'Problemes rencontres', 'Plan lot 2'],
+            objectives: ['Statut migration', 'Problèmes rencontrés', 'Plan lot 2'],
             durationMinutes: 30,
             participants: JSON.parse(JSON.stringify([
               { name: 'Alexandre Roux', role: 'Architecte', cooperationLevel: 5 },
@@ -719,15 +736,15 @@ async function main() {
           },
           {
             phaseId: phase.id,
-            title: 'Comite de pilotage mi-parcours',
-            description: 'Presentation de l\'avancement global a la direction.',
+            title: 'Comité de pilotage mi-parcours',
+            description: 'Présentation de l\'avancement global à la direction.',
             type: 'STEERING',
-            objectives: ['Presenter l\'avancement', 'Gerer les attentes', 'Obtenir les validations'],
+            objectives: ['Présenter l\'avancement', 'Gérer les attentes', 'Obtenir les validations'],
             durationMinutes: 60,
             participants: JSON.parse(JSON.stringify([
               { name: 'Philippe Moreau', role: 'DSI', personality: 'Impatient, veut des chiffres', cooperationLevel: 3 },
               { name: 'Alexandre Roux', role: 'Architecte', cooperationLevel: 5 },
-              { name: 'Lea Dubois', role: 'Securite', cooperationLevel: 4 },
+              { name: 'Léa Dubois', role: 'Sécurité', cooperationLevel: 4 },
             ])),
           },
         ],
@@ -743,31 +760,31 @@ async function main() {
             timeLimitSeconds: 90,
             options: [
               {
-                label: 'Rollback immediat + analyse',
-                description: 'Revenir a l\'infrastructure precedente, analyser le probleme et reprendre plus tard.',
+                label: 'Rollback immédiat + analyse',
+                description: 'Revenir à l\'infrastructure précédente, analyser le problème et reprendre plus tard.',
                 kpiImpact: { budget: -5, schedule: -10, quality: 5, teamMorale: -5, riskLevel: -10 },
               },
               {
                 label: 'Correction a chaud',
-                description: 'Tenter de corriger en production. Risque eleve mais evite le rollback.',
+                description: 'Tenter de corriger en production. Risque élevé mais évite le rollback.',
                 kpiImpact: { budget: 0, schedule: 0, quality: -10, teamMorale: -10, riskLevel: 20 },
               },
             ],
           },
           {
             phaseId: phase.id,
-            title: 'Budget supplementaire necessaire',
-            context: 'Les couts AWS sont 25% plus eleves que prevu a cause d\'une mauvaise estimation du dimensionnement. Il faut soit optimiser soit demander du budget.',
+            title: 'Budget supplémentaire nécessaire',
+            context: 'Les coûts AWS sont 25% plus élevés que prévu à cause d\'une mauvaise estimation du dimensionnement. Il faut soit optimiser soit demander du budget.',
             optimalOption: 2,
             options: [
               {
-                label: 'Demander un budget supplementaire',
-                description: 'Presenter la situation a la direction et demander 50 000 EUR supplementaires.',
+                label: 'Demander un budget supplémentaire',
+                description: 'Présenter la situation à la direction et demander 50 000 EUR supplémentaires.',
                 kpiImpact: { budget: -15, schedule: 0, quality: 0, teamMorale: 0, riskLevel: 0 },
               },
               {
-                label: 'Reduire le perimetre',
-                description: 'Reporter 3 applications non-critiques a une phase 2 ulterieure.',
+                label: 'Réduire le périmètre',
+                description: 'Reporter 3 applications non-critiques à une phase 2 ultérieure.',
                 kpiImpact: { budget: 5, schedule: 5, quality: -10, teamMorale: -5, riskLevel: 5 },
               },
               {
@@ -785,18 +802,18 @@ async function main() {
           phaseId: phase.id,
           type: RandomEventType.STAKEHOLDER,
           title: 'Changement de direction',
-          description: 'Le DSI Philippe Moreau annonce son depart. Son remplacant, plus conservateur, remet en question la strategie cloud-first et demande une justification complete du projet.',
+          description: 'Le DSI Philippe Moreau annonce son départ. Son remplaçant, plus conservateur, remet en question la stratégie cloud-first et demande une justification complète du projet.',
           severity: Severity.HIGH,
           probability: 0.4,
           options: [
             {
-              label: 'Preparer une presentation ROI detaillee',
+              label: 'Préparer une présentation ROI détaillée',
               description: 'Investir du temps pour convaincre le nouveau DSI avec des chiffres.',
               kpiImpact: { budget: -2, schedule: -5, quality: 0, teamMorale: -5, riskLevel: 5 },
             },
             {
-              label: 'S\'appuyer sur le sponsor executif',
-              description: 'Faire intervenir le DG qui a valide le projet initialement.',
+              label: 'S\'appuyer sur le sponsor exécutif',
+              description: 'Faire intervenir le DG qui a validé le projet initialement.',
               kpiImpact: { budget: 0, schedule: -2, quality: 0, teamMorale: 0, riskLevel: -5 },
             },
           ],
@@ -809,15 +826,15 @@ async function main() {
       await prisma.meetingTemplate.create({
         data: {
           phaseId: phase.id,
-          title: 'Audit de securite PCI-DSS',
-          description: 'Revue avec l\'auditeur externe pour valider la conformite de l\'infrastructure cloud.',
+          title: 'Audit de sécurité PCI-DSS',
+          description: 'Revue avec l\'auditeur externe pour valider la conformité de l\'infrastructure cloud.',
           type: 'STEERING',
-          objectives: ['Presenter les mesures de securite', 'Repondre aux questions de l\'auditeur', 'Identifier les gaps'],
+          objectives: ['Présenter les mesures de sécurité', 'Répondre aux questions de l\'auditeur', 'Identifier les gaps'],
           durationMinutes: 90,
           participants: JSON.parse(JSON.stringify([
-            { name: 'Lea Dubois', role: 'Securite', personality: 'Bien preparee, confiante', cooperationLevel: 5 },
-            { name: 'Jean Auditeur', role: 'Auditeur externe PCI-DSS', personality: 'Methodique et exigeant', cooperationLevel: 3 },
-            { name: 'Alexandre Roux', role: 'Architecte', personality: 'Repond aux questions techniques', cooperationLevel: 5 },
+            { name: 'Léa Dubois', role: 'Sécurité', personality: 'Bien préparée, confiante', cooperationLevel: 5 },
+            { name: 'Jean Auditeur', role: 'Auditeur externe PCI-DSS', personality: 'Méthodique et exigeant', cooperationLevel: 3 },
+            { name: 'Alexandre Roux', role: 'Architecte', personality: 'Répond aux questions techniques', cooperationLevel: 5 },
           ])),
         },
       });
@@ -825,8 +842,8 @@ async function main() {
       await prisma.decisionTemplate.create({
         data: {
           phaseId: phase.id,
-          title: 'Non-conformite detectee',
-          context: 'L\'audit revele que les logs d\'acces ne sont pas conserves assez longtemps (90 jours au lieu de 365 requis). La correction necessite un changement d\'architecture du logging.',
+          title: 'Non-conformité détectée',
+          context: 'L\'audit révèle que les logs d\'accès ne sont pas conservés assez longtemps (90 jours au lieu de 365 requis). La correction nécessite un changement d\'architecture du logging.',
           optimalOption: 0,
           options: [
             {
@@ -835,8 +852,8 @@ async function main() {
               kpiImpact: { budget: -5, schedule: -5, quality: 15, teamMorale: 0, riskLevel: -15 },
             },
             {
-              label: 'Demander une derogation temporaire',
-              description: 'Negocier un plan de remediation avec l\'auditeur. Risque reputationnel.',
+              label: 'Demander une dérogation temporaire',
+              description: 'Négocier un plan de remédiation avec l\'auditeur. Risque réputationnel.',
               kpiImpact: { budget: 0, schedule: 0, quality: -5, teamMorale: 5, riskLevel: 10 },
             },
           ],
@@ -849,15 +866,15 @@ async function main() {
         data: {
           phaseId: phase.id,
           title: 'Retrospective et bilan final',
-          description: 'Bilan du projet avec l\'ensemble de l\'equipe et presentation des resultats a la direction.',
+          description: 'Bilan du projet avec l\'ensemble de l\'équipe et présentation des résultats à la direction.',
           type: 'RETROSPECTIVE',
-          objectives: ['Bilan technique', 'Lecons apprises', 'Plan de maintenance'],
+          objectives: ['Bilan technique', 'Leçons apprises', 'Plan de maintenance'],
           durationMinutes: 60,
           participants: JSON.parse(JSON.stringify([
             { name: 'Alexandre Roux', role: 'Architecte', cooperationLevel: 5 },
             { name: 'Camille Petit', role: 'DevOps', cooperationLevel: 5 },
             { name: 'Hugo Leroy', role: 'DBA', personality: 'Finalement convaincu par le cloud', cooperationLevel: 4 },
-            { name: 'Lea Dubois', role: 'Securite', cooperationLevel: 5 },
+            { name: 'Léa Dubois', role: 'Sécurité', cooperationLevel: 5 },
             { name: 'Lucas Bernard', role: 'Dev Backend', cooperationLevel: 4 },
             { name: 'Emma Garcia', role: 'Dev Backend', cooperationLevel: 4 },
           ])),
@@ -867,18 +884,18 @@ async function main() {
       await prisma.decisionTemplate.create({
         data: {
           phaseId: phase.id,
-          title: 'Plan de decommissionnement',
-          context: 'Il est temps de decommissionner l\'ancienne infrastructure on-premise. Le bail du datacenter se termine dans 3 mois.',
+          title: 'Plan de décommissionnement',
+          context: 'Il est temps de décommissionner l\'ancienne infrastructure on-premise. Le bail du datacenter se termine dans 3 mois.',
           optimalOption: 0,
           options: [
             {
-              label: 'Decommissionnement progressif (2 mois)',
-              description: 'Eteindre serveur par serveur apres verification que tout fonctionne en cloud.',
+              label: 'Décommissionnement progressif (2 mois)',
+              description: 'Éteindre serveur par serveur après vérification que tout fonctionne en cloud.',
               kpiImpact: { budget: -3, schedule: 0, quality: 5, teamMorale: 5, riskLevel: -10 },
             },
             {
-              label: 'Decommissionnement rapide (2 semaines)',
-              description: 'Tout couper rapidement pour economiser les couts de datacenter.',
+              label: 'Décommissionnement rapide (2 semaines)',
+              description: 'Tout couper rapidement pour économiser les coûts de datacenter.',
               kpiImpact: { budget: 5, schedule: 5, quality: -5, teamMorale: -5, riskLevel: 10 },
             },
           ],
@@ -892,80 +909,85 @@ async function main() {
   // Clean existing brownfield scenario phases for re-seed
   await prisma.scenarioPhase.deleteMany({ where: { scenarioId: 'seed-scenario-brownfield-erp' } });
 
+  // Seed-owned content: refreshed on every reseed (update) and used on first insert (create).
+  const scenario3Content = {
+    title: 'Reprise d\'un projet ERP en difficulté',
+    description: 'Le précédent chef de projet a quitté l\'entreprise en pleine phase d\'exécution. Le projet de déploiement ERP accumulé 3 semaines de retard, le budget est consommé à 65%, et le moral de l\'équipe est au plus bas. Le Sponsor menace d\'annuler le projet si la situation ne s\'amélioré pas rapidement. Vous êtes appelé en renfort pour sauver ce projet.',
+    objectives: [
+      'Redresser la trajectoire du projet en moins de 2 mois',
+      'Livrer le module Finance dans les délais restants',
+      'Restaurer la confiance du Sponsor et du Comité de Direction',
+      'Stabiliser l\'équipe et réduire le turnover',
+    ],
+    sector: Sector.FINANCE,
+    difficulty: Difficulty.ADVANCED,
+    scenarioType: ScenarioType.BROWNFIELD,
+    startingPhaseOrder: 2,
+    brownfieldContext: {
+      previousDecisions: [
+        { phase: 0, title: 'Choix de l\'intégrateur ERP', outcome: 'Sélection d\'un intégrateur low-cost', impact: 'negative' },
+        { phase: 0, title: 'Périmètre fonctionnel', outcome: 'Tous les modules inclus d\'emblée', impact: 'negative' },
+        { phase: 1, title: 'Méthode de déploiement', outcome: 'Big Bang (pas de pilote)', impact: 'negative' },
+        { phase: 1, title: 'Formation des utilisateurs', outcome: 'Reportée à plus tard', impact: 'negative' },
+      ],
+      completedDeliverables: [
+        { name: 'Charte de projet', score: 55, status: 'VALIDATED' },
+        { name: 'Plan de management', score: 45, status: 'VALIDATED' },
+        { name: 'Étude de faisabilité', score: 60, status: 'VALIDATED' },
+        { name: 'Spécifications techniques', score: 40, status: 'REJECTED' },
+      ],
+      accumulatedDelays: 15,
+      budgetUsed: 0.65,
+      knownRisks: [
+        { title: 'Turnover équipe technique (2 départs)', severity: 'HIGH', status: 'ACTIVE' },
+        { title: 'Intégrateur en sous-capacité', severity: 'HIGH', status: 'ACTIVE' },
+        { title: 'Spécifications incomplètes module Finance', severity: 'CRITICAL', status: 'ACTIVE' },
+        { title: 'Résistance au changement des utilisateurs', severity: 'MEDIUM', status: 'ACTIVE' },
+      ],
+      teamMorale: 'low',
+      previousPmNotes: 'Le précédent chef de projet a quitté l\'entreprise après un conflit avec le Sponsor sur le budget. L\'équipe est démotivée et deux développeurs seniors ont démissionné. L\'intégrateur ERP ne respecte pas ses engagements de qualité. Les spécifications du module Finance ont été rejetées et doivent être reprises.',
+    },
+    estimatedDurationHours: 5,
+    requiredPlan: TenantPlan.STARTER,
+    competencies: ['leadership', 'gestion-risques', 'communication', 'negociation', 'gestion-crise'],
+    isPublished: true,
+    projectTemplate: {
+      name: 'Déploiement ERP GlobalFinance',
+      client: 'GlobalFinance SA',
+      sector: 'FINANCE',
+      description: 'Déploiement d\'un ERP couvrant les modules Finance, RH et Achats pour une entreprise de 500 collaborateurs.',
+      teamSize: 7,
+      initialBudget: 350000,
+      deadlineDays: 120,
+      team: [
+        { name: 'Marc Dubois', role: 'Architecte Solution', expertise: 'SENIOR', personality: 'NEUTRAL', morale: 45 },
+        { name: 'Camille Fontaine', role: 'Consultant Fonctionnel Finance', expertise: 'SENIOR', personality: 'COOPERATIVE', morale: 50 },
+        { name: 'Romain Lefèvre', role: 'Développeur Intégration', expertise: 'INTERMEDIATE', personality: 'RESISTANT', morale: 35 },
+        { name: 'Emma Girard', role: 'Analyste Métier RH', expertise: 'INTERMEDIATE', personality: 'COOPERATIVE', morale: 55 },
+        { name: 'Lucas Petit', role: 'Développeur Backend', expertise: 'JUNIOR', personality: 'COOPERATIVE', morale: 40 },
+        { name: 'Sarah Benali', role: 'Testeuse QA', expertise: 'INTERMEDIATE', personality: 'NEUTRAL', morale: 60 },
+        { name: 'David Chang', role: 'Formateur Utilisateurs', expertise: 'SENIOR', personality: 'COOPERATIVE', morale: 65 },
+      ],
+      deliverables: [
+        { name: 'Charte de projet', description: 'Charte initiale (validée par le précédent CP)', phaseOrder: 0 },
+        { name: 'Plan de management', description: 'Plan de management (partiellement suivi)', phaseOrder: 1 },
+        { name: 'Spécifications module Finance', description: 'À reprendre — rejetées par le client', phaseOrder: 2 },
+        { name: 'Plan de migration de données', description: 'Plan de migration vers le nouvel ERP', phaseOrder: 2 },
+        { name: 'Rapport de recette', description: 'Résultats des tests de recette', phaseOrder: 3 },
+        { name: 'Plan de formation', description: 'Programme de formation des utilisateurs', phaseOrder: 3 },
+        { name: 'Bilan de projet', description: 'Bilan final et retour d\'expérience', phaseOrder: 4 },
+      ],
+    },
+    initialKpis: { budget: 100, schedule: 100, quality: 80, teamMorale: 75, riskLevel: 20 },
+  };
+
   const scenario3 = await prisma.scenario.upsert({
     where: { id: 'seed-scenario-brownfield-erp' },
-    update: {},
+    update: scenario3Content,
     create: {
       id: 'seed-scenario-brownfield-erp',
-      title: 'Reprise d\'un projet ERP en difficulte',
-      description: 'Le precedent chef de projet a quitte l\'entreprise en pleine phase d\'execution. Le projet de deploiement ERP accumule 3 semaines de retard, le budget est consomme a 65%, et le moral de l\'equipe est au plus bas. Le Sponsor menace d\'annuler le projet si la situation ne s\'ameliore pas rapidement. Vous etes appele en renfort pour sauver ce projet.',
-      objectives: [
-        'Redresser la trajectoire du projet en moins de 2 mois',
-        'Livrer le module Finance dans les delais restants',
-        'Restaurer la confiance du Sponsor et du Comite de Direction',
-        'Stabiliser l\'equipe et reduire le turnover',
-      ],
-      sector: Sector.FINANCE,
-      difficulty: Difficulty.ADVANCED,
-      scenarioType: ScenarioType.BROWNFIELD,
-      startingPhaseOrder: 2,
-      brownfieldContext: {
-        previousDecisions: [
-          { phase: 0, title: 'Choix de l\'integrateur ERP', outcome: 'Selection d\'un integrateur low-cost', impact: 'negative' },
-          { phase: 0, title: 'Perimetre fonctionnel', outcome: 'Tous les modules inclus d\'emblee', impact: 'negative' },
-          { phase: 1, title: 'Methode de deploiement', outcome: 'Big Bang (pas de pilote)', impact: 'negative' },
-          { phase: 1, title: 'Formation des utilisateurs', outcome: 'Reportee a plus tard', impact: 'negative' },
-        ],
-        completedDeliverables: [
-          { name: 'Charte de projet', score: 55, status: 'VALIDATED' },
-          { name: 'Plan de management', score: 45, status: 'VALIDATED' },
-          { name: 'Etude de faisabilite', score: 60, status: 'VALIDATED' },
-          { name: 'Specifications techniques', score: 40, status: 'REJECTED' },
-        ],
-        accumulatedDelays: 15,
-        budgetUsed: 0.65,
-        knownRisks: [
-          { title: 'Turnover equipe technique (2 departs)', severity: 'HIGH', status: 'ACTIVE' },
-          { title: 'Integrateur en sous-capacite', severity: 'HIGH', status: 'ACTIVE' },
-          { title: 'Specifications incompletes module Finance', severity: 'CRITICAL', status: 'ACTIVE' },
-          { title: 'Resistance au changement des utilisateurs', severity: 'MEDIUM', status: 'ACTIVE' },
-        ],
-        teamMorale: 'low',
-        previousPmNotes: 'Le precedent chef de projet a quitte l\'entreprise apres un conflit avec le Sponsor sur le budget. L\'equipe est demotivee et deux developpeurs seniors ont demissionne. L\'integrateur ERP ne respecte pas ses engagements de qualite. Les specifications du module Finance ont ete rejetees et doivent etre reprises.',
-      },
-      estimatedDurationHours: 5,
-      requiredPlan: TenantPlan.STARTER,
-      competencies: ['leadership', 'gestion-risques', 'communication', 'negociation', 'gestion-crise'],
-      isPublished: true,
       createdById: systemUser.id,
-      projectTemplate: {
-        name: 'Deploiement ERP GlobalFinance',
-        client: 'GlobalFinance SA',
-        sector: 'FINANCE',
-        description: 'Deploiement d\'un ERP couvrant les modules Finance, RH et Achats pour une entreprise de 500 collaborateurs.',
-        teamSize: 7,
-        initialBudget: 350000,
-        deadlineDays: 120,
-        team: [
-          { name: 'Marc Dubois', role: 'Architecte Solution', expertise: 'SENIOR', personality: 'NEUTRAL', morale: 45 },
-          { name: 'Camille Fontaine', role: 'Consultant Fonctionnel Finance', expertise: 'SENIOR', personality: 'COOPERATIVE', morale: 50 },
-          { name: 'Romain Lefevre', role: 'Developpeur Integration', expertise: 'INTERMEDIATE', personality: 'RESISTANT', morale: 35 },
-          { name: 'Emma Girard', role: 'Analyste Metier RH', expertise: 'INTERMEDIATE', personality: 'COOPERATIVE', morale: 55 },
-          { name: 'Lucas Petit', role: 'Developpeur Backend', expertise: 'JUNIOR', personality: 'COOPERATIVE', morale: 40 },
-          { name: 'Sarah Benali', role: 'Testeuse QA', expertise: 'INTERMEDIATE', personality: 'NEUTRAL', morale: 60 },
-          { name: 'David Chang', role: 'Formateur Utilisateurs', expertise: 'SENIOR', personality: 'COOPERATIVE', morale: 65 },
-        ],
-        deliverables: [
-          { name: 'Charte de projet', description: 'Charte initiale (validee par le precedent CP)', phaseOrder: 0 },
-          { name: 'Plan de management', description: 'Plan de management (partiellement suivi)', phaseOrder: 1 },
-          { name: 'Specifications module Finance', description: 'A reprendre — rejetees par le client', phaseOrder: 2 },
-          { name: 'Plan de migration de donnees', description: 'Plan de migration vers le nouvel ERP', phaseOrder: 2 },
-          { name: 'Rapport de recette', description: 'Resultats des tests de recette', phaseOrder: 3 },
-          { name: 'Plan de formation', description: 'Programme de formation des utilisateurs', phaseOrder: 3 },
-          { name: 'Bilan de projet', description: 'Bilan final et retour d\'experience', phaseOrder: 4 },
-        ],
-      },
-      initialKpis: { budget: 100, schedule: 100, quality: 80, teamMorale: 75, riskLevel: 20 },
+      ...scenario3Content,
     },
   });
 
@@ -976,7 +998,7 @@ async function main() {
       name: 'Cadrage Initial',
       type: PhaseType.INITIATION,
       durationDays: 10,
-      description: 'Phase initiale realisee par le precedent chef de projet.',
+      description: 'Phase initiale réalisée par le précédent chef de projet.',
       completionCriteria: { requiredMeetings: 1, requiredDecisions: 2 },
     },
     {
@@ -984,15 +1006,15 @@ async function main() {
       name: 'Planification',
       type: PhaseType.PLANNING,
       durationDays: 15,
-      description: 'Planification realisee par le precedent chef de projet.',
+      description: 'Planification réalisée par le précédent chef de projet.',
       completionCriteria: { requiredMeetings: 1, requiredDecisions: 2 },
     },
     {
       order: 2,
-      name: 'Execution & Redressement',
+      name: 'Exécution & Redressement',
       type: PhaseType.EXECUTION,
       durationDays: 25,
-      description: 'Vous prenez le relais ici. L\'equipe est demotivee, les specifications du module Finance sont rejetees, et l\'integrateur ne tient pas ses promesses. A vous de redresser la barre.',
+      description: 'Vous prenez le relais ici. L\'équipe est démotivée, les spécifications du module Finance sont rejetées, et l\'intégrateur ne tient pas ses promesses. A vous de redresser la barre.',
       completionCriteria: { requiredMeetings: 2, requiredDecisions: 3 },
     },
     {
@@ -1000,15 +1022,15 @@ async function main() {
       name: 'Suivi & Stabilisation',
       type: PhaseType.MONITORING,
       durationDays: 15,
-      description: 'Surveillez les progres, corrigez le tir et preparez la recette.',
+      description: 'Surveillez les progrès, corrigez le tir et préparez la recette.',
       completionCriteria: { requiredMeetings: 1, requiredDecisions: 1 },
     },
     {
       order: 4,
-      name: 'Cloture & Bilan',
+      name: 'Clôture & Bilan',
       type: PhaseType.CLOSURE,
       durationDays: 5,
-      description: 'Finalisez le deploiement, formez les utilisateurs et redigez le bilan.',
+      description: 'Finalisez le déploiement, formez les utilisateurs et rédigez le bilan.',
       completionCriteria: { requiredMeetings: 1, requiredDecisions: 0 },
     },
   ];
@@ -1028,21 +1050,21 @@ async function main() {
         data: [
           {
             phaseId: phase.id,
-            title: 'Choix de l\'integrateur ERP',
-            context: 'Trois integrateurs repondent a l\'appel d\'offres. Lequel choisir pour le deploiement ERP ?',
+            title: 'Choix de l\'intégrateur ERP',
+            context: 'Trois intégrateurs répondent à l\'appel d\'offres. Lequel choisir pour le déploiement ERP ?',
             options: [
-              { label: 'Selection d\'un integrateur low-cost', description: 'Moins cher mais moins d\'experience', kpiImpact: { budget: 5, quality: -10, riskLevel: 15 } },
-              { label: 'Selection de l\'integrateur reference', description: 'Plus cher, meilleure expertise', kpiImpact: { budget: -10, quality: 10, riskLevel: -5 } },
-              { label: 'Solution interne', description: 'Equipe interne avec consultant externe', kpiImpact: { budget: 0, schedule: -5, teamMorale: 5 } },
+              { label: 'Sélection d\'un intégrateur low-cost', description: 'Moins cher mais moins d\'expérience', kpiImpact: { budget: 5, quality: -10, riskLevel: 15 } },
+              { label: 'Sélection de l\'intégrateur référence', description: 'Plus cher, meilleure expertise', kpiImpact: { budget: -10, quality: 10, riskLevel: -5 } },
+              { label: 'Solution interne', description: 'Équipe interne avec consultant externe', kpiImpact: { budget: 0, schedule: -5, teamMorale: 5 } },
             ] as any,
           },
           {
             phaseId: phase.id,
-            title: 'Perimetre fonctionnel',
-            context: 'Faut-il deployer tous les modules ERP en une fois ou proceeder par lots ?',
+            title: 'Périmètre fonctionnel',
+            context: 'Faut-il déployer tous les modules ERP en une fois ou procéder par lots ?',
             options: [
-              { label: 'Tous les modules inclus d\'emblee', description: 'Deploiement complet (Big Bang)', kpiImpact: { schedule: -10, riskLevel: 20, quality: -5 } },
-              { label: 'Deploiement par lots', description: 'Module Finance d\'abord, puis RH, puis Achats', kpiImpact: { schedule: 5, riskLevel: -10, quality: 5 } },
+              { label: 'Tous les modules inclus d\'emblée', description: 'Déploiement complet (Big Bang)', kpiImpact: { schedule: -10, riskLevel: 20, quality: -5 } },
+              { label: 'Déploiement par lots', description: 'Module Finance d\'abord, puis RH, puis Achats', kpiImpact: { schedule: 5, riskLevel: -10, quality: 5 } },
             ] as any,
           },
         ],
@@ -1051,9 +1073,9 @@ async function main() {
       await prisma.meetingTemplate.create({
         data: {
           phaseId: phase.id,
-          title: 'Reunion de lancement (Kickoff)',
+          title: 'Réunion de lancement (Kickoff)',
           type: 'KICKOFF',
-          objectives: ['Presenter le projet', 'Definir les rôles', 'Valider le planning'],
+          objectives: ['Présenter le projet', 'Définir les rôles', 'Valider le planning'],
           durationMinutes: 60,
           participants: [
             { name: 'Jean-Paul Mercier', role: 'Sponsor / DG', personality: 'Exigeant et impatient', cooperationLevel: 2 },
@@ -1068,11 +1090,11 @@ async function main() {
         data: [
           {
             phaseId: phase.id,
-            title: 'Methode de deploiement',
-            context: 'Comment deployer l\'ERP ? Big Bang ou deploiement progressif avec pilote ?',
+            title: 'Méthode de déploiement',
+            context: 'Comment déployer l\'ERP ? Big Bang ou déploiement progressif avec pilote ?',
             options: [
-              { label: 'Big Bang (pas de pilote)', description: 'Deploiement direct en production', kpiImpact: { schedule: 5, riskLevel: 20, quality: -15 } },
-              { label: 'Pilote sur un site', description: 'Test sur un site avant generalisation', kpiImpact: { schedule: -10, riskLevel: -10, quality: 10 } },
+              { label: 'Big Bang (pas de pilote)', description: 'Déploiement direct en production', kpiImpact: { schedule: 5, riskLevel: 20, quality: -15 } },
+              { label: 'Pilote sur un site', description: 'Test sur un site avant généralisation', kpiImpact: { schedule: -10, riskLevel: -10, quality: 10 } },
             ] as any,
           },
           {
@@ -1080,8 +1102,8 @@ async function main() {
             title: 'Formation des utilisateurs',
             context: 'Quand former les utilisateurs finaux ?',
             options: [
-              { label: 'Reportee a plus tard', description: 'Se concentrer sur le technique d\'abord', kpiImpact: { schedule: 5, teamMorale: -10, quality: -10, riskLevel: 10 } },
-              { label: 'Formation immediate', description: 'Former des maintenant en parallele', kpiImpact: { budget: -5, teamMorale: 10, quality: 5, riskLevel: -5 } },
+              { label: 'Reportée à plus tard', description: 'Se concentrer sur le technique d\'abord', kpiImpact: { schedule: 5, teamMorale: -10, quality: -10, riskLevel: 10 } },
+              { label: 'Formation immédiate', description: 'Former des maintenant en parallèle', kpiImpact: { budget: -5, teamMorale: 10, quality: 5, riskLevel: -5 } },
             ] as any,
           },
         ],
@@ -1090,9 +1112,9 @@ async function main() {
       await prisma.meetingTemplate.create({
         data: {
           phaseId: phase.id,
-          title: 'Comite de pilotage #1',
+          title: 'Comité de pilotage #1',
           type: 'STEERING',
-          objectives: ['Valider le plan de deploiement', 'Presenter le budget previsionnel'],
+          objectives: ['Valider le plan de déploiement', 'Présenter le budget prévisionnel'],
           durationMinutes: 45,
           participants: [
             { name: 'Jean-Paul Mercier', role: 'Sponsor / DG', personality: 'Exigeant et impatient', cooperationLevel: 2 },
@@ -1108,33 +1130,33 @@ async function main() {
         data: [
           {
             phaseId: phase.id,
-            title: 'Gestion de l\'integrateur defaillant',
-            context: 'L\'integrateur ERP ne respecte pas ses engagements de qualite. Les developpements livres sont bugges et incomplets. Que faites-vous ?',
+            title: 'Gestion de l\'intégrateur défaillant',
+            context: 'L\'intégrateur ERP ne respecte pas ses engagements de qualité. Les développements livrés sont buggés et incomplets. Que faites-vous ?',
             options: [
-              { label: 'Ultimatum avec penalites contractuelles', description: 'Mettre la pression legale', kpiImpact: { quality: 5, teamMorale: -5, riskLevel: 5 } },
-              { label: 'Renforcer l\'equipe interne', description: 'Recruter 2 devs supplementaires pour compenser', kpiImpact: { budget: -15, quality: 10, schedule: 5, riskLevel: -10 } },
-              { label: 'Changer d\'integrateur', description: 'Risque mais gain qualite a terme', kpiImpact: { budget: -20, schedule: -15, quality: 15, riskLevel: 10 } },
+              { label: 'Ultimatum avec pénalités contractuelles', description: 'Mettre la pression légale', kpiImpact: { quality: 5, teamMorale: -5, riskLevel: 5 } },
+              { label: 'Renforcer l\'équipe interne', description: 'Recruter 2 devs supplémentaires pour compenser', kpiImpact: { budget: -15, quality: 10, schedule: 5, riskLevel: -10 } },
+              { label: 'Changer d\'intégrateur', description: 'Risque mais gain qualité à terme', kpiImpact: { budget: -20, schedule: -15, quality: 15, riskLevel: 10 } },
             ] as any,
             timeLimitSeconds: 120,
           },
           {
             phaseId: phase.id,
-            title: 'Reprendre les specifications Finance',
-            context: 'Les specifications du module Finance ont ete rejetees. L\'equipe est decouragee. Comment procedez-vous ?',
+            title: 'Reprendre les spécifications Finance',
+            context: 'Les spécifications du module Finance ont été rejetées. L\'équipe est découragée. Comment procédez-vous ?',
             options: [
-              { label: 'Atelier de co-construction avec le metier', description: 'Reunir les utilisateurs cles pour redefinir ensemble', kpiImpact: { quality: 10, teamMorale: 10, schedule: -5 } },
-              { label: 'Reprendre en interne rapidement', description: 'L\'analyste metier reprend seule les specs', kpiImpact: { schedule: 5, quality: 5, teamMorale: -5 } },
-              { label: 'Faire appel a un consultant externe', description: 'Expert finance pour revoir les specs', kpiImpact: { budget: -10, quality: 15, riskLevel: -5 } },
+              { label: 'Atelier de co-construction avec le métier', description: 'Réunir les utilisateurs clés pour redéfinir ensemble', kpiImpact: { quality: 10, teamMorale: 10, schedule: -5 } },
+              { label: 'Reprendre en interne rapidement', description: 'L\'analyste métier reprend seule les specs', kpiImpact: { schedule: 5, quality: 5, teamMorale: -5 } },
+              { label: 'Faire appel à un consultant externe', description: 'Expert finance pour revoir les specs', kpiImpact: { budget: -10, quality: 15, riskLevel: -5 } },
             ] as any,
             timeLimitSeconds: 90,
           },
           {
             phaseId: phase.id,
-            title: 'Moral de l\'equipe',
-            context: 'Le turnover menace. 2 developpeurs envisagent de partir. Comment stabiliser l\'equipe ?',
+            title: 'Moral de l\'équipe',
+            context: 'Le turnover menace. 2 développeurs envisagent de partir. Comment stabiliser l\'équipe ?',
             options: [
-              { label: 'Entretiens individuels et primes', description: 'Ecouter et motiver financierement', kpiImpact: { budget: -5, teamMorale: 15, riskLevel: -10 } },
-              { label: 'Reorganiser les responsabilites', description: 'Donner plus d\'autonomie et de visibilite', kpiImpact: { teamMorale: 10, quality: 5, riskLevel: -5 } },
+              { label: 'Entretiens individuels et primes', description: 'Écouter et motiver financièrement', kpiImpact: { budget: -5, teamMorale: 15, riskLevel: -10 } },
+              { label: 'Réorganiser les responsabilités', description: 'Donner plus d\'autonomie et de visibilité', kpiImpact: { teamMorale: 10, quality: 5, riskLevel: -5 } },
               { label: 'Ignorer et se concentrer sur les livrables', description: 'Le travail d\'abord', kpiImpact: { teamMorale: -15, riskLevel: 15, schedule: 5 } },
             ] as any,
           },
@@ -1145,24 +1167,24 @@ async function main() {
         data: [
           {
             phaseId: phase.id,
-            title: 'Reunion de crise avec le Sponsor',
+            title: 'Réunion de crise avec le Sponsor',
             type: 'CRISIS',
-            objectives: ['Presenter le plan de redressement', 'Negocier un delai supplementaire', 'Rassurer sur la faisabilite'],
+            objectives: ['Présenter le plan de redressement', 'Négocier un délai supplémentaire', 'Rassurer sur la faisabilité'],
             durationMinutes: 60,
             participants: [
-              { name: 'Jean-Paul Mercier', role: 'Sponsor / DG', personality: 'Tres mecontant, impatient, pret a annuler le projet', cooperationLevel: 1 },
-              { name: 'Isabelle Roux', role: 'DAF', personality: 'Analytique, veut des chiffres precis', cooperationLevel: 3 },
+              { name: 'Jean-Paul Mercier', role: 'Sponsor / DG', personality: 'Très mécontent, impatient, prêt à annuler le projet', cooperationLevel: 1 },
+              { name: 'Isabelle Roux', role: 'DAF', personality: 'Analytique, veut des chiffres précis', cooperationLevel: 3 },
             ] as any,
           },
           {
             phaseId: phase.id,
-            title: 'Point d\'equipe — Remotivation',
+            title: 'Point d\'équipe — Remotivation',
             type: 'STANDUP',
-            objectives: ['Ecouter les frustrations', 'Presenter la nouvelle organisation', 'Definir les priorites des 2 prochaines semaines'],
+            objectives: ['Écouter les frustrations', 'Présenter la nouvelle organisation', 'Définir les priorités des 2 prochaines semaines'],
             durationMinutes: 30,
             participants: [
-              { name: 'Marc Dubois', role: 'Architecte Solution', personality: 'Fatigue mais competent', cooperationLevel: 3 },
-              { name: 'Romain Lefevre', role: 'Developpeur Integration', personality: 'Frustre et pret a partir', cooperationLevel: 1 },
+              { name: 'Marc Dubois', role: 'Architecte Solution', personality: 'Fatigué mais compétent', cooperationLevel: 3 },
+              { name: 'Romain Lefèvre', role: 'Développeur Intégration', personality: 'Frustré et prêt à partir', cooperationLevel: 1 },
               { name: 'Camille Fontaine', role: 'Consultant Finance', personality: 'Positive et motrice', cooperationLevel: 5 },
             ] as any,
           },
@@ -1174,27 +1196,27 @@ async function main() {
           {
             phaseId: phase.id,
             type: RandomEventType.RISK,
-            title: 'Depart imminent d\'un developpeur cle',
-            description: 'Romain Lefevre, le developpeur integration, vient de recevoir une offre concurrente. Il hesite a partir dans les 2 semaines.',
+            title: 'Départ imminent d\'un développeur clé',
+            description: 'Romain Lefèvre, le développeur intégration, vient de recevoir une offre concurrente. Il hésite à partir dans les 2 semaines.',
             severity: Severity.HIGH,
             probability: 0.7,
             options: [
-              { label: 'Contre-offre salariale', description: '+15% de salaire et teletravail 3j/semaine', kpiImpact: { budget: -5, teamMorale: 10, riskLevel: -15 } },
-              { label: 'Le laisser partir', description: 'Accepter son depart et chercher un remplacant', kpiImpact: { schedule: -10, teamMorale: -10, riskLevel: 10 } },
-              { label: 'Negocier un preavis etendu', description: 'Lui demander de rester 1 mois de plus pour la transition', kpiImpact: { teamMorale: -5, riskLevel: -5, schedule: -3 } },
+              { label: 'Contre-offre salariale', description: '+15% de salaire et télétravail 3j/semaine', kpiImpact: { budget: -5, teamMorale: 10, riskLevel: -15 } },
+              { label: 'Le laisser partir', description: 'Accepter son départ et chercher un remplaçant', kpiImpact: { schedule: -10, teamMorale: -10, riskLevel: 10 } },
+              { label: 'Négocier un préavis étendu', description: 'Lui demander de rester 1 mois de plus pour la transition', kpiImpact: { teamMorale: -5, riskLevel: -5, schedule: -3 } },
             ] as any,
           },
           {
             phaseId: phase.id,
             type: RandomEventType.OPPORTUNITY,
-            title: 'Nouvel outil de test automatise',
-            description: 'L\'editeur ERP propose un nouvel outil de test automatise gratuit pendant 3 mois. Cela pourrait accelerer la recette.',
+            title: 'Nouvel outil de test automatisé',
+            description: 'L\'éditeur ERP propose un nouvel outil de test automatisé gratuit pendant 3 mois. Cela pourrait accélérer la recette.',
             severity: Severity.LOW,
             probability: 0.5,
             options: [
-              { label: 'Adopter l\'outil immediatement', description: 'Former l\'equipe QA et integrer dans le workflow', kpiImpact: { quality: 10, schedule: 5, riskLevel: -5 } },
-              { label: 'Tester d\'abord sur un module', description: 'Pilote sur le module RH avant generalisation', kpiImpact: { quality: 5, riskLevel: -3 } },
-              { label: 'Decliner — trop de changements en cours', description: 'L\'equipe ne peut pas absorber un nouvel outil', kpiImpact: {} },
+              { label: 'Adopter l\'outil immédiatement', description: 'Former l\'équipe QA et intégrer dans le workflow', kpiImpact: { quality: 10, schedule: 5, riskLevel: -5 } },
+              { label: 'Tester d\'abord sur un module', description: 'Pilote sur le module RH avant généralisation', kpiImpact: { quality: 5, riskLevel: -3 } },
+              { label: 'Décliner — trop de changements en cours', description: 'L\'équipe ne peut pas absorber un nouvel outil', kpiImpact: {} },
             ] as any,
           },
         ],
@@ -1207,10 +1229,10 @@ async function main() {
         data: {
           phaseId: phase.id,
           title: 'Go/No-Go pour la mise en production',
-          context: 'La recette est terminee mais quelques bugs mineurs subsistent. Le Sponsor veut deployer au plus vite.',
+          context: 'La recette est terminée mais quelques bugs mineurs subsistent. Le Sponsor veut déployer au plus vite.',
           options: [
-            { label: 'Go — deployer avec correctifs en parallele', description: 'Risque controle, gain de temps', kpiImpact: { schedule: 10, quality: -5, riskLevel: 5 } },
-            { label: 'No-Go — 1 semaine supplementaire', description: 'Corriger les bugs avant deploiement', kpiImpact: { schedule: -5, quality: 10, riskLevel: -10 } },
+            { label: 'Go — déployer avec correctifs en parallèle', description: 'Risque contrôle, gain de temps', kpiImpact: { schedule: 10, quality: -5, riskLevel: 5 } },
+            { label: 'No-Go — 1 semaine supplémentaire', description: 'Corriger les bugs avant déploiement', kpiImpact: { schedule: -5, quality: 10, riskLevel: -10 } },
           ] as any,
         },
       });
@@ -1218,13 +1240,13 @@ async function main() {
       await prisma.meetingTemplate.create({
         data: {
           phaseId: phase.id,
-          title: 'Comite de pilotage — Bilan recette',
+          title: 'Comité de pilotage — Bilan recette',
           type: 'STEERING',
-          objectives: ['Presenter les resultats de recette', 'Decision Go/No-Go', 'Planifier la formation'],
+          objectives: ['Présenter les résultats de recette', 'Décision Go/No-Go', 'Planifier la formation'],
           durationMinutes: 45,
           participants: [
-            { name: 'Jean-Paul Mercier', role: 'Sponsor / DG', personality: 'Impatient mais satisfait des progres', cooperationLevel: 3 },
-            { name: 'Sarah Benali', role: 'Testeuse QA', personality: 'Rigoureuse, presente les resultats', cooperationLevel: 5 },
+            { name: 'Jean-Paul Mercier', role: 'Sponsor / DG', personality: 'Impatient mais satisfait des progrès', cooperationLevel: 3 },
+            { name: 'Sarah Benali', role: 'Testeuse QA', personality: 'Rigoureuse, présente les résultats', cooperationLevel: 5 },
           ] as any,
         },
       });
@@ -1236,12 +1258,12 @@ async function main() {
           phaseId: phase.id,
           title: 'Retrospective et bilan de projet',
           type: 'RETROSPECTIVE',
-          objectives: ['Retour d\'experience', 'Identifier les leçons apprises', 'Celebrer les succes'],
+          objectives: ['Retour d\'expérience', 'Identifier les leçons apprises', 'Célébrer les succès'],
           durationMinutes: 60,
           participants: [
-            { name: 'Jean-Paul Mercier', role: 'Sponsor / DG', personality: 'Reconnaissant si le projet est sauve', cooperationLevel: 4 },
-            { name: 'Marc Dubois', role: 'Architecte Solution', personality: 'Soulage, partage ses apprentissages', cooperationLevel: 5 },
-            { name: 'Camille Fontaine', role: 'Consultant Finance', personality: 'Fiere du travail accompli', cooperationLevel: 5 },
+            { name: 'Jean-Paul Mercier', role: 'Sponsor / DG', personality: 'Reconnaissant si le projet est sauvé', cooperationLevel: 4 },
+            { name: 'Marc Dubois', role: 'Architecte Solution', personality: 'Soulagé, partage ses apprentissages', cooperationLevel: 5 },
+            { name: 'Camille Fontaine', role: 'Consultant Finance', personality: 'Fière du travail accompli', cooperationLevel: 5 },
           ] as any,
         },
       });
@@ -1276,6 +1298,11 @@ async function main() {
 
   console.log(`Recruiter user created: ${recruiter.email}`);
 
+  // ─── Sector scenarios (construction, santé, énergie, public, manufacturier, télécom) ─
+
+  const sectorCount = await seedSectorScenarios(prisma, systemUser.id);
+  console.log(`Sector scenarios seeded: ${sectorCount}`);
+
   // ─── Deliverable Templates (EPIC 1 — enriched with PM Kit) ─
 
   await seedDeliverableTemplates(prisma, tenant.id, admin.id);
@@ -1283,15 +1310,19 @@ async function main() {
   // ─── Reference Documents (EPIC 1) ─────────────────────────
 
   const refDocs = [
-    { id: 'seed-refdoc-pmbok', title: 'Guide PMBOK 7eme edition', category: ReferenceDocumentCategory.STANDARD, content: '# Guide PMBOK\n\nLe Project Management Body of Knowledge (PMBOK) est le standard de reference publie par le PMI pour la gestion de projet.\n\n## Principes cles\n\n1. Stewardship\n2. Team\n3. Stakeholders\n4. Value\n5. Systems Thinking\n6. Leadership\n7. Tailoring\n8. Quality\n9. Complexity\n10. Risk\n11. Adaptability and Resiliency\n12. Change' },
-    { id: 'seed-refdoc-glossary', title: 'Glossaire PMI', category: ReferenceDocumentCategory.GLOSSARY, content: '# Glossaire PMI\n\n**WBS** (Work Breakdown Structure) : Decomposition hierarchique du perimetre total du travail.\n\n**RACI** : Matrice d\'attribution des responsabilites (Responsible, Accountable, Consulted, Informed).\n\n**Chemin critique** : Sequence d\'activites determinant la duree minimale du projet.\n\n**Earned Value** : Methode de mesure de la performance du projet.' },
-    { id: 'seed-refdoc-bestpractice', title: 'Bonnes pratiques de gestion des risques', category: ReferenceDocumentCategory.BEST_PRACTICE, content: '# Gestion des risques\n\n## Processus\n\n1. Identification\n2. Analyse qualitative\n3. Analyse quantitative\n4. Planification des reponses\n5. Mise en oeuvre\n6. Surveillance' },
+    { id: 'seed-refdoc-pmbok', title: 'Guide PMBOK 7ème édition', category: ReferenceDocumentCategory.STANDARD, content: '# Guide PMBOK\n\nLe Project Management Body of Knowledge (PMBOK) est le standard de référence publié par le PMI pour la gestion de projet.\n\n## Principes clés\n\n1. Stewardship\n2. Team\n3. Stakeholders\n4. Value\n5. Systems Thinking\n6. Leadership\n7. Tailoring\n8. Quality\n9. Complexity\n10. Risk\n11. Adaptability and Resiliency\n12. Change' },
+    { id: 'seed-refdoc-glossary', title: 'Glossaire PMI', category: ReferenceDocumentCategory.GLOSSARY, content: '# Glossaire PMI\n\n**WBS** (Work Breakdown Structure) : Décomposition hiérarchique du périmètre total du travail.\n\n**RACI** : Matrice d\'attribution des responsabilités (Responsible, Accountable, Consulted, Informed).\n\n**Chemin critique** : Séquence d\'activités déterminant la durée minimale du projet.\n\n**Earned Value** : Méthode de mesure de la performance du projet.' },
+    { id: 'seed-refdoc-bestpractice', title: 'Bonnes pratiques de gestion des risques', category: ReferenceDocumentCategory.BEST_PRACTICE, content: '# Gestion des risques\n\n## Processus\n\n1. Identification\n2. Analyse qualitative\n3. Analyse quantitative\n4. Planification des réponses\n5. Mise en œuvre\n6. Surveillance' },
   ];
 
   for (const doc of refDocs) {
     await prisma.referenceDocument.upsert({
       where: { id: doc.id },
-      update: {},
+      update: {
+        title: doc.title,
+        category: doc.category,
+        content: doc.content,
+      },
       create: {
         id: doc.id,
         tenantId: tenant.id,
@@ -1317,18 +1348,18 @@ async function main() {
       slug: 'chef-projet-digital-2026',
       status: 'DRAFT',
       jobTitle: 'Chef de Projet Digital Senior',
-      jobDescription: 'Nous recherchons un chef de projet digital senior pour piloter des projets de transformation numerique. Vous serez responsable de la gestion de bout en bout de projets web et mobile avec des equipes de 5 a 10 personnes.',
+      jobDescription: 'Nous recherchons un chef de projet digital senior pour piloter des projets de transformation numérique. Vous serez responsable de la gestion de bout en bout de projets web et mobile avec des équipes de 5 à 10 personnes.',
       requiredSkills: [
         { skill: 'Planification', weight: 9 },
         { skill: 'Communication', weight: 8 },
         { skill: 'Gestion des risques', weight: 7 },
         { skill: 'Leadership', weight: 8 },
-        { skill: 'Methodologies agiles', weight: 6 },
+        { skill: 'Méthodologies agiles', weight: 6 },
       ],
       experienceLevel: 'senior',
       projectTypes: ['web', 'mobile', 'e-commerce'],
       culture: 'AGILE',
-      cultureDescription: 'Environnement agile avec des sprints de 2 semaines, standups quotidiens et retrospectives regulieres.',
+      cultureDescription: 'Environnement agile avec des sprints de 2 semaines, standups quotidiens et retrospectives régulières.',
       maxCandidates: 50,
       recruiterId: recruiter.id,
       tenantId: tenant.id,

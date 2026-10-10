@@ -32,7 +32,7 @@ export default function ComparePage() {
 
   useEffect(() => {
     if (!candidateAId || !candidateBId || !id) {
-      setError('Parametres manquants pour la comparaison.');
+      setError('Paramètres manquants pour la comparaison.');
       setLoading(false);
       return;
     }
@@ -68,7 +68,7 @@ export default function ComparePage() {
           <CardContent className="py-8 text-center">
             <p className="text-destructive text-sm">{error ?? 'Impossible de charger la comparaison.'}</p>
             <Button variant="outline" size="sm" className="mt-4" asChild>
-              <Link to={`/recruitment/campaigns/${id}/shortlist`}>Retour a la shortlist</Link>
+              <Link to={`/recruitment/campaigns/${id}/shortlist`}>Retour à la shortlist</Link>
             </Button>
           </CardContent>
         </Card>
@@ -97,12 +97,12 @@ export default function ComparePage() {
       [nameB]: candidateB.softSkillsScore ?? 0,
     },
     {
-      axis: 'Fiabilite',
+      axis: 'Fiabilité',
       [nameA]: candidateA.reliabilityScore ?? 0,
       [nameB]: candidateB.reliabilityScore ?? 0,
     },
     {
-      axis: 'Adaptabilite',
+      axis: 'Adaptabilité',
       [nameA]: candidateA.adaptabilityScore ?? 0,
       [nameB]: candidateB.adaptabilityScore ?? 0,
     },
@@ -117,10 +117,10 @@ export default function ComparePage() {
     { label: 'Score global', a: candidateA.globalScore, b: candidateB.globalScore },
     { label: 'Hard Skills', a: candidateA.hardSkillsScore, b: candidateB.hardSkillsScore },
     { label: 'Soft Skills', a: candidateA.softSkillsScore, b: candidateB.softSkillsScore },
-    { label: 'Fiabilite', a: candidateA.reliabilityScore, b: candidateB.reliabilityScore },
-    { label: 'Adaptabilite', a: candidateA.adaptabilityScore, b: candidateB.adaptabilityScore },
+    { label: 'Fiabilité', a: candidateA.reliabilityScore, b: candidateB.reliabilityScore },
+    { label: 'Adaptabilité', a: candidateA.adaptabilityScore, b: candidateB.adaptabilityScore },
     { label: 'Leadership', a: candidateA.leadershipScore, b: candidateB.leadershipScore },
-    { label: 'Compatibilite', a: candidateA.matchPercentage, b: candidateB.matchPercentage },
+    { label: 'Compatibilité', a: candidateA.matchPercentage, b: candidateB.matchPercentage },
   ];
 
   return (
@@ -131,7 +131,7 @@ export default function ComparePage() {
           <Button variant="outline" size="sm" asChild>
             <Link to={`/recruitment/campaigns/${id}/shortlist`}>
               <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
-              Retour a la shortlist
+              Retour à la shortlist
             </Link>
           </Button>
         </ToolbarActions>
@@ -174,7 +174,7 @@ export default function ComparePage() {
         {/* Radar chart */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm">Comparaison des competences</CardTitle>
+            <CardTitle className="text-sm">Comparaison des compétences</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={350}>
@@ -210,7 +210,7 @@ export default function ComparePage() {
         {/* Score comparison table */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm">Scores detailles</CardTitle>
+            <CardTitle className="text-sm">Scores détaillés</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {scoreItems.map(({ label, a, b }) => {
@@ -265,7 +265,7 @@ export default function ComparePage() {
             <CardHeader>
               <CardTitle className="text-sm flex items-center gap-2">
                 <KeenIcon icon="artificial-intelligence" style="duotone" className="size-4 text-primary" />
-                Analyse comparative IA
+                Analyse comparative
               </CardTitle>
             </CardHeader>
             <CardContent>

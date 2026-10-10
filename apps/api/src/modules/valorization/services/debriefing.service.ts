@@ -38,8 +38,8 @@ export class DebriefingService {
     });
 
     if (!simulation) throw new NotFoundException('Simulation introuvable');
-    if (simulation.userId !== userId) throw new ForbiddenException('Acces refuse');
-    if (simulation.tenantId !== tenantId) throw new ForbiddenException('Acces refuse');
+    if (simulation.userId !== userId) throw new ForbiddenException('Accès refusé');
+    if (simulation.tenantId !== tenantId) throw new ForbiddenException('Accès refusé');
 
     // Check if badge already exists for this simulation
     if (!force) {
@@ -105,7 +105,7 @@ export class DebriefingService {
     });
 
     if (!simulation) throw new NotFoundException('Simulation introuvable');
-    if (simulation.userId !== userId) throw new ForbiddenException('Acces refuse');
+    if (simulation.userId !== userId) throw new ForbiddenException('Accès refusé');
 
     const sim = simulation as any;
 
@@ -145,7 +145,7 @@ export class DebriefingService {
         simulationId,
         tenantId,
         title: `Badge - ${sim.scenario.title}`,
-        description: `Certification de competences en gestion de projet pour le scenario "${sim.scenario.title}"`,
+        description: `Certification de compétences en gestion de projet pour le scénario "${sim.scenario.title}"`,
         scenarioTitle: sim.scenario.title,
         sector: sim.scenario.sector,
         difficulty: sim.scenario.difficulty,
@@ -194,21 +194,21 @@ export class DebriefingService {
   }
 
   private getSystemPrompt(): string {
-    return `Tu es un PMO senior (directeur de bureau de projets) avec 20 ans d'experience. Tu debriefes un apprenant qui vient de terminer une simulation de gestion de projet.
+    return `Tu es un PMO senior (directeur de bureau de projets) avec 20 ans d'expérience. Tu débriefes un apprenant qui vient de terminer une simulation de gestion de projet. Réponds en français correct, avec les accents.
 
 Ton style :
-- Direct et honnete, comme un vrai mentor PMO
-- Tu utilises des exemples concrets tires de la simulation
+- Direct et honnête, comme un vrai mentor PMO
+- Tu utilises des exemples concrets tirés de la simulation
 - Tu ne flattes pas inutilement, mais tu reconnais les vrais points forts
-- Tu donnes des conseils actionnable et specifiques
+- Tu donnes des conseils actionnable et spécifiques
 - Tu tutoies l'apprenant
 
 Exemples de ton :
-- "Tu es excellent en planification, mais tu perds tes moyens en reunion de crise."
-- "Tu as gere avec succes un conflit fournisseur et un depassement budgetaire de 15%"
-- "Ta gestion des risques est approximative — tu reagis au lieu d'anticiper."
+- "Tu es excellent en planification, mais tu perds tes moyens en réunion de crise."
+- "Tu as géré avec succès un conflit fournisseur et un dépassement budgétaire de 15%"
+- "Ta gestion des risques est approximative — tu réagis au lieu d'anticiper."
 
-Tu dois repondre UNIQUEMENT en JSON valide, sans texte autour, avec exactement cette structure :
+Tu dois répondre UNIQUEMENT en JSON valide, sans texte autour, avec exactement cette structure :
 {
   "globalScore": <number 0-100>,
   "competencyScores": {
@@ -219,10 +219,10 @@ Tu dois repondre UNIQUEMENT en JSON valide, sans texte autour, avec exactement c
     "rigueur": <number 0-100>,
     "adaptabilite": <number 0-100>
   },
-  "strengths": ["<3-5 points forts specifiques>"],
-  "improvements": ["<3-5 axes d'amelioration specifiques>"],
-  "recommendations": ["<3-5 recommandations concretes>"],
-  "summary": "<paragraphe de debriefing direct et personnalise, 150-300 mots>"
+  "strengths": ["<3-5 points forts spécifiques>"],
+  "improvements": ["<3-5 axes d'amélioration spécifiques>"],
+  "recommendations": ["<3-5 recommandations concrètes>"],
+  "summary": "<paragraphe de debriefing direct et personnalisé, 150-300 mots>"
 }`;
   }
 
@@ -236,8 +236,8 @@ Tu dois repondre UNIQUEMENT en JSON valide, sans texte autour, avec exactement c
 
     const sections: string[] = [];
 
-    sections.push(`## Scenario: ${simulation.scenario.title}`);
-    sections.push(`Secteur: ${simulation.scenario.sector} | Difficulte: ${simulation.scenario.difficulty}`);
+    sections.push(`## Scénario: ${simulation.scenario.title}`);
+    sections.push(`Secteur: ${simulation.scenario.sector} | Difficulté: ${simulation.scenario.difficulty}`);
     if (simulation.scenario.description) {
       sections.push(`Description: ${simulation.scenario.description}`);
     }
@@ -246,9 +246,9 @@ Tu dois repondre UNIQUEMENT en JSON valide, sans texte autour, avec exactement c
     if (kpis) {
       sections.push(`\n## KPIs Finaux`);
       sections.push(`- Budget: ${kpis.budget}/100`);
-      sections.push(`- Delai: ${kpis.schedule}/100`);
-      sections.push(`- Qualite: ${kpis.quality}/100`);
-      sections.push(`- Moral equipe: ${kpis.teamMorale}/100`);
+      sections.push(`- Délai: ${kpis.schedule}/100`);
+      sections.push(`- Qualité: ${kpis.quality}/100`);
+      sections.push(`- Moral équipe: ${kpis.teamMorale}/100`);
       sections.push(`- Niveau de risque: ${kpis.riskLevel}/100`);
     }
 
@@ -262,32 +262,32 @@ Tu dois repondre UNIQUEMENT en JSON valide, sans texte autour, avec exactement c
 
     // Decisions
     if (decisions.length) {
-      sections.push(`\n## Decisions prises: ${decisions.length}`);
+      sections.push(`\n## Décisions prises: ${decisions.length}`);
       decisions.forEach((d: any) => {
-        sections.push(`- [Phase ${d.phaseOrder}] ${d.title}: choix "${d.chosenOptionTitle ?? 'non specifie'}"`);
+        sections.push(`- [Phase ${d.phaseOrder}] ${d.title}: choix "${d.chosenOptionTitle ?? 'non spécifié'}"`);
         if (d.aiFeedback) sections.push(`  Feedback IA: ${d.aiFeedback.substring(0, 200)}`);
       });
     }
 
     // Random events
     if (events.length) {
-      sections.push(`\n## Evenements aleatoires: ${events.length}`);
+      sections.push(`\n## Événements aléatoires: ${events.length}`);
       events.forEach((e: any) => {
-        sections.push(`- [Phase ${e.phaseOrder}] ${e.title}: reponse "${e.chosenOptionTitle ?? 'non specifie'}"`);
+        sections.push(`- [Phase ${e.phaseOrder}] ${e.title}: réponse "${e.chosenOptionTitle ?? 'non spécifié'}"`);
         if (e.aiFeedback) sections.push(`  Feedback IA: ${e.aiFeedback.substring(0, 200)}`);
       });
     }
 
     // Meetings
     if (meetings.length) {
-      sections.push(`\n## Reunions: ${meetings.length}`);
+      sections.push(`\n## Réunions: ${meetings.length}`);
       meetings.forEach((m: any) => {
         const msgCount = m._count?.messages ?? 0;
         sections.push(`- ${m.title} (${m.status}, ${msgCount} messages)`);
         if (m.summary) {
-          sections.push(`  Resume: ${m.summary.summary?.substring(0, 200) ?? ''}`);
+          sections.push(`  Résumé: ${m.summary.summary?.substring(0, 200) ?? ''}`);
           if (m.summary.keyDecisions?.length) {
-            sections.push(`  Decisions cles: ${m.summary.keyDecisions.join(', ')}`);
+            sections.push(`  Decisions clés: ${m.summary.keyDecisions.join(', ')}`);
           }
         }
       });
@@ -298,16 +298,16 @@ Tu dois repondre UNIQUEMENT en JSON valide, sans texte autour, avec exactement c
       sections.push(`\n## Livrables: ${deliverables.length}`);
       deliverables.forEach((d: any) => {
         const lastEval = d.evaluations?.[0];
-        const scoreStr = lastEval ? `${lastEval.grade} (${lastEval.score}/100)` : 'non evalue';
+        const scoreStr = lastEval ? `${lastEval.grade} (${lastEval.score}/100)` : 'non évalué';
         sections.push(`- ${d.title} (${d.type}, ${d.status}) — Score: ${scoreStr}, ${d.revisionNumber} revision(s)`);
       });
     }
 
     // Emails
     if (emails.length) {
-      sections.push(`\n## Emails traites: ${emails.length}`);
+      sections.push(`\n## Emails traités: ${emails.length}`);
       const avgScore = emails.reduce((sum: number, e: any) => sum + (e.responseScore ?? 0), 0) / emails.length;
-      sections.push(`Score moyen des reponses: ${avgScore.toFixed(0)}/100`);
+      sections.push(`Score moyen des réponses: ${avgScore.toFixed(0)}/100`);
     }
 
     return sections.join('\n');
@@ -350,10 +350,10 @@ Tu dois repondre UNIQUEMENT en JSON valide, sans texte autour, avec exactement c
           rigueur: 50,
           adaptabilite: 50,
         },
-        strengths: ['Donnees insuffisantes pour generer un debriefing detaille'],
-        improvements: ['Completez davantage la simulation pour un debriefing precis'],
-        recommendations: ['Refaites la simulation en completant toutes les phases'],
-        summary: 'Le debriefing n\'a pas pu etre genere automatiquement. Veuillez reessayer.',
+        strengths: ['Données insuffisantes pour générer un debriefing détaillé'],
+        improvements: ['Complétez davantage la simulation pour un debriefing précis'],
+        recommendations: ['Refaites la simulation en complétant toutes les phases'],
+        summary: 'Le debriefing n\'a pas pu être généré automatiquement. Veuillez réessayer.',
       };
     }
   }

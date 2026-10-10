@@ -24,7 +24,7 @@ const SEVERITY_VARIANT: Record<string, 'info' | 'warning' | 'destructive'> = {
 const SEVERITY_LABEL: Record<string, string> = {
   LOW: 'Faible',
   MEDIUM: 'Moyen',
-  HIGH: 'Eleve',
+  HIGH: 'Élevé',
   CRITICAL: 'Critique',
 };
 
@@ -69,7 +69,7 @@ export default function EventsListPage() {
       <div className="container-fixed">
         <Toolbar>
           <ToolbarHeading>
-            <h1 className="text-xl font-medium text-gray-900">Evenements aleatoires</h1>
+            <h1 className="text-xl font-medium text-gray-900">Événements aléatoires</h1>
           </ToolbarHeading>
         </Toolbar>
         <Card>
@@ -85,7 +85,7 @@ export default function EventsListPage() {
     <div className="container-fixed space-y-5">
       <Toolbar>
         <ToolbarHeading>
-          <h1 className="text-xl font-medium text-gray-900">Evenements aleatoires</h1>
+          <h1 className="text-xl font-medium text-gray-900">Événements aléatoires</h1>
           <p className="text-sm text-gray-700">
             {events.length} evenement(s) — {pending.length} en attente, {resolved.length} resolu(s)
           </p>
@@ -105,8 +105,8 @@ export default function EventsListPage() {
           <CardContent>
             <EmptyState
               icon="flash"
-              title="Aucun evenement"
-              description="Les evenements aleatoires apparaitront au fil de la simulation."
+              title="Aucun événement"
+              description="Les événements aléatoires apparaîtront au fil de la simulation."
             />
           </CardContent>
         </Card>
@@ -168,7 +168,7 @@ function EventCard({ event, simId }: { event: RandomEvent; simId: string }) {
                 Phase {event.phaseOrder + 1}
               </Badge>
               <Badge variant={isResolved ? 'success' : 'warning'} appearance="light" size="sm">
-                {isResolved ? 'Resolu' : 'En attente'}
+                {isResolved ? 'Résolu' : 'En attente'}
               </Badge>
               <span className="text-xs text-muted-foreground">
                 Type : {event.type}
@@ -182,7 +182,7 @@ function EventCard({ event, simId }: { event: RandomEvent; simId: string }) {
           </div>
           <Button variant={isResolved ? 'outline' : 'primary'} size="sm" asChild>
             <Link to={`/simulations/${simId}/events/${event.id}`}>
-              {isResolved ? 'Voir' : 'Reagir'}
+              {isResolved ? 'Voir' : 'Réagir'}
             </Link>
           </Button>
         </div>

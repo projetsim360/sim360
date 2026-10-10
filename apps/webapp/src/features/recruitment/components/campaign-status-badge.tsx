@@ -4,8 +4,8 @@ import type { CampaignStatus } from '../types/recruitment.types';
 const STATUS_CONFIG: Record<CampaignStatus, { label: string; variant: 'secondary' | 'success' | 'destructive' | 'warning' }> = {
   DRAFT: { label: 'Brouillon', variant: 'secondary' },
   ACTIVE: { label: 'Active', variant: 'success' },
-  CLOSED: { label: 'Cloturee', variant: 'destructive' },
-  ARCHIVED: { label: 'Archivee', variant: 'warning' },
+  CLOSED: { label: 'Clôturée', variant: 'destructive' },
+  ARCHIVED: { label: 'Archivée', variant: 'warning' },
 };
 
 interface CampaignStatusBadgeProps {

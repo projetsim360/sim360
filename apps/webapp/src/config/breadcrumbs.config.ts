@@ -40,7 +40,7 @@ export const BREADCRUMB_CONFIG: Record<string, BreadcrumbDef> = {
       { label: 'Simulations', path: '/simulations' },
       { label: ':projectName', path: '/simulations/:id' },
       { label: 'Livrables', path: '/simulations/:id/deliverables' },
-      { label: 'Redaction' },
+      { label: 'Rédaction' },
     ],
   },
   '/simulations/:id/deliverables/:delId/evaluation': {
@@ -48,7 +48,7 @@ export const BREADCRUMB_CONFIG: Record<string, BreadcrumbDef> = {
       { label: 'Simulations', path: '/simulations' },
       { label: ':projectName', path: '/simulations/:id' },
       { label: 'Livrables', path: '/simulations/:id/deliverables' },
-      { label: 'Evaluation' },
+      { label: 'Évaluation' },
     ],
   },
   '/simulations/:id/kpis': {
@@ -103,7 +103,7 @@ export const BREADCRUMB_CONFIG: Record<string, BreadcrumbDef> = {
     segments: [
       { label: 'Projets', path: '/projects' },
       { label: ':projectName', path: '/projects/:id' },
-      { label: 'Equipe' },
+      { label: 'Équipe' },
     ],
   },
   '/recruitment/campaigns/:id': {

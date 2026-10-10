@@ -62,7 +62,7 @@ export default function CvSuggestionsPage() {
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}/debriefing`}>
               <KeenIcon icon="chart" style="duotone" className="text-sm" />
-              Voir le debriefing
+              Voir le débriefing
             </Link>
           </Button>
         </ToolbarActions>
@@ -73,7 +73,7 @@ export default function CvSuggestionsPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <KeenIcon icon="briefcase" style="duotone" className="text-base text-primary" />
-                Lignes a ajouter a votre CV
+                Lignes à ajouter à votre CV
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -98,7 +98,7 @@ export default function CvSuggestionsPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <KeenIcon icon="award" style="duotone" className="text-base text-primary" />
-                Competences a mettre en avant
+                Compétences à mettre en avant
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -134,7 +134,7 @@ export default function CvSuggestionsPage() {
               <div className="flex items-start gap-2 p-3 bg-primary/10 rounded-lg border border-primary/20">
                 <KeenIcon icon="information-2" style="duotone" className="text-sm text-primary mt-0.5 shrink-0" />
                 <p className="text-sm text-primary">
-                  Ce CV est genere a partir de votre simulation. Personnalisez-le avant de l'utiliser.
+                  Ce CV est généré à partir de votre simulation. Personnalisez-le avant de l'utiliser.
                 </p>
               </div>
             </CardContent>
@@ -146,7 +146,7 @@ export default function CvSuggestionsPage() {
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}/debriefing`}>
               <KeenIcon icon="arrow-left" style="duotone" className="text-sm" />
-              Retour au debriefing
+              Retour au débriefing
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>

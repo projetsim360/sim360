@@ -15,15 +15,22 @@ import {
 import { DisabledWithTooltip } from '@/components/ui/disabled-with-tooltip';
 import { cn } from '@/lib/utils';
 import { streamAiResponse } from '@/lib/sse-client';
+import { useMutation } from '@tanstack/react-query';
+import { meetingApi } from '../api/meeting.api';
 import { MeetingConference } from './meeting-conference';
 import { MeetingChatPanel } from './meeting-chat-panel';
 import { ParticipantAvatar } from './participant-avatar';
-import type { ChatMessage, MeetingDetail, MeetingParticipant } from '../types/meeting.types';
+import { MeetingTimelineChip } from './meeting-timeline-chip';
+import type { ChatMessage, MeetingDetail, MeetingMessage, MeetingParticipant } from '../types/meeting.types';
 
-function formatElapsed(seconds: number): string {
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+function toChatMessage(m: MeetingMessage): ChatMessage {
+  return {
+    id: m.id,
+    role: m.role === 'USER' ? 'user' : 'assistant',
+    content: m.content,
+    timestamp: new Date(m.createdAt),
+    participantName: m.participant?.name,
+  };
 }
 
 function useChronometer(startedAt: string | null, active: boolean) {
@@ -49,15 +56,7 @@ export function MeetingRoomShell({ meeting, onComplete, actionLoading }: Meeting
   const [mode, setMode] = useState<'TEXT' | 'AUDIO'>(meeting.mode);
   const [chatDrawerOpen, setChatDrawerOpen] = useState(false);
   const [showAudioWarning, setShowAudioWarning] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>(() =>
-    meeting.messages.map((m) => ({
-      id: m.id,
-      role: m.role === 'USER' ? 'user' : 'assistant',
-      content: m.content,
-      timestamp: new Date(m.createdAt),
-      participantName: m.participant?.name,
-    })),
-  );
+  const [messages, setMessages] = useState<ChatMessage[]>(() => meeting.messages.map(toChatMessage));
   const [input, setInput] = useState('');
   const [streaming, setStreaming] = useState(false);
   const [selectedParticipant, setSelectedParticipant] = useState<MeetingParticipant | null>(
@@ -70,6 +69,28 @@ export function MeetingRoomShell({ meeting, onComplete, actionLoading }: Meeting
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages]);
+
+  // Auto-opening: an empty, in-progress meeting gets an opening statement from the facilitator
+  // instead of a silent room. The server is idempotent; the ref avoids a double call in StrictMode.
+  const openRequested = useRef(false);
+  const openMutation = useMutation({
+    mutationFn: () => meetingApi.openMeeting(meeting.id),
+    onSuccess: (res) => {
+      setMessages((prev) => (prev.length === 0 ? res.messages.map(toChatMessage) : prev));
+      // Default the reply target to the facilitator who just spoke.
+      const opener = res.messages.find((m) => m.role === 'PARTICIPANT');
+      const p = meeting.participants.find((x) => x.id === opener?.participantId);
+      if (p) setSelectedParticipant(p);
+    },
+  });
+  useEffect(() => {
+    if (mode !== 'TEXT' || openRequested.current) return;
+    if (meeting.status !== 'IN_PROGRESS' || meeting.messages.length > 0) return;
+    openRequested.current = true;
+    openMutation.mutate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, meeting.id]);
+  const opening = openMutation.isPending;
 
   // sendMessage — repris verbatim de l'ancien meeting-room.tsx.
   const sendMessage = useCallback(async () => {
@@ -152,10 +173,7 @@ export function MeetingRoomShell({ meeting, onComplete, actionLoading }: Meeting
               Audio
             </button>
           </div>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-xs font-medium text-white tabular-nums">
-            <KeenIcon icon="time" style="duotone" className="text-xs leading-none" />
-            {formatElapsed(elapsed)}
-          </span>
+          <MeetingTimelineChip elapsedSeconds={elapsed} durationMinutes={meeting.durationMinutes} />
         </div>
       </div>
 
@@ -192,6 +210,7 @@ export function MeetingRoomShell({ meeting, onComplete, actionLoading }: Meeting
               participants={meeting.participants}
               meetingTitle={meeting.title}
               startedAt={meeting.startedAt}
+              durationMinutes={meeting.durationMinutes}
               onEnd={onComplete}
               forceSingleMode
               chatOpen={chatDrawerOpen}
@@ -215,6 +234,7 @@ export function MeetingRoomShell({ meeting, onComplete, actionLoading }: Meeting
                     messages={messages}
                     input={input}
                     streaming={streaming}
+                    opening={opening}
                     selectedParticipant={selectedParticipant}
                     onInputChange={setInput}
                     onSelectParticipant={setSelectedParticipant}
@@ -236,6 +256,7 @@ export function MeetingRoomShell({ meeting, onComplete, actionLoading }: Meeting
               messages={messages}
               input={input}
               streaming={streaming}
+              opening={opening}
               selectedParticipant={selectedParticipant}
               onInputChange={setInput}
               onSelectParticipant={setSelectedParticipant}

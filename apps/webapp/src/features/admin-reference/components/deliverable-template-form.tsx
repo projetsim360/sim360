@@ -36,10 +36,10 @@ const templateSchema = z.object({
   }),
   description: z.string().optional(),
   content: z.string().min(1, 'Le contenu est requis'),
-  evaluationCriteria: z.string().min(1, 'Les criteres d\'evaluation sont requis'),
+  evaluationCriteria: z.string().min(1, 'Les critères d\'évaluation sont requis'),
   pmiProcess: z.string().optional(),
   difficulty: z.enum(['DISCOVERY', 'STANDARD', 'ADVANCED'], {
-    required_error: 'La difficulte est requise',
+    required_error: 'La difficulté est requise',
   }),
   referenceExample: z.string().optional(),
 });
@@ -155,7 +155,7 @@ export function DeliverableTemplateForm({
           <DialogDescription>
             {template
               ? 'Modifiez les informations du template de livrable.'
-              : 'Remplissez les informations pour creer un nouveau template.'}
+              : 'Remplissez les informations pour créer un nouveau template.'}
           </DialogDescription>
         </DialogHeader>
 
@@ -191,7 +191,7 @@ export function DeliverableTemplateForm({
                   onValueChange={(val) => setValue('phase', val as PhaseType)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Selectionner une phase" />
+                    <SelectValue placeholder="Sélectionner une phase" />
                   </SelectTrigger>
                   <SelectContent>
                     {PHASES.map((phase) => (
@@ -210,13 +210,13 @@ export function DeliverableTemplateForm({
             {/* Difficulte + Processus PMI */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label>Difficulte</Label>
+                <Label>Difficulté</Label>
                 <Select
                   value={difficultyValue}
                   onValueChange={(val) => setValue('difficulty', val as DeliverableTemplateDifficulty)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Selectionner une difficulte" />
+                    <SelectValue placeholder="Sélectionner une difficulté" />
                   </SelectTrigger>
                   <SelectContent>
                     {DIFFICULTIES.map((diff) => (
@@ -258,7 +258,7 @@ export function DeliverableTemplateForm({
               <Textarea
                 id="content"
                 {...register('content')}
-                placeholder="Redigez le contenu du template en Markdown..."
+                placeholder="Rédigez le contenu du template en Markdown..."
                 className="min-h-32 font-mono text-xs"
               />
               {errors.content && (
@@ -268,7 +268,7 @@ export function DeliverableTemplateForm({
 
             {/* Criteres d'evaluation (JSON) */}
             <div className="space-y-1.5">
-              <Label htmlFor="evaluationCriteria">Criteres d'evaluation (JSON)</Label>
+              <Label htmlFor="evaluationCriteria">Critères d'évaluation (JSON)</Label>
               <Textarea
                 id="evaluationCriteria"
                 {...register('evaluationCriteria')}
@@ -282,11 +282,11 @@ export function DeliverableTemplateForm({
 
             {/* Exemple de reference (Markdown, optionnel) */}
             <div className="space-y-1.5">
-              <Label htmlFor="referenceExample">Exemple de reference (Markdown, optionnel)</Label>
+              <Label htmlFor="referenceExample">Exemple de référence (Markdown, optionnel)</Label>
               <Textarea
                 id="referenceExample"
                 {...register('referenceExample')}
-                placeholder="Un exemple de livrable bien redige..."
+                placeholder="Un exemple de livrable bien rédigé..."
                 className="min-h-24 font-mono text-xs"
               />
             </div>
@@ -309,7 +309,7 @@ export function DeliverableTemplateForm({
             form="deliverable-template-form"
             disabled={isPending}
           >
-            {isPending ? 'Enregistrement...' : template ? 'Mettre a jour' : 'Creer'}
+            {isPending ? 'Enregistrement...' : template ? 'Mettre à jour' : 'Créer'}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -55,7 +55,7 @@ export class ReferenceDocumentsService {
     });
 
     if (!existing) {
-      throw new NotFoundException('Document de reference introuvable');
+      throw new NotFoundException('Document de référence introuvable');
     }
 
     // Save current version to history before updating
@@ -144,7 +144,7 @@ export class ReferenceDocumentsService {
     });
 
     if (!document) {
-      throw new NotFoundException('Document de reference introuvable');
+      throw new NotFoundException('Document de référence introuvable');
     }
 
     return document;
@@ -157,7 +157,7 @@ export class ReferenceDocumentsService {
     });
 
     if (!document) {
-      throw new NotFoundException('Document de reference introuvable');
+      throw new NotFoundException('Document de référence introuvable');
     }
 
     return this.prisma.referenceDocumentVersion.findMany({

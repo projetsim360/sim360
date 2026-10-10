@@ -2,7 +2,7 @@ import { IsString, IsInt, IsOptional, Min, Max } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateMentorReviewDto {
-  @ApiProperty({ description: "ID de l'evaluation a revoir" })
+  @ApiProperty({ description: "ID de l'évaluation à revoir" })
   @IsString()
   evaluationId!: string;
 

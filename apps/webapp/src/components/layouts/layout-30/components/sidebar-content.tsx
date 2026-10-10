@@ -16,6 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus } fr
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/providers/auth-provider';
+import { getApiOrigin } from '@/lib/asset-url';
 
 export function SidebarContent() {
 	const { theme, setTheme } = useTheme();
@@ -24,7 +25,7 @@ export function SidebarContent() {
   const initials = user
     ? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
     : '?';
-  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
+  const apiBase = getApiOrigin();
   const { pathname } = useLocation();
   const [selectedMenuItem, setSelectedMenuItem] = useState(MENU_SIDEBAR_MAIN[1]);
 

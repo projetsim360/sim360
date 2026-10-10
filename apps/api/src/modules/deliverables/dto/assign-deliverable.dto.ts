@@ -4,13 +4,13 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 export class AssignDeliverableDto {
   @ApiProperty({
     description:
-      "ID du membre d'equipe (expert IA) a qui assigner le livrable",
+      "ID du membre d'équipe (expert IA) à qui assigner le livrable",
   })
   @IsString()
   teamMemberId!: string;
 
   @ApiPropertyOptional({
-    description: "Instructions specifiques pour l'expert",
+    description: "Instructions spécifiques pour l'expert",
   })
   @IsOptional()
   @IsString()

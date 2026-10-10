@@ -11,6 +11,7 @@ interface MeetingConferenceProps {
   participants: MeetingParticipant[];
   meetingTitle: string;
   startedAt?: string | null;
+  durationMinutes?: number | null;
   onEnd: () => void;
   forceSingleMode?: boolean;
   chatOpen?: boolean;
@@ -32,6 +33,7 @@ export function MeetingConference({
   participants,
   meetingTitle,
   startedAt,
+  durationMinutes,
   onEnd,
   forceSingleMode = false,
   chatOpen,
@@ -316,6 +318,7 @@ export function MeetingConference({
           <div className="px-3 pb-3 shrink-0">
             <ConferenceControls
               elapsed={elapsed}
+              durationMinutes={durationMinutes}
               isMuted={isMuted}
               isConnected={isConnected}
               conferenceMode={conferenceMode}

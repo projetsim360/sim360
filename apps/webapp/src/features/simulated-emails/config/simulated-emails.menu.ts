@@ -7,8 +7,8 @@ export const simulatedEmailMenuItems: MenuConfig = [
     icon: Mail,
     path: '/emails/inbox',
     children: [
-      { title: 'Boite de reception', path: '/emails/inbox' },
-      { title: 'Repondus', path: '/emails/responded' },
+      { title: 'Boîte de réception', path: '/emails/inbox' },
+      { title: 'Répondus', path: '/emails/responded' },
       { title: 'Archives', path: '/emails/archived' },
     ],
   },

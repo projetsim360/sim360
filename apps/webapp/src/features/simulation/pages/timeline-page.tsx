@@ -22,12 +22,12 @@ const TYPE_ICONS: Record<string, string> = {
 };
 
 const TYPE_LABELS: Record<string, string> = {
-  PHASE_START: 'Debut de phase',
-  PHASE_COMPLETE: 'Phase terminee',
-  DECISION: 'Decision',
-  RANDOM_EVENT: 'Evenement aleatoire',
-  SIMULATION_START: 'Debut de simulation',
-  SIMULATION_COMPLETE: 'Simulation terminee',
+  PHASE_START: 'Début de phase',
+  PHASE_COMPLETE: 'Phase terminée',
+  DECISION: 'Décision',
+  RANDOM_EVENT: 'Événement aléatoire',
+  SIMULATION_START: 'Début de simulation',
+  SIMULATION_COMPLETE: 'Simulation terminée',
   SIMULATION_PAUSE: 'Simulation en pause',
   SIMULATION_RESUME: 'Simulation reprise',
 };
@@ -75,7 +75,7 @@ export default function TimelinePage() {
         <ToolbarHeading>
           <h1 className="text-xl font-medium text-gray-900">Historique de la simulation</h1>
           {!loading && timeline.length > 0 && (
-            <p className="text-sm text-gray-700">{timeline.length} evenement(s)</p>
+            <p className="text-sm text-gray-700">{timeline.length} événement(s)</p>
           )}
         </ToolbarHeading>
         <ToolbarActions>
@@ -112,7 +112,7 @@ export default function TimelinePage() {
           <CardContent>
             <EmptyState
               icon="calendar"
-              title="Aucun evenement"
+              title="Aucun événement"
               description="L'historique se construira au fil de la simulation."
             />
           </CardContent>

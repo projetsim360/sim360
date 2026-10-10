@@ -4,6 +4,15 @@ import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
 import { ParticipantAvatar } from './participant-avatar';
 import { ChatBubble } from './chat-bubble';
+import { ActionItemsPanel } from '@/features/action-items/components/action-items-panel';
+
+const KPI_LABELS: Record<string, string> = {
+  budget: 'Budget',
+  schedule: 'Délai',
+  quality: 'Qualité',
+  teamMorale: 'Moral de l’équipe',
+  riskLevel: 'Niveau de risque',
+};
 import type { ChatMessage, MeetingDetail } from '../types/meeting.types';
 
 interface MeetingCompletedProps {
@@ -105,44 +114,12 @@ export function MeetingCompleted({ meeting }: MeetingCompletedProps) {
               </Card>
             )}
 
-            {/* Actions à suivre */}
-            {summary.actionItems && summary.actionItems.length > 0 && (
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="font-display text-base flex items-center gap-2 text-[var(--brand-700)]">
-                    <KeenIcon icon="clipboard" style="duotone" className="size-4 text-[var(--accent-500)]" />
-                    Actions à suivre
-                    <span className="inline-flex items-center justify-center rounded-full bg-[var(--accent-100)] px-2 py-0.5 text-[11px] font-bold text-[var(--accent-700)]">
-                      {summary.actionItems.length}
-                    </span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  {summary.actionItems.map((item, i) => (
-                    <div key={i} className="flex items-start gap-3 p-3 rounded-lg border border-[var(--neutral-200)] hover:bg-[var(--neutral-50)] transition-colors">
-                      <div className="size-7 rounded-full bg-[var(--accent-100)] flex items-center justify-center shrink-0 text-xs font-bold text-[var(--accent-700)]">
-                        {i + 1}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-foreground">{item.task}</p>
-                        <div className="flex items-center gap-3 mt-2 text-xs text-[var(--neutral-500)]">
-                          <span className="flex items-center gap-1.5">
-                            <span className="size-1.5 rounded-full bg-[var(--neutral-400)]" />
-                            {item.assignee}
-                          </span>
-                          {item.deadline && (
-                            <span className="flex items-center gap-1.5">
-                              <span className="size-1.5 rounded-full bg-[var(--accent-500)]" />
-                              {item.deadline}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            )}
+            {/* Actions de suivi — editable, persisted (owner, due date, status) */}
+            <ActionItemsPanel
+              simulationId={meeting.simulationId}
+              meetingId={meeting.id}
+              assigneeSuggestions={meeting.participants.map((p) => p.name)}
+            />
 
             {/* Transcript repliable */}
             {messages.length > 0 && (
@@ -182,13 +159,13 @@ export function MeetingCompleted({ meeting }: MeetingCompletedProps) {
                 <CardHeader className="pb-3">
                   <CardTitle className="font-display text-base flex items-center gap-2 text-[var(--brand-700)]">
                     <KeenIcon icon="chart-line" style="duotone" className="size-4 text-[var(--accent-500)]" />
-                    Impact KPI
+                    Impact sur les indicateurs
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   {Object.entries(summary.kpiImpact).map(([key, val]) => (
                     <div key={key} className="flex items-center justify-between rounded-lg bg-[var(--neutral-50)] px-3 py-2">
-                      <span className="text-sm text-[var(--neutral-600)] capitalize">{key}</span>
+                      <span className="text-sm text-[var(--neutral-600)]">{KPI_LABELS[key] ?? key}</span>
                       <span className={cn(
                         'text-sm font-bold tabular-nums',
                         val > 0 ? 'text-[var(--success-700)]' : val < 0 ? 'text-[var(--error-700)]' : 'text-[var(--neutral-500)]',

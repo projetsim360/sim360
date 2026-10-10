@@ -43,6 +43,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
+import { getApiOrigin } from '@/lib/asset-url';
 
 const menuItems = APP_ICON_RAIL_MENU
   .filter((item) => !item.separator && item.title && item.icon)
@@ -61,7 +62,7 @@ export function SidebarPrimary() {
   const initials = user
     ? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
     : '?';
-  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
+  const apiBase = getApiOrigin();
 
   useEffect(() => {
     menuItems.forEach((item) => {

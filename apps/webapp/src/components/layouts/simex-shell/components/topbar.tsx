@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 import { PanelLeft, Menu, Search, Moon, Sun, Bell, Sparkles, ChevronDown } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
+import { resolveAssetUrl } from '@/lib/asset-url';
+import { getRoleLabel, getUserDisplayName, getUserInitials } from '@/lib/user-display';
+import { useAuth } from '@/providers/auth-provider';
 import { useShellState } from '../state/shell-state-provider';
 
 interface TopbarProps {
@@ -21,6 +24,8 @@ export function Topbar({ className }: TopbarProps) {
     userMenuOpen,
     pmoOpen,
   } = useShellState();
+  const { user } = useAuth();
+  const avatarSrc = resolveAssetUrl(user?.avatar);
 
   // Theme toggle — handle mounted state to avoid hydration mismatch
   const { resolvedTheme, setTheme } = useTheme();
@@ -153,6 +158,7 @@ export function Topbar({ className }: TopbarProps) {
         {/* Agent PMO pill */}
         <button
           type="button"
+          aria-label="Assistant"
           aria-pressed={pmoOpen}
           onClick={(e) => {
             e.stopPropagation();
@@ -168,7 +174,7 @@ export function Topbar({ className }: TopbarProps) {
           )}
         >
           <Sparkles className="size-4 shrink-0 text-[var(--accent-500)]" />
-          <span className="hidden sm:inline">Agent PMO</span>
+          <span className="hidden sm:inline">Assistant</span>
         </button>
 
         {/* User chip */}
@@ -189,21 +195,24 @@ export function Topbar({ className }: TopbarProps) {
         >
           {/* Meta column — hidden on < sm */}
           <div className="hidden sm:flex flex-col items-end gap-px leading-none">
-            <span className="text-[13px] font-semibold text-[var(--shell-fg-strong)]">Admin Sim360</span>
+            <span className="max-w-[180px] truncate text-[13px] font-semibold text-[var(--shell-fg-strong)]">
+              {getUserDisplayName(user)}
+            </span>
             <span className="text-[10px] font-semibold uppercase tracking-[1px] text-[var(--accent-400)]">
-              Mentor
+              {getRoleLabel(user?.role)}
             </span>
           </div>
 
           {/* Avatar */}
           <Avatar className="size-9 shrink-0">
+            {avatarSrc && <AvatarImage src={avatarSrc} alt={getUserDisplayName(user)} className="object-cover" />}
             <AvatarFallback
               className={cn(
                 'size-9 rounded-full text-[13px] font-bold text-white border-0',
                 'bg-gradient-to-br from-[var(--accent-500)] to-[var(--accent-700)]',
               )}
             >
-              AS
+              {getUserInitials(user)}
             </AvatarFallback>
           </Avatar>
 
