@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router';
 import { useIntl } from 'react-intl';
 import { Globe } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { alternateLocale, localizedPath, stripLocalePrefix } from '@/i18n/public-locale';
+import { alternateLocale, localizedPath } from '@/i18n/public-locale';
 import { usePublicLocale } from '../hooks/use-public-locale';
 
 interface LanguageSwitcherProps {
@@ -16,7 +16,7 @@ export function LanguageSwitcher({ className, onNavigate }: LanguageSwitcherProp
   const { formatMessage } = useIntl();
   const { pathname, hash } = useLocation();
   const target = alternateLocale(locale);
-  const href = `${localizedPath(stripLocalePrefix(pathname), target)}${hash}`;
+  const href = `${localizedPath(pathname, target)}${hash}`;
 
   return (
     <Link

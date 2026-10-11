@@ -12,4 +12,112 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/" />
   </url>
+  <url>
+    <loc>https://simex-pro.com/scenarios</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/scenarios" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/scenarios" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/scenarios" />
+  </url>
+  <url>
+    <loc>https://simex-pro.com/en/scenarios</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/scenarios" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/scenarios" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/scenarios" />
+  </url>
+  <url>
+    <loc>https://simex-pro.com/demo</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/demo" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/demo" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/demo" />
+  </url>
+  <url>
+    <loc>https://simex-pro.com/en/demo</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/demo" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/demo" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/demo" />
+  </url>
+  <url>
+    <loc>https://simex-pro.com/a-propos</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/a-propos" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/a-propos" />
+  </url>
+  <url>
+    <loc>https://simex-pro.com/en/about</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/a-propos" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/a-propos" />
+  </url>
+  <url>
+    <loc>https://simex-pro.com/carrieres</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/carrieres" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/careers" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/carrieres" />
+  </url>
+  <url>
+    <loc>https://simex-pro.com/en/careers</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/carrieres" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/careers" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/carrieres" />
+  </url>
+  <url>
+    <loc>https://simex-pro.com/contact</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/contact" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/contact" />
+  </url>
+  <url>
+    <loc>https://simex-pro.com/en/contact</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/contact" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/contact" />
+  </url>
+  <url>
+    <loc>https://simex-pro.com/confidentialite</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/confidentialite" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/confidentialite" />
+  </url>
+  <url>
+    <loc>https://simex-pro.com/en/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/confidentialite" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/confidentialite" />
+  </url>
+  <url>
+    <loc>https://simex-pro.com/cgu</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/cgu" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/terms" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/cgu" />
+  </url>
+  <url>
+    <loc>https://simex-pro.com/en/terms</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/cgu" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/terms" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/cgu" />
+  </url>
+  <url>
+    <loc>https://simex-pro.com/mentions-legales</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/mentions-legales" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/legal" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/mentions-legales" />
+  </url>
+  <url>
+    <loc>https://simex-pro.com/en/legal</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/mentions-legales" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/legal" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/mentions-legales" />
+  </url>
+  <url>
+    <loc>https://simex-pro.com/cookies</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/cookies" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/cookies" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/cookies" />
+  </url>
+  <url>
+    <loc>https://simex-pro.com/en/cookies</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/cookies" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/cookies" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/cookies" />
+  </url>
 </urlset>

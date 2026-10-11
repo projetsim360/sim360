@@ -6,6 +6,7 @@ import { verificationEmailTemplate } from './templates/verification.template';
 import { passwordResetTemplate } from './templates/password-reset.template';
 import { welcomeTemplate } from './templates/welcome.template';
 import { emailChangeTemplate } from './templates/email-change.template';
+import { contactMessageTemplate, type ContactMessageTemplateInput } from './templates/contact-message.template';
 
 type MailProvider = 'smtp' | 'resend' | 'disabled';
 
@@ -72,6 +73,23 @@ export class MailService {
     if (this.provider === 'smtp' && this.transporter) {
       await this.transporter.sendMail({ from: this.from, to, subject, html });
       return;
+    }
+  }
+
+  /** Forwards a public contact-form message to the team inbox. Reply-To is the visitor. */
+  async sendContactMessage(input: ContactMessageTemplateInput & { to: string }): Promise<void> {
+    const subject = `[Contact] ${input.name}`;
+    const html = contactMessageTemplate(input);
+    if (this.provider === 'disabled') {
+      this.logger.log(`[Mail disabled] Would forward contact message from ${input.email} to ${input.to}`);
+      return;
+    }
+    if (this.provider === 'resend' && this.resend) {
+      await this.resend.emails.send({ from: this.from, to: input.to, replyTo: input.email, subject, html });
+      return;
+    }
+    if (this.transporter) {
+      await this.transporter.sendMail({ from: this.from, to: input.to, replyTo: input.email, subject, html });
     }
   }
 

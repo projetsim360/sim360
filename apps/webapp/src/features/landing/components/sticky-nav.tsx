@@ -99,7 +99,7 @@ export function StickyNav() {
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
-              href={link.href}
+              href={`${to('/')}${link.href}`}
               className="text-sm font-medium text-foreground/70 transition-colors hover:text-foreground"
             >
               {formatMessage({ id: link.id })}
@@ -128,7 +128,7 @@ export function StickyNav() {
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
-              href={link.href}
+              href={`${to('/')}${link.href}`}
               className="text-sm font-medium text-foreground/70 transition-colors hover:text-foreground"
               onClick={closeMobile}
             >

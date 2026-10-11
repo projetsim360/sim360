@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { alternateLocale, intlLocale, localeFromPathname, localizedPath, stripLocalePrefix } from '../../src/i18n/public-locale';
+import { alternateLocale, intlLocale, localeFromPathname, localizedPath, publicPath, routeIdFromPathname, stripLocalePrefix } from '../../src/i18n/public-locale';
 
 test('French is the root, English lives under /en', () => {
   assert.equal(localeFromPathname('/'), 'fr');
@@ -11,13 +11,26 @@ test('French is the root, English lives under /en', () => {
   assert.equal(localeFromPathname('/english'), 'fr');
 });
 
-test('paths round-trip between locales', () => {
+test('public pages have a slug per language and round-trip between them', () => {
+  assert.equal(publicPath('home', 'fr'), '/');
+  assert.equal(publicPath('home', 'en'), '/en');
+  assert.equal(publicPath('about', 'fr'), '/a-propos');
+  assert.equal(publicPath('about', 'en'), '/en/about');
+  assert.equal(localizedPath('/a-propos', 'en'), '/en/about');
+  assert.equal(localizedPath('/en/about', 'fr'), '/a-propos');
+  assert.equal(localizedPath('/en/about', 'en'), '/en/about');
+  assert.equal(localizedPath('/a-propos/', 'en'), '/en/about');
+  assert.equal(routeIdFromPathname('/en/privacy'), 'privacy');
+  assert.equal(routeIdFromPathname('/confidentialite'), 'privacy');
+  assert.equal(routeIdFromPathname('/nope'), null);
+});
+
+test('unknown paths only gain or lose the /en prefix', () => {
   assert.equal(localizedPath('/', 'en'), '/en');
   assert.equal(localizedPath('/', 'fr'), '/');
-  assert.equal(localizedPath('/contact', 'en'), '/en/contact');
-  assert.equal(localizedPath('/en/contact', 'fr'), '/contact');
-  assert.equal(localizedPath('/en/contact', 'en'), '/en/contact');
-  assert.equal(localizedPath('contact', 'en'), '/en/contact');
+  assert.equal(localizedPath('/unknown', 'en'), '/en/unknown');
+  assert.equal(localizedPath('/en/unknown', 'fr'), '/unknown');
+  assert.equal(localizedPath('unknown', 'en'), '/en/unknown');
   assert.equal(stripLocalePrefix('/en'), '/');
   assert.equal(stripLocalePrefix('/en/x/y'), '/x/y');
 });

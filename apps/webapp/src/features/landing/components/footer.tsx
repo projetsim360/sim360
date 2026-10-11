@@ -2,43 +2,37 @@ import { Link } from 'react-router';
 import { useIntl } from 'react-intl';
 import { Linkedin, MapPin } from 'lucide-react';
 import { Logo } from '@/components/logo';
-import { usePublicPath } from '../hooks/use-public-locale';
-import {
-  FOOTER_COMPANY_LINKS,
-  FOOTER_LEGAL_LINKS,
-  FOOTER_PRODUCT_LINKS,
-  SOCIAL_LINKS,
-  type FooterLink,
-} from '../content/footer-links';
+import { publicPath } from '@/i18n/public-locale';
+import { usePublicLocale } from '../hooks/use-public-locale';
+import { FOOTER_COMPANY_LINKS, FOOTER_LEGAL_LINKS, FOOTER_PRODUCT_LINKS, SOCIAL_LINKS, type FooterLink } from '../content/footer-links';
 
 function FooterAnchor({ link, className }: { link: FooterLink; className: string }) {
   const { formatMessage } = useIntl();
-  const to = usePublicPath();
+  const locale = usePublicLocale();
   const label = formatMessage({ id: link.labelKey });
-  const external = link.href.startsWith('#') || link.href.startsWith('mailto:') || link.href.startsWith('http');
-  if (external) {
+  if ('route' in link) {
     return (
-      <a href={link.href} className={className}>
+      <Link to={publicPath(link.route, locale)} className={className}>
         {label}
-      </a>
+      </Link>
     );
   }
+  // Landing anchors work from any public page: they point at the home page of the current language.
+  const href = 'anchor' in link ? `${publicPath('home', locale)}${link.anchor}` : link.href;
   return (
-    <Link to={to(link.href)} className={className}>
+    <a href={href} className={className}>
       {label}
-    </Link>
+    </a>
   );
 }
 
 function LinkColumn({ titleId, links }: { titleId: 'footer.product' | 'footer.company'; links: readonly FooterLink[] }) {
   const { formatMessage } = useIntl();
-  const ready = links.filter((l) => l.ready);
-  if (ready.length === 0) return null;
   return (
     <div>
       <h3 className="mb-5 text-sm font-semibold text-white">{formatMessage({ id: titleId })}</h3>
       <ul className="space-y-3">
-        {ready.map((link) => (
+        {links.map((link) => (
           <li key={link.labelKey}>
             <FooterAnchor link={link} className="text-sm text-white/60 transition-colors hover:text-white" />
           </li>
@@ -50,7 +44,6 @@ function LinkColumn({ titleId, links }: { titleId: 'footer.product' | 'footer.co
 
 export function Footer() {
   const { formatMessage } = useIntl();
-  const legal = FOOTER_LEGAL_LINKS.filter((l) => l.ready);
 
   return (
     <footer className="bg-[var(--brand-900)] px-6 py-20 text-white lg:px-8">
@@ -84,15 +77,13 @@ export function Footer() {
 
         <div className="flex flex-col items-start justify-between gap-4 border-t border-white/10 pt-8 md:flex-row md:items-center">
           <p className="text-sm text-white/60">{formatMessage({ id: 'footer.copyright' }, { year: new Date().getFullYear() })}</p>
-          {legal.length > 0 && (
-            <ul className="flex flex-wrap gap-6">
-              {legal.map((link) => (
-                <li key={link.labelKey}>
-                  <FooterAnchor link={link} className="text-xs text-white/60 transition-colors hover:text-white" />
-                </li>
-              ))}
-            </ul>
-          )}
+          <ul className="flex flex-wrap gap-6">
+            {FOOTER_LEGAL_LINKS.map((link) => (
+              <li key={link.labelKey}>
+                <FooterAnchor link={link} className="text-xs text-white/60 transition-colors hover:text-white" />
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </footer>

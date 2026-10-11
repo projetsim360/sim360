@@ -1,6 +1,7 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { CoreModule } from '@sim360/core';
 import { ScenariosController } from './controllers/scenarios.controller';
+import { ScenariosPublicController } from './controllers/scenarios-public.controller';
 import { SimulationsController } from './controllers/simulations.controller';
 import { ProjectsController } from './controllers/projects.controller';
 import { ScenariosService } from './services/scenarios.service';
@@ -16,7 +17,7 @@ import { AiModule } from '../ai/ai.module';
 
 @Module({
   imports: [CoreModule, forwardRef(() => SimulatedEmailsModule), forwardRef(() => AiModule), ProfileModule, MeetingsModule],
-  controllers: [ScenariosController, SimulationsController, ProjectsController],
+  controllers: [ScenariosController, ScenariosPublicController, SimulationsController, ProjectsController],
   providers: [ScenariosService, SimulationsService, ProjectsService, KpiEngineService, BrownfieldContextService, StakeholderIdentificationService],
   exports: [ScenariosService, SimulationsService, ProjectsService, KpiEngineService, BrownfieldContextService, StakeholderIdentificationService],
 })

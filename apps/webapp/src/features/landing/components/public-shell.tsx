@@ -2,7 +2,7 @@ import { Outlet, useLocation } from 'react-router';
 import { IntlProvider } from 'react-intl';
 import { Helmet } from 'react-helmet-async';
 import { PUBLIC_MESSAGES } from '@/i18n/public-messages';
-import { DEFAULT_PUBLIC_LOCALE, localizedPath, stripLocalePrefix, type PublicLocale } from '@/i18n/public-locale';
+import { DEFAULT_PUBLIC_LOCALE, localizedPath, type PublicLocale } from '@/i18n/public-locale';
 import { StickyNav } from './sticky-nav';
 import { Footer } from './footer';
 
@@ -14,7 +14,6 @@ import { Footer } from './footer';
 export function PublicShell({ locale }: { locale: PublicLocale }) {
   const { pathname } = useLocation();
   const messages = PUBLIC_MESSAGES[locale];
-  const bare = stripLocalePrefix(pathname);
   // Fixed public origin: prerendered HTML has no window, and localhost must not leak into canonical URLs.
   const origin = import.meta.env.VITE_PUBLIC_ORIGIN || 'https://simex-pro.com';
 
@@ -23,10 +22,10 @@ export function PublicShell({ locale }: { locale: PublicLocale }) {
       <Helmet htmlAttributes={{ lang: locale }}>
         <title>{messages['meta.title']}</title>
         <meta name="description" content={messages['meta.description']} />
-        <link rel="canonical" href={`${origin}${localizedPath(bare, locale)}`} />
-        <link rel="alternate" hrefLang="fr" href={`${origin}${localizedPath(bare, 'fr')}`} />
-        <link rel="alternate" hrefLang="en" href={`${origin}${localizedPath(bare, 'en')}`} />
-        <link rel="alternate" hrefLang="x-default" href={`${origin}${localizedPath(bare, 'fr')}`} />
+        <link rel="canonical" href={`${origin}${localizedPath(pathname, locale)}`} />
+        <link rel="alternate" hrefLang="fr" href={`${origin}${localizedPath(pathname, 'fr')}`} />
+        <link rel="alternate" hrefLang="en" href={`${origin}${localizedPath(pathname, 'en')}`} />
+        <link rel="alternate" hrefLang="x-default" href={`${origin}${localizedPath(pathname, 'fr')}`} />
       </Helmet>
       <div className="dark min-h-screen w-full flex-1 overflow-x-hidden bg-background text-foreground">
         <StickyNav />

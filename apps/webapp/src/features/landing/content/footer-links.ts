@@ -1,37 +1,36 @@
 import type { PublicMessageKey } from '../../../i18n/public-messages';
+import type { PublicRouteId } from '../../../i18n/public-locale';
 
 /**
- * Footer navigation, single source of truth. Links whose page does not exist yet are
- * declared with `ready: false` and not rendered: no dead `#` links on the public site.
- * Flip `ready` as the footer pages ship (roadmap lot 4).
+ * Footer navigation, single source of truth. A link is either a public page (by route id,
+ * resolved to the right slug for the current language), an in-page anchor of the landing,
+ * or an external URL.
  */
-export interface FooterLink {
-  labelKey: PublicMessageKey;
-  /** Public path (`/contact`), in-page anchor (`#tarifs`) or external URL. */
-  href: string;
-  ready: boolean;
-}
+export type FooterLink =
+  | { labelKey: PublicMessageKey; route: PublicRouteId }
+  | { labelKey: PublicMessageKey; anchor: string }
+  | { labelKey: PublicMessageKey; href: string };
 
 export const FOOTER_PRODUCT_LINKS: readonly FooterLink[] = [
-  { labelKey: 'footer.link.features', href: '#fonctionnalites', ready: true },
-  { labelKey: 'footer.link.howItWorks', href: '#comment-ca-marche', ready: true },
-  { labelKey: 'footer.link.pricing', href: '#tarifs', ready: true },
-  { labelKey: 'footer.link.faq', href: '#faq', ready: true },
-  { labelKey: 'footer.link.scenarios', href: '/scenarios', ready: false },
-  { labelKey: 'footer.link.demo', href: '/demo', ready: false },
+  { labelKey: 'footer.link.features', anchor: '#fonctionnalites' },
+  { labelKey: 'footer.link.howItWorks', anchor: '#comment-ca-marche' },
+  { labelKey: 'footer.link.scenarios', route: 'scenarios' },
+  { labelKey: 'footer.link.pricing', anchor: '#tarifs' },
+  { labelKey: 'footer.link.demo', route: 'demo' },
+  { labelKey: 'footer.link.faq', anchor: '#faq' },
 ];
 
 export const FOOTER_COMPANY_LINKS: readonly FooterLink[] = [
-  { labelKey: 'footer.link.about', href: '/a-propos', ready: false },
-  { labelKey: 'footer.link.careers', href: '/carrieres', ready: false },
-  { labelKey: 'footer.link.contact', href: 'mailto:hello@simex.pro', ready: true },
+  { labelKey: 'footer.link.about', route: 'about' },
+  { labelKey: 'footer.link.careers', route: 'careers' },
+  { labelKey: 'footer.link.contact', route: 'contact' },
 ];
 
 export const FOOTER_LEGAL_LINKS: readonly FooterLink[] = [
-  { labelKey: 'footer.link.privacy', href: '/confidentialite', ready: false },
-  { labelKey: 'footer.link.terms', href: '/cgu', ready: false },
-  { labelKey: 'footer.link.legal', href: '/mentions-legales', ready: false },
-  { labelKey: 'footer.link.cookies', href: '/cookies', ready: false },
+  { labelKey: 'footer.link.privacy', route: 'privacy' },
+  { labelKey: 'footer.link.terms', route: 'terms' },
+  { labelKey: 'footer.link.legal', route: 'legal' },
+  { labelKey: 'footer.link.cookies', route: 'cookies' },
 ];
 
 export const SOCIAL_LINKS = {
