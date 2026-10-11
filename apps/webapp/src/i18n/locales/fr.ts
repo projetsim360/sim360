@@ -16,6 +16,7 @@ export const fr = {
   'nav.howItWorks': 'Comment ça marche',
   'nav.pricing': 'Tarifs',
   'nav.faq': 'FAQ',
+  'nav.demo': 'Démo',
   'nav.signIn': 'Connexion',
   'nav.freeTrial': 'Essai gratuit',
   'nav.dashboard': 'Tableau de bord',
@@ -31,7 +32,7 @@ export const fr = {
     'Plongez dans des scénarios immersifs issus de vrais projets. Pilotez budget, équipe et imprévus comme un chef de projet senior, sans les conséquences réelles.',
   'hero.cta': 'Lancer ma première simulation',
   'hero.ctaLoggedIn': 'Reprendre mes simulations',
-  'hero.secondary': 'Comment ça marche · 2 min',
+  'hero.secondary': 'Voir la démo · 1 min',
   'hero.mockupAlt': 'Aperçu du tableau de bord Simex pro',
   'hero.liveBadge': 'En direct · Tour 4',
 
