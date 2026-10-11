@@ -9,6 +9,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { dashboardApi } from '../api/dashboard.api';
 import { KpiTile } from '../components/kpi-tile';
 import type { LearnerSummary } from '../types/dashboard.types';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useTv } from '@/i18n/app/use-t';
+import { useT } from '@/i18n/app/use-t';
 
 const STATUS_VARIANT: Record<string, 'secondary' | 'primary' | 'warning' | 'success' | 'destructive'> = {
   DRAFT: 'secondary',
@@ -18,14 +21,16 @@ const STATUS_VARIANT: Record<string, 'secondary' | 'primary' | 'warning' | 'succ
   ABANDONED: 'destructive',
 };
 
-const PERIOD_OPTIONS = [
-  { key: '', label: 'Toute période' },
-  { key: '7d', label: '7 derniers jours' },
-  { key: '30d', label: '30 derniers jours' },
-  { key: '90d', label: '90 derniers jours' },
+const PERIOD_OPTIONS: Array<{ key: string; label: AppMessageKey }> = [
+  { key: '', label: 'trainer.period.all' },
+  { key: '7d', label: 'trainer.period.7d' },
+  { key: '30d', label: 'trainer.period.30d' },
+  { key: '90d', label: 'trainer.period.90d' },
 ];
 
 export default function TrainerDashboardPage() {
+  const tv = useTv();
+  const t = useT();
   const [learners, setLearners] = useState<LearnerSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
@@ -64,25 +69,25 @@ export default function TrainerDashboardPage() {
   return (
     <>
       <PageHeader
-        breadcrumbs={[{ label: 'Suivi des apprenants' }]}
-        title="Suivi des apprenants"
-        subtitle={`${learners.length} apprenant${learners.length > 1 ? 's' : ''} · ${totalAlerts} alerte${totalAlerts > 1 ? 's' : ''}`}
+        breadcrumbs={[{ label: t('trainer.title') }]}
+        title={t('trainer.title')}
+        subtitle={t('trainer.subtitle', { learners: learners.length, alerts: totalAlerts })}
       />
 
       <div className="px-6 pb-8">
         <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5">
-          <KpiTile label="Apprenants" value={String(learners.length)} index={0} />
-          <KpiTile label="Apprenants actifs" value={String(activeLearners)} index={1} />
+          <KpiTile label={t('trainer.learners')} value={String(learners.length)} index={0} />
+          <KpiTile label={t('trainer.activeLearners')} value={String(activeLearners)} index={1} />
           <KpiTile
-            label="Score moyen cohorte"
+            label={t('trainer.cohortScore')}
             value={cohortScore != null ? String(cohortScore) : '—'}
             suffix={cohortScore != null ? '/100' : undefined}
             index={2}
           />
           <KpiTile
-            label="Alertes"
+            label={t('trainer.alerts')}
             value={String(totalAlerts)}
-            deltaLabel={totalAlerts > 0 ? 'à surveiller' : 'aucune'}
+            deltaLabel={totalAlerts > 0 ? t('trainer.toWatch') : t('trainer.none')}
             tone={totalAlerts > 0 ? 'down' : 'neutral'}
             index={3}
           />
@@ -91,9 +96,9 @@ export default function TrainerDashboardPage() {
         <div className="mb-5 flex flex-wrap items-center gap-3">
           <div className="flex gap-2">
             {[
-              { key: 'all', label: 'Tous' },
-              { key: 'active', label: 'Actifs' },
-              { key: 'alerts', label: 'Alertes' },
+              { key: 'all', label: t('trainer.filter.all') },
+              { key: 'active', label: t('trainer.filter.active') },
+              { key: 'alerts', label: t('trainer.alerts') },
             ].map((f) => (
               <Button
                 key={f.key}
@@ -112,18 +117,18 @@ export default function TrainerDashboardPage() {
             type="text"
             value={scenarioSearch}
             onChange={(e) => setScenarioSearch(e.target.value)}
-            placeholder="Filtrer par scénario..."
+            placeholder={t('trainer.scenarioFilter')}
             className="w-full sm:w-48"
           />
 
           <Select value={period || '__all__'} onValueChange={(v) => setPeriod(v === '__all__' ? '' : v)}>
             <SelectTrigger className="w-full sm:w-44">
-              <SelectValue placeholder="Toute période" />
+              <SelectValue placeholder={t('trainer.period.all')} />
             </SelectTrigger>
             <SelectContent>
               {PERIOD_OPTIONS.map((p) => (
                 <SelectItem key={p.key} value={p.key || '__all__'}>
-                  {p.label}
+                  {t(p.label)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -142,18 +147,18 @@ export default function TrainerDashboardPage() {
                 <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-[var(--accent-500)]" />
               </div>
             ) : filtered.length === 0 ? (
-              <p className="py-8 text-center text-sm text-[var(--neutral-400)]">Aucun apprenant</p>
+              <p className="py-8 text-center text-sm text-[var(--neutral-400)]">{t('trainer.noLearners')}</p>
             ) : (
               <div className="overflow-x-auto">
                 <Table className="text-sm">
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="text-left text-[var(--neutral-500)]">Apprenant</TableHead>
-                      <TableHead className="text-center text-[var(--neutral-500)]">Simulations</TableHead>
-                      <TableHead className="text-center text-[var(--neutral-500)]">Terminées</TableHead>
-                      <TableHead className="text-center text-[var(--neutral-500)]">Score moyen</TableHead>
-                      <TableHead className="text-center text-[var(--neutral-500)]">Alertes</TableHead>
-                      <TableHead className="text-left text-[var(--neutral-500)]">Dernière simulation</TableHead>
+                      <TableHead className="text-left text-[var(--neutral-500)]">{t('trainer.learner')}</TableHead>
+                      <TableHead className="text-center text-[var(--neutral-500)]">{t('trainer.simulations')}</TableHead>
+                      <TableHead className="text-center text-[var(--neutral-500)]">{t('trainer.completed')}</TableHead>
+                      <TableHead className="text-center text-[var(--neutral-500)]">{t('trainer.avgScore')}</TableHead>
+                      <TableHead className="text-center text-[var(--neutral-500)]">{t('trainer.alerts')}</TableHead>
+                      <TableHead className="text-left text-[var(--neutral-500)]">{t('trainer.lastSim')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -207,7 +212,7 @@ export default function TrainerDashboardPage() {
                                 appearance="light"
                                 size="xs"
                               >
-                                {l.lastSimulation.status}
+                                {tv('simulation.status', l.lastSimulation.status)}
                               </Badge>
                               <span className="max-w-[120px] truncate text-[var(--neutral-500)]">
                                 {l.lastSimulation.scenario}

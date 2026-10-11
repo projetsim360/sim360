@@ -18,11 +18,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useAppLocale } from '@/providers/locale-provider';
+import { useT } from '@/i18n/app/use-t';
 
 const FIELD_ROW =
   'grid grid-cols-1 sm:grid-cols-[170px_minmax(0,1fr)] gap-3 sm:gap-4 items-center py-3 border-t border-[var(--neutral-100)] dark:border-white/[0.06] first:border-t-0 first:pt-1';
 
 export function BasicSettings() {
+  const { setLocale } = useAppLocale();
+  const t = useT();
   const { user, refreshUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [profileVisibility, setProfileVisibility] = useState(true);
@@ -67,9 +71,10 @@ export function BasicSettings() {
     try {
       await api.patch('/users/me/profile', form);
       await refreshUser();
-      toast.success('Profil enregistré');
+      if (form.language === 'fr' || form.language === 'en') setLocale(form.language);
+      toast.success(t('settings.profile.saved'));
     } catch {
-      toast.error('Erreur lors de la sauvegarde');
+      toast.error(t('settings.saveError'));
     } finally {
       setLoading(false);
     }
@@ -82,18 +87,18 @@ export function BasicSettings() {
     >
       <CardHeader className="flex-col items-start gap-1 pt-5 pb-4 border-b-0">
         <span className="text-[10px] font-bold uppercase tracking-[1.2px] text-[var(--accent-700)] dark:text-[var(--accent-300)]">
-          COMPTE
+          {t('settings.kicker.account')}
         </span>
-        <h2 className="font-display text-[19px] font-bold text-foreground m-0">Profil</h2>
+        <h2 className="font-display text-[19px] font-bold text-foreground m-0">{t('settings.profile.title')}</h2>
         <p className="text-[13px] text-muted-foreground m-0">
-          Vos informations publiques et préférences personnelles.
+          {t('settings.profile.desc')}
         </p>
       </CardHeader>
 
       <CardContent className="pt-2">
         {/* Photo */}
         <div className={FIELD_ROW}>
-          <Label className="text-[13px] font-medium text-foreground">Photo</Label>
+          <Label className="text-[13px] font-medium text-foreground">{t('settings.profile.photo')}</Label>
           <div className="flex items-center justify-between flex-wrap gap-2.5">
             <span className="text-[12px] text-muted-foreground">150x150px JPEG, PNG, WebP</span>
             <AvatarUpload
@@ -109,7 +114,7 @@ export function BasicSettings() {
         {/* Prénom */}
         <div className={FIELD_ROW}>
           <Label htmlFor="profile-first-name" className="text-[13px] font-medium text-foreground">
-            Prénom
+            {t('auth.field.firstName')}
           </Label>
           <Input
             id="profile-first-name"
@@ -122,7 +127,7 @@ export function BasicSettings() {
         {/* Nom */}
         <div className={FIELD_ROW}>
           <Label htmlFor="profile-last-name" className="text-[13px] font-medium text-foreground">
-            Nom
+            {t('auth.field.lastName')}
           </Label>
           <Input
             id="profile-last-name"
@@ -135,29 +140,29 @@ export function BasicSettings() {
         {/* Titre de poste */}
         <div className={FIELD_ROW}>
           <Label htmlFor="profile-job-title" className="text-[13px] font-medium text-foreground">
-            Fonction
+            {t('settings.profile.jobTitle')}
           </Label>
           <SearchableCombobox
             id="profile-job-title"
             value={form.jobTitle}
             onChange={(v) => handleChange('jobTitle', v)}
             options={JOB_TITLE_OPTIONS}
-            placeholder="Choisir ou saisir une fonction"
-            searchPlaceholder="Rechercher ou saisir une fonction…"
+            placeholder={t('settings.profile.jobTitlePh')}
+            searchPlaceholder={t('settings.profile.jobTitleSearch')}
             allowCustom
-            customLabel={(q) => `Autre : « ${q} »`}
+            customLabel={(q) => t('settings.profile.other', { name: q })}
           />
         </div>
 
         {/* Téléphone */}
         <div className={FIELD_ROW}>
           <Label htmlFor="profile-phone" className="text-[13px] font-medium text-foreground">
-            Téléphone
+            {t('settings.profile.phone')}
           </Label>
           <Input
             id="profile-phone"
             type="text"
-            placeholder="+33 6 12 34 56 78"
+            placeholder={t('settings.profile.phonePh')}
             value={form.phone}
             onChange={(e) => handleChange('phone', e.target.value)}
           />
@@ -166,12 +171,12 @@ export function BasicSettings() {
         {/* Bio */}
         <div className={FIELD_ROW}>
           <Label htmlFor="profile-bio" className="text-[13px] font-medium text-foreground">
-            Bio
+            {t('settings.profile.bio')}
           </Label>
           <Textarea
             id="profile-bio"
             rows={3}
-            placeholder="Quelques mots sur vous..."
+            placeholder={t('settings.profile.bioPh')}
             className="resize-none"
             value={form.bio}
             onChange={(e) => handleChange('bio', e.target.value)}
@@ -180,13 +185,13 @@ export function BasicSettings() {
 
         {/* Langue */}
         <div className={FIELD_ROW}>
-          <Label className="text-[13px] font-medium text-foreground">Langue</Label>
+          <Label className="text-[13px] font-medium text-foreground">{t('settings.profile.language')}</Label>
           <Select value={form.language} onValueChange={(v) => handleChange('language', v)}>
             <SelectTrigger>
-              <SelectValue placeholder="Sélectionner" />
+              <SelectValue placeholder={t('settings.select')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="fr">Français</SelectItem>
+              <SelectItem value="fr">{t('settings.lang.fr')}</SelectItem>
               <SelectItem value="en">English</SelectItem>
             </SelectContent>
           </Select>
@@ -194,15 +199,15 @@ export function BasicSettings() {
 
         {/* Niveau d'expérience */}
         <div className={FIELD_ROW}>
-          <Label className="text-[13px] font-medium text-foreground">Niveau d'expérience</Label>
+          <Label className="text-[13px] font-medium text-foreground">{t('settings.profile.experience')}</Label>
           <Select value={form.experienceLevel} onValueChange={(v) => handleChange('experienceLevel', v)}>
             <SelectTrigger>
-              <SelectValue placeholder="— Sélectionner —" />
+              <SelectValue placeholder={t('settings.selectDash')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="beginner">Débutant</SelectItem>
-              <SelectItem value="intermediate">Intermédiaire</SelectItem>
-              <SelectItem value="advanced">Avancé</SelectItem>
+              <SelectItem value="beginner">{t('difficulty.BEGINNER')}</SelectItem>
+              <SelectItem value="intermediate">{t('difficulty.INTERMEDIATE')}</SelectItem>
+              <SelectItem value="advanced">{t('difficulty.ADVANCED')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -210,7 +215,7 @@ export function BasicSettings() {
         {/* Visibilité profil */}
         <div className={FIELD_ROW}>
           <Label htmlFor="profile-visibility" className="text-[13px] font-medium text-foreground">
-            Visibilité du profil
+            {t('settings.profile.visibility')}
           </Label>
           <div className="flex items-center gap-2.5">
             <Switch
@@ -222,20 +227,20 @@ export function BasicSettings() {
                 try {
                   await api.patch('/users/me/settings', { profileVisibility: checked });
                   await refreshUser();
-                  toast.success('Visibilité du profil mise à jour');
+                  toast.success(t('settings.profile.visibilitySaved'));
                 } catch {
                   setProfileVisibility(!checked);
-                  toast.error('Erreur lors de la mise à jour');
+                  toast.error(t('settings.updateError'));
                 }
               }}
             />
-            <span className="text-[12px] text-muted-foreground">Profil public</span>
+            <span className="text-[12px] text-muted-foreground">{t('settings.profile.public')}</span>
           </div>
         </div>
 
         <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-[var(--neutral-100)] dark:border-white/[0.06]">
           <Button onClick={handleSave} disabled={loading}>
-            {loading ? 'Sauvegarde…' : 'Enregistrer'}
+            {loading ? t('settings.saving') : t('common.save')}
           </Button>
         </div>
       </CardContent>

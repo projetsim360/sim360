@@ -3,6 +3,7 @@ import { Upload, X, User } from '@/components/keenicons/icons';
 import { api } from '@/lib/api-client';
 import { resolveAssetUrl } from '@/lib/asset-url';
 import { toast } from 'sonner';
+import { useT } from '@/i18n/app/use-t';
 
 interface AvatarUploadProps {
   currentAvatar?: string | null;
@@ -19,6 +20,7 @@ export function AvatarUpload({
   onUpload,
   onDelete,
 }: AvatarUploadProps) {
+  const t = useT();
   const [preview, setPreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -31,12 +33,12 @@ export function AvatarUpload({
   const handleFile = useCallback(
     async (file: File) => {
       if (file.size > 5 * 1024 * 1024) {
-        toast.error('La taille maximale est de 5 Mo');
+        toast.error(t('avatar.tooBig'));
         return;
       }
 
       if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-        toast.error('Formats acceptés : JPG, PNG, WebP');
+        toast.error(t('avatar.formats'));
         return;
       }
 
@@ -53,16 +55,16 @@ export function AvatarUpload({
         onUpload?.(result.avatar);
         // Drop the local preview so the image shown is the one actually served.
         setPreview(null);
-        toast.success('Photo de profil mise à jour');
+        toast.success(t('avatar.updated'));
       } catch {
         setPreview(null);
-        toast.error('Erreur lors du téléversement de la photo');
+        toast.error(t('avatar.uploadError'));
       } finally {
         URL.revokeObjectURL(url);
         setUploading(false);
       }
     },
-    [onUpload],
+    [onUpload, t],
   );
 
   const handleDrop = useCallback(
@@ -81,7 +83,7 @@ export function AvatarUpload({
       setPreview(null);
       onDelete?.();
     } catch {
-      toast.error('Erreur lors de la suppression de la photo');
+      toast.error(t('avatar.deleteError'));
     }
   };
 
@@ -139,7 +141,7 @@ export function AvatarUpload({
           onClick={() => fileRef.current?.click()}
           className="text-sm text-primary hover:underline"
         >
-          Changer la photo
+          {t('avatar.change')}
         </button>
         {(displayUrl || currentAvatar) && (
           <button
@@ -147,12 +149,12 @@ export function AvatarUpload({
             onClick={handleDelete}
             className="text-sm text-destructive hover:underline"
           >
-            Supprimer
+            {t('settings.deleteBtn')}
           </button>
         )}
       </div>
 
-      <p className="text-xs text-muted-foreground">JPG, PNG ou WebP. Max 5 Mo.</p>
+      <p className="text-xs text-muted-foreground">{t('avatar.hint')}</p>
     </div>
   );
 }

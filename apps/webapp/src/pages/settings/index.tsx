@@ -12,8 +12,10 @@ import { Preferences } from './components/preferences';
 import { Appearance } from './components/appearance';
 import { Notifications } from './components/notifications';
 import { DeleteAccount } from './components/delete-account';
+import { useT } from '@/i18n/app/use-t';
 
 export function SettingsPage() {
+  const t = useT();
   const isMobile = useIsMobile();
   const parentRef = useRef<HTMLElement | Document>(document);
   const [ready, setReady] = useState(false);
@@ -35,9 +37,9 @@ export function SettingsPage() {
   return (
     <>
       <PageHeader
-        breadcrumbs={[{ label: 'Compte' }, { label: 'Paramètres' }]}
-        title="Paramètres"
-        subtitle="Gérez votre profil, votre sécurité et vos préférences."
+        breadcrumbs={[{ label: t('settings.nav.account') }, { label: t('menu.settings') }]}
+        title={t('menu.settings')}
+        subtitle={t('settings.subtitle')}
       />
 
       <div className="px-6 pb-8">

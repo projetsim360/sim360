@@ -7,8 +7,10 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useT } from '@/i18n/app/use-t';
 
 export function DeleteAccount() {
+  const t = useT();
   const [confirmed, setConfirmed] = useState(false);
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,10 +21,10 @@ export function DeleteAccount() {
     try {
       await api.delete('/users/me', { password });
       clearTokens();
-      toast.success('Compte supprimé');
+      toast.success(t('settings.delete.done'));
       window.location.href = '/auth/sign-in';
     } catch (error: any) {
-      toast.error(error.message || 'Erreur lors de la suppression');
+      toast.error(error.message || t('settings.delete.error'));
     } finally {
       setLoading(false);
     }
@@ -35,23 +37,23 @@ export function DeleteAccount() {
     >
       <CardHeader className="flex-col items-start gap-1 pt-5 pb-4 border-b-0">
         <span className="text-[10px] font-bold uppercase tracking-[1.2px] text-[var(--error-700)] dark:text-[var(--error-200)]">
-          ZONE DE DANGER
+          {t('settings.kicker.danger')}
         </span>
         <h2 className="font-display text-[19px] font-bold text-[var(--error-700)] dark:text-[var(--error-200)] m-0">
-          Supprimer le compte
+          {t('settings.delete.title')}
         </h2>
         <p className="text-[13px] text-muted-foreground m-0">
-          Action définitive — toutes vos données et simulations seront perdues.
+          {t('settings.delete.desc')}
         </p>
       </CardHeader>
 
       <CardContent className="pt-2 flex flex-col gap-4">
         <div className="text-[13px] text-foreground">
-          Pour confirmer la suppression :
+          {t('settings.delete.steps')}
           <ul className="list-disc ms-5 mt-2 text-muted-foreground">
-            <li>Cochez la case ci-dessous</li>
-            <li>Entrez votre mot de passe</li>
-            <li>Cliquez sur « Supprimer mon compte »</li>
+            <li>{t('settings.delete.step1')}</li>
+            <li>{t('settings.delete.step2')}</li>
+            <li>{t('settings.delete.step3')}</li>
           </ul>
         </div>
 
@@ -62,7 +64,7 @@ export function DeleteAccount() {
             onCheckedChange={(checked) => setConfirmed(checked === true)}
           />
           <Label htmlFor="confirm-delete" className="text-[13px] font-normal text-foreground">
-            Je comprends que cette action est irréversible.
+            {t('settings.delete.understand')}
           </Label>
         </div>
 
@@ -70,7 +72,7 @@ export function DeleteAccount() {
           <Input
             id="delete-password"
             type="password"
-            placeholder="Votre mot de passe"
+            placeholder={t('auth.field.passwordPlaceholder')}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -82,7 +84,7 @@ export function DeleteAccount() {
             onClick={handleDelete}
             disabled={!confirmed || !password || loading}
           >
-            {loading ? 'Suppression…' : 'Supprimer mon compte'}
+            {loading ? t('settings.delete.deleting') : t('settings.delete.submit')}
           </Button>
         </div>
       </CardContent>

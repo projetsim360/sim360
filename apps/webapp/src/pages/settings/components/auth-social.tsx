@@ -7,8 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useT } from '@/i18n/app/use-t';
 
 export function AuthSocial() {
+  const t = useT();
   const { user, refreshUser } = useAuth();
   const [unlinking, setUnlinking] = useState(false);
   const [showUnlinkForm, setShowUnlinkForm] = useState(false);
@@ -21,12 +23,12 @@ export function AuthSocial() {
     setUnlinking(true);
     try {
       await api.post('/auth/social/unlink-google', { password });
-      toast.success('Compte Google délié avec succès');
+      toast.success(t('settings.social.unlinked'));
       setShowUnlinkForm(false);
       setPassword('');
       await refreshUser();
     } catch (error: any) {
-      toast.error(error.message || 'Erreur lors de la déliaison');
+      toast.error(error.message || t('settings.social.unlinkError'));
     } finally {
       setUnlinking(false);
     }
@@ -45,10 +47,10 @@ export function AuthSocial() {
     >
       <CardHeader className="flex-col items-start gap-1 pt-5 pb-4 border-b-0">
         <span className="text-[10px] font-bold uppercase tracking-[1.2px] text-[var(--accent-700)] dark:text-[var(--accent-300)]">
-          COMPTE
+          {t('settings.kicker.account')}
         </span>
-        <h2 className="font-display text-[19px] font-bold text-foreground m-0">Connexion sociale</h2>
-        <p className="text-[13px] text-muted-foreground m-0">Liez votre compte à des fournisseurs externes.</p>
+        <h2 className="font-display text-[19px] font-bold text-foreground m-0">{t('settings.social.title')}</h2>
+        <p className="text-[13px] text-muted-foreground m-0">{t('settings.social.desc')}</p>
       </CardHeader>
 
       <CardContent className="pt-2">
@@ -63,18 +65,18 @@ export function AuthSocial() {
               <div className="flex flex-col gap-0.5">
                 <span className="text-[13px] font-semibold text-foreground">Google</span>
                 <span className="text-[12px] text-muted-foreground">
-                  {isGoogleLinked ? 'Compte Google connecté' : 'Non connecté'}
+                  {isGoogleLinked ? t('settings.social.connected') : t('settings.social.notConnected')}
                 </span>
               </div>
             </div>
             <div className="flex items-center gap-2.5">
               {isGoogleLinked ? (
                 <Button variant="outline" size="sm" onClick={() => setShowUnlinkForm(!showUnlinkForm)}>
-                  Délier
+                  {t('settings.social.unlink')}
                 </Button>
               ) : (
                 <Button variant="outline" size="sm" onClick={handleLinkGoogle}>
-                  Lier avec Google
+                  {t('settings.social.link')}
                 </Button>
               )}
             </div>
@@ -83,16 +85,16 @@ export function AuthSocial() {
           {showUnlinkForm && isGoogleLinked && (
             <div className="flex flex-col gap-3 border border-[var(--neutral-100)] dark:border-white/[0.06] rounded-xl p-4 bg-[var(--neutral-50)] dark:bg-white/[0.02]">
               <div className="text-[12px] text-muted-foreground">
-                Pour délier votre compte Google, confirmez avec votre mot de passe.
+                {t('settings.social.unlinkHint')}
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-[170px_minmax(0,1fr)] gap-3 sm:gap-4 items-center">
                 <Label htmlFor="auth-social-unlink-pw" className="text-[13px] font-medium text-foreground">
-                  Mot de passe
+                  {t('auth.field.password')}
                 </Label>
                 <Input
                   id="auth-social-unlink-pw"
                   type="password"
-                  placeholder="Votre mot de passe"
+                  placeholder={t('auth.field.passwordPlaceholder')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -103,7 +105,7 @@ export function AuthSocial() {
                   size="sm"
                   onClick={() => { setShowUnlinkForm(false); setPassword(''); }}
                 >
-                  Annuler
+                  {t('common.cancel')}
                 </Button>
                 <Button
                   variant="destructive"
@@ -111,7 +113,7 @@ export function AuthSocial() {
                   disabled={!password || unlinking}
                   onClick={handleUnlinkGoogle}
                 >
-                  {unlinking ? 'Déliaison…' : 'Confirmer la déliaison'}
+                  {unlinking ? t('settings.social.unlinking') : t('settings.social.confirmUnlink')}
                 </Button>
               </div>
             </div>
