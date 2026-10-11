@@ -574,6 +574,12 @@ body.is-focus .simex-demo-bar {
   transition: width 220ms var(--ease-out), background 200ms var(--ease-out), padding 220ms var(--ease-out);
 }
 
+/* Sidebar nav is the only scrolling region: keep its scrollbar discreet on the dark shell */
+.simex-nav-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--shell-fg-faint) 45%, transparent) transparent;
+}
+
 /* Transition for main left offset */
 .simex-main {
   transition: left 220ms var(--ease-out);

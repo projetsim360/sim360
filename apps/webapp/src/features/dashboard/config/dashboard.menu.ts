@@ -3,7 +3,7 @@ import type { MenuItem } from '@/config/types';
 
 export const dashboardMenuItems: MenuItem[] = [
   {
-    title: 'Dashboard',
+    title: 'Tableau de bord',
     icon: LayoutDashboard,
     path: '/dashboard',
   },
