@@ -6,6 +6,8 @@ import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
 import { staggerContainer, staggerItem } from '@/lib/motion';
 import type { Decision, RandomEvent, SimulationMeeting } from '../types/simulation.types';
+import { useTv } from '@/i18n/app/use-t';
+import { useT } from '@/i18n/app/use-t';
 
 const SEVERITY_TONE: Record<RandomEvent['severity'], string> = {
   LOW: 'bg-[var(--brand-100)] text-[var(--brand-700)]',
@@ -32,6 +34,8 @@ interface CockpitActionsCardProps {
 }
 
 export function CockpitActionsCard({ simulationId, decisions, events, meetings }: CockpitActionsCardProps) {
+  const tv = useTv();
+  const t = useT();
   const reduce = useReducedMotion();
 
   const items: ActionItem[] = [];
@@ -45,7 +49,7 @@ export function CockpitActionsCard({ simulationId, decisions, events, meetings }
         icon: 'question-2',
         iconClass: 'bg-[var(--accent-100)] text-[var(--accent-700)]',
         label: d.title,
-        meta: 'Décision',
+        meta: t('dashboard.activity.decision'),
       }),
     );
 
@@ -58,7 +62,7 @@ export function CockpitActionsCard({ simulationId, decisions, events, meetings }
         icon: 'flash',
         iconClass: 'bg-[var(--warning-50)] text-[var(--warning-700)]',
         label: e.title,
-        meta: e.severity,
+        meta: tv('severity', e.severity),
         metaPillClass: SEVERITY_TONE[e.severity],
       }),
     );
@@ -72,7 +76,7 @@ export function CockpitActionsCard({ simulationId, decisions, events, meetings }
         icon: 'message-text',
         iconClass: 'bg-[var(--brand-100)] text-[var(--brand-700)]',
         label: m.title,
-        meta: m.status === 'IN_PROGRESS' ? 'En cours' : 'Réunion',
+        meta: m.status === 'IN_PROGRESS' ? t('simulation.status.IN_PROGRESS') : t('dashboard.activity.meeting'),
       }),
     );
 
@@ -82,22 +86,22 @@ export function CockpitActionsCard({ simulationId, decisions, events, meetings }
         <div className="mb-2 flex items-baseline justify-between">
           <div>
             <span className="text-[11px] font-semibold uppercase tracking-[1px] text-muted-foreground">
-              À traiter
+              {t('dashboard.priority.kicker')}
             </span>
             <h3 className="font-display text-[17px] font-bold text-foreground">
-              {items.length} action{items.length > 1 ? 's' : ''} prioritaire{items.length > 1 ? 's' : ''}
+              {t('dashboard.priority.title', { count: items.length })}
             </h3>
           </div>
           <Link to={`/simulations/${simulationId}/decisions`} className="text-[12px] font-semibold text-[var(--accent-600)]">
-            Tout voir →
+            {t('common.seeAll')}
           </Link>
         </div>
 
         {items.length === 0 ? (
           <EmptyState
             icon="check-circle"
-            title="Tout est à jour"
-            description="Aucune action en attente pour cette simulation."
+            title={t('dashboard.allClear')}
+            description={t('cockpit.noActions')}
           />
         ) : (
           <motion.div

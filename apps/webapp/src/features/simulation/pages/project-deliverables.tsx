@@ -5,16 +5,20 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { projectApi } from '../api/project.api';
 import type { Deliverable } from '../types/simulation.types';
+import { useTv } from '@/i18n/app/use-t';
+import { useT } from '@/i18n/app/use-t';
 
-const STATUS_CONFIG: Record<string, { label: string; variant: 'secondary' | 'primary' | 'success' | 'destructive' }> = {
-  PENDING: { label: 'En attente', variant: 'secondary' },
-  IN_PROGRESS: { label: 'En cours', variant: 'primary' },
-  DELIVERED: { label: 'Livre', variant: 'primary' },
-  ACCEPTED: { label: 'Accepte', variant: 'success' },
-  REJECTED: { label: 'Rejeté', variant: 'destructive' },
+const STATUS_CONFIG: Record<string, { variant: 'secondary' | 'primary' | 'success' | 'destructive' }> = {
+  PENDING: { variant: 'secondary' },
+  IN_PROGRESS: { variant: 'primary' },
+  DELIVERED: { variant: 'primary' },
+  ACCEPTED: { variant: 'success' },
+  REJECTED: { variant: 'destructive' },
 };
 
 export default function ProjectDeliverablesPage() {
+  const tv = useTv();
+  const t = useT();
   const { id } = useParams<{ id: string }>();
   const [deliverables, setDeliverables] = useState<Deliverable[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,7 +38,7 @@ export default function ProjectDeliverablesPage() {
   return (
     <div className="container">
       <Toolbar>
-        <ToolbarHeading title="Livrables du projet" description={`${accepted}/${deliverables.length} acceptés (${progress}%)`} />
+        <ToolbarHeading title={t('projects.deliverablesTitle')} description={t('projects.accepted', { done: accepted, total: deliverables.length, pct: progress })} />
       </Toolbar>
 
       {loading ? (
@@ -44,13 +48,13 @@ export default function ProjectDeliverablesPage() {
       ) : deliverables.length === 0 ? (
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-sm text-muted-foreground">Aucun livrable</p>
+            <p className="text-sm text-muted-foreground">{t('projects.deliverablesEmptyTitle')}</p>
           </CardContent>
         </Card>
       ) : (
         <div className="space-y-3">
           {deliverables.map((d) => {
-            const status = STATUS_CONFIG[d.status] ?? { label: d.status, variant: 'secondary' as const };
+            const status = STATUS_CONFIG[d.status] ?? { variant: 'secondary' as const };
             return (
               <Card key={d.id}>
                 <CardContent className="p-4">
@@ -59,7 +63,7 @@ export default function ProjectDeliverablesPage() {
                       <div className="flex items-center gap-2">
                         <h3 className="text-sm font-medium truncate">{d.name}</h3>
                         {d.phaseOrder !== null && (
-                          <span className="text-[10px] text-muted-foreground shrink-0">Phase {d.phaseOrder}</span>
+                          <span className="text-[10px] text-muted-foreground shrink-0">{t('dashboard.active.phase', { n: d.phaseOrder })}</span>
                         )}
                       </div>
                       {d.description && (
@@ -67,13 +71,13 @@ export default function ProjectDeliverablesPage() {
                       )}
                     </div>
                     <Badge variant={status.variant} appearance="light" size="sm">
-                      {status.label}
+                      {tv('deliverableStatus', d.status)}
                     </Badge>
                   </div>
 
                   {d.qualityScore !== null && (
                     <div className="mt-2 flex items-center gap-2 text-sm">
-                      <span className="text-muted-foreground">Qualité :</span>
+                      <span className="text-muted-foreground">{t('projects.quality')}</span>
                       <span className={`font-medium ${d.qualityScore >= 70 ? 'text-success' : d.qualityScore >= 40 ? 'text-warning' : 'text-destructive'}`}>
                         {d.qualityScore}%
                       </span>

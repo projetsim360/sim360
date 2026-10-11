@@ -9,6 +9,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { simulationApi } from '../api/simulation.api';
 import type { TimelineEntry } from '../types/simulation.types';
+import { useTv } from '@/i18n/app/use-t';
+import { useAppLocale } from '@/providers/locale-provider';
+import { useT } from '@/i18n/app/use-t';
 
 const TYPE_ICONS: Record<string, string> = {
   PHASE_START: 'notepad',
@@ -19,17 +22,6 @@ const TYPE_ICONS: Record<string, string> = {
   SIMULATION_COMPLETE: 'flag',
   SIMULATION_PAUSE: 'time',
   SIMULATION_RESUME: 'arrow-right',
-};
-
-const TYPE_LABELS: Record<string, string> = {
-  PHASE_START: 'Début de phase',
-  PHASE_COMPLETE: 'Phase terminée',
-  DECISION: 'Décision',
-  RANDOM_EVENT: 'Événement aléatoire',
-  SIMULATION_START: 'Début de simulation',
-  SIMULATION_COMPLETE: 'Simulation terminée',
-  SIMULATION_PAUSE: 'Simulation en pause',
-  SIMULATION_RESUME: 'Simulation reprise',
 };
 
 const TYPE_DOT_COLORS: Record<string, string> = {
@@ -55,6 +47,9 @@ const TYPE_BADGE_VARIANT: Record<string, 'primary' | 'success' | 'warning' | 'se
 };
 
 export default function TimelinePage() {
+  const tv = useTv();
+  const { intlLocale } = useAppLocale();
+  const t = useT();
   const { id } = useParams<{ id: string }>();
   const [timeline, setTimeline] = useState<TimelineEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -73,16 +68,16 @@ export default function TimelinePage() {
     <div className="container-fixed space-y-5">
       <Toolbar>
         <ToolbarHeading>
-          <h1 className="text-xl font-medium text-gray-900">Historique de la simulation</h1>
+          <h1 className="text-xl font-medium text-gray-900">{t('timelinePage.title')}</h1>
           {!loading && timeline.length > 0 && (
-            <p className="text-sm text-gray-700">{timeline.length} événement(s)</p>
+            <p className="text-sm text-gray-700">{t('timelinePage.count', { count: timeline.length })}</p>
           )}
         </ToolbarHeading>
         <ToolbarActions>
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}`}>
               <KeenIcon icon="arrow-left" style="duotone" className="text-sm" />
-              Retour
+              {t('common.back')}
             </Link>
           </Button>
         </ToolbarActions>
@@ -102,7 +97,7 @@ export default function TimelinePage() {
       {error && (
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-destructive text-sm">Erreur : {error}</p>
+            <p className="text-destructive text-sm">{t('common.errorWith', { message: error })}</p>
           </CardContent>
         </Card>
       )}
@@ -112,8 +107,8 @@ export default function TimelinePage() {
           <CardContent>
             <EmptyState
               icon="calendar"
-              title="Aucun événement"
-              description="L'historique se construira au fil de la simulation."
+              title={t('timelinePage.emptyTitle')}
+              description={t('timelinePage.emptyText')}
             />
           </CardContent>
         </Card>
@@ -127,7 +122,7 @@ export default function TimelinePage() {
           <div className="space-y-3">
             {timeline.map((entry, i) => {
               const icon = TYPE_ICONS[entry.type] || 'element-11';
-              const label = TYPE_LABELS[entry.type] || entry.type;
+              const label = tv('timelineType', entry.type);
               const dotColor = TYPE_DOT_COLORS[entry.type] || 'bg-muted text-muted-foreground border-border';
               const badgeVariant = TYPE_BADGE_VARIANT[entry.type] || 'secondary';
 
@@ -162,7 +157,7 @@ export default function TimelinePage() {
                           )}
                         </div>
                         <span className="text-xs text-muted-foreground shrink-0 whitespace-nowrap">
-                          {new Date(entry.date).toLocaleString('fr-FR', {
+                          {new Date(entry.date).toLocaleString(intlLocale, {
                             day: '2-digit',
                             month: 'short',
                             hour: '2-digit',

@@ -8,6 +8,8 @@ import { useMenu } from '@/hooks/use-menu';
 export interface ToolbarHeadingProps {
   title?: string | ReactNode;
   description?: string | ReactNode;
+  /** Custom heading markup (h1 + subtitle). Takes precedence over title/description. */
+  children?: ReactNode;
 }
 
 function Toolbar({ children }: { children?: ReactNode }) {
@@ -72,14 +74,26 @@ function ToolbarBreadcrumbs() {
   );
 }
 
-const ToolbarHeading = ({ title = '' }: ToolbarHeadingProps) => {
+const ToolbarHeading = ({ title = '', description, children }: ToolbarHeadingProps) => {
   const { pathname } = useLocation();
   const { getCurrentItem } = useMenu(pathname);
   const item = getCurrentItem(MENU_SIDEBAR_COMPACT);
 
+  // Pages that pass their own <h1>/<p> used to see them silently dropped.
+  if (children) {
+    return (
+      <div data-slot="toolbar-heading" className="flex flex-col gap-1">
+        {children}
+      </div>
+    );
+  }
+
   return (
     <div data-slot="toolbar-heading" className="flex flex-col md:flex-row md:items-center flex-wrap gap-1 lg:gap-5">
-      <h1 className="font-medium text-lg text-mono">{title || item?.title}</h1>
+      <div className="flex flex-col gap-0.5">
+        <h1 className="font-medium text-lg text-mono">{title || item?.title}</h1>
+        {description && <p className="text-sm text-muted-foreground">{description}</p>}
+      </div>
       <ToolbarBreadcrumbs />
     </div>
   );

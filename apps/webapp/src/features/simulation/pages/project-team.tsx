@@ -4,8 +4,10 @@ import { Toolbar, ToolbarHeading } from '@/components/layouts/layout-6/component
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { projectApi } from '../api/project.api';
 import type { ProjectTeamMember } from '../types/simulation.types';
+import { useT } from '@/i18n/app/use-t';
 
 export default function ProjectTeamPage() {
+  const t = useT();
   const { id } = useParams<{ id: string }>();
   const [members, setMembers] = useState<ProjectTeamMember[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,7 +24,7 @@ export default function ProjectTeamPage() {
   return (
     <div className="container">
       <Toolbar>
-        <ToolbarHeading title="Équipe du projet" />
+        <ToolbarHeading title={t('projects.teamTitle')} />
       </Toolbar>
 
       {loading ? (
@@ -32,7 +34,7 @@ export default function ProjectTeamPage() {
       ) : members.length === 0 ? (
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-sm text-muted-foreground">Aucun membre dans l'équipe</p>
+            <p className="text-sm text-muted-foreground">{t('projects.noMember')}</p>
           </CardContent>
         </Card>
       ) : (
@@ -51,11 +53,11 @@ export default function ProjectTeamPage() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-2">
-                <InfoRow label="Expertise" value={m.expertise} />
-                <InfoRow label="Personnalité" value={m.personality} />
+                <InfoRow label={t('projects.expertise')} value={m.expertise} />
+                <InfoRow label={t('projects.personality')} value={m.personality} />
                 <div className="flex items-center gap-4 pt-1 border-t border-border">
-                  <MiniGauge label="Disponibilité" value={m.availability} />
-                  <MiniGauge label="Moral" value={m.morale} />
+                  <MiniGauge label={t('projects.availability')} value={m.availability} />
+                  <MiniGauge label={t('kpi.morale')} value={m.morale} />
                 </div>
               </CardContent>
             </Card>

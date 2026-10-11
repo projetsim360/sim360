@@ -13,8 +13,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { simulationApi } from '../api/simulation.api';
 import type { Simulation, Decision } from '../types/simulation.types';
+import { useAppLocale } from '@/providers/locale-provider';
+import { useT } from '@/i18n/app/use-t';
 
 export default function DecisionsListPage() {
+  const t = useT();
   const { id } = useParams<{ id: string }>();
   const [sim, setSim] = useState<Simulation | null>(null);
   const [loading, setLoading] = useState(true);
@@ -55,7 +58,7 @@ export default function DecisionsListPage() {
       <div className="container-fixed">
         <Toolbar>
           <ToolbarHeading>
-            <h1 className="text-xl font-medium text-gray-900">Décisions</h1>
+            <h1 className="text-xl font-medium text-gray-900">{t('dashboard.priority.decisions')}</h1>
           </ToolbarHeading>
         </Toolbar>
         <Card>
@@ -71,16 +74,16 @@ export default function DecisionsListPage() {
     <div className="container-fixed space-y-5">
       <Toolbar>
         <ToolbarHeading>
-          <h1 className="text-xl font-medium text-gray-900">Décisions</h1>
+          <h1 className="text-xl font-medium text-gray-900">{t('dashboard.priority.decisions')}</h1>
           <p className="text-sm text-gray-700">
-            {decisions.length} decision(s) — {pending.length} en attente, {resolved.length} resolue(s)
+            {t('lists.decisions.summary', { total: decisions.length, pending: pending.length, resolved: resolved.length })}
           </p>
         </ToolbarHeading>
         <ToolbarActions>
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}`}>
               <KeenIcon icon="arrow-left" style="duotone" className="text-sm" />
-              Retour
+              {t('common.back')}
             </Link>
           </Button>
         </ToolbarActions>
@@ -91,8 +94,8 @@ export default function DecisionsListPage() {
           <CardContent>
             <EmptyState
               icon="question-2"
-              title="Aucune décision"
-              description="Les décisions apparaîtront au fil de la simulation."
+              title={t('lists.decisions.emptyTitle')}
+              description={t('lists.decisions.emptyText')}
             />
           </CardContent>
         </Card>
@@ -102,7 +105,7 @@ export default function DecisionsListPage() {
             <div className="space-y-3">
               <h2 className="text-sm font-semibold text-warning flex items-center gap-2">
                 <KeenIcon icon="time" style="duotone" className="text-sm" />
-                En attente ({pending.length})
+                {t('lists.pending', { count: pending.length })}
               </h2>
               {pending.map((dec) => (
                 <DecisionCard key={dec.id} decision={dec} simId={id!} />
@@ -114,7 +117,7 @@ export default function DecisionsListPage() {
             <div className="space-y-3">
               <h2 className="text-sm font-semibold text-success flex items-center gap-2">
                 <KeenIcon icon="check-circle" style="duotone" className="text-sm" />
-                Resolues ({resolved.length})
+                {t('lists.decisions.resolved', { count: resolved.length })}
               </h2>
               {resolved.map((dec) => (
                 <DecisionCard key={dec.id} decision={dec} simId={id!} />
@@ -128,6 +131,8 @@ export default function DecisionsListPage() {
 }
 
 function DecisionCard({ decision, simId }: { decision: Decision; simId: string }) {
+  const { intlLocale } = useAppLocale();
+  const t = useT();
   const isResolved = decision.selectedOption !== null;
 
   return (
@@ -144,26 +149,26 @@ function DecisionCard({ decision, simId }: { decision: Decision; simId: string }
             </p>
             <div className="flex items-center gap-2 flex-wrap">
               <Badge variant="secondary" size="sm">
-                Phase {decision.phaseOrder + 1}
+                {t('dashboard.active.phase', { n: decision.phaseOrder + 1 })}
               </Badge>
               <Badge variant={isResolved ? 'success' : 'warning'} appearance="light" size="sm">
-                {isResolved ? 'Résolue' : 'En attente'}
+                {isResolved ? t('lists.decisions.resolvedOne') : t('lists.waiting')}
               </Badge>
               {decision.options.length > 0 && (
                 <span className="text-xs text-muted-foreground">
-                  {decision.options.length} option(s)
+                  {t('lists.decisions.options', { count: decision.options.length })}
                 </span>
               )}
               {isResolved && decision.decidedAt && (
                 <span className="text-xs text-muted-foreground">
-                  {new Date(decision.decidedAt).toLocaleDateString('fr-FR')}
+                  {new Date(decision.decidedAt).toLocaleDateString(intlLocale)}
                 </span>
               )}
             </div>
           </div>
           <Button variant={isResolved ? 'outline' : 'primary'} size="sm" asChild>
             <Link to={`/simulations/${simId}/decisions/${decision.id}`}>
-              {isResolved ? 'Voir' : 'Decider'}
+              {isResolved ? t('lists.view') : t('lists.decisions.decide')}
             </Link>
           </Button>
         </div>

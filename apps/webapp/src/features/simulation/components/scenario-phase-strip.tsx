@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { useT } from '@/i18n/app/use-t';
 
 interface ScenarioPhaseStripProps {
   phases: { id: string; name: string; order: number }[];
@@ -42,6 +43,7 @@ const PREFIX: Record<PhaseState, string> = {
 };
 
 export function ScenarioPhaseStrip({ phases, scenarioType, startingPhaseOrder }: ScenarioPhaseStripProps) {
+  const t = useT();
   if (!phases || phases.length === 0) return null;
   const sorted = [...phases].sort((a, b) => a.order - b.order);
   const firstOrder = sorted[0]?.order ?? 0;
@@ -49,10 +51,10 @@ export function ScenarioPhaseStrip({ phases, scenarioType, startingPhaseOrder }:
   return (
     <div>
       <div className="mb-2.5 text-[10px] font-semibold uppercase tracking-[0.8px] text-[var(--neutral-400)]">
-        Déroulement du projet
+        {t('scenario.flow')}
         {scenarioType === 'BROWNFIELD' && (
           <span className="ms-1.5 font-medium normal-case tracking-normal text-[var(--accent-700)]">
-            — vous démarrez à la phase {startingPhaseOrder + 1}
+            {t('scenario.flowStart', { n: startingPhaseOrder + 1 })}
           </span>
         )}
       </div>

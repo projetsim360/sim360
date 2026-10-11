@@ -5,14 +5,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { EmptyState } from '@/components/ui/empty-state';
 import { projectApi, type ProjectListItem } from '../api/project.api';
-
-const STATUS_LABELS: Record<string, string> = {
-  DRAFT: 'Brouillon',
-  IN_PROGRESS: 'En cours',
-  PAUSED: 'En pause',
-  COMPLETED: 'Terminé',
-  ABANDONED: 'Abandonné',
-};
+import { useTv } from '@/i18n/app/use-t';
+import { useAppLocale } from '@/providers/locale-provider';
+import { useT } from '@/i18n/app/use-t';
 
 const STATUS_VARIANT: Record<string, 'secondary' | 'primary' | 'warning' | 'success' | 'destructive'> = {
   DRAFT: 'secondary',
@@ -23,6 +18,9 @@ const STATUS_VARIANT: Record<string, 'secondary' | 'primary' | 'warning' | 'succ
 };
 
 export default function ProjectsListPage() {
+  const tv = useTv();
+  const { intlLocale } = useAppLocale();
+  const t = useT();
   const navigate = useNavigate();
   const [projects, setProjects] = useState<ProjectListItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +37,7 @@ export default function ProjectsListPage() {
   return (
     <div className="container">
       <Toolbar>
-        <ToolbarHeading title="Mes projets" />
+        <ToolbarHeading title={t('menu.myProjects')} />
       </Toolbar>
 
       {loading && (
@@ -51,7 +49,7 @@ export default function ProjectsListPage() {
       {error && (
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-destructive text-sm">Erreur : {error}</p>
+            <p className="text-destructive text-sm">{t('common.errorWith', { message: error })}</p>
           </CardContent>
         </Card>
       )}
@@ -61,9 +59,9 @@ export default function ProjectsListPage() {
           <CardContent>
             <EmptyState
               icon="folder"
-              title="Aucun projet"
-              description="Lancez une simulation pour créer votre premier projet."
-              action={{ label: 'Nouvelle simulation', href: '/simulations/new' }}
+              title={t('projects.emptyTitle')}
+              description={t('projects.emptyText')}
+              action={{ label: t('menu.newSimulation'), href: '/simulations/new' }}
             />
           </CardContent>
         </Card>
@@ -84,12 +82,12 @@ export default function ProjectsListPage() {
                     <div className="min-w-0">
                       <h3 className="font-semibold text-sm truncate">{project.name}</h3>
                       {project.client && (
-                        <p className="text-sm text-muted-foreground">Client : {project.client}</p>
+                        <p className="text-sm text-muted-foreground">{t('projects.client', { client: project.client })}</p>
                       )}
                     </div>
                     {simStatus && (
                       <Badge variant={STATUS_VARIANT[simStatus] ?? 'secondary'} appearance="light" size="sm">
-                        {STATUS_LABELS[simStatus] ?? simStatus}
+                        {tv('simulation.status', simStatus)}
                       </Badge>
                     )}
                   </div>
@@ -99,13 +97,13 @@ export default function ProjectsListPage() {
                   )}
 
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span>Secteur : {project.sector}</span>
-                    <span>Budget : {project.initialBudget.toLocaleString('fr-FR')} EUR</span>
+                    <span>{t('projects.sector', { sector: tv('sector', project.sector) })}</span>
+                    <span>{t('projects.budget', { amount: new Intl.NumberFormat(intlLocale, { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 }).format(project.initialBudget) })}</span>
                   </div>
 
                   <div className="flex items-center gap-4 text-sm border-t border-border pt-2">
-                    <span className="text-muted-foreground">{project._count.teamMembers} membres</span>
-                    <span className="text-muted-foreground">{project._count.deliverables} livrables</span>
+                    <span className="text-muted-foreground">{t('onboarding.custom.members', { count: project._count.teamMembers })}</span>
+                    <span className="text-muted-foreground">{t('projects.deliverablesN', { count: project._count.deliverables })}</span>
                   </div>
                 </CardContent>
               </Card>

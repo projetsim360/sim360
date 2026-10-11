@@ -4,15 +4,10 @@ import { DisabledWithTooltip } from '@/components/ui/disabled-with-tooltip';
 import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
 import type { Simulation } from '../types/simulation.types';
-
-const STATUS_LABEL: Record<Simulation['status'], string> = {
-  DRAFT: 'Brouillon',
-  ONBOARDING: 'Passation',
-  IN_PROGRESS: 'En cours',
-  PAUSED: 'En pause',
-  COMPLETED: 'Terminée',
-  ABANDONED: 'Abandonnée',
-};
+import { useTv } from '@/i18n/app/use-t';
+import { useAppLocale } from '@/providers/locale-provider';
+import { relativeDate } from '@/i18n/app/format';
+import { useT } from '@/i18n/app/use-t';
 
 const STATUS_TONE: Record<Simulation['status'], string> = {
   DRAFT: 'bg-[var(--neutral-100)] text-[var(--neutral-600)]',
@@ -32,17 +27,6 @@ const STATUS_DOT: Record<Simulation['status'], string> = {
   ABANDONED: 'bg-[var(--error-500)]',
 };
 
-function timeAgo(iso: string | null): string {
-  if (!iso) return 'non démarré';
-  const diff = Date.now() - new Date(iso).getTime();
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  if (days === 0) return "démarré aujourd'hui";
-  if (days === 1) return 'démarré hier';
-  if (days < 7) return `démarré il y a ${days} jours`;
-  if (days < 30) return `démarré il y a ${Math.floor(days / 7)} sem.`;
-  return `démarré le ${new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}`;
-}
-
 interface CockpitHeaderProps {
   sim: Simulation;
   pendingDecisions: number;
@@ -58,6 +42,9 @@ export function CockpitHeader({
   onPauseResume,
   onAdvancePhase,
 }: CockpitHeaderProps) {
+  const tv = useTv();
+  const { intlLocale } = useAppLocale();
+  const t = useT();
   const activePhase = sim.phases?.find((p) => p.status === 'ACTIVE');
   const totalPhases = sim.phases?.length ?? 0;
   const isRunning = sim.status === 'IN_PROGRESS';
@@ -66,23 +53,23 @@ export function CockpitHeader({
   const lastPhase = activePhase?.order === totalPhases;
   const canAdvance = isRunning && !!activePhase && !lastPhase && pendingDecisions === 0;
   const advanceReason = !activePhase
-    ? 'Aucune phase active.'
+    ? t('cockpit.advance.noPhase')
     : lastPhase
-      ? 'Vous êtes dans la dernière phase.'
+      ? t('cockpit.advance.lastPhase')
       : pendingDecisions > 0
-        ? `${pendingDecisions} décision${pendingDecisions > 1 ? 's' : ''} à trancher avant d'avancer.`
+        ? t('cockpit.advance.pending', { count: pendingDecisions })
         : !isRunning
-          ? 'Reprenez la simulation pour avancer.'
+          ? t('cockpit.advance.resume')
           : '';
 
   return (
     <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
       <div className="min-w-0 flex-1">
         <span className="text-[11px] font-semibold uppercase tracking-[1px] text-muted-foreground">
-          Simulation
+          {t('dashboard.activity.simulation')}
         </span>
         <h2 className="mt-1 font-display text-[26px] font-extrabold leading-[1.1] tracking-[-0.02em] text-foreground sm:text-[30px]">
-          {sim.project?.name ?? 'Projet'}
+          {sim.project?.name ?? t('sims.project')}
         </h2>
         <p className="mt-1 truncate text-[13px] text-muted-foreground">
           {sim.scenario?.title ?? ''}
@@ -95,21 +82,21 @@ export function CockpitHeader({
             )}
           >
             <span className={cn('size-1.5 rounded-full', STATUS_DOT[sim.status])} />
-            {STATUS_LABEL[sim.status]}
+            {tv('simulation.status', sim.status)}
           </span>
           {activePhase && (
             <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--accent-100)] px-2.5 py-0.5 text-[11px] font-bold text-[var(--accent-700)]">
               <span className="size-1.5 rounded-full bg-[var(--accent-500)]" />
-              Phase {activePhase.order} sur {totalPhases} · {activePhase.name}
+              {t('cockpit.phaseOf', { n: activePhase.order, total: totalPhases, name: activePhase.name })}
             </span>
           )}
           {pendingDecisions > 0 && (
             <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--warning-50)] px-2.5 py-0.5 text-[11px] font-bold text-[var(--warning-700)]">
               <span className="size-1.5 rounded-full bg-[var(--warning-500)]" />
-              {pendingDecisions} décision{pendingDecisions > 1 ? 's' : ''} à trancher
+              {t('cockpit.pendingDecisions', { count: pendingDecisions })}
             </span>
           )}
-          <span className="text-xs text-muted-foreground">{timeAgo(sim.startedAt)}</span>
+          <span className="text-xs text-muted-foreground">{sim.startedAt ? t('cockpit.started', { when: relativeDate(sim.startedAt, intlLocale) }) : t('sims.notStarted')}</span>
         </div>
       </div>
 
@@ -117,7 +104,7 @@ export function CockpitHeader({
         {isFinished ? (
           <Button variant="primary" size="sm" asChild>
             <Link to={`/valorisation/${sim.id}/debriefing`}>
-              Voir le débriefing
+              {t('cockpit.seeDebrief')}
               <KeenIcon icon="right" style="duotone" className="ms-1 text-xs" />
             </Link>
           </Button>
@@ -131,11 +118,11 @@ export function CockpitHeader({
             >
               {isPaused ? (
                 <>
-                  <KeenIcon icon="play" style="duotone" className="text-xs" /> Reprendre
+                  <KeenIcon icon="play" style="duotone" className="text-xs" /> {t('dashboard.active.resume')}
                 </>
               ) : (
                 <>
-                  <KeenIcon icon="pause" style="duotone" className="text-xs" /> Mettre en pause
+                  <KeenIcon icon="pause" style="duotone" className="text-xs" /> {t('cockpit.pause')}
                 </>
               )}
             </Button>
@@ -146,7 +133,7 @@ export function CockpitHeader({
                 onClick={onAdvancePhase}
                 disabled={!canAdvance || actionLoading}
               >
-                Phase suivante
+                {t('cockpit.nextPhase')}
                 <KeenIcon icon="right" style="duotone" className="ms-1 text-xs" />
               </Button>
             </DisabledWithTooltip>

@@ -10,20 +10,14 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { simulationApi } from '../api/simulation.api';
 import type { Simulation, RandomEvent } from '../types/simulation.types';
+import { useTv } from '@/i18n/app/use-t';
+import { useT } from '@/i18n/app/use-t';
 
 const SEVERITY_VARIANT: Record<string, 'info' | 'warning' | 'destructive'> = {
   LOW: 'info',
   MEDIUM: 'warning',
   HIGH: 'warning',
   CRITICAL: 'destructive',
-};
-
-const KPI_LABELS: Record<string, string> = {
-  budget: 'Budget',
-  schedule: 'Délai',
-  quality: 'Qualité',
-  teamMorale: 'Moral équipe',
-  riskLevel: 'Niveau risque',
 };
 
 function kpiColor(value: number): string {
@@ -33,6 +27,8 @@ function kpiColor(value: number): string {
 }
 
 export default function RandomEventPage() {
+  const tv = useTv();
+  const t = useT();
   const { id, evtId } = useParams<{ id: string; evtId: string }>();
   const [sim, setSim] = useState<Simulation | null>(null);
   const [event, setEvent] = useState<RandomEvent | null>(null);
@@ -71,10 +67,10 @@ export default function RandomEventPage() {
       const evt = simData.randomEvents?.find((e: RandomEvent) => e.id === evtId);
       if (evt) setEvent(evt);
       setSubmitted(true);
-      toast.success('Réaction enregistrée.');
+      toast.success(t('event.saved'));
     } catch (err: any) {
       setError(err.message);
-      toast.error("Erreur lors de l'enregistrement de la réaction.");
+      toast.error(t('event.error'));
     } finally {
       setSubmitting(false);
     }
@@ -99,14 +95,14 @@ export default function RandomEventPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Événement" />
+          <ToolbarHeading title={t('dashboard.activity.event')} />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-destructive text-sm">{error || 'Événement introuvable.'}</p>
-            <Button variant="link" asChild>
+            <p className="text-destructive text-sm">{error || t('event.notFound')}</p>
+            <Button mode="link" asChild>
               <Link to={id ? `/simulations/${id}` : '/simulations'}>
-                Retour à la simulation
+                {t('decision.backToSim')}
               </Link>
             </Button>
           </CardContent>
@@ -118,11 +114,11 @@ export default function RandomEventPage() {
   return (
     <div className="container">
       <Toolbar>
-        <ToolbarHeading title="Événement aléatoire" />
+        <ToolbarHeading title={t('event.title')} />
         <ToolbarActions>
           <Button variant="outline" asChild>
             <Link to={`/simulations/${id}`}>
-              <KeenIcon icon="arrow-left" style="duotone" className="size-4" /> Retour à la simulation
+              <KeenIcon icon="arrow-left" style="duotone" className="size-4" /> {t('decision.backToSim')}
             </Link>
           </Button>
         </ToolbarActions>
@@ -134,13 +130,13 @@ export default function RandomEventPage() {
           <CardTitle className="flex items-center gap-2">
             <KeenIcon icon="flash" style="duotone" className="size-4" />
             {event.title}
-            <Badge variant={SEVERITY_VARIANT[event.severity]} appearance="light" size="sm">{event.severity}</Badge>
+            <Badge variant={SEVERITY_VARIANT[event.severity]} appearance="light" size="sm">{tv('severity', event.severity)}</Badge>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <MarkdownContent content={event.description} className="text-muted-foreground" />
           <p className="mt-2 text-sm text-muted-foreground">
-            Type : {event.type} · Phase : {event.phaseOrder}
+            {t('event.meta', { type: event.type, phase: event.phaseOrder })}
           </p>
         </CardContent>
       </Card>
@@ -148,7 +144,7 @@ export default function RandomEventPage() {
       {/* Options */}
       {event.options.length > 0 && (
         <div className="space-y-3 mb-5">
-          <h3 className="text-sm font-semibold">Réponses possibles</h3>
+          <h3 className="text-sm font-semibold">{t('event.options')}</h3>
           {event.options.map((option, index) => {
             const isSelected = selectedOption === index;
             const isChosen = submitted && event.selectedOption === index;
@@ -201,7 +197,7 @@ export default function RandomEventPage() {
                                     : 'bg-muted text-muted-foreground'
                               }`}
                             >
-                              {KPI_LABELS[key] || key}: {(val as number) > 0 ? '+' : ''}{val as number}
+                              {tv('kpiKey', key)} : {(val as number) > 0 ? '+' : ''}{val as number}
                             </span>
                           ))}
                         </div>
@@ -220,11 +216,11 @@ export default function RandomEventPage() {
         <div className="flex justify-end gap-3">
           <Button variant="outline" asChild>
             <Link to={`/simulations/${id}`}>
-              Reporter
+              {t('event.later')}
             </Link>
           </Button>
           <Button onClick={handleConfirm} disabled={selectedOption === null || submitting}>
-            {submitting ? 'Validation...' : 'Confirmer la réponse'}
+            {submitting ? t('decision.confirming') : t('event.confirm')}
           </Button>
         </div>
       )}
@@ -232,10 +228,10 @@ export default function RandomEventPage() {
       {/* Post-response result */}
       {submitted && (
         <div className="mt-5 text-center">
-          <p className="text-sm text-success mb-3">Réponse enregistrée.</p>
+          <p className="text-sm text-success mb-3">{t('event.answerSaved')}</p>
           <Button asChild>
             <Link to={`/simulations/${id}`}>
-              Retour au tableau de bord
+              {t('decision.backToCockpit')}
             </Link>
           </Button>
         </div>

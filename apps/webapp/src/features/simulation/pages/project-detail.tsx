@@ -6,16 +6,21 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { Badge } from '@/components/ui/badge';
 import { projectApi } from '../api/project.api';
 import type { Project, ProjectTeamMember, Deliverable } from '../types/simulation.types';
+import { useTv } from '@/i18n/app/use-t';
+import { useAppLocale } from '@/providers/locale-provider';
+import { useT } from '@/i18n/app/use-t';
 
-const DELIVERABLE_STATUS: Record<string, { label: string; variant: 'secondary' | 'primary' | 'success' | 'destructive' }> = {
-  PENDING: { label: 'En attente', variant: 'secondary' },
-  IN_PROGRESS: { label: 'En cours', variant: 'primary' },
-  DELIVERED: { label: 'Livre', variant: 'primary' },
-  ACCEPTED: { label: 'Accepte', variant: 'success' },
-  REJECTED: { label: 'Rejeté', variant: 'destructive' },
+const DELIVERABLE_STATUS: Record<string, { variant: 'secondary' | 'primary' | 'success' | 'destructive' }> = {
+  PENDING: { variant: 'secondary' },
+  IN_PROGRESS: { variant: 'primary' },
+  DELIVERED: { variant: 'primary' },
+  ACCEPTED: { variant: 'success' },
+  REJECTED: { variant: 'destructive' },
 };
 
 export default function ProjectDetailPage() {
+  const { intlLocale } = useAppLocale();
+  const t = useT();
   const { id } = useParams<{ id: string }>();
   const [project, setProject] = useState<(Project & { simulation?: any }) | null>(null);
   const [loading, setLoading] = useState(true);
@@ -34,7 +39,7 @@ export default function ProjectDetailPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Projet" />
+          <ToolbarHeading title={t('sims.project')} />
         </Toolbar>
         <div className="flex justify-center py-16">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
@@ -47,11 +52,11 @@ export default function ProjectDetailPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Projet" />
+          <ToolbarHeading title={t('sims.project')} />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-destructive text-sm">{error || 'Projet introuvable'}</p>
+            <p className="text-destructive text-sm">{error || t('projects.notFound')}</p>
           </CardContent>
         </Card>
       </div>
@@ -67,16 +72,16 @@ export default function ProjectDetailPage() {
       <Toolbar>
         <ToolbarHeading
           title={project.name}
-          description={project.client ? `Client : ${project.client}` : project.sector}
+          description={project.client ? t('projects.client', { client: project.client }) : project.sector}
         />
       </Toolbar>
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
-        <StatCard label="Budget initial" value={`${project.initialBudget.toLocaleString('fr-FR')} EUR`} />
-        <StatCard label="Budget restant" value={`${project.currentBudget.toLocaleString('fr-FR')} EUR`} color={budgetUsed > 80 ? 'text-destructive' : undefined} />
-        <StatCard label="Équipe" value={String(project.teamMembers.length)} />
-        <StatCard label="Livrables" value={String(project.deliverables.length)} />
+        <StatCard label={t('projects.initialBudget')} value={new Intl.NumberFormat(intlLocale, { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 }).format(project.initialBudget)} />
+        <StatCard label={t('projects.remainingBudget')} value={new Intl.NumberFormat(intlLocale, { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 }).format(project.currentBudget)} color={budgetUsed > 80 ? 'text-destructive' : undefined} />
+        <StatCard label={t('projects.team')} value={String(project.teamMembers.length)} />
+        <StatCard label={t('dashboard.priority.deliverables')} value={String(project.deliverables.length)} />
       </div>
 
       {/* Description */}
@@ -92,17 +97,17 @@ export default function ProjectDetailPage() {
         {/* Team */}
         <Card>
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
-            <CardTitle className="text-sm">Équipe ({project.teamMembers.length})</CardTitle>
+            <CardTitle className="text-sm">{t('projects.teamCount', { count: project.teamMembers.length })}</CardTitle>
             <Link to={`/projects/${project.id}/team`} className="text-sm text-primary hover:underline">
-              Voir tout
+              {t('common.seeAllShort')}
             </Link>
           </CardHeader>
           <CardContent>
             {project.teamMembers.length === 0 ? (
               <EmptyState
                 icon="people"
-                title="Équipe vide"
-                description="L'équipe sera constituée au lancement de la simulation."
+                title={t('projects.teamEmptyTitle')}
+                description={t('projects.teamEmptyText')}
               />
             ) : (
               <div className="space-y-2">
@@ -122,17 +127,17 @@ export default function ProjectDetailPage() {
         {/* Deliverables */}
         <Card>
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
-            <CardTitle className="text-sm">Livrables ({project.deliverables.length})</CardTitle>
+            <CardTitle className="text-sm">{t('projects.deliverablesCount', { count: project.deliverables.length })}</CardTitle>
             <Link to={`/projects/${project.id}/deliverables`} className="text-sm text-primary hover:underline">
-              Voir tout
+              {t('common.seeAllShort')}
             </Link>
           </CardHeader>
           <CardContent>
             {project.deliverables.length === 0 ? (
               <EmptyState
                 icon="document"
-                title="Aucun livrable"
-                description="Les livrables seront disponibles au fur et a mesure des phases."
+                title={t('projects.deliverablesEmptyTitle')}
+                description={t('projects.deliverablesEmptyText')}
               />
             ) : (
               <div className="space-y-2">
@@ -157,7 +162,7 @@ export default function ProjectDetailPage() {
             to={`/simulations/${project.simulation.id}`}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors"
           >
-            Voir la simulation
+            {t('projects.seeSimulation')}
           </Link>
         </div>
       )}
@@ -177,6 +182,7 @@ function StatCard({ label, value, color }: { label: string; value: string; color
 }
 
 function TeamMemberRow({ member }: { member: ProjectTeamMember }) {
+  const t = useT();
   return (
     <div className="flex items-center gap-3 py-1.5">
       {member.avatar ? (
@@ -192,7 +198,7 @@ function TeamMemberRow({ member }: { member: ProjectTeamMember }) {
       </div>
       <div className="text-right shrink-0">
         <span className={`text-[10px] font-medium ${member.morale >= 70 ? 'text-success' : member.morale >= 40 ? 'text-warning' : 'text-destructive'}`}>
-          Moral {member.morale}%
+          {t('projects.morale', { value: member.morale })}
         </span>
       </div>
     </div>
@@ -200,7 +206,9 @@ function TeamMemberRow({ member }: { member: ProjectTeamMember }) {
 }
 
 function DeliverableRow({ deliverable }: { deliverable: Deliverable }) {
-  const status = DELIVERABLE_STATUS[deliverable.status] ?? { label: deliverable.status, variant: 'secondary' as const };
+  const tv = useTv();
+  const t = useT();
+  const status = DELIVERABLE_STATUS[deliverable.status] ?? { variant: 'secondary' as const };
   return (
     <div className="flex items-center justify-between py-1.5">
       <div className="min-w-0 flex-1">
@@ -210,7 +218,7 @@ function DeliverableRow({ deliverable }: { deliverable: Deliverable }) {
         )}
       </div>
       <Badge variant={status.variant} appearance="light" size="sm">
-        {status.label}
+        {tv('deliverableStatus', deliverable.status)}
       </Badge>
     </div>
   );

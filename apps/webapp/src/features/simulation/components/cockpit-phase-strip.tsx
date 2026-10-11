@@ -1,17 +1,19 @@
 import { cn } from '@/lib/utils';
 import type { SimulationPhase } from '../types/simulation.types';
+import { useT } from '@/i18n/app/use-t';
 
 interface CockpitPhaseStripProps {
   phases: SimulationPhase[];
 }
 
 export function CockpitPhaseStrip({ phases }: CockpitPhaseStripProps) {
+  const t = useT();
   if (!phases || phases.length === 0) return null;
 
   return (
     <div className="flex items-center gap-2 overflow-x-auto rounded-lg border border-border bg-card px-3 py-2.5">
       <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[1px] text-muted-foreground">
-        Phases
+        {t('scenario.stat.phases')}
       </span>
       {phases.map((phase) => {
         const done = phase.status === 'COMPLETED';

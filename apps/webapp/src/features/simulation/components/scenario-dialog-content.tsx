@@ -5,14 +5,8 @@ import { cn } from '@/lib/utils';
 import { ScenarioPhaseStrip } from './scenario-phase-strip';
 import { ScenarioBrownfieldBanner } from './scenario-brownfield-banner';
 import type { Scenario } from '../types/simulation.types';
-import { getSectorLabel } from '../config/sectors';
-
-const DIFFICULTY_LABELS: Record<string, string> = {
-  BEGINNER: 'Débutant',
-  INTERMEDIATE: 'Intermédiaire',
-  ADVANCED: 'Avancé',
-  EXPERT: 'Expert',
-};
+import { useTv } from '@/i18n/app/use-t';
+import { useT } from '@/i18n/app/use-t';
 
 const DIFFICULTY_COLORS: Record<string, string> = {
   BEGINNER: 'bg-[var(--success-50)] text-[var(--success-700)]',
@@ -21,9 +15,9 @@ const DIFFICULTY_COLORS: Record<string, string> = {
   EXPERT: 'bg-[var(--error-50)] text-[var(--error-700)]',
 };
 
-const SCENARIO_TYPE_CONFIG: Record<string, { label: string; className: string }> = {
-  GREENFIELD: { label: 'Nouveau projet', className: 'bg-[var(--brand-50)] text-[var(--brand-700)]' },
-  BROWNFIELD: { label: 'Reprise en cours', className: 'bg-[var(--warning-50)] text-[var(--warning-700)]' },
+const SCENARIO_TYPE_CONFIG: Record<string, { className: string }> = {
+  GREENFIELD: { className: 'bg-[var(--brand-50)] text-[var(--brand-700)]' },
+  BROWNFIELD: { className: 'bg-[var(--warning-50)] text-[var(--warning-700)]' },
 };
 
 interface StatTileProps {
@@ -59,6 +53,8 @@ export function ScenarioDialogContent({
   onLaunch,
   onClose,
 }: ScenarioDialogContentProps) {
+  const tv = useTv();
+  const t = useT();
   const typeCfg = SCENARIO_TYPE_CONFIG[scenario.scenarioType];
 
   return (
@@ -70,16 +66,16 @@ export function ScenarioDialogContent({
       >
         <div className="flex flex-wrap items-center gap-2">
           <span className={cn('rounded-full px-2.5 py-0.5 text-[11px] font-semibold', DIFFICULTY_COLORS[scenario.difficulty])}>
-            {DIFFICULTY_LABELS[scenario.difficulty] ?? scenario.difficulty}
+            {tv('difficulty', scenario.difficulty)}
           </span>
           {typeCfg && (
             <span className={cn('rounded-full px-2.5 py-0.5 text-[11px] font-semibold', typeCfg.className)}>
-              {typeCfg.label}
+              {tv('scenarioType', scenario.scenarioType)}
             </span>
           )}
           {isGenerated && (
             <span className="rounded-full bg-[var(--brand-100)] px-2.5 py-0.5 text-[11px] font-semibold text-[var(--brand-700)]">
-              Généré automatiquement
+              {t('scenario.generated')}
             </span>
           )}
         </div>
@@ -92,12 +88,12 @@ export function ScenarioDialogContent({
         <div className="mt-3 flex flex-wrap gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-white px-2.5 py-1 text-xs text-[var(--neutral-500)]">
             <KeenIcon icon="folder" style="duotone" className="text-[10px] leading-none" />
-            {getSectorLabel(scenario.sector)}
+            {tv('sector', scenario.sector)}
           </span>
           {scenario._count?.simulations !== undefined && scenario._count.simulations > 0 && (
             <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-white px-2.5 py-1 text-xs text-[var(--neutral-500)]">
               <KeenIcon icon="people" style="duotone" className="text-[10px] leading-none" />
-              {scenario._count.simulations} simulation{scenario._count.simulations > 1 ? 's' : ''}
+              {t('scenario.simulationsCount', { count: scenario._count.simulations })}
             </span>
           )}
         </div>
@@ -106,10 +102,10 @@ export function ScenarioDialogContent({
       {/* Stats row */}
       <div className="shrink-0 border-b border-border px-6 py-3">
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          <StatTile label="Phases" value={String(scenario.phases.length)} />
-          <StatTile label="Durée" value={String(scenario.estimatedDurationHours)} suffix="h" />
-          <StatTile label="Objectifs" value={String(scenario.objectives.length)} />
-          <StatTile label="Compétences" value={String(scenario.competencies.length)} />
+          <StatTile label={t('scenario.stat.phases')} value={String(scenario.phases.length)} />
+          <StatTile label={t('scenario.stat.duration')} value={String(scenario.estimatedDurationHours)} suffix="h" />
+          <StatTile label={t('scenario.stat.objectives')} value={String(scenario.objectives.length)} />
+          <StatTile label={t('scenario.stat.skills')} value={String(scenario.competencies.length)} />
         </div>
       </div>
 
@@ -121,7 +117,7 @@ export function ScenarioDialogContent({
             {scenario.objectives.length > 0 && (
               <div>
                 <div className="mb-3 text-[10px] font-bold uppercase tracking-[0.8px] text-[var(--neutral-400)]">
-                  Objectifs du scénario
+                  {t('scenario.objectives')}
                 </div>
                 <div className="space-y-2">
                   {scenario.objectives.map((obj, i) => (
@@ -140,7 +136,7 @@ export function ScenarioDialogContent({
               {scenario.competencies.length > 0 && (
                 <div>
                   <div className="mb-3 text-[10px] font-bold uppercase tracking-[0.8px] text-[var(--neutral-400)]">
-                    Compétences travaillées
+                    {t('scenario.skills')}
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {scenario.competencies.map((comp, i) => (
@@ -158,7 +154,7 @@ export function ScenarioDialogContent({
               {isGenerated && (
                 <div className="rounded-lg border border-[var(--brand-100)] bg-[var(--brand-50)] p-3">
                   <p className="text-xs leading-relaxed text-[var(--brand-700)]">
-                    Ce scénario a été généré automatiquement et adapté à votre profil. Vous pouvez le lancer directement.
+                    {t('scenario.generatedHint')}
                   </p>
                 </div>
               )}
@@ -184,10 +180,10 @@ export function ScenarioDialogContent({
       {/* Sticky footer */}
       <div className="flex shrink-0 items-center justify-between border-t border-border bg-[var(--neutral-50)] px-6 py-4">
         <Button variant="outline" size="md" onClick={onClose}>
-          Annuler
+          {t('common.cancel')}
         </Button>
         <Button variant="primary" size="md" onClick={onLaunch} disabled={creating}>
-          {creating ? 'Lancement…' : 'Lancer la simulation'}
+          {creating ? t('scenario.launching') : t('scenario.launch')}
         </Button>
       </div>
     </>

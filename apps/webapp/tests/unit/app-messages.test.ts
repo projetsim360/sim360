@@ -58,6 +58,8 @@ const CONVERTED = [
   'features/profile/components',
   'features/profile/config/onboarding.config.ts',
   'pages/profile/wizard.tsx',
+  'features/simulation/pages',
+  'features/simulation/components',
 ];
 const FRENCH = /[À-ÿ]|\b(le|la|les|des|du|une|et|vous|votre|vos|pour|avec|dans|aucun|aucune|Mes|Mon|Votre|Nouvelle|Voir|Rechercher|Fermer|Annuler|Retour|Suivant)\b/;
 

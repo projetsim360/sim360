@@ -11,22 +11,20 @@ import { cn } from '@/lib/utils';
 import { staggerContainer, staggerItem } from '@/lib/motion';
 import { simulationApi } from '../api/simulation.api';
 import type { Simulation, SimulationPhase, KpiValues } from '../types/simulation.types';
-import { getSectorIcon, getSectorLabel } from '../config/sectors';
+import { getSectorIcon } from '../config/sectors';
+import { useTv } from '@/i18n/app/use-t';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useAppLocale } from '@/providers/locale-provider';
+import { relativeDate } from '@/i18n/app/format';
+import { useT } from '@/i18n/app/use-t';
 
-const STATUS_CONFIG: Record<Simulation['status'], { label: string; dot: string; pill: string }> = {
-  DRAFT: { label: 'Brouillon', dot: 'bg-[var(--neutral-400)]', pill: 'text-[var(--neutral-500)]' },
-  ONBOARDING: { label: 'Passation', dot: 'bg-[var(--brand-500)]', pill: 'text-[var(--brand-700)]' },
-  IN_PROGRESS: { label: 'En cours', dot: 'bg-[var(--success-500)]', pill: 'text-[var(--success-700)]' },
-  PAUSED: { label: 'En pause', dot: 'bg-[var(--warning-500)]', pill: 'text-[var(--warning-700)]' },
-  COMPLETED: { label: 'Terminée', dot: 'bg-[var(--brand-500)]', pill: 'text-[var(--brand-700)]' },
-  ABANDONED: { label: 'Abandonnée', dot: 'bg-[var(--error-500)]', pill: 'text-[var(--error-700)]' },
-};
-
-const DIFFICULTY_LABEL: Record<string, string> = {
-  BEGINNER: 'Débutant',
-  INTERMEDIATE: 'Intermédiaire',
-  ADVANCED: 'Avancé',
-  EXPERT: 'Expert',
+const STATUS_CONFIG: Record<Simulation['status'], { dot: string; pill: string }> = {
+  DRAFT: { dot: 'bg-[var(--neutral-400)]', pill: 'text-[var(--neutral-500)]' },
+  ONBOARDING: { dot: 'bg-[var(--brand-500)]', pill: 'text-[var(--brand-700)]' },
+  IN_PROGRESS: { dot: 'bg-[var(--success-500)]', pill: 'text-[var(--success-700)]' },
+  PAUSED: { dot: 'bg-[var(--warning-500)]', pill: 'text-[var(--warning-700)]' },
+  COMPLETED: { dot: 'bg-[var(--brand-500)]', pill: 'text-[var(--brand-700)]' },
+  ABANDONED: { dot: 'bg-[var(--error-500)]', pill: 'text-[var(--error-700)]' },
 };
 
 function kpiStroke(value: number, inverse = false): string {
@@ -63,16 +61,6 @@ function MiniGauge({ value, label, inverse = false }: { value: number; label: st
   );
 }
 
-function relativeDate(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime();
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  if (days === 0) return "Aujourd'hui";
-  if (days === 1) return 'Hier';
-  if (days < 7) return `Il y a ${days}j`;
-  if (days < 30) return `Il y a ${Math.floor(days / 7)} sem.`;
-  return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-}
-
 function phaseBarClass(p: SimulationPhase): string {
   if (p.status === 'COMPLETED') return 'bg-[var(--success-500)]';
   if (p.status === 'ACTIVE') return 'bg-[var(--accent-500)]';
@@ -82,6 +70,9 @@ function phaseBarClass(p: SimulationPhase): string {
 type TabFilter = 'all' | 'IN_PROGRESS' | 'COMPLETED';
 
 export default function SimulationsListPage() {
+  const tv = useTv();
+  const { intlLocale } = useAppLocale();
+  const t = useT();
   const navigate = useNavigate();
   const reduce = useReducedMotion();
   const [simulations, setSimulations] = useState<Simulation[]>([]);
@@ -105,23 +96,23 @@ export default function SimulationsListPage() {
       .finally(() => setLoading(false));
   }, [activeTab]);
 
-  const tabs: { key: TabFilter; label: string }[] = [
-    { key: 'all', label: 'Toutes' },
-    { key: 'IN_PROGRESS', label: 'En cours' },
-    { key: 'COMPLETED', label: 'Terminées' },
+  const tabs: { key: TabFilter; label: AppMessageKey }[] = [
+    { key: 'all', label: 'sims.tab.all' },
+    { key: 'IN_PROGRESS', label: 'sims.tab.running' },
+    { key: 'COMPLETED', label: 'sims.tab.completed' },
   ];
 
   return (
     <>
       <PageHeader
-        breadcrumbs={[{ label: 'Tableau de bord', to: '/dashboard' }, { label: 'Simulations' }]}
-        title="Mes simulations"
-        subtitle="Pilotez vos simulations en cours, lancez-en de nouvelles."
+        breadcrumbs={[{ label: t('menu.dashboard'), to: '/dashboard' }, { label: t('menu.simulations') }]}
+        title={t('menu.mySimulations')}
+        subtitle={t('sims.subtitle')}
         actions={
           <Button variant="primary" size="sm" asChild>
             <Link to="/simulations/new">
               <KeenIcon icon="plus" style="duotone" className="text-xs" />
-              Nouvelle simulation
+              {t('menu.newSimulation')}
             </Link>
           </Button>
         }
@@ -129,20 +120,20 @@ export default function SimulationsListPage() {
 
       <div className="px-6 pb-8">
         <div className="mb-5 flex items-center gap-1 border-b border-border">
-          {tabs.map((t) => (
+          {tabs.map((tab) => (
             <button
-              key={t.key}
+              key={tab.key}
               type="button"
-              onClick={() => setActiveTab(t.key)}
+              onClick={() => setActiveTab(tab.key)}
               className={cn(
                 'cursor-pointer border-b-2 px-4 py-2.5 text-sm font-semibold transition-colors',
-                activeTab === t.key
+                activeTab === tab.key
                   ? 'border-[var(--accent-500)] text-[var(--accent-700)]'
                   : 'border-transparent text-[var(--neutral-400)] hover:text-[var(--brand-700)]',
               )}
             >
-              {t.label}
-              {activeTab === 'all' && t.key === 'all' && (
+              {t(tab.label)}
+              {activeTab === 'all' && tab.key === 'all' && (
                 <span className="ms-1.5 text-xs text-[var(--neutral-400)]">({simulations.length})</span>
               )}
             </button>
@@ -158,13 +149,13 @@ export default function SimulationsListPage() {
         {error && (
           <Card>
             <CardContent className="py-8 text-center">
-              <p className="text-sm text-[var(--error-700)]">Erreur : {error}</p>
+              <p className="text-sm text-[var(--error-700)]">{t('common.errorWith', { message: error })}</p>
               <button
                 type="button"
                 onClick={() => setActiveTab(activeTab)}
                 className="mt-3 cursor-pointer text-sm font-semibold text-[var(--accent-600)] hover:underline"
               >
-                Réessayer
+                {t('common.retry')}
               </button>
             </CardContent>
           </Card>
@@ -175,9 +166,9 @@ export default function SimulationsListPage() {
             <CardContent>
               <EmptyState
                 icon="chart-simple"
-                title="Aucune simulation"
-                description="Choisissez un scénario et plongez dans l'expérience."
-                action={{ label: 'Créer ma première simulation', href: '/simulations/new' }}
+                title={t('sims.emptyTitle')}
+                description={t('sims.emptyText')}
+                action={{ label: t('sims.emptyCta'), href: '/simulations/new' }}
               />
             </CardContent>
           </Card>
@@ -210,31 +201,31 @@ export default function SimulationsListPage() {
                         <div className="mb-3 flex items-center justify-between">
                           <div className="flex items-center gap-1.5">
                             <div className={cn('size-1.5 rounded-full', statusCfg.dot)} />
-                            <span className={cn('text-xs font-semibold', statusCfg.pill)}>{statusCfg.label}</span>
+                            <span className={cn('text-xs font-semibold', statusCfg.pill)}>{tv('simulation.status', sim.status)}</span>
                           </div>
                           <span className="text-[10px] text-[var(--neutral-400)]">
-                            {sim.startedAt ? relativeDate(sim.startedAt) : 'Non démarré'}
+                            {sim.startedAt ? relativeDate(sim.startedAt, intlLocale) : t('sims.notStarted')}
                           </span>
                         </div>
 
                         <h3 className="truncate font-display text-[15px] font-bold text-[var(--brand-700)] transition-colors group-hover:text-[var(--accent-700)]">
-                          {sim.project?.name || 'Projet'}
+                          {sim.project?.name || t('sims.project')}
                         </h3>
                         <p className="mt-0.5 truncate text-xs text-[var(--neutral-500)]">
-                          {sim.scenario?.title || 'Scénario'}
+                          {sim.scenario?.title || t('sims.scenario')}
                         </p>
 
                         <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
                           <span className="inline-flex items-center gap-1 rounded bg-[var(--brand-50)] px-1.5 py-0.5 text-[10px] text-[var(--brand-700)]">
                             <KeenIcon icon={sectorIcon} style="duotone" className="text-[10px] leading-none" />
-                            {getSectorLabel(sim.scenario?.sector)}
+                            {tv('sector', sim.scenario?.sector)}
                           </span>
                           <span className="inline-flex items-center gap-1 rounded bg-[var(--brand-50)] px-1.5 py-0.5 text-[10px] text-[var(--brand-700)]">
-                            {DIFFICULTY_LABEL[sim.scenario?.difficulty ?? ''] ?? sim.scenario?.difficulty}
+                            {tv('difficulty', sim.scenario?.difficulty)}
                           </span>
                           {pendingDecisions > 0 && (
                             <span className="inline-flex items-center gap-1 rounded bg-[var(--warning-50)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--warning-700)]">
-                              {pendingDecisions} décision{pendingDecisions > 1 ? 's' : ''}
+                              {t('dashboard.kpi.decisions', { count: pendingDecisions })}
                             </span>
                           )}
                         </div>
@@ -243,7 +234,7 @@ export default function SimulationsListPage() {
                       <div className="px-4 pb-3">
                         <div className="mb-1.5 flex items-center justify-between">
                           <span className="text-[10px] text-[var(--neutral-400)]">
-                            {activePhase ? activePhase.name : completedPhases === totalPhases ? 'Terminé' : 'Phase inconnue'}
+                            {activePhase ? activePhase.name : completedPhases === totalPhases ? t('sims.finished') : t('sims.unknownPhase')}
                           </span>
                           <span className="text-[10px] font-semibold text-[var(--neutral-400)]">
                             {completedPhases}/{totalPhases}
@@ -259,11 +250,11 @@ export default function SimulationsListPage() {
                       {k && (
                         <div className="border-t border-border px-4 pb-4 pt-3">
                           <div className="flex items-center justify-between">
-                            <MiniGauge value={k.budget} label="Budget" />
-                            <MiniGauge value={k.schedule} label="Délai" />
-                            <MiniGauge value={k.quality} label="Qualité" />
-                            <MiniGauge value={k.teamMorale} label="Moral" />
-                            <MiniGauge value={k.riskLevel} label="Risque" inverse />
+                            <MiniGauge value={k.budget} label={t('kpi.budget')} />
+                            <MiniGauge value={k.schedule} label={t('kpi.schedule')} />
+                            <MiniGauge value={k.quality} label={t('kpi.quality')} />
+                            <MiniGauge value={k.teamMorale} label={t('kpi.morale')} />
+                            <MiniGauge value={k.riskLevel} label={t('kpi.risk')} inverse />
                           </div>
                         </div>
                       )}

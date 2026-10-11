@@ -20,24 +20,23 @@ import {
 } from 'recharts';
 import { simulationApi } from '../api/simulation.api';
 import type { KpiSnapshot } from '@/features/dashboard/types/dashboard.types';
+import { useTv } from '@/i18n/app/use-t';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useAppLocale } from '@/providers/locale-provider';
+import { useT } from '@/i18n/app/use-t';
 
-const TRIGGER_LABELS: Record<string, string> = {
-  simulation_start: 'Début simulation',
-  decision: 'Décision',
-  event: 'Événement',
-  meeting: 'Réunion',
-  phase_advance: 'Phase suivante',
-};
-
-const KPI_CONFIG = [
-  { key: 'budget', label: 'Budget', color: 'var(--chart-1)' },
-  { key: 'schedule', label: 'Délai', color: 'var(--chart-3)' },
-  { key: 'quality', label: 'Qualité', color: 'var(--chart-2)' },
-  { key: 'teamMorale', label: 'Moral', color: 'var(--chart-5)' },
-  { key: 'riskLevel', label: 'Risque', color: 'var(--chart-4)' },
+const KPI_CONFIG: { key: string; label: AppMessageKey; color: string }[] = [
+  { key: 'budget', label: 'kpi.budget', color: 'var(--chart-1)' },
+  { key: 'schedule', label: 'kpi.schedule', color: 'var(--chart-3)' },
+  { key: 'quality', label: 'kpi.quality', color: 'var(--chart-2)' },
+  { key: 'teamMorale', label: 'kpi.morale', color: 'var(--chart-5)' },
+  { key: 'riskLevel', label: 'kpi.risk', color: 'var(--chart-4)' },
 ];
 
 export default function KpiHistoryPage() {
+  const tv = useTv();
+  const { intlLocale } = useAppLocale();
+  const t = useT();
   const { id } = useParams<{ id: string }>();
   const [snapshots, setSnapshots] = useState<KpiSnapshot[]>([]);
   const [loading, setLoading] = useState(true);
@@ -81,7 +80,7 @@ export default function KpiHistoryPage() {
 
   const chartData = snapshots.map((s, i) => ({
     index: i,
-    label: TRIGGER_LABELS[s.trigger] ?? s.trigger,
+    label: tv('kpiTrigger', s.trigger),
     phase: `P${s.phaseOrder}`,
     budget: Math.round(s.budget * 10) / 10,
     schedule: Math.round(s.schedule * 10) / 10,
@@ -89,7 +88,7 @@ export default function KpiHistoryPage() {
     teamMorale: Math.round(s.teamMorale * 10) / 10,
     riskLevel: Math.round(s.riskLevel * 10) / 10,
     trigger: s.trigger,
-    date: new Date(s.takenAt).toLocaleString('fr-FR', {
+    date: new Date(s.takenAt).toLocaleString(intlLocale, {
       day: '2-digit',
       month: 'short',
       hour: '2-digit',
@@ -102,7 +101,7 @@ export default function KpiHistoryPage() {
       <div className="container-fixed space-y-5">
         <Toolbar>
           <ToolbarHeading>
-            <h1 className="text-xl font-medium text-gray-900">Historique des KPIs</h1>
+            <h1 className="text-xl font-medium text-gray-900">{t('cockpit.kpiHistory')}</h1>
           </ToolbarHeading>
         </Toolbar>
         <Card>
@@ -128,7 +127,7 @@ export default function KpiHistoryPage() {
       <div className="container-fixed space-y-5">
         <Toolbar>
           <ToolbarHeading>
-            <h1 className="text-xl font-medium text-gray-900">Historique KPIs</h1>
+            <h1 className="text-xl font-medium text-gray-900">{t('cockpit.kpiHistory')}</h1>
           </ToolbarHeading>
         </Toolbar>
         <Card>
@@ -144,22 +143,22 @@ export default function KpiHistoryPage() {
     <div className="container-fixed space-y-5">
       <Toolbar>
         <ToolbarHeading>
-          <h1 className="text-xl font-medium text-gray-900">Historique des KPIs</h1>
+          <h1 className="text-xl font-medium text-gray-900">{t('cockpit.kpiHistory')}</h1>
           {snapshots.length > 0 && (
-            <p className="text-sm text-gray-700">{snapshots.length} snapshot(s)</p>
+            <p className="text-sm text-gray-700">{t('kpiHistory.count', { count: snapshots.length })}</p>
           )}
         </ToolbarHeading>
         <ToolbarActions>
           {snapshots.length > 0 && (
             <Button variant="outline" size="sm" onClick={handleExportPng}>
               <KeenIcon icon="cloud-download" style="duotone" className="text-sm" />
-              Exporter PNG
+              {t('kpiHistory.exportPng')}
             </Button>
           )}
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}`}>
               <KeenIcon icon="arrow-left" style="duotone" className="text-sm" />
-              Retour
+              {t('common.back')}
             </Link>
           </Button>
         </ToolbarActions>
@@ -170,8 +169,8 @@ export default function KpiHistoryPage() {
           <CardContent>
             <EmptyState
               icon="chart-simple"
-              title="Aucun historique"
-              description="Les KPIs seront enregistrés au fil de vos actions dans la simulation."
+              title={t('kpiHistory.emptyTitle')}
+              description={t('kpiHistory.emptyText')}
             />
           </CardContent>
         </Card>
@@ -180,7 +179,7 @@ export default function KpiHistoryPage() {
           {/* Main chart */}
           <Card className="mb-5">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Évolution des indicateurs</CardTitle>
+              <CardTitle className="text-sm">{t('kpiHistory.chart')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div ref={chartRef}>
@@ -206,7 +205,7 @@ export default function KpiHistoryPage() {
                           {KPI_CONFIG.map((kpi) => (
                             <div key={kpi.key} className="flex items-center gap-2 py-0.5">
                               <span className="w-2 h-2 rounded-full" style={{ backgroundColor: kpi.color }} />
-                              <span className="text-muted-foreground">{kpi.label}:</span>
+                              <span className="text-muted-foreground">{t(kpi.label)} :</span>
                               <span className="font-medium">{d[kpi.key]}%</span>
                             </div>
                           ))}
@@ -217,7 +216,7 @@ export default function KpiHistoryPage() {
                   <Legend
                     formatter={(value: string) => {
                       const cfg = KPI_CONFIG.find((k) => k.key === value);
-                      return <span className="text-sm">{cfg?.label ?? value}</span>;
+                      return <span className="text-sm">{cfg ? t(cfg.label) : value}</span>;
                     }}
                   />
                   <ReferenceLine y={30} stroke="#ef4444" strokeDasharray="5 5" opacity={0.6} />
@@ -241,21 +240,21 @@ export default function KpiHistoryPage() {
           {/* Snapshot table */}
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Détails des snapshots</CardTitle>
+              <CardTitle className="text-sm">{t('kpiHistory.details')}</CardTitle>
             </CardHeader>
             <CardContent>
               <Table className="text-sm">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-left">#</TableHead>
-                    <TableHead className="text-left">Phase</TableHead>
-                    <TableHead className="text-left">Declencheur</TableHead>
-                    <TableHead className="text-right">Budget</TableHead>
-                    <TableHead className="text-right">Délai</TableHead>
-                    <TableHead className="text-right">Qualité</TableHead>
-                    <TableHead className="text-right">Moral</TableHead>
-                    <TableHead className="text-right">Risque</TableHead>
-                    <TableHead className="text-left">Date</TableHead>
+                    <TableHead className="text-left">{t('timeline.phase')}</TableHead>
+                    <TableHead className="text-left">{t('kpiHistory.trigger')}</TableHead>
+                    <TableHead className="text-right">{t('kpi.budget')}</TableHead>
+                    <TableHead className="text-right">{t('kpi.schedule')}</TableHead>
+                    <TableHead className="text-right">{t('kpi.quality')}</TableHead>
+                    <TableHead className="text-right">{t('kpi.morale')}</TableHead>
+                    <TableHead className="text-right">{t('kpi.risk')}</TableHead>
+                    <TableHead className="text-left">{t('common.date')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -263,14 +262,14 @@ export default function KpiHistoryPage() {
                     <TableRow key={s.id}>
                       <TableCell className="text-muted-foreground">{i + 1}</TableCell>
                       <TableCell>P{s.phaseOrder}</TableCell>
-                      <TableCell>{TRIGGER_LABELS[s.trigger] ?? s.trigger}</TableCell>
+                      <TableCell>{tv('kpiTrigger', s.trigger)}</TableCell>
                       <TableCell className={`text-right font-medium ${kpiColor(s.budget)}`}>{s.budget}%</TableCell>
                       <TableCell className={`text-right font-medium ${kpiColor(s.schedule)}`}>{s.schedule}%</TableCell>
                       <TableCell className={`text-right font-medium ${kpiColor(s.quality)}`}>{s.quality}%</TableCell>
                       <TableCell className={`text-right font-medium ${kpiColor(s.teamMorale)}`}>{s.teamMorale}%</TableCell>
                       <TableCell className={`text-right font-medium ${kpiColor(s.riskLevel)}`}>{s.riskLevel}%</TableCell>
                       <TableCell className="text-muted-foreground">
-                        {new Date(s.takenAt).toLocaleString('fr-FR', {
+                        {new Date(s.takenAt).toLocaleString(intlLocale, {
                           day: '2-digit',
                           month: 'short',
                           hour: '2-digit',

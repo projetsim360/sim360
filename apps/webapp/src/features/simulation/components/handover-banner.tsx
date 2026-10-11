@@ -9,6 +9,8 @@ import { staggerContainer, staggerItem } from '@/lib/motion';
 import { useAuth } from '@/providers/auth-provider';
 import { simulationApi } from '../api/simulation.api';
 import type { HandoverStatus, Simulation, SimulationMeeting } from '../types/simulation.types';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useT } from '@/i18n/app/use-t';
 
 interface HandoverBannerProps {
   simulationId: string;
@@ -19,10 +21,10 @@ interface HandoverBannerProps {
 type StepKey = 'HR' | 'PMO' | 'DONE';
 type StepState = 'done' | 'active' | 'future';
 
-const STEP_DEFS: { key: StepKey; label: string; icon: string }[] = [
-  { key: 'HR', label: 'Accueil RH', icon: 'people' },
-  { key: 'PMO', label: 'Passation PMO', icon: 'notepad' },
-  { key: 'DONE', label: 'Démarrage', icon: 'rocket' },
+const STEP_DEFS: { key: StepKey; label: AppMessageKey; icon: string }[] = [
+  { key: 'HR', label: 'handover.step.hr', icon: 'people' },
+  { key: 'PMO', label: 'handover.step.pmo', icon: 'notepad' },
+  { key: 'DONE', label: 'handover.step.start', icon: 'rocket' },
 ];
 
 const STEP_DURATIONS_MIN: Record<StepKey, number> = { HR: 10, PMO: 15, DONE: 2 };
@@ -73,9 +75,10 @@ function StepCircle({
 }
 
 function StepMeta({ state, durationMin }: { state: StepState; durationMin: number }) {
-  if (state === 'done') return <span className="text-[10px] text-white/60">Terminé · revoir →</span>;
-  if (state === 'active') return <span className="text-[10px] text-white/80">En cours · ~{durationMin} min</span>;
-  return <span className="text-[10px] text-white/40">À venir · ~{durationMin} min</span>;
+  const t = useT();
+  if (state === 'done') return <span className="text-[10px] text-white/60">{t('handover.meta.done')}</span>;
+  if (state === 'active') return <span className="text-[10px] text-white/80">{t('handover.meta.active', { min: durationMin })}</span>;
+  return <span className="text-[10px] text-white/40">{t('handover.meta.future', { min: durationMin })}</span>;
 }
 
 function DesktopStep({
@@ -87,6 +90,7 @@ function DesktopStep({
   state: StepState;
   meeting: SimulationMeeting | null;
 }) {
+  const t = useT();
   const labelClass = state === 'future' ? 'text-white/55' : 'text-white';
   const inner = (
     <div className="flex flex-col items-center w-28" aria-current={state === 'active' ? 'step' : undefined}>
@@ -96,7 +100,7 @@ function DesktopStep({
         size={state === 'active' ? 'lg' : 'md'}
         showRevisitBadge={state === 'done' && meeting !== null}
       />
-      <p className={cn('mt-2 text-[11px] font-bold', labelClass)}>{step.label}</p>
+      <p className={cn('mt-2 text-[11px] font-bold', labelClass)}>{t(step.label)}</p>
       <StepMeta state={state} durationMin={STEP_DURATIONS_MIN[step.key]} />
     </div>
   );
@@ -105,7 +109,7 @@ function DesktopStep({
       <Link
         to={`/meetings/${meeting.id}`}
         className="rounded-md focus-visible:outline-2 focus-visible:outline-white/70"
-        aria-label={`Revoir le compte-rendu : ${step.label}`}
+        aria-label={t('handover.revisit', { step: t(step.label) })}
       >
         {inner}
       </Link>
@@ -125,6 +129,7 @@ function MobileStep({
   meeting: SimulationMeeting | null;
   isLast: boolean;
 }) {
+  const t = useT();
   const labelClass = state === 'future' ? 'text-white/55' : 'text-white';
   const inner = (
     <div className="flex items-start gap-3" aria-current={state === 'active' ? 'step' : undefined}>
@@ -139,7 +144,7 @@ function MobileStep({
         )}
       </div>
       <div className={cn('flex-1 min-w-0', isLast ? '' : 'pb-3')}>
-        <p className={cn('text-[11px] font-bold', labelClass)}>{step.label}</p>
+        <p className={cn('text-[11px] font-bold', labelClass)}>{t(step.label)}</p>
         <StepMeta state={state} durationMin={STEP_DURATIONS_MIN[step.key]} />
       </div>
     </div>
@@ -149,7 +154,7 @@ function MobileStep({
       <Link
         to={`/meetings/${meeting.id}`}
         className="block rounded-md focus-visible:outline-2 focus-visible:outline-white/70"
-        aria-label={`Revoir le compte-rendu : ${step.label}`}
+        aria-label={t('handover.revisit', { step: t(step.label) })}
       >
         {inner}
       </Link>
@@ -159,6 +164,7 @@ function MobileStep({
 }
 
 export function HandoverBanner({ simulationId, sim, onHandoverComplete }: HandoverBannerProps) {
+  const t = useT();
   const { user } = useAuth();
   const reduce = useReducedMotion();
   const gridId = useId();
@@ -186,8 +192,8 @@ export function HandoverBanner({ simulationId, sim, onHandoverComplete }: Handov
     0,
   );
 
-  const firstName = user?.firstName ?? 'apprenant';
-  const companyName = sim?.project?.client ?? sim?.project?.name ?? 'votre projet';
+  const firstName = user?.firstName ?? t('handover.learner');
+  const companyName = sim?.project?.client ?? sim?.project?.name ?? t('handover.yourProject');
 
   const stateOf = (index: number): StepState => {
     if (status.isComplete) return 'done';
@@ -223,7 +229,7 @@ export function HandoverBanner({ simulationId, sim, onHandoverComplete }: Handov
       <Button variant="primary" size="lg" asChild className={ctaClass}>
         <Link to={`/meetings/${status.hrMeeting.id}`} className="inline-flex items-center gap-2">
           <KeenIcon icon="people" style="duotone" className="text-sm leading-none" />
-          Commencer l'accueil RH
+          {t('handover.cta.hr')}
         </Link>
       </Button>
     );
@@ -232,7 +238,7 @@ export function HandoverBanner({ simulationId, sim, onHandoverComplete }: Handov
       <Button variant="primary" size="lg" asChild className={ctaClass}>
         <Link to={`/meetings/${status.pmoMeeting.id}`} className="inline-flex items-center gap-2">
           <KeenIcon icon="notepad" style="duotone" className="text-sm leading-none" />
-          Commencer la passation PMO
+          {t('handover.cta.pmo')}
         </Link>
       </Button>
     );
@@ -246,7 +252,7 @@ export function HandoverBanner({ simulationId, sim, onHandoverComplete }: Handov
         className={ctaClass}
       >
         <KeenIcon icon="rocket" style="duotone" className="text-sm leading-none" />
-        {completing ? 'Démarrage en cours…' : 'Commencer le projet'}
+        {completing ? t('handover.cta.starting') : t('handover.cta.start')}
       </Button>
     );
   }
@@ -330,12 +336,12 @@ export function HandoverBanner({ simulationId, sim, onHandoverComplete }: Handov
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-5">
             <div>
               <h2 id="handover-title" className="font-display font-bold text-[17px] leading-tight">
-                {status.isComplete ? `C'est parti, ${firstName} !` : `Bienvenue, ${firstName}`}
+                {status.isComplete ? t('handover.title.done', { name: firstName }) : t('handover.title.welcome', { name: firstName })}
               </h2>
               <p className="text-xs text-white/70 mt-1">
                 {status.isComplete
-                  ? 'Votre prise de poste est validée — lancez le projet.'
-                  : `Vos premiers pas chez ${companyName}.`}
+                  ? t('handover.text.done')
+                  : t('handover.text.welcome', { company: companyName })}
               </p>
             </div>
             <div className="flex flex-row sm:flex-col items-start sm:items-end gap-2 sm:gap-1">
@@ -344,13 +350,13 @@ export function HandoverBanner({ simulationId, sim, onHandoverComplete }: Handov
                 aria-valuemin={0}
                 aria-valuemax={STEP_DEFS.length}
                 aria-valuenow={stepIndexDisplay}
-                aria-label="Progression de la prise de poste"
+                aria-label={t('handover.progress')}
                 className="bg-white/12 border border-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-[11px] font-semibold text-white"
               >
-                {status.isComplete ? 'Prêt' : `Étape ${stepIndexDisplay} / ${STEP_DEFS.length}`}
+                {status.isComplete ? t('handover.ready') : t('handover.stepOf', { n: stepIndexDisplay, total: STEP_DEFS.length })}
               </div>
               {!status.isComplete && (
-                <span className="text-[10px] text-white/55 hidden sm:inline">≈ {remainingMin} min restantes</span>
+                <span className="text-[10px] text-white/55 hidden sm:inline">{t('handover.remaining', { min: remainingMin })}</span>
               )}
             </div>
           </div>
