@@ -40,7 +40,7 @@ export function HeroSection() {
           </motion.span>
 
           <h1 className="font-display text-balance text-[40px] font-extrabold leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[52px] lg:text-[64px]">
-            <FormattedMessage id="hero.title" values={{ accent: (chunks) => <span className="text-[var(--accent-500)]">{chunks}</span> }} />
+            <FormattedMessage id="hero.title" values={{ accent: (chunks) => <span key="accent" className="text-[var(--accent-500)]">{chunks}</span> }} />
           </h1>
 
           <p className="mt-6 max-w-xl text-lg text-muted-foreground lg:text-xl">{formatMessage({ id: 'hero.subtitle' })}</p>

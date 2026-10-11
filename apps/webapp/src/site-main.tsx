@@ -6,7 +6,7 @@
  * Pages prerendered at build time (`scripts/prerender.mjs`) ship their HTML and are
  * hydrated here; any other public page renders from scratch.
  */
-import './styles/globals.css';
+import './styles/site.css';
 import { StrictMode } from 'react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import { SiteApp } from './site-app';

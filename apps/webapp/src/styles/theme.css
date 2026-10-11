@@ -1,0 +1,358 @@
+/* ==========================================================================
+   Simex pro — shared theme: fonts, design tokens, Tailwind token mapping, base rules.
+   Imported by globals.css (application) and site.css (public site). Keep it free of
+   application-only CSS (shell, icon fonts, editors) so the public stylesheet stays small.
+   ========================================================================== */
+
+/* ==========================================================================
+   Montserrat — self-hosted display font, WOFF2 subset to Latin (9 weights × normal+italic = 18 files)
+   ========================================================================== */
+@font-face { font-family: "Montserrat"; font-style: normal; font-weight: 100; src: url("/fonts/montserrat/Montserrat-Thin.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Montserrat"; font-style: italic; font-weight: 100; src: url("/fonts/montserrat/Montserrat-ThinItalic.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Montserrat"; font-style: normal; font-weight: 200; src: url("/fonts/montserrat/Montserrat-ExtraLight.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Montserrat"; font-style: italic; font-weight: 200; src: url("/fonts/montserrat/Montserrat-ExtraLightItalic.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Montserrat"; font-style: normal; font-weight: 300; src: url("/fonts/montserrat/Montserrat-Light.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Montserrat"; font-style: italic; font-weight: 300; src: url("/fonts/montserrat/Montserrat-LightItalic.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Montserrat"; font-style: normal; font-weight: 400; src: url("/fonts/montserrat/Montserrat-Regular.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Montserrat"; font-style: italic; font-weight: 400; src: url("/fonts/montserrat/Montserrat-Italic.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Montserrat"; font-style: normal; font-weight: 500; src: url("/fonts/montserrat/Montserrat-Medium.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Montserrat"; font-style: italic; font-weight: 500; src: url("/fonts/montserrat/Montserrat-MediumItalic.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Montserrat"; font-style: normal; font-weight: 600; src: url("/fonts/montserrat/Montserrat-SemiBold.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Montserrat"; font-style: italic; font-weight: 600; src: url("/fonts/montserrat/Montserrat-SemiBoldItalic.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Montserrat"; font-style: normal; font-weight: 700; src: url("/fonts/montserrat/Montserrat-Bold.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Montserrat"; font-style: italic; font-weight: 700; src: url("/fonts/montserrat/Montserrat-BoldItalic.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Montserrat"; font-style: normal; font-weight: 800; src: url("/fonts/montserrat/Montserrat-ExtraBold.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Montserrat"; font-style: italic; font-weight: 800; src: url("/fonts/montserrat/Montserrat-ExtraBoldItalic.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Montserrat"; font-style: normal; font-weight: 900; src: url("/fonts/montserrat/Montserrat-Black.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Montserrat"; font-style: italic; font-weight: 900; src: url("/fonts/montserrat/Montserrat-BlackItalic.woff2") format("woff2"); font-display: swap; }
+
+/* ==========================================================================
+   Simex pro — Design tokens (light)
+   Source of truth: design/project/colors_and_type.css
+   ========================================================================== */
+:root {
+  /* ---------- Brand (Deep Blue) ---------- */
+  --brand-50:  #F0F4FA;
+  --brand-100: #D6E0EF;
+  --brand-200: #B8C7DF;
+  --brand-300: #A8B9D4;
+  --brand-400: #7E94BB;
+  --brand-500: #5A7099;
+  --brand-600: #3D5478;
+  --brand-700: #1A2B48;
+  --brand-800: #14223A;
+  --brand-900: #0F1A2E;
+  --brand-950: #08111F;
+
+  /* ---------- Accent (Warm Orange) ---------- */
+  --accent-50:  #FFF4ED;
+  --accent-100: #FFE4D1;
+  --accent-200: #FFCBA8;
+  --accent-300: #FFB685;
+  --accent-400: #F59763;
+  --accent-500: #EE7A3A;
+  --accent-600: #D9652D;
+  --accent-700: #C45C24;
+  --accent-800: #9C4718;
+  --accent-900: #7A3A15;
+  --accent-950: #4D230C;
+
+  /* ---------- Neutrals (warm gray) ---------- */
+  --neutral-0:   #FAFAF9;
+  --neutral-50:  #F5F5F4;
+  --neutral-100: #E7E5E4;
+  --neutral-200: #D6D3D1;
+  --neutral-300: #A8A29E;
+  --neutral-400: #78716C;
+  --neutral-500: #57534E;
+  --neutral-600: #44403C;
+  --neutral-700: #292524;
+  --neutral-800: #1C1917;
+  --neutral-900: #0C0A09;
+
+  /* ---------- Semantics ---------- */
+  --success-50: #ECFDF5; --success-200: #A7F3D0; --success-500: #10B981; --success-700: #047857; --success-900: #064E3B;
+  --warning-50: #FFFBEB; --warning-200: #FCD34D; --warning-500: #F59E0B; --warning-700: #B45309; --warning-900: #78350F;
+  --error-50:   #FEF2F2; --error-200:   #FCA5A5; --error-500:   #EF4444; --error-700:   #B91C1C; --error-900:   #7F1D1D;
+  --info-50:    #EFF6FF; --info-200:    #93C5FD; --info-500:    #3B82F6; --info-700:    #1D4ED8; --info-900:    #1E3A8A;
+
+  /* ---------- Typography ---------- */
+  --font-display: "Montserrat", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-body:    "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  /* ---------- Spacing (4px base) ---------- */
+  --space-0_5: 2px;
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-8:   32px;
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-16:  64px;
+  --space-24:  96px;
+
+  /* ---------- Elevation ---------- */
+  --elevation-0:  none;
+  --elevation-sm: 0 1px 2px rgba(15,26,46,.05), 0 1px 3px rgba(15,26,46,.08);
+  --elevation-md: 0 2px 4px rgba(15,26,46,.06), 0 4px 12px rgba(15,26,46,.08);
+  --elevation-lg: 0 8px 24px rgba(15,26,46,.12);
+  --elevation-xl: 0 16px 40px rgba(15,26,46,.18);
+  --shadow-accent: 20px 20px 0 var(--accent-500);
+
+  /* ---------- Motion ---------- */
+  --duration-fast:   150ms;
+  --duration-base:   200ms;
+  --duration-slow:   300ms;
+  --duration-slower: 500ms;
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in:     cubic-bezier(0.7, 0, 0.84, 0);
+
+  /* ---------- Layout ---------- */
+  --container-max:  1440px;
+  --sidebar-width:  260px;
+  --toolbar-height: 64px;
+
+  /* ==========================================================================
+     Shadcn-compatible aliases (consumed by existing 92 ui/ components)
+     ========================================================================== */
+
+  /* Surfaces */
+  --background:         var(--neutral-50);
+  --foreground:         var(--neutral-900);
+  --card:               #ffffff;
+  --card-foreground:    var(--neutral-900);
+  --popover:            #ffffff;
+  --popover-foreground: var(--neutral-900);
+
+  /* Brand & CTA — primary is now ORANGE in Simex pro */
+  --primary:            var(--accent-500);
+  --primary-foreground: #ffffff;
+  --primary-hover:      var(--accent-600);
+
+  --secondary:            var(--neutral-100);
+  --secondary-foreground: var(--neutral-700);
+  --muted:                var(--neutral-100);
+  --muted-foreground:     var(--neutral-500);
+  --accent:               var(--neutral-100);
+  --accent-foreground:    var(--neutral-700);
+
+  /* Destructive */
+  --destructive:            var(--error-500);
+  --destructive-foreground: #ffffff;
+
+  /* Semantics with soft/alpha/accent variants */
+  --color-success:            var(--success-500);
+  --color-success-foreground: #ffffff;
+  --color-success-soft:       var(--success-50);
+  --color-success-alpha:      var(--success-200);
+  --color-success-accent:     var(--success-700);
+
+  --color-warning:            var(--warning-500);
+  --color-warning-foreground: #ffffff;
+  --color-warning-soft:       var(--warning-50);
+  --color-warning-alpha:      var(--warning-200);
+  --color-warning-accent:     var(--warning-700);
+
+  --color-info:            var(--info-500);
+  --color-info-foreground: #ffffff;
+  --color-info-soft:       var(--info-50);
+  --color-info-alpha:      var(--info-200);
+  --color-info-accent:     var(--info-700);
+
+  /* Borders, inputs, focus */
+  --border: var(--neutral-200);
+  --input:  var(--neutral-200);
+  --ring:   rgba(238, 122, 58, 0.30);
+  --radius: 0.5rem;
+
+  /* Charts (KPI domain) */
+  --chart-1: var(--accent-500);   /* Budget */
+  --chart-2: var(--success-500);  /* Qualité */
+  --chart-3: var(--info-500);     /* Délai */
+  --chart-4: var(--error-500);    /* Risque */
+  --chart-5: var(--warning-500);  /* Scope */
+
+  color-scheme: light;
+}
+
+/* ==========================================================================
+   Dark mode
+   ========================================================================== */
+.dark {
+  /* Surfaces */
+  --background:         var(--neutral-900);
+  --foreground:         var(--neutral-50);
+  --card:               var(--neutral-800);
+  --card-foreground:    var(--neutral-50);
+  --popover:            var(--neutral-800);
+  --popover-foreground: var(--neutral-50);
+
+  /* Brand & CTA — accent slightly lighter for contrast on dark */
+  --primary:            var(--accent-400);
+  --primary-foreground: #ffffff;
+  --primary-hover:      var(--accent-500);
+
+  --secondary:            var(--neutral-700);
+  --secondary-foreground: var(--neutral-100);
+  --muted:                var(--neutral-700);
+  --muted-foreground:     var(--neutral-300);
+  --accent:               var(--neutral-700);
+  --accent-foreground:    var(--neutral-100);
+
+  --destructive:            var(--error-200);
+  --destructive-foreground: var(--neutral-900);
+
+  --color-success: var(--success-200); --color-success-foreground: var(--neutral-900);
+  --color-warning: var(--warning-200); --color-warning-foreground: var(--neutral-900);
+  --color-info:    var(--info-200);    --color-info-foreground:    var(--neutral-900);
+
+  --border: var(--neutral-700);
+  --input:  var(--neutral-700);
+
+  --chart-1: var(--accent-400);
+  --chart-2: var(--success-200);
+  --chart-3: var(--info-200);
+  --chart-4: var(--error-200);
+  --chart-5: var(--warning-200);
+
+  --elevation-md: 0 2px 4px rgba(0,0,0,.30), 0 4px 12px rgba(0,0,0,.35);
+  --elevation-lg: 0 8px 24px rgba(0,0,0,.45);
+
+  color-scheme: dark;
+}
+
+/** Reduced Motion Accessibility **/
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/** Global Styles **/
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  *:focus-visible {
+    @apply outline-ring rounded-xs shadow-none outline-2 outline-offset-3 transition-none!;
+  }
+}
+
+/** Custom Scrollbar (orange tint, matches Simex pro accent) **/
+@layer base {
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(238, 122, 58, 0.20);
+    border-radius: 5px;
+  }
+  .dark ::-webkit-scrollbar-thumb {
+    background-color: rgba(245, 151, 99, 0.25);
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(238, 122, 58, 0.20) transparent;
+  }
+  .dark * {
+    scrollbar-color: rgba(245, 151, 99, 0.25) transparent;
+  }
+}
+
+/** Smooth scroll **/
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/** Selection highlight (warm orange tint) **/
+::selection {
+  background-color: rgba(238, 122, 58, 0.15);
+  color: inherit;
+}
+
+/* ==========================================================================
+   Tailwind v4 — expose tokens as utility classes
+   ========================================================================== */
+@theme inline {
+  --color-background:             var(--background);
+  --color-foreground:             var(--foreground);
+  --color-card:                   var(--card);
+  --color-card-foreground:        var(--card-foreground);
+  --color-popover:                var(--popover);
+  --color-popover-foreground:     var(--popover-foreground);
+  --color-primary:                var(--primary);
+  --color-primary-foreground:     var(--primary-foreground);
+  --color-secondary:              var(--secondary);
+  --color-secondary-foreground:   var(--secondary-foreground);
+  --color-muted:                  var(--muted);
+  --color-muted-foreground:       var(--muted-foreground);
+  --color-accent:                 var(--accent);
+  --color-accent-foreground:      var(--accent-foreground);
+  --color-destructive:            var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border:                 var(--border);
+  --color-input:                  var(--input);
+  --color-ring:                   var(--ring);
+  --color-success:                var(--color-success);
+  --color-warning:                var(--color-warning);
+  --color-info:                   var(--color-info);
+  --color-chart-1:                var(--chart-1);
+  --color-chart-2:                var(--chart-2);
+  --color-chart-3:                var(--chart-3);
+  --color-chart-4:                var(--chart-4);
+  --color-chart-5:                var(--chart-5);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-display: "Montserrat", "Segoe UI", system-ui, sans-serif;
+  --font-sans:    "Inter", "Segoe UI", system-ui, sans-serif;
+
+  /** Animations (preserved from legacy globals) **/
+  --animate-marquee:          marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  --animate-rainbow:          rainbow var(--duration, 2s) infinite linear;
+
+  @keyframes rainbow {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(calc(-100% - var(--gap))); }
+  }
+  @keyframes marquee-vertical {
+    from { transform: translateY(0); }
+    to   { transform: translateY(calc(-100% - var(--gap))); }
+  }
+}
+
+/* ==========================================================================
+   Body defaults
+   ========================================================================== */
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
