@@ -32,10 +32,11 @@ test('month starts at local midnight in Québec, across DST', () => {
   assert.equal(startOfMonth(new Date('2026-11-01T02:00:00Z')).toISOString(), '2026-10-01T04:00:00.000Z');
 });
 
-function fakeService(opts: { plan: string; enforced: boolean; started?: Record<string, number> }) {
+function fakeService(opts: { plan: string; enforced: boolean; started?: Record<string, number>; userPlan?: string | null }) {
   const calls: unknown[] = [];
   const prisma = {
     tenant: { findUnique: async () => ({ plan: opts.plan }) },
+    user: { findUnique: async () => ({ plan: opts.userPlan ?? null }) },
     meeting: {
       count: async (args: { where: { mode: string; simulation: unknown } }) => {
         calls.push(args.where);
@@ -95,4 +96,17 @@ test('usage counts only this tenant and user since the month start', async () =>
     assert.deepEqual(where.simulation, { tenantId: 'tenant-a', userId: 'user-a' });
     assert.equal(where.startedAt.gte.toISOString(), '2026-10-01T04:00:00.000Z');
   }
+});
+
+test('a personal subscription lifts the plan above the shared tenant plan', async () => {
+  const learner = fakeService({ plan: 'FREE', userPlan: 'PRO', enforced: true, started: { TEXT: 40, AUDIO: 9 } });
+  await learner.svc.assertCanStartMeeting('t1', 'u1', 'AUDIO');
+  await learner.svc.assertCanCreateCustomMeeting('t1', 'u1');
+  await learner.svc.assertCanUseScenario('t1', 'PRO', 'u1');
+  assert.equal((await learner.svc.usage('t1', 'u1')).plan, 'PRO');
+});
+
+test('a team tenant plan wins over a lower personal plan', async () => {
+  const member = fakeService({ plan: 'ENTERPRISE', userPlan: 'STARTER', enforced: true });
+  assert.equal((await member.svc.usage('t1', 'u1')).plan, 'ENTERPRISE');
 });

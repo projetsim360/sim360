@@ -108,6 +108,14 @@ model User {
   // Settings - Appearance
   sidebarTransparent   Boolean @default(false)
 
+  // Billing - individual subscription (Stripe). The effective plan is the higher of
+  // this personal plan and the tenant plan; null means "inherit the tenant plan".
+  plan                 TenantPlan?
+  stripeCustomerId     String?    @unique
+  stripeSubscriptionId String?    @unique
+  subscriptionStatus   String?
+  currentPeriodEnd     DateTime?
+
   // Settings - Notifications
   notifEmail           Boolean @default(true)
   notifBrowser         Boolean @default(false)
@@ -1373,4 +1381,18 @@ model CandidateResult {
   @@index([userId])
   @@index([status])
   @@map("candidate_results")
+}
+
+// ─── Billing ──────────────────────────────────────────────
+
+/** Stripe webhook events already applied, for idempotence (Stripe retries deliveries). */
+model BillingEvent {
+  id            String   @id @default(cuid())
+  stripeEventId String   @unique
+  type          String
+  userId        String?
+  processedAt   DateTime @default(now())
+
+  @@index([userId])
+  @@map("billing_events")
 }
