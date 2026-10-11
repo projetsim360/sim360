@@ -9,13 +9,15 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { EmailFilterPopover, type EmailFilterState } from './email-filter-popover';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useT } from '@/i18n/app/use-t';
 
 export type SortKey = 'date-desc' | 'date-asc' | 'priority';
 
-const SORT_LABELS: Record<SortKey, string> = {
-  'date-desc': 'Date (récent → ancien)',
-  'date-asc': 'Date (ancien → récent)',
-  priority: 'Priorité (haute → basse)',
+const SORT_LABELS: Record<SortKey, AppMessageKey> = {
+  'date-desc': 'emails.sort.dateDesc',
+  'date-asc': 'emails.sort.dateAsc',
+  priority: 'emails.sort.priority',
 };
 
 const SORT_KEYS = ['date-desc', 'date-asc', 'priority'] as const satisfies readonly SortKey[];
@@ -41,6 +43,7 @@ export function EmailToolbar({
   onFiltersApply,
   onFiltersReset,
 }: EmailToolbarProps) {
+  const t = useT();
   return (
     <div className="flex items-center gap-2 py-3">
       <div className="relative flex-1 max-w-md">
@@ -52,7 +55,7 @@ export function EmailToolbar({
         <Input
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Rechercher par sujet ou expéditeur..."
+          placeholder={t('emails.search')}
           className="pl-9"
         />
         {search && (
@@ -61,7 +64,7 @@ export function EmailToolbar({
             variant="ghost"
             size="icon"
             onClick={() => onSearchChange('')}
-            aria-label="Effacer la recherche"
+            aria-label={t('emails.clearSearch')}
             className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground hover:text-foreground"
           >
             <KeenIcon icon="cross" style="solid" className="size-3.5" />
@@ -74,7 +77,7 @@ export function EmailToolbar({
           <Button variant="outline" size="sm" className="gap-1.5 shrink-0">
             <KeenIcon icon="arrow-up-down" style="duotone" className="size-3.5" />
             <span className="hidden sm:inline">
-              {sort === 'priority' ? 'Priorité' : 'Date'}
+              {sort === 'priority' ? t('emails.priority') : t('common.date')}
             </span>
             <KeenIcon icon="down" style="solid" className="size-3" />
           </Button>
@@ -86,7 +89,7 @@ export function EmailToolbar({
           >
             {SORT_KEYS.map((key) => (
               <DropdownMenuRadioItem key={key} value={key}>
-                {SORT_LABELS[key]}
+                {t(SORT_LABELS[key])}
               </DropdownMenuRadioItem>
             ))}
           </DropdownMenuRadioGroup>

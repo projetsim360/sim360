@@ -1,11 +1,13 @@
 import { formatDistanceToNow } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { enCA, fr } from 'date-fns/locale';
 import { KeenIcon } from '@/components/keenicons';
 import { Checkbox } from '@/components/ui/checkbox';
 import { getInitials } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
 import { EmailPriorityBadge } from './email-priority-badge';
 import type { SimulatedEmail } from '../types/simulated-email.types';
+import { useAppLocale } from '@/providers/locale-provider';
+import { useT } from '@/i18n/app/use-t';
 
 interface EmailListRowProps {
   email: SimulatedEmail;
@@ -22,6 +24,8 @@ export function EmailListRow({
   onClick,
   onToggleSelect,
 }: EmailListRowProps) {
+  const { locale } = useAppLocale();
+  const t = useT();
   const isUnread = email.status === 'UNREAD';
   const isHigh = email.priority === 'URGENT' || email.priority === 'HIGH';
   const isResponded = email.status === 'RESPONDED';
@@ -61,7 +65,7 @@ export function EmailListRow({
         <Checkbox
           checked={isSelected}
           onCheckedChange={(checked) => onToggleSelect(checked === true)}
-          aria-label={`Sélectionner l'email de ${email.senderName}`}
+          aria-label={t('emails.selectFrom', { name: email.senderName })}
         />
       </div>
 
@@ -94,7 +98,7 @@ export function EmailListRow({
           <span className="ml-auto text-[11px] text-muted-foreground shrink-0">
             {formatDistanceToNow(new Date(email.scheduledAt), {
               addSuffix: false,
-              locale: fr,
+              locale: locale === 'en' ? enCA : fr,
             })}
           </span>
         </div>
@@ -119,7 +123,7 @@ export function EmailListRow({
           {isResponded && (
             <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[var(--success-700)] dark:text-[var(--success-400)]">
               <KeenIcon icon="check-circle" style="solid" className="size-3" />
-              Répondu
+              {t('emails.responded')}
               {typeof email.responseScore === 'number' && (
                 <span className="text-muted-foreground">· {email.responseScore}/100</span>
               )}

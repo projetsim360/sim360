@@ -65,6 +65,8 @@ const CONVERTED = [
   'features/deliverables/pages',
   'features/deliverables/components',
   'features/report/pages',
+  'features/simulated-emails/pages',
+  'features/simulated-emails/components',
 ];
 const FRENCH = /[À-ÿ]|\b(le|la|les|des|du|une|et|vous|votre|vos|pour|avec|dans|aucun|aucune|Mes|Mon|Votre|Nouvelle|Voir|Rechercher|Fermer|Annuler|Retour|Suivant)\b/;
 

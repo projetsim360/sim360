@@ -1,5 +1,7 @@
 import { cn } from '@/lib/utils';
 import type { EmailFolder } from '../types/simulated-email.types';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useT } from '@/i18n/app/use-t';
 
 export type { EmailFolder };
 
@@ -9,13 +11,14 @@ export interface EmailFolderTabsProps {
   onFolderChange: (folder: EmailFolder) => void;
 }
 
-const FOLDERS: { key: EmailFolder; label: string }[] = [
-  { key: 'inbox', label: 'Boîte de réception' },
-  { key: 'responded', label: 'Répondus' },
-  { key: 'archived', label: 'Archives' },
+const FOLDERS: { key: EmailFolder; label: AppMessageKey }[] = [
+  { key: 'inbox', label: 'menu.inbox' },
+  { key: 'responded', label: 'menu.answered' },
+  { key: 'archived', label: 'menu.archives' },
 ];
 
 export function EmailFolderTabs({ active, counts, onFolderChange }: EmailFolderTabsProps) {
+  const t = useT();
   function handleKeyDown(e: React.KeyboardEvent) {
     const keys = FOLDERS.map((f) => f.key);
     const currentIndex = keys.indexOf(active);
@@ -39,7 +42,7 @@ export function EmailFolderTabs({ active, counts, onFolderChange }: EmailFolderT
   return (
     <div
       role="tablist"
-      aria-label="Dossiers d'emails"
+      aria-label={t('emails.folders')}
       onKeyDown={handleKeyDown}
       className="flex items-center gap-1 sm:gap-2 overflow-x-auto -mx-1 px-1 border-b border-[var(--neutral-100)] dark:border-white/[0.06]"
     >
@@ -63,7 +66,7 @@ export function EmailFolderTabs({ active, counts, onFolderChange }: EmailFolderT
                 : 'border-transparent text-muted-foreground hover:text-foreground',
             )}
           >
-            <span>{label}</span>
+            <span>{t(label)}</span>
             <span
               className={cn(
                 'inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold',

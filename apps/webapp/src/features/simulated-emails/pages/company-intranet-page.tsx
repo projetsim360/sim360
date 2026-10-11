@@ -13,8 +13,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api-client';
 import { CompanyBanner } from '../components/company-banner';
+import { useT } from '@/i18n/app/use-t';
 
 export default function CompanyIntranetPage() {
+  const t = useT();
   const { id: simId } = useParams<{ id: string }>();
 
   const { data: simulation, isLoading, error } = useQuery({
@@ -27,12 +29,12 @@ export default function CompanyIntranetPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Intranet Entreprise" />
+          <ToolbarHeading title={t('intranet.title')} />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-sm text-muted-foreground">
-              Aucune simulation sélectionnée.
+              {t('meetings.noSimulation')}
             </p>
           </CardContent>
         </Card>
@@ -45,7 +47,7 @@ export default function CompanyIntranetPage() {
       <div className="container-fixed space-y-5">
         <Toolbar>
           <ToolbarHeading>
-            <h1 className="text-xl font-medium text-gray-900">Intranet Entreprise</h1>
+            <h1 className="text-xl font-medium text-gray-900">{t('intranet.title')}</h1>
           </ToolbarHeading>
         </Toolbar>
         <Skeleton className="h-32 w-full rounded-lg" />
@@ -76,12 +78,12 @@ export default function CompanyIntranetPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Intranet Entreprise" />
+          <ToolbarHeading title={t('intranet.title')} />
           <ToolbarActions>
             <Button variant="outline" size="sm" asChild>
               <Link to={`/simulations/${simId}`}>
                 <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
-                Retour
+                {t('common.back')}
               </Link>
             </Button>
           </ToolbarActions>
@@ -89,7 +91,7 @@ export default function CompanyIntranetPage() {
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-destructive text-sm">
-              Erreur lors du chargement des données.
+              {t('intranet.loadError')}
             </p>
           </CardContent>
         </Card>
@@ -104,25 +106,25 @@ export default function CompanyIntranetPage() {
   return (
     <div className="container-fixed space-y-5">
       <Toolbar>
-        <ToolbarHeading title="Intranet Entreprise" />
+        <ToolbarHeading title={t('intranet.title')} />
         <ToolbarActions>
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${simId}/emails`}>
               <KeenIcon icon="sms" style="duotone" className="size-4" />
-              Boîte de réception
+              {t('menu.inbox')}
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${simId}`}>
               <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
-              Retour
+              {t('common.back')}
             </Link>
           </Button>
         </ToolbarActions>
       </Toolbar>
         {/* Company banner */}
         <CompanyBanner
-          companyName={project?.client || scenario?.companyName || 'Entreprise'}
+          companyName={project?.client || scenario?.companyName || t('intranet.company')}
           sector={scenario?.sector}
           culture={scenario?.companyCulture}
         />
@@ -132,7 +134,7 @@ export default function CompanyIntranetPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <KeenIcon icon="profile-circle" style="duotone" className="size-5" />
-              Votre poste
+              {t('intranet.yourRole')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -141,9 +143,9 @@ export default function CompanyIntranetPage() {
                 <KeenIcon icon="user" style="duotone" className="size-7 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg text-foreground">Chef de Projet</h3>
+                <h3 className="font-semibold text-lg text-foreground">{t('intranet.projectLead')}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Responsable de la gestion du projet {project?.name || ''}
+                  {t('intranet.projectLeadDesc', { name: project?.name || '' })}
                 </p>
               </div>
             </div>
@@ -155,22 +157,22 @@ export default function CompanyIntranetPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <KeenIcon icon="briefcase" style="duotone" className="size-5" />
-              Projet en cours
+              {t('intranet.currentProject')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div>
               <span className="text-sm text-muted-foreground uppercase tracking-wide">
-                Nom du projet
+                {t('onboarding.custom.name')}
               </span>
               <p className="text-sm font-medium text-foreground">
-                {project?.name || 'Non défini'}
+                {project?.name || t('intranet.undefined')}
               </p>
             </div>
             {project?.description && (
               <div>
                 <span className="text-sm text-muted-foreground uppercase tracking-wide">
-                  Description
+                  {t('onboarding.custom.description')}
                 </span>
                 <p className="text-sm text-foreground leading-relaxed">
                   {project.description}
@@ -180,7 +182,7 @@ export default function CompanyIntranetPage() {
             {scenario?.description && (
               <div>
                 <span className="text-sm text-muted-foreground uppercase tracking-wide">
-                  Contexte du scénario
+                  {t('intranet.scenarioContext')}
                 </span>
                 <p className="text-sm text-foreground leading-relaxed">
                   {scenario.description}
@@ -196,9 +198,9 @@ export default function CompanyIntranetPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <KeenIcon icon="people" style="duotone" className="size-5" />
-                Équipe projet
+                {t('projects.teamTitle')}
                 <Badge variant="secondary" size="sm">
-                  {teamMembers.length} membre{teamMembers.length > 1 ? 's' : ''}
+                  {t('onboarding.custom.members', { count: teamMembers.length })}
                 </Badge>
               </CardTitle>
             </CardHeader>
