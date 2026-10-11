@@ -30,31 +30,34 @@ import { DOMAINS } from '../types/profile.types';
 import type { QuestionnaireData, UserProfile } from '../types/profile.types';
 import type { OnboardingLiveState } from '../config/onboarding.config';
 import { ProfileImportPanel } from '../components/profile-import-panel';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useT } from '@/i18n/app/use-t';
 
-const schema = z.object({
-  objective: z.enum(['reinforce', 'reconversion', 'discovery'], {
-    required_error: 'Veuillez sélectionner un objectif.',
-  }),
-  targetDomain: z.string().min(1, 'Veuillez sélectionner un domaine.'),
-  experienceLevel: z.enum(['none', 'beginner', 'confirmed'], {
-    required_error: "Veuillez indiquer votre niveau d'expérience.",
-  }),
-  mainMotivation: z
-    .string()
-    .min(10, 'Décrivez votre motivation (10 caractères minimum).')
-    .max(500, 'Maximum 500 caractères.'),
-});
+const buildSchema = (t: (id: AppMessageKey) => string) =>
+  z.object({
+    objective: z.enum(['reinforce', 'reconversion', 'discovery'], {
+      error: t('onboarding.profil.err.objective'),
+    }),
+    targetDomain: z.string().min(1, t('onboarding.profil.err.domain')),
+    experienceLevel: z.enum(['none', 'beginner', 'confirmed'], {
+      error: t('onboarding.profil.err.experience'),
+    }),
+    mainMotivation: z
+      .string()
+      .min(10, t('onboarding.profil.err.motivationMin'))
+      .max(500, t('onboarding.profil.err.motivationMax')),
+  });
 
 const OBJECTIVES = [
-  { value: 'reinforce', icon: 'rocket', label: 'Renforcer mes compétences' },
-  { value: 'reconversion', icon: 'arrows-circle', label: 'Reconversion pro' },
-  { value: 'discovery', icon: 'route', label: 'Découverte du métier' },
+  { value: 'reinforce', icon: 'rocket', label: 'onboarding.profil.obj.reinforce' },
+  { value: 'reconversion', icon: 'arrows-circle', label: 'onboarding.profil.obj.reconversion' },
+  { value: 'discovery', icon: 'route', label: 'onboarding.profil.obj.discovery' },
 ] as const;
 
 const EXPERIENCES = [
-  { value: 'none', icon: 'book-open', label: 'Aucune expérience' },
-  { value: 'beginner', icon: 'graph-up', label: 'Débutant (< 2 ans)' },
-  { value: 'confirmed', icon: 'award', label: 'Confirmé (2 ans +)' },
+  { value: 'none', icon: 'book-open', label: 'onboarding.profil.exp.none' },
+  { value: 'beginner', icon: 'graph-up', label: 'onboarding.profil.exp.beginner' },
+  { value: 'confirmed', icon: 'award', label: 'onboarding.profil.exp.confirmed' },
 ] as const;
 
 interface ProfilStepProps {
@@ -65,9 +68,10 @@ interface ProfilStepProps {
 }
 
 export function ProfilStep({ profile, defaultValues, onLiveChange, onNext }: ProfilStepProps) {
+  const t = useT();
   const submit = useSubmitQuestionnaire();
   const form = useForm<QuestionnaireData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(buildSchema(t)),
     defaultValues: defaultValues ?? {
       objective: undefined as unknown as QuestionnaireData['objective'],
       targetDomain: '',
@@ -87,10 +91,10 @@ export function ProfilStep({ profile, defaultValues, onLiveChange, onNext }: Pro
   const onSubmit = (data: QuestionnaireData) => {
     submit.mutate(data, {
       onSuccess: () => {
-        toast.success('Questionnaire enregistré.');
+        toast.success(t('onboarding.profil.saved'));
         onNext(data);
       },
-      onError: () => toast.error("Erreur lors de l'enregistrement du questionnaire."),
+      onError: () => toast.error(t('onboarding.profil.saveError')),
     });
   };
 
@@ -106,7 +110,7 @@ export function ProfilStep({ profile, defaultValues, onLiveChange, onNext }: Pro
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="font-display text-[14.5px] font-bold text-[var(--brand-700)]">
-                  Quel est votre objectif principal ?
+                  {t('onboarding.profil.objective')}
                 </FormLabel>
                 <FormControl>
                   <RadioGroup
@@ -137,7 +141,7 @@ export function ProfilStep({ profile, defaultValues, onLiveChange, onNext }: Pro
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="font-display text-[14.5px] font-bold text-[var(--brand-700)]">
-                  Votre expérience en gestion de projet
+                  {t('onboarding.profil.experience')}
                 </FormLabel>
                 <FormControl>
                   <RadioGroup
@@ -168,17 +172,17 @@ export function ProfilStep({ profile, defaultValues, onLiveChange, onNext }: Pro
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="font-display text-[14.5px] font-bold text-[var(--brand-700)]">
-                  Domaine qui vous intéresse
+                  {t('onboarding.profil.domain')}
                 </FormLabel>
                 <FormControl>
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Sélectionnez un domaine" />
+                      <SelectValue placeholder={t('onboarding.profil.domainPlaceholder')} />
                     </SelectTrigger>
                     <SelectContent>
                       {DOMAINS.map((d) => (
                         <SelectItem key={d.value} value={d.value}>
-                          {d.label}
+                          {t(`domain.${d.value}` as AppMessageKey)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -195,10 +199,10 @@ export function ProfilStep({ profile, defaultValues, onLiveChange, onNext }: Pro
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="font-display text-[14.5px] font-bold text-[var(--brand-700)]">
-                  Votre motivation principale
+                  {t('onboarding.profil.motivation')}
                 </FormLabel>
                 <FormControl>
-                  <Textarea rows={4} placeholder="Décrivez ce qui vous motive…" {...field} />
+                  <Textarea rows={4} placeholder={t('onboarding.profil.motivationPlaceholder')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -207,7 +211,7 @@ export function ProfilStep({ profile, defaultValues, onLiveChange, onNext }: Pro
 
           <div className="flex justify-end border-t border-border pt-5">
             <Button type="submit" variant="primary" className="min-h-[44px] px-5" disabled={submit.isPending}>
-              {submit.isPending ? 'Enregistrement…' : 'Continuer'}
+              {submit.isPending ? t('common.saving') : t('common.continue')}
               <ArrowRight className="text-sm ms-1" />
             </Button>
           </div>
@@ -227,9 +231,10 @@ function OptionCard({
   id: string;
   value: string;
   icon: string;
-  label: string;
+  label: AppMessageKey;
   selected: boolean;
 }) {
+  const t = useT();
   return (
     <Label
       htmlFor={id}
@@ -248,7 +253,7 @@ function OptionCard({
       >
         <KeenIcon icon={icon} style="duotone" className="text-base" />
       </span>
-      <span className="text-[13px] font-semibold text-[var(--brand-700)]">{label}</span>
+      <span className="text-[13px] font-semibold text-[var(--brand-700)]">{t(label)}</span>
       <RadioGroupItem value={value} id={id} className="sr-only" />
     </Label>
   );

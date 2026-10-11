@@ -38,7 +38,8 @@ test('initial locale: ?lang, then saved choice, then browser, then French', () =
 
 /**
  * Folders already converted to the catalogue: no French left in visible text. Extend the list
- * as each batch lands. Comments, imports, class names and ids are ignored.
+ * as each batch lands. Comments, imports, class names and ids are ignored, and so is a line
+ * marked `i18n-ignore` (e.g. language names written in their own language).
  */
 const SRC = join(dirname(fileURLToPath(import.meta.url)), '../../src');
 const CONVERTED = [
@@ -53,6 +54,10 @@ const CONVERTED = [
   'features/dashboard/components',
   'features/dashboard/pages/dashboard.tsx',
   'components/ui/guided-tour.tsx',
+  'features/profile/pages',
+  'features/profile/components',
+  'features/profile/config/onboarding.config.ts',
+  'pages/profile/wizard.tsx',
 ];
 const FRENCH = /[À-ÿ]|\b(le|la|les|des|du|une|et|vous|votre|vos|pour|avec|dans|aucun|aucune|Mes|Mon|Votre|Nouvelle|Voir|Rechercher|Fermer|Annuler|Retour|Suivant)\b/;
 
@@ -67,6 +72,7 @@ test('converted screens contain no hard-coded French', () => {
   for (const file of CONVERTED.flatMap(files).filter((f) => /\.tsx?$/.test(f))) {
     readFileSync(file, 'utf8').split('\n').forEach((line, i) => {
       const t = line.trim();
+      if (t.includes('i18n-ignore')) return;
       if (!t || t.startsWith('//') || t.startsWith('*') || t.startsWith('/*') || t.startsWith('{/*') || t.startsWith('import ')) return;
       const chunks: string[] = [];
       for (const m of line.matchAll(/'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)"|`((?:[^`\\]|\\.)*)`/g)) chunks.push(m[1] ?? m[2] ?? m[3] ?? '');

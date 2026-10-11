@@ -12,6 +12,8 @@ import { Plus, Trash2, CheckCircle } from '@/components/keenicons/icons';
 import { cn } from '@/lib/utils';
 import type { SkillGap, SkillLevel } from '../types/profile.types';
 import { SKILL_LEVEL_LABELS } from '../types/profile.types';
+import { useT } from '@/i18n/app/use-t';
+import type { AppMessageKey } from '@/i18n/app/messages';
 
 interface SkillEditorProps {
   skills: SkillGap[];
@@ -26,6 +28,7 @@ const LEVEL_PCT: Record<SkillLevel, number> = { none: 4, basic: 33, intermediate
 const LEVEL_OPTIONS = Object.entries(SKILL_LEVEL_LABELS) as [SkillLevel, string][];
 
 export function SkillEditor({ skills, onChange, className }: SkillEditorProps) {
+  const t = useT();
   const [newSkillName, setNewSkillName] = useState('');
 
   const updateSkillLevel = (index: number, field: 'currentLevel' | 'targetLevel', value: SkillLevel) => {
@@ -49,14 +52,14 @@ export function SkillEditor({ skills, onChange, className }: SkillEditorProps) {
     <div className={cn('space-y-4', className)}>
       <div className="flex gap-4 text-[11px] text-muted-foreground">
         <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-3.5 rounded-sm bg-[var(--brand-600)]" /> Niveau actuel
+          <span className="inline-block h-2.5 w-3.5 rounded-sm bg-[var(--brand-600)]" /> {t('onboarding.diag.current')}
         </span>
         <span className="inline-flex items-center gap-1.5">
           <span
             className="inline-block h-2.5 w-3.5 rounded-sm"
             style={{ background: 'repeating-linear-gradient(45deg, var(--accent-200), var(--accent-200) 4px, var(--accent-100) 4px, var(--accent-100) 8px)' }}
           />{' '}
-          Écart à combler
+          {t('onboarding.diag.gap')}
         </span>
       </div>
 
@@ -74,7 +77,7 @@ export function SkillEditor({ skills, onChange, className }: SkillEditorProps) {
                 <span className="text-sm font-bold text-[var(--brand-700)]">{skill.name}</span>
                 <button
                   type="button"
-                  aria-label={`Supprimer ${skill.name}`}
+                  aria-label={t('onboarding.skills.remove', { name: skill.name })}
                   onClick={() => removeSkill(index)}
                   className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-[var(--error-50)] hover:text-[var(--error-700)]"
                 >
@@ -83,28 +86,28 @@ export function SkillEditor({ skills, onChange, className }: SkillEditorProps) {
               </div>
               <div className="my-3 flex flex-wrap items-end gap-3">
                 <label className="flex flex-col gap-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">Niveau actuel</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">{t('onboarding.diag.current')}</span>
                   <Select value={skill.currentLevel} onValueChange={(v) => updateSkillLevel(index, 'currentLevel', v as SkillLevel)}>
                     <SelectTrigger size="sm" className="w-36">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {LEVEL_OPTIONS.map(([value, label]) => (
-                        <SelectItem key={value} value={value}>{label}</SelectItem>
+                      {LEVEL_OPTIONS.map(([value]) => (
+                        <SelectItem key={value} value={value}>{t(`skillLevel.${value}` as AppMessageKey)}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </label>
                 <span className="pb-2 text-muted-foreground">→</span>
                 <label className="flex flex-col gap-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">Objectif</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">{t('onboarding.skills.target')}</span>
                   <Select value={skill.targetLevel} onValueChange={(v) => updateSkillLevel(index, 'targetLevel', v as SkillLevel)}>
                     <SelectTrigger size="sm" className="w-36">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {LEVEL_OPTIONS.map(([value, label]) => (
-                        <SelectItem key={value} value={value}>{label}</SelectItem>
+                      {LEVEL_OPTIONS.map(([value]) => (
+                        <SelectItem key={value} value={value}>{t(`skillLevel.${value}` as AppMessageKey)}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -140,7 +143,7 @@ export function SkillEditor({ skills, onChange, className }: SkillEditorProps) {
         <Input
           value={newSkillName}
           onChange={(e) => setNewSkillName(e.target.value)}
-          placeholder="Nom de la compétence…"
+          placeholder={t('onboarding.skills.namePlaceholder')}
           variant="sm"
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
@@ -151,7 +154,7 @@ export function SkillEditor({ skills, onChange, className }: SkillEditorProps) {
         />
         <Button variant="outline" size="sm" onClick={addSkill} disabled={!newSkillName.trim()}>
           <Plus className="text-sm" />
-          Ajouter
+          {t('common.add')}
         </Button>
       </div>
     </div>

@@ -36,6 +36,7 @@ export const MENU_LABEL_KEYS: Record<string, AppMessageKey> = {
   'Paramètres': 'menu.settings',
   Documentation: 'menu.documentation',
   'Aide & Support': 'menu.help',
+  'Mon Profil': 'shell.userMenu.profile',
 };
 
 export function useMenuLabel() {

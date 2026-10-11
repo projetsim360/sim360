@@ -2,6 +2,7 @@ import { OnboardingStepper } from './onboarding-stepper';
 import { OnboardingLivePreview } from './onboarding-live-preview';
 import type { UserProfile } from '../types/profile.types';
 import type { OnboardingStep, StepperItem, OnboardingLiveState } from '../config/onboarding.config';
+import { useT } from '@/i18n/app/use-t';
 
 interface OnboardingTopbarProps {
   items: StepperItem[];
@@ -22,6 +23,7 @@ export function OnboardingTopbar({
   live,
   onStepClick,
 }: OnboardingTopbarProps) {
+  const t = useT();
   return (
     <div className="sticky top-0 z-20 lg:hidden">
       <div
@@ -36,7 +38,7 @@ export function OnboardingTopbar({
             Simex pro
           </span>
           <span className="text-[11px] text-[var(--brand-300)]">
-            Étape {currentNumber} sur {totalSteps}
+            {t('onboarding.stepOf', { n: currentNumber, total: totalSteps })}
           </span>
         </div>
         <div className="mt-3">

@@ -9,8 +9,9 @@ import { toast } from 'sonner';
 import { useProfile, useAnalyzeProfile, useCustomizeSkills } from '../api/profile.api';
 import { SkillEditor } from '../components/skill-editor';
 import { SkillDeltaBar } from '../components/skill-delta-bar';
-import { PROFILE_TYPE_LABELS, formatDifficulty } from '../types/profile.types';
 import type { SkillGap } from '../types/profile.types';
+import { useTv } from '@/i18n/app/use-t';
+import { useT } from '@/i18n/app/use-t';
 
 interface DiagnosticStepProps {
   onNext: () => void;
@@ -18,6 +19,8 @@ interface DiagnosticStepProps {
 }
 
 export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
+  const tv = useTv();
+  const t = useT();
   const reduce = useReducedMotion();
   const { data: profile, isLoading: isProfileLoading } = useProfile();
   const analyzeProfile = useAnalyzeProfile();
@@ -28,7 +31,7 @@ export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
   useEffect(() => {
     if (!profile?.diagnosticData) {
       analyzeProfile.mutate(undefined, {
-        onError: () => toast.error("Erreur lors de l'analyse du profil."),
+        onError: () => toast.error(t('onboarding.diag.analyzeError')),
       });
     }
   }, []);
@@ -43,10 +46,10 @@ export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
   const handleSaveSkills = () => {
     customizeSkills.mutate(editedSkills, {
       onSuccess: () => {
-        toast.success('Compétences mises à jour.');
+        toast.success(t('onboarding.diag.skillsSaved'));
         setIsCustomizing(false);
       },
-      onError: () => toast.error('Erreur lors de la sauvegarde des compétences.'),
+      onError: () => toast.error(t('onboarding.diag.skillsError')),
     });
   };
 
@@ -60,9 +63,9 @@ export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
             )}
             <KeenIcon icon="abstract-26" style="duotone" className="relative text-2xl" />
           </span>
-          <p className="font-display text-base font-bold text-[var(--brand-700)]">Analyse de votre profil…</p>
+          <p className="font-display text-base font-bold text-[var(--brand-700)]">{t('onboarding.diag.analyzing')}</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            Nous évaluons vos compétences et préparons votre diagnostic.
+            {t('onboarding.diag.analyzingText')}
           </p>
           <div className="mx-auto mt-5 max-w-sm space-y-2.5">
             <Skeleton className="h-3 w-full" />
@@ -93,11 +96,11 @@ export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
           </span>
           <div>
             <div className="text-[11px] font-bold uppercase tracking-wide text-[var(--brand-200)]">
-              Profil détecté automatiquement
+              {t('onboarding.diag.detected')}
             </div>
             {diagnostic?.profileType && (
               <div className="mt-1 font-display text-[22px] font-extrabold">
-                {PROFILE_TYPE_LABELS[diagnostic.profileType]}
+                {tv('profileType', diagnostic.profileType)}
               </div>
             )}
             {diagnostic?.personalizedMessage && (
@@ -107,7 +110,7 @@ export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
             )}
             {diagnostic?.suggestedDifficulty && (
               <span className="mt-3 inline-block rounded-full bg-[var(--accent-500)] px-3 py-1 text-[10.5px] font-bold">
-                Difficulté suggérée : {formatDifficulty(diagnostic.suggestedDifficulty)}
+                {t('onboarding.diag.suggestedDifficulty', { value: tv('difficulty', diagnostic.suggestedDifficulty.toUpperCase()) })}
               </span>
             )}
           </div>
@@ -120,13 +123,13 @@ export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-base">Vos compétences à développer</CardTitle>
+            <CardTitle className="text-base">{t('onboarding.diag.skillsTitle')}</CardTitle>
             <Button
               variant={isCustomizing ? 'mono' : 'outline'}
               size="sm"
               onClick={() => setIsCustomizing(!isCustomizing)}
             >
-              {isCustomizing ? 'Annuler' : 'Personnaliser'}
+              {isCustomizing ? t('common.cancel') : t('onboarding.diag.customize')}
             </Button>
           </div>
         </CardHeader>
@@ -136,7 +139,7 @@ export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
               <SkillEditor skills={editedSkills} onChange={setEditedSkills} />
               <div className="flex justify-end">
                 <Button variant="primary" size="sm" onClick={handleSaveSkills} disabled={customizeSkills.isPending}>
-                  {customizeSkills.isPending ? 'Sauvegarde…' : 'Sauvegarder'}
+                  {customizeSkills.isPending ? t('common.saving') : t('common.save')}
                 </Button>
               </div>
             </div>
@@ -144,7 +147,7 @@ export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
             <>
               <div className="mb-4 flex gap-4 text-[11px] text-muted-foreground">
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="inline-block h-2.5 w-3.5 rounded-sm bg-[var(--brand-600)]" /> Niveau actuel
+                  <span className="inline-block h-2.5 w-3.5 rounded-sm bg-[var(--brand-600)]" /> {t('onboarding.diag.current')}
                 </span>
                 <span className="inline-flex items-center gap-1.5">
                   <span
@@ -154,7 +157,7 @@ export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
                         'repeating-linear-gradient(45deg, var(--accent-200), var(--accent-200) 4px, var(--accent-100) 4px, var(--accent-100) 8px)',
                     }}
                   />{' '}
-                  Écart à combler
+                  {t('onboarding.diag.gap')}
                 </span>
               </div>
               <div className="space-y-4">
@@ -171,7 +174,7 @@ export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
             </>
           ) : (
             <p className="py-4 text-center text-sm text-muted-foreground">
-              Aucune compétence détectée. Cliquez sur « Personnaliser » pour ajouter vos compétences.
+              {t('onboarding.diag.noSkills')}
             </p>
           )}
         </CardContent>
@@ -180,10 +183,10 @@ export function DiagnosticStep({ onNext, onBack }: DiagnosticStepProps) {
       <div className="flex items-center justify-between border-t border-border pt-5">
         <Button variant="ghost" className="min-h-[44px] px-4" onClick={onBack}>
           <ArrowLeft className="text-sm me-1" />
-          Retour
+          {t('common.back')}
         </Button>
         <Button variant="primary" className="min-h-[44px] px-5" onClick={onNext}>
-          Accepter et continuer
+          {t('onboarding.diag.accept')}
           <ArrowRight className="text-sm ms-1" />
         </Button>
       </div>
