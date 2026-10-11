@@ -46,3 +46,6 @@ redis-data/
 
 # Brainstorming visual companion artifacts
 .superpowers/
+
+# Demo video work files (recordings, narration)
+tools/demo-video/.work/
