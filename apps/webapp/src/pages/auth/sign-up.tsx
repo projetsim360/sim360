@@ -17,7 +17,7 @@ const signUpSchema = z
   .object({
     firstName: z.string().min(1, 'Requis').max(100),
     lastName: z.string().min(1, 'Requis').max(100),
-    email: z.string().email('Email invalide'),
+    email: z.string().email('Courriel invalide'),
     password: z
       .string()
       .min(8, 'Minimum 8 caractères')
@@ -178,7 +178,7 @@ export function SignUpPage() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Courriel</FormLabel>
                 <FormControl>
                   <Input placeholder="jean.dupont@example.com" type="email" {...field} />
                 </FormControl>
@@ -276,7 +276,7 @@ export function SignUpPage() {
             control={form.control}
             name="gdprConsent"
             render={({ field }) => (
-              <FormItem className="flex items-start gap-2 space-y-0">
+              <FormItem className="flex-row items-start gap-2 space-y-0">
                 <FormControl>
                   <Checkbox
                     checked={field.value === true}
@@ -287,13 +287,13 @@ export function SignUpPage() {
                 <div className="space-y-1">
                   <FormLabel className="text-sm font-normal cursor-pointer">
                     J'accepte les{' '}
-                    <Link to="/legal/terms" className="text-[var(--accent-600)] hover:underline">
+                    <a href="/cgu" target="_blank" rel="noopener noreferrer" className="text-[var(--accent-600)] hover:underline">
                       conditions d'utilisation
-                    </Link>{' '}
+                    </a>{' '}
                     et la{' '}
-                    <Link to="/legal/privacy" className="text-[var(--accent-600)] hover:underline">
+                    <a href="/confidentialite" target="_blank" rel="noopener noreferrer" className="text-[var(--accent-600)] hover:underline">
                       politique de confidentialité
-                    </Link>
+                    </a>
                   </FormLabel>
                   <FormMessage />
                 </div>

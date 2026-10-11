@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { AuthCard } from '@/components/auth/auth-card';
 
 const forgotSchema = z.object({
-  email: z.string().email('Email invalide'),
+  email: z.string().email('Courriel invalide'),
 });
 
 type ForgotForm = z.infer<typeof forgotSchema>;
@@ -55,9 +55,9 @@ export function ForgotPasswordPage() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Courriel</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="votre@email.com" {...field} />
+                  <Input type="email" placeholder="vous@exemple.com" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
