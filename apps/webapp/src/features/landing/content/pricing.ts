@@ -4,7 +4,8 @@
  *
  * Amounts are in Canadian cents, taxes excluded (GST/QST are added at billing time).
  * Each public plan maps to a `TenantPlan` value of the Prisma schema; the limits
- * shown here must match the quotas the API enforces before they are published.
+ * shown here must match apps/api/src/modules/plans/plan-limits.ts (enforced when
+ * PLAN_QUOTAS_ENFORCED=true).
  */
 
 import type { PublicLocale } from '../../../i18n/public-locale';

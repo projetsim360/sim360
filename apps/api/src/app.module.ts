@@ -26,6 +26,7 @@ import { ContactModule } from './modules/contact/contact.module';
 import { RecruitmentModule } from './modules/recruitment/recruitment.module';
 import { MentoringModule } from './modules/mentoring/mentoring.module';
 import { ActionItemsModule } from './modules/action-items/action-items.module';
+import { PlansModule } from './modules/plans/plans.module';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { ActionItemsModule } from './modules/action-items/action-items.module';
     RecruitmentModule,
     MentoringModule,
     ActionItemsModule,
+    PlansModule,
   ],
   providers: [
     {

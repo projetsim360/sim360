@@ -1,5 +1,8 @@
 import { getAccessToken, getRefreshToken, setTokens, clearTokens } from './auth';
 
+/** Error code the API uses when a plan quota refuses an action. */
+export const PLAN_QUOTA_ERROR = 'PLAN_QUOTA_EXCEEDED';
+
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
 
 let refreshPromise: Promise<boolean> | null = null;
@@ -71,6 +74,10 @@ async function request<T>(
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ message: 'Request failed' }));
+    // Plan quota refusals come as "PLAN_QUOTA_EXCEEDED:<message>": expose a code, show the message.
+    if (typeof error.message === 'string' && error.message.startsWith(`${PLAN_QUOTA_ERROR}:`)) {
+      throw { status: res.status, ...error, code: PLAN_QUOTA_ERROR, message: error.message.slice(PLAN_QUOTA_ERROR.length + 1) };
+    }
     throw { status: res.status, ...error };
   }
 

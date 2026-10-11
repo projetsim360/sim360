@@ -14,9 +14,10 @@ import { SimulatedEmailsModule } from '../simulated-emails/simulated-emails.modu
 import { ProfileModule } from '../profile/profile.module';
 import { MeetingsModule } from '../meetings/meetings.module';
 import { AiModule } from '../ai/ai.module';
+import { PlansModule } from '../plans/plans.module';
 
 @Module({
-  imports: [CoreModule, forwardRef(() => SimulatedEmailsModule), forwardRef(() => AiModule), ProfileModule, MeetingsModule],
+  imports: [CoreModule, forwardRef(() => SimulatedEmailsModule), forwardRef(() => AiModule), ProfileModule, MeetingsModule, PlansModule],
   controllers: [ScenariosController, ScenariosPublicController, SimulationsController, ProjectsController],
   providers: [ScenariosService, SimulationsService, ProjectsService, KpiEngineService, BrownfieldContextService, StakeholderIdentificationService],
   exports: [ScenariosService, SimulationsService, ProjectsService, KpiEngineService, BrownfieldContextService, StakeholderIdentificationService],
