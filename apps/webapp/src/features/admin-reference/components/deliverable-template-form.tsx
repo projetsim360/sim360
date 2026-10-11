@@ -24,22 +24,24 @@ import {
 } from '@/components/ui/dialog';
 import type { DeliverableTemplate, PhaseType, DeliverableTemplateDifficulty } from '../types/admin-reference.types';
 import { PHASE_LABELS, DIFFICULTY_LABELS } from '../types/admin-reference.types';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useT } from '@/i18n/app/use-t';
 
 const PHASES: PhaseType[] = ['INITIATION', 'PLANNING', 'EXECUTION', 'MONITORING', 'CLOSURE'];
 const DIFFICULTIES: DeliverableTemplateDifficulty[] = ['DISCOVERY', 'STANDARD', 'ADVANCED'];
 
 const templateSchema = z.object({
-  title: z.string().min(1, 'Le titre est requis'),
-  type: z.string().min(1, 'Le type est requis'),
+  title: z.string().min(1, 'admin.form.titleRequired'),
+  type: z.string().min(1, 'admin.form.typeRequired'),
   phase: z.enum(['INITIATION', 'PLANNING', 'EXECUTION', 'MONITORING', 'CLOSURE'], {
-    required_error: 'La phase est requise',
+    error: 'admin.form.phaseRequired',
   }),
   description: z.string().optional(),
-  content: z.string().min(1, 'Le contenu est requis'),
-  evaluationCriteria: z.string().min(1, 'Les critères d\'évaluation sont requis'),
+  content: z.string().min(1, 'admin.form.contentRequired'),
+  evaluationCriteria: z.string().min(1, 'admin.form.criteriaRequired'),
   pmiProcess: z.string().optional(),
   difficulty: z.enum(['DISCOVERY', 'STANDARD', 'ADVANCED'], {
-    required_error: 'La difficulté est requise',
+    error: 'admin.form.difficultyRequired',
   }),
   referenceExample: z.string().optional(),
 });
@@ -71,6 +73,7 @@ export function DeliverableTemplateForm({
   onSubmit,
   isPending,
 }: DeliverableTemplateFormProps) {
+  const t = useT();
   const {
     register,
     handleSubmit,
@@ -150,12 +153,12 @@ export function DeliverableTemplateForm({
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {template ? 'Modifier le template' : 'Nouveau template de livrable'}
+            {template ? t('admin.tpl.edit') : t('admin.tpl.new')}
           </DialogTitle>
           <DialogDescription>
             {template
-              ? 'Modifiez les informations du template de livrable.'
-              : 'Remplissez les informations pour créer un nouveau template.'}
+              ? t('admin.tpl.editDesc')
+              : t('admin.tpl.newDesc')}
           </DialogDescription>
         </DialogHeader>
 
@@ -167,42 +170,42 @@ export function DeliverableTemplateForm({
           >
             {/* Titre */}
             <div className="space-y-1.5">
-              <Label htmlFor="title">Titre</Label>
-              <Input id="title" {...register('title')} placeholder="Titre du template" />
+              <Label htmlFor="title">{t('recruit.col.title')}</Label>
+              <Input id="title" {...register('title')} placeholder={t('admin.tpl.titlePh')} />
               {errors.title && (
-                <p className="text-xs text-destructive">{errors.title.message}</p>
+                <p className="text-xs text-destructive">{t(errors.title.message as AppMessageKey)}</p>
               )}
             </div>
 
             {/* Type + Phase */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label htmlFor="type">Type</Label>
-                <Input id="type" {...register('type')} placeholder="Ex: Charte projet" />
+                <Label htmlFor="type">{t('admin.type')}</Label>
+                <Input id="type" {...register('type')} placeholder={t('admin.tpl.typePh')} />
                 {errors.type && (
-                  <p className="text-xs text-destructive">{errors.type.message}</p>
+                  <p className="text-xs text-destructive">{t(errors.type.message as AppMessageKey)}</p>
                 )}
               </div>
 
               <div className="space-y-1.5">
-                <Label>Phase PMI</Label>
+                <Label>{t('admin.pmiPhase')}</Label>
                 <Select
                   value={phaseValue}
                   onValueChange={(val) => setValue('phase', val as PhaseType)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Sélectionner une phase" />
+                    <SelectValue placeholder={t('admin.pickPhase')} />
                   </SelectTrigger>
                   <SelectContent>
                     {PHASES.map((phase) => (
                       <SelectItem key={phase} value={phase}>
-                        {PHASE_LABELS[phase]}
+                        {t(PHASE_LABELS[phase])}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
                 {errors.phase && (
-                  <p className="text-xs text-destructive">{errors.phase.message}</p>
+                  <p className="text-xs text-destructive">{t(errors.phase.message as AppMessageKey)}</p>
                 )}
               </div>
             </div>
@@ -210,65 +213,65 @@ export function DeliverableTemplateForm({
             {/* Difficulte + Processus PMI */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label>Difficulté</Label>
+                <Label>{t('admin.difficultyLabel')}</Label>
                 <Select
                   value={difficultyValue}
                   onValueChange={(val) => setValue('difficulty', val as DeliverableTemplateDifficulty)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Sélectionner une difficulté" />
+                    <SelectValue placeholder={t('admin.pickDifficulty')} />
                   </SelectTrigger>
                   <SelectContent>
                     {DIFFICULTIES.map((diff) => (
                       <SelectItem key={diff} value={diff}>
-                        {DIFFICULTY_LABELS[diff]}
+                        {t(DIFFICULTY_LABELS[diff])}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
                 {errors.difficulty && (
-                  <p className="text-xs text-destructive">{errors.difficulty.message}</p>
+                  <p className="text-xs text-destructive">{t(errors.difficulty.message as AppMessageKey)}</p>
                 )}
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="pmiProcess">Processus PMI</Label>
+                <Label htmlFor="pmiProcess">{t('admin.pmiProcess')}</Label>
                 <Input
                   id="pmiProcess"
                   {...register('pmiProcess')}
-                  placeholder="Ex: 4.1 Elaborer la charte"
+                  placeholder={t('admin.tpl.processPh')}
                 />
               </div>
             </div>
 
             {/* Description */}
             <div className="space-y-1.5">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">{t('onboarding.custom.description')}</Label>
               <Textarea
                 id="description"
                 {...register('description')}
-                placeholder="Description du template (optionnel)"
+                placeholder={t('admin.tpl.descPh')}
                 className="min-h-20"
               />
             </div>
 
             {/* Contenu template (Markdown) */}
             <div className="space-y-1.5">
-              <Label htmlFor="content">Contenu du template (Markdown)</Label>
+              <Label htmlFor="content">{t('admin.tpl.content')}</Label>
               <Textarea
                 id="content"
                 {...register('content')}
-                placeholder="Rédigez le contenu du template en Markdown..."
+                placeholder={t('admin.tpl.contentPh')}
                 className="min-h-32 font-mono text-xs"
               />
               {errors.content && (
-                <p className="text-xs text-destructive">{errors.content.message}</p>
+                <p className="text-xs text-destructive">{t(errors.content.message as AppMessageKey)}</p>
               )}
             </div>
 
             {/* Criteres d'evaluation (JSON) */}
             <div className="space-y-1.5">
-              <Label htmlFor="evaluationCriteria">Critères d'évaluation (JSON)</Label>
+              <Label htmlFor="evaluationCriteria">{t('admin.tpl.criteria')}</Label>
               <Textarea
                 id="evaluationCriteria"
                 {...register('evaluationCriteria')}
@@ -276,17 +279,17 @@ export function DeliverableTemplateForm({
                 className="min-h-24 font-mono text-xs"
               />
               {errors.evaluationCriteria && (
-                <p className="text-xs text-destructive">{errors.evaluationCriteria.message}</p>
+                <p className="text-xs text-destructive">{t(errors.evaluationCriteria.message as AppMessageKey)}</p>
               )}
             </div>
 
             {/* Exemple de reference (Markdown, optionnel) */}
             <div className="space-y-1.5">
-              <Label htmlFor="referenceExample">Exemple de référence (Markdown, optionnel)</Label>
+              <Label htmlFor="referenceExample">{t('admin.tpl.example')}</Label>
               <Textarea
                 id="referenceExample"
                 {...register('referenceExample')}
-                placeholder="Un exemple de livrable bien rédigé..."
+                placeholder={t('admin.tpl.examplePh')}
                 className="min-h-24 font-mono text-xs"
               />
             </div>
@@ -300,7 +303,7 @@ export function DeliverableTemplateForm({
             type="button"
             onClick={() => onOpenChange(false)}
           >
-            Annuler
+            {t('common.cancel')}
           </Button>
           <Button
             variant="primary"
@@ -309,7 +312,7 @@ export function DeliverableTemplateForm({
             form="deliverable-template-form"
             disabled={isPending}
           >
-            {isPending ? 'Enregistrement...' : template ? 'Mettre à jour' : 'Créer'}
+            {isPending ? t('common.saving') : template ? t('admin.update') : t('mentoring.create')}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -1,3 +1,4 @@
+import type { AppMessageKey } from '@/i18n/app/messages';
 export type PhaseType = 'INITIATION' | 'PLANNING' | 'EXECUTION' | 'MONITORING' | 'CLOSURE';
 export type DeliverableTemplateDifficulty = 'DISCOVERY' | 'STANDARD' | 'ADVANCED';
 export type ReferenceDocumentCategory = 'TEMPLATE' | 'STANDARD' | 'BEST_PRACTICE' | 'GLOSSARY';
@@ -79,23 +80,23 @@ export interface ReferenceDocumentFilters {
   search?: string;
 }
 
-export const PHASE_LABELS: Record<PhaseType, string> = {
-  INITIATION: 'Initialisation',
-  PLANNING: 'Planification',
-  EXECUTION: 'Execution',
-  MONITORING: 'Suivi et Contrôle',
-  CLOSURE: 'Clôture',
+export const PHASE_LABELS: Record<PhaseType, AppMessageKey> = {
+  INITIATION: 'admin.phase.INITIATION',
+  PLANNING: 'admin.phase.PLANNING',
+  EXECUTION: 'admin.phase.EXECUTION',
+  MONITORING: 'admin.phase.MONITORING',
+  CLOSURE: 'admin.phase.CLOSURE',
 };
 
-export const DIFFICULTY_LABELS: Record<DeliverableTemplateDifficulty, string> = {
-  DISCOVERY: 'Découverte',
-  STANDARD: 'Standard',
-  ADVANCED: 'Avancé',
+export const DIFFICULTY_LABELS: Record<DeliverableTemplateDifficulty, AppMessageKey> = {
+  DISCOVERY: 'admin.difficulty.DISCOVERY',
+  STANDARD: 'admin.difficulty.STANDARD',
+  ADVANCED: 'admin.difficulty.ADVANCED',
 };
 
-export const CATEGORY_LABELS: Record<ReferenceDocumentCategory, string> = {
-  TEMPLATE: 'Template',
-  STANDARD: 'Standard',
-  BEST_PRACTICE: 'Bonne pratique',
-  GLOSSARY: 'Glossaire',
+export const CATEGORY_LABELS: Record<ReferenceDocumentCategory, AppMessageKey> = {
+  TEMPLATE: 'admin.category.TEMPLATE',
+  STANDARD: 'admin.category.STANDARD',
+  BEST_PRACTICE: 'admin.category.BEST_PRACTICE',
+  GLOSSARY: 'admin.category.GLOSSARY',
 };
