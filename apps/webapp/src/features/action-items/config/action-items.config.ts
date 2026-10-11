@@ -1,10 +1,11 @@
 import type { ActionItemStatus } from '../types/action-item.types';
+import type { AppMessageKey } from '@/i18n/app/messages';
 
-export const ACTION_STATUS_OPTIONS: Array<{ value: ActionItemStatus; label: string }> = [
-  { value: 'TODO', label: 'À faire' },
-  { value: 'IN_PROGRESS', label: 'En cours' },
-  { value: 'DONE', label: 'Terminée' },
-  { value: 'CANCELLED', label: 'Annulée' },
+export const ACTION_STATUS_OPTIONS: Array<{ value: ActionItemStatus; label: AppMessageKey }> = [
+  { value: 'TODO', label: 'actions.status.TODO' },
+  { value: 'IN_PROGRESS', label: 'actions.status.IN_PROGRESS' },
+  { value: 'DONE', label: 'actions.status.DONE' },
+  { value: 'CANCELLED', label: 'actions.status.CANCELLED' },
 ];
 
 export const ACTION_STATUS_TONE: Record<ActionItemStatus, string> = {
@@ -27,6 +28,6 @@ export function isActionOverdue(item: { dueDate: string | null; status: ActionIt
   return due.getTime() < now.getTime();
 }
 
-export function formatDueDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('fr-CA', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+export function formatDueDate(iso: string, locale = 'fr-CA'): string {
+  return new Date(iso).toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 }

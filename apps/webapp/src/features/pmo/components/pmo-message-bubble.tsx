@@ -6,6 +6,7 @@ import { MarkdownContent } from '@/components/ui/markdown-content';
 import { PmiGlossaryText } from '@/features/profile/components/pmi-glossary-tooltip';
 import { toast } from 'sonner';
 import type { PmoMessage } from '../types/pmo.types';
+import { useT } from '@/i18n/app/use-t';
 
 /**
  * Splits message content into segments of plain text and code blocks.
@@ -38,16 +39,17 @@ interface PmoMessageBubbleProps {
 }
 
 export function PmoMessageBubble({ message, enableGlossaryTooltips = false }: PmoMessageBubbleProps) {
+  const t = useT();
   const isUser = message.role === 'user';
   const isSystem = message.role === 'system';
 
   const handleCopyCode = useCallback((code: string) => {
     navigator.clipboard.writeText(code).then(() => {
-      toast('Template copie !');
+      toast(t('pmo.templateCopied'));
     }).catch(() => {
-      toast.error('Impossible de copier le contenu.');
+      toast.error(t('pmo.copyError'));
     });
-  }, []);
+  }, [t]);
 
   if (isSystem) {
     return (
@@ -110,7 +112,7 @@ export function PmoMessageBubble({ message, enableGlossaryTooltips = false }: Pm
                       onClick={() => handleCopyCode(seg.value)}
                     >
                       <KeenIcon icon="copy" style="duotone" className="size-3 mr-1" />
-                      Copier
+                      {t('valo.copy')}
                     </Button>
                   </div>
                   <pre className="p-3 text-xs font-mono whitespace-pre-wrap overflow-x-auto">

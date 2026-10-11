@@ -3,8 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import { Toolbar, ToolbarHeading } from '@/components/layouts/layout-6/components/toolbar';
 import { simulationApi } from '@/features/simulation/api/simulation.api';
 import { ActionItemsPanel } from '../components/action-items-panel';
+import { useT } from '@/i18n/app/use-t';
 
 export default function ActionItemsPage() {
+  const t = useT();
   const { id } = useParams<{ id: string }>();
   const simulationQuery = useQuery({
     queryKey: ['simulation', id],
@@ -25,12 +27,12 @@ export default function ActionItemsPage() {
     <>
       <Toolbar>
         <ToolbarHeading
-          title="Actions de suivi"
-          description="Les actions décidées en réunion et celles que vous ajoutez : responsable, échéance et avancement."
+          title={t('actions.title')}
+          description={t('actions.pageDesc')}
         />
       </Toolbar>
       <div className="container-fixed">
-        <ActionItemsPanel simulationId={id} assigneeSuggestions={[...names]} showMeeting title="Toutes les actions" />
+        <ActionItemsPanel simulationId={id} assigneeSuggestions={[...names]} showMeeting title={t('actions.all')} />
       </div>
     </>
   );

@@ -5,6 +5,8 @@ import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
 import { DIFFICULTY_VARIANT } from '@/config/theme.constants';
 import type { CompetencyBadge } from '../types/valorization.types';
+import { useTv } from '@/i18n/app/use-t';
+
 
 const DIFFICULTY_BG: Record<string, string> = {
   EASY: 'bg-success',
@@ -13,19 +15,13 @@ const DIFFICULTY_BG: Record<string, string> = {
   EXPERT: 'bg-destructive',
 };
 
-const DIFFICULTY_LABELS: Record<string, string> = {
-  EASY: 'Facile',
-  MEDIUM: 'Intermédiaire',
-  HARD: 'Difficile',
-  EXPERT: 'Expert',
-};
-
 interface BadgeCardProps {
   badge: CompetencyBadge;
   className?: string;
 }
 
 export function BadgeCard({ badge, className }: BadgeCardProps) {
+  const tv = useTv();
   const difficultyColor = DIFFICULTY_BG[badge.difficulty] ?? 'bg-muted-foreground';
 
   return (
@@ -64,7 +60,7 @@ export function BadgeCard({ badge, className }: BadgeCardProps) {
               appearance="light"
               size="sm"
             >
-              {DIFFICULTY_LABELS[badge.difficulty] ?? badge.difficulty}
+              {tv('difficulty', badge.difficulty)}
             </Badge>
           </div>
 

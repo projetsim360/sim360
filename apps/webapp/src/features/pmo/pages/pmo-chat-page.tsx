@@ -9,8 +9,10 @@ import { PmoChat } from '../components/pmo-chat';
 import { PmoContextPanel } from '../components/pmo-context-panel';
 import { usePmoHistory, usePmoContext } from '../api/pmo.api';
 import { useProfileAdaptation } from '@/features/profile/api/profile.api';
+import { useT } from '@/i18n/app/use-t';
 
 export default function PmoChatPage() {
+  const t = useT();
   const { id } = useParams<{ id: string }>();
   const [contextCollapsed, setContextCollapsed] = useState(false);
 
@@ -37,12 +39,12 @@ export default function PmoChatPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Agent PMO" />
+          <ToolbarHeading title={t('pmo.agent')} />
         </Toolbar>
         <EmptyState
           icon="robot"
-          title="Agent PMO"
-          description="Sélectionnez une simulation pour commencer à discuter avec votre agent PMO."
+          title={t('pmo.agent')}
+          description={t('pmo.pickSim')}
         />
       </div>
     );
@@ -51,7 +53,7 @@ export default function PmoChatPage() {
   return (
     <div className="container">
       <Toolbar>
-        <ToolbarHeading title="Agent PMO" />
+        <ToolbarHeading title={t('pmo.agent')} />
         <ToolbarActions>
           {pendingCount > 0 && (
             <Badge variant="warning" appearance="light" size="sm">
@@ -65,12 +67,12 @@ export default function PmoChatPage() {
             onClick={() => setContextCollapsed(!contextCollapsed)}
           >
             <KeenIcon icon="setting-2" style="duotone" className="size-4" />
-            {contextCollapsed ? 'Afficher contexte' : 'Masquer contexte'}
+            {contextCollapsed ? t('pmo.showContext') : t('pmo.hideContext')}
           </Button>
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}`}>
               <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
-              Retour
+              {t('common.back')}
             </Link>
           </Button>
         </ToolbarActions>

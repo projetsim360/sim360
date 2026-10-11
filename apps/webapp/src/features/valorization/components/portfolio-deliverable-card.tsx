@@ -6,13 +6,8 @@ import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
 import { getGradeTextClass } from '@/config/theme.constants';
 import type { PortfolioDeliverable } from '../types/valorization.types';
-
-const STATUS_LABELS: Record<string, string> = {
-  COMPLETED: 'Terminé',
-  IN_PROGRESS: 'En cours',
-  PENDING: 'En attente',
-  REJECTED: 'Rejeté',
-};
+import { useTv } from '@/i18n/app/use-t';
+import { useT } from '@/i18n/app/use-t';
 
 const STATUS_VARIANTS: Record<string, 'success' | 'info' | 'warning' | 'destructive'> = {
   COMPLETED: 'success',
@@ -28,6 +23,8 @@ interface PortfolioDeliverableCardProps {
 }
 
 export function PortfolioDeliverableCard({ deliverable, className }: PortfolioDeliverableCardProps) {
+  const tv = useTv();
+  const t = useT();
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -57,9 +54,9 @@ export function PortfolioDeliverableCard({ deliverable, className }: PortfolioDe
               appearance="light"
               size="sm"
             >
-              {STATUS_LABELS[deliverable.status] ?? deliverable.status}
+              {tv('valo.delivStatus', deliverable.status)}
             </Badge>
-            <Button variant="ghost" size="sm" mode="icon" aria-label="Voir les détails">
+            <Button variant="ghost" size="sm" mode="icon" aria-label={t('valo.showDetails')}>
               <KeenIcon
                 icon={expanded ? 'arrow-up' : 'arrow-down'}
                 style="duotone"

@@ -10,15 +10,12 @@ import { useBadge } from '../api/valorization.api';
 import { CompetencyRadarChart } from '../components/competency-radar-chart';
 import { DebriefingSection } from '../components/debriefing-section';
 import { ShareBadgeDialog } from '../components/share-badge-dialog';
-
-const DIFFICULTY_LABELS: Record<string, string> = {
-  EASY: 'Facile',
-  MEDIUM: 'Intermédiaire',
-  HARD: 'Difficile',
-  EXPERT: 'Expert',
-};
+import { useTv } from '@/i18n/app/use-t';
+import { useT } from '@/i18n/app/use-t';
 
 export default function BadgeDetailPage() {
+  const tv = useTv();
+  const t = useT();
   const { badgeId } = useParams<{ badgeId: string }>();
   const { data: badge, isLoading, error } = useBadge(badgeId!);
   const [shareOpen, setShareOpen] = useState(false);
@@ -27,7 +24,7 @@ export default function BadgeDetailPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Détail du badge" />
+          <ToolbarHeading title={t('valo.badgeDetail')} />
         </Toolbar>
         <div className="flex justify-center py-16">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
@@ -40,12 +37,12 @@ export default function BadgeDetailPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Détail du badge" />
+          <ToolbarHeading title={t('valo.badgeDetail')} />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-sm text-destructive">
-              Impossible de charger ce badge.
+              {t('valo.badgeLoadError')}
             </p>
           </CardContent>
         </Card>
@@ -56,7 +53,7 @@ export default function BadgeDetailPage() {
   return (
     <div className="container space-y-5">
       <Toolbar>
-        <ToolbarHeading title="Détail du badge" />
+        <ToolbarHeading title={t('valo.badgeDetail')} />
         <ToolbarActions>
           <Button
             variant="outline"
@@ -64,11 +61,11 @@ export default function BadgeDetailPage() {
             onClick={() => {
               const verifyUrl = `${window.location.origin}/badges/${badge.id}/verify`;
               navigator.clipboard.writeText(verifyUrl);
-              toast.success('Lien copie dans le presse-papiers');
+              toast.success(t('valo.copied'));
             }}
           >
             <KeenIcon icon="copy" style="duotone" className="text-sm" />
-            Copier le lien
+            {t('valo.copyLink')}
           </Button>
           <Button
             variant="primary"
@@ -80,16 +77,16 @@ export default function BadgeDetailPage() {
             }}
           >
             <KeenIcon icon="linkedin" style="duotone" className="text-sm" />
-            Partager sur LinkedIn
+            {t('valo.shareLinkedin')}
           </Button>
           <Button variant="outline" size="sm" onClick={() => setShareOpen(true)}>
             <KeenIcon icon="share" style="duotone" className="text-sm" />
-            Partager
+            {t('valo.share')}
           </Button>
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${badge.simulationId}/debriefing`}>
               <KeenIcon icon="chart" style="duotone" className="text-sm" />
-              Débriefing complet
+              {t('valo.fullDebrief')}
             </Link>
           </Button>
         </ToolbarActions>
@@ -105,7 +102,7 @@ export default function BadgeDetailPage() {
                     {badge.globalScore}
                   </span>
                 </div>
-                <span className="text-sm text-muted-foreground mt-2">Score global</span>
+                <span className="text-sm text-muted-foreground mt-2">{t('valo.overallScore')}</span>
               </div>
 
               {/* Badge info */}
@@ -120,7 +117,7 @@ export default function BadgeDetailPage() {
                     {badge.sector}
                   </Badge>
                   <Badge variant="warning" appearance="light" size="sm">
-                    {DIFFICULTY_LABELS[badge.difficulty] ?? badge.difficulty}
+                    {tv('difficulty', badge.difficulty)}
                   </Badge>
                   {badge.durationMinutes && (
                     <Badge variant="secondary" size="sm">
@@ -145,7 +142,7 @@ export default function BadgeDetailPage() {
         {/* Radar chart */}
         <Card>
           <CardHeader>
-            <CardTitle>Compétences évaluées</CardTitle>
+            <CardTitle>{t('valo.assessedSkills')}</CardTitle>
           </CardHeader>
           <CardContent>
             <CompetencyRadarChart scores={badge.competencyScores} />
@@ -155,19 +152,19 @@ export default function BadgeDetailPage() {
         {/* Strengths, Improvements, Recommendations */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           <DebriefingSection
-            title="Points forts"
+            title={t('valo.strengths')}
             items={badge.strengths}
             icon="check-circle"
             iconColor="text-success"
           />
           <DebriefingSection
-            title="Axes d'amélioration"
+            title={t('valo.improvements')}
             items={badge.improvements}
             icon="information-2"
             iconColor="text-warning"
           />
           <DebriefingSection
-            title="Recommandations"
+            title={t('evaluation.recommendations')}
             items={badge.recommendations}
             icon="message-text"
             iconColor="text-primary"
@@ -179,7 +176,7 @@ export default function BadgeDetailPage() {
           <Button variant="outline" size="sm" asChild>
             <Link to="/profile/badges">
               <KeenIcon icon="arrow-left" style="duotone" className="text-sm" />
-              Retour aux badges
+              {t('valo.backToBadges')}
             </Link>
           </Button>
         </div>

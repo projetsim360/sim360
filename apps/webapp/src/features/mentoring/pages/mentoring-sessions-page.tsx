@@ -39,50 +39,37 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { useMentoringSessions, useCreateSession } from '../api/mentoring.api';
+import { useTv } from '@/i18n/app/use-t';
+import { useT } from '@/i18n/app/use-t';
 
 const SESSION_TYPES = [
-  { value: 'DEBRIEFING', label: 'Débriefing' },
-  { value: 'CAREER_COACHING', label: 'Coaching carrière' },
-  { value: 'INTERVIEW_PREP', label: 'Preparation entretien' },
+  { value: 'DEBRIEFING' },
+  { value: 'CAREER_COACHING' },
+  { value: 'INTERVIEW_PREP' },
 ] as const;
 
 const sessionSchema = z.object({
-  simulationId: z.string().min(1, "L'identifiant de simulation est requis"),
-  learnerId: z.string().min(1, "L'identifiant de l'apprenant est requis"),
+  simulationId: z.string().min(1, 'mentoring.form.simulationRequired'),
+  learnerId: z.string().min(1, 'mentoring.form.learnerRequired'),
   type: z.string().optional(),
 });
 
 type SessionFormValues = z.infer<typeof sessionSchema>;
 
-function getStatusBadge(status: string) {
-  switch (status) {
-    case 'COMPLETED':
-      return (
-        <Badge variant="success" size="sm">
-          Terminée
-        </Badge>
-      );
-    case 'IN_PROGRESS':
-      return (
-        <Badge variant="primary" size="sm">
-          En cours
-        </Badge>
-      );
-    default:
-      return (
-        <Badge variant="secondary" size="sm">
-          Planifiée
-        </Badge>
-      );
-  }
+function StatusBadge({ status }: { status: string }) {
+  const tv = useTv();
+  const variant = status === 'COMPLETED' ? 'success' : status === 'IN_PROGRESS' ? 'primary' : 'secondary';
+  return (
+    <Badge variant={variant} size="sm">
+      {tv('mentoring.status', status === 'COMPLETED' || status === 'IN_PROGRESS' ? status : 'SCHEDULED')}
+    </Badge>
+  );
 }
 
-function getTypeLabel(type: string) {
-  const found = SESSION_TYPES.find((t) => t.value === type);
-  return found ? found.label : type;
-}
 
 export default function MentoringSessionsPage() {
+  const tv = useTv();
+  const t = useT();
   const { data: sessions, isLoading } = useMentoringSessions();
   const createSession = useCreateSession();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -105,12 +92,12 @@ export default function MentoringSessionsPage() {
       },
       {
         onSuccess: () => {
-          toast.success('Session créée avec succès');
+          toast.success(t('mentoring.created'));
           setDialogOpen(false);
           form.reset();
         },
         onError: () => {
-          toast.error('Erreur lors de la création de la session');
+          toast.error(t('mentoring.createError'));
         },
       },
     );
@@ -123,17 +110,17 @@ export default function MentoringSessionsPage() {
       <Toolbar>
         <ToolbarHeading>
           <h1 className="text-xl font-medium text-gray-900">
-            Sessions de mentorat
+            {t('mentoring.sessionsTitle')}
           </h1>
           <p className="text-sm text-gray-700">
-            Gérez vos sessions de mentorat avec les apprenants
+            {t('mentoring.sessionsDesc')}
           </p>
         </ToolbarHeading>
         <ToolbarActions>
           <Button variant="outline" size="sm" asChild>
             <Link to="/mentoring">
               <KeenIcon icon="arrow-left" style="duotone" className="text-sm" />
-              Retour
+              {t('common.back')}
             </Link>
           </Button>
           <Button
@@ -142,7 +129,7 @@ export default function MentoringSessionsPage() {
             onClick={() => setDialogOpen(true)}
           >
             <KeenIcon icon="plus" style="duotone" className="text-sm" />
-            Nouvelle session
+            {t('mentoring.newSession')}
           </Button>
         </ToolbarActions>
       </Toolbar>
@@ -152,7 +139,7 @@ export default function MentoringSessionsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <KeenIcon icon="messages" style="duotone" />
-              Toutes les sessions
+              {t('mentoring.allSessions')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -170,7 +157,7 @@ export default function MentoringSessionsPage() {
                   className="text-4xl text-muted-foreground/40 mb-3"
                 />
                 <p className="text-sm text-muted-foreground">
-                  Aucune session de mentorat
+                  {t('mentoring.noSessions')}
                 </p>
                 <Button
                   variant="primary"
@@ -178,7 +165,7 @@ export default function MentoringSessionsPage() {
                   className="mt-4"
                   onClick={() => setDialogOpen(true)}
                 >
-                  Créer une session
+                  {t('mentoring.createSession')}
                 </Button>
               </div>
             ) : (
@@ -198,18 +185,18 @@ export default function MentoringSessionsPage() {
                       </div>
                       <div>
                         <div className="text-sm font-medium">
-                          {getTypeLabel(session.type)}
+                          {tv('mentoring.type', session.type)}
                         </div>
                         <div className="text-xs text-muted-foreground">
-                          {session.messages?.length ?? 0} message(s)
+                          {t('mentoring.messageCount', { count: session.messages?.length ?? 0 })}
                         </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      {getStatusBadge(session.status)}
+                      <StatusBadge status={session.status} />
                       <Button variant="outline" size="sm" asChild>
                         <Link to={`/mentoring/session/${session.id}`}>
-                          Voir
+                          {t('mentoring.view')}
                         </Link>
                       </Button>
                     </div>
@@ -225,7 +212,7 @@ export default function MentoringSessionsPage() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Nouvelle session de mentorat</DialogTitle>
+            <DialogTitle>{t('mentoring.newSessionTitle')}</DialogTitle>
           </DialogHeader>
           <DialogBody>
             <Form {...form}>
@@ -239,10 +226,10 @@ export default function MentoringSessionsPage() {
                   name="simulationId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>ID Simulation *</FormLabel>
+                      <FormLabel>{t('mentoring.form.simulationId')}</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Identifiant de la simulation"
+                          placeholder={t('mentoring.form.simulationPh')}
                           {...field}
                         />
                       </FormControl>
@@ -256,10 +243,10 @@ export default function MentoringSessionsPage() {
                   name="learnerId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>ID Apprenant *</FormLabel>
+                      <FormLabel>{t('mentoring.form.learnerId')}</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Identifiant de l'apprenant"
+                          placeholder={t('mentoring.form.learnerPh')}
                           {...field}
                         />
                       </FormControl>
@@ -273,20 +260,20 @@ export default function MentoringSessionsPage() {
                   name="type"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Type de session</FormLabel>
+                      <FormLabel>{t('mentoring.form.type')}</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Choisir un type" />
+                            <SelectValue placeholder={t('mentoring.form.typePh')} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                           {SESSION_TYPES.map((t) => (
                             <SelectItem key={t.value} value={t.value}>
-                              {t.label}
+                              {tv('mentoring.type', t.value)}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -304,7 +291,7 @@ export default function MentoringSessionsPage() {
               size="sm"
               onClick={() => setDialogOpen(false)}
             >
-              Annuler
+              {t('common.cancel')}
             </Button>
             <Button
               type="submit"
@@ -313,7 +300,7 @@ export default function MentoringSessionsPage() {
               size="sm"
               disabled={createSession.isPending}
             >
-              {createSession.isPending ? 'Création...' : 'Créer'}
+              {createSession.isPending ? t('mentoring.creating') : t('mentoring.create')}
             </Button>
           </DialogFooter>
         </DialogContent>

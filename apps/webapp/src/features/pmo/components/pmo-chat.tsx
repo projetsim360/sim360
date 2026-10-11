@@ -14,12 +14,14 @@ import { usePmoStream } from '../hooks/use-pmo-stream';
 import { pmoApi, PMO_QUERY_KEYS } from '../api/pmo.api';
 import { useAuth } from '@/providers/auth-provider';
 import type { PmoMessage } from '../types/pmo.types';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useT } from '@/i18n/app/use-t';
 
-const QUICK_REPLIES: Array<{ icon: string; tone: string; text: string }> = [
-  { icon: 'chart-line', tone: 'text-[var(--brand-600)] bg-[var(--brand-50)]', text: 'Quel est l\'état de mon projet ?' },
-  { icon: 'notepad', tone: 'text-[var(--accent-600)] bg-[var(--accent-50)]', text: 'Aide-moi sur un livrable' },
-  { icon: 'check-circle', tone: 'text-[var(--success-700)] bg-[var(--success-50)]', text: 'Quelle décision dois-je prendre ?' },
-  { icon: 'shield-cross', tone: 'text-[var(--error-700)] bg-[var(--error-50)]', text: 'Quels sont mes risques ?' },
+const QUICK_REPLIES: Array<{ icon: string; tone: string; text: AppMessageKey }> = [
+  { icon: 'chart-line', tone: 'text-[var(--brand-600)] bg-[var(--brand-50)]', text: 'pmo.quick.state' },
+  { icon: 'notepad', tone: 'text-[var(--accent-600)] bg-[var(--accent-50)]', text: 'pmo.quick.deliverable' },
+  { icon: 'check-circle', tone: 'text-[var(--success-700)] bg-[var(--success-50)]', text: 'pmo.quick.decision' },
+  { icon: 'shield-cross', tone: 'text-[var(--error-700)] bg-[var(--error-50)]', text: 'pmo.quick.risks' },
 ];
 
 interface PendingDeliverable {
@@ -54,6 +56,7 @@ export function PmoChat({
   pendingDeliverables = [],
   scenarioInfo,
 }: PmoChatProps) {
+  const t = useT();
   const pendingDeliverableCount = pendingDeliverables.length;
   const [messages, setMessages] = useState<PmoMessage[]>([]);
   const hasUserMessage = messages.some((m) => m.role === 'user');
@@ -94,10 +97,10 @@ export function PmoChat({
           if (text.trim()) {
             setInput((prev) => (prev ? `${prev} ${text.trim()}` : text.trim()));
             inputRef.current?.focus();
-            toast.success('Audio transcrit');
+            toast.success(t('pmo.transcribed'));
           }
         } catch {
-          toast.error('Erreur de transcription audio');
+          toast.error(t('pmo.transcribeError'));
         } finally {
           setIsTranscribing(false);
         }
@@ -107,9 +110,9 @@ export function PmoChat({
       mediaRecorderRef.current = mediaRecorder;
       setIsRecording(true);
     } catch {
-      toast.error('Impossible d\'accéder au microphone');
+      toast.error(t('pmo.micError'));
     }
-  }, [simulationId]);
+  }, [simulationId, t]);
 
   const stopRecording = useCallback(() => {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
@@ -145,11 +148,11 @@ export function PmoChat({
           });
         })
         .catch(() => {
-          toast.error('Impossible d\'initialiser la conversation avec l\'agent PMO.');
+          toast.error(t('pmo.initError'));
         })
         .finally(() => setIsInitializing(false));
     }
-  }, [isLoadingHistory, initialMessages.length, messages.length, simulationId, queryClient]);
+  }, [isLoadingHistory, initialMessages.length, messages.length, simulationId, queryClient, t]);
 
   const handleSend = useCallback(
     async (explicit?: string) => {
@@ -185,13 +188,13 @@ export function PmoChat({
       } catch (error) {
         toast.error(
           (error as Error).message ||
-            'Erreur lors de la communication avec l\'agent PMO.',
+            t('pmo.chatError'),
         );
       }
 
       inputRef.current?.focus();
     },
-    [input, isStreaming, sendMessage, simulationId, queryClient],
+    [input, isStreaming, sendMessage, simulationId, queryClient, t],
   );
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -220,11 +223,10 @@ export function PmoChat({
                 />
               </div>
               <p className="text-sm font-medium text-foreground">
-                Démarrez une conversation avec votre agent PMO
+                {t('pmo.emptyTitle')}
               </p>
               <p className="text-xs text-muted-foreground mt-1 max-w-xs">
-                Il peut vous aider sur la gestion de projet, les livrables, les
-                décisions à prendre...
+                {t('pmo.emptyDesc')}
               </p>
             </div>
           ) : (
@@ -241,10 +243,10 @@ export function PmoChat({
                         </div>
                         <div className="min-w-0">
                           <h3 className="text-sm font-bold text-foreground">
-                            {user?.firstName ? `Bonjour ${user.firstName}` : 'Bonjour'}
+                            {user?.firstName ? t('pmo.helloName', { name: user.firstName }) : t('pmo.hello')}
                           </h3>
                           <p className="text-sm text-muted-foreground mt-0.5">
-                            Je vous accompagne sur vos décisions, vos livrables et le pilotage du projet.
+                            {t('pmo.welcome')}
                           </p>
                           <p className="text-xs text-muted-foreground mt-1.5">
                             {scenarioInfo.companyName} — {scenarioInfo.sector}
@@ -280,7 +282,7 @@ export function PmoChat({
                         type="button"
                         className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-warning/15 hover:bg-warning/25 border border-warning/30 text-sm font-medium text-foreground transition-colors cursor-pointer"
                         onClick={() => {
-                          setInput(`Quelles sont les attentes pour le livrable "${d.title}" ?`);
+                          setInput(t('pmo.deliverableQuestion', { title: d.title }));
                           inputRef.current?.focus();
                         }}
                       >
@@ -303,19 +305,19 @@ export function PmoChat({
               {!hasUserMessage && !isStreaming && (
                 <div className="space-y-2 pt-1">
                   <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                    Pour démarrer
+                    {t('pmo.toStart')}
                   </p>
                   {QUICK_REPLIES.map((q) => (
                     <button
                       key={q.text}
                       type="button"
-                      onClick={() => handleSend(q.text)}
+                      onClick={() => handleSend(t(q.text))}
                       className="flex w-full items-center gap-2.5 rounded-xl border border-border bg-card px-3 py-2.5 text-left text-sm font-medium text-foreground transition-colors hover:border-[var(--accent-300)] hover:bg-[var(--accent-50)]"
                     >
                       <span className={cn('flex size-7 shrink-0 items-center justify-center rounded-lg', q.tone)}>
                         <KeenIcon icon={q.icon} style="duotone" className="size-3.5" />
                       </span>
-                      <span className="flex-1">{q.text}</span>
+                      <span className="flex-1">{t(q.text)}</span>
                       <KeenIcon icon="arrow-right" style="duotone" className="size-3.5 text-muted-foreground/50" />
                     </button>
                   ))}
@@ -337,7 +339,7 @@ export function PmoChat({
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Posez votre question à l'agent PMO…"
+            placeholder={t('pmo.inputPh')}
             disabled={isStreaming || isInitializing}
             className="flex-1 border-0 shadow-none focus-visible:ring-0 focus-visible:outline-none bg-transparent px-0 h-9"
           />
@@ -348,7 +350,7 @@ export function PmoChat({
               size="icon"
               onClick={isRecording ? stopRecording : startRecording}
               disabled={isTranscribing || isInitializing}
-              title={isRecording ? 'Arrêter l\'enregistrement' : 'Enregistrer un message vocal'}
+              title={isRecording ? t('pmo.stopRecording') : t('pmo.record')}
               className={`shrink-0 size-8 rounded-lg ${isRecording ? 'animate-pulse' : ''}`}
             >
               {isTranscribing ? (
@@ -366,7 +368,7 @@ export function PmoChat({
               variant="outline"
               size="icon"
               onClick={cancelStream}
-              title="Arrêter"
+              title={t('pmo.stop')}
               className="shrink-0 size-8 rounded-lg"
             >
               <KeenIcon icon="cross" style="duotone" className="size-3.5" />
@@ -377,7 +379,7 @@ export function PmoChat({
               size="icon"
               onClick={() => handleSend()}
               disabled={!input.trim() || isInitializing || isTranscribing}
-              title="Envoyer"
+              title={t('room.send')}
               className="shrink-0 size-8 rounded-lg"
             >
               <KeenIcon icon="arrow-up" style="duotone" className="size-3.5" />

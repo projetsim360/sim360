@@ -9,6 +9,8 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { Skeleton } from '@/components/ui/skeleton';
 import { simulationApi } from '@/features/simulation/api/simulation.api';
 import { getSectorIcon } from '@/features/simulation/config/sectors';
+import { useTv } from '@/i18n/app/use-t';
+import { useT } from '@/i18n/app/use-t';
 
 interface SimulationSummary {
   id: string;
@@ -19,22 +21,18 @@ interface SimulationSummary {
   project: { id: string; name: string; client: string | null };
 }
 
-const STATUS_CONFIG: Record<string, { label: string; variant: 'secondary' | 'primary' | 'success' | 'warning' | 'destructive' | 'info' }> = {
-  DRAFT: { label: 'Brouillon', variant: 'secondary' },
-  ONBOARDING: { label: 'Passation', variant: 'info' },
-  IN_PROGRESS: { label: 'En cours', variant: 'primary' },
-  PAUSED: { label: 'En pause', variant: 'warning' },
-  COMPLETED: { label: 'Terminée', variant: 'success' },
-  ABANDONED: { label: 'Abandonnée', variant: 'destructive' },
-};
-
-const DIFFICULTY_LABELS: Record<string, string> = {
-  BEGINNER: 'Débutant',
-  INTERMEDIATE: 'Intermédiaire',
-  ADVANCED: 'Avancé',
+const STATUS_CONFIG: Record<string, { variant: 'secondary' | 'primary' | 'success' | 'warning' | 'destructive' | 'info' }> = {
+  DRAFT: { variant: 'secondary' },
+  ONBOARDING: { variant: 'info' },
+  IN_PROGRESS: { variant: 'primary' },
+  PAUSED: { variant: 'warning' },
+  COMPLETED: { variant: 'success' },
+  ABANDONED: { variant: 'destructive' },
 };
 
 export default function PortfolioListPage() {
+  const tv = useTv();
+  const t = useT();
   const [simulations, setSimulations] = useState<SimulationSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +44,7 @@ export default function PortfolioListPage() {
         setSimulations(data as SimulationSummary[]);
       })
       .catch(() => {
-        setError('Impossible de charger vos simulations.');
+        setError(t('valo.simsLoadError'));
       })
       .finally(() => {
         setIsLoading(false);
@@ -58,8 +56,8 @@ export default function PortfolioListPage() {
       <>
         <Toolbar>
           <ToolbarHeading>
-            <h1 className="text-xl font-medium text-gray-900">Portfolio</h1>
-            <p className="text-sm text-gray-700">Sélectionnez une simulation pour consulter son portfolio</p>
+            <h1 className="text-xl font-medium text-gray-900">{t('valo.portfolio')}</h1>
+            <p className="text-sm text-gray-700">{t('valo.portfolioPick')}</p>
           </ToolbarHeading>
         </Toolbar>
         <div className="container-fixed">
@@ -85,8 +83,8 @@ export default function PortfolioListPage() {
       <>
         <Toolbar>
           <ToolbarHeading>
-            <h1 className="text-xl font-medium text-gray-900">Portfolio</h1>
-            <p className="text-sm text-gray-700">Sélectionnez une simulation pour consulter son portfolio</p>
+            <h1 className="text-xl font-medium text-gray-900">{t('valo.portfolio')}</h1>
+            <p className="text-sm text-gray-700">{t('valo.portfolioPick')}</p>
           </ToolbarHeading>
         </Toolbar>
         <div className="container-fixed">
@@ -104,14 +102,14 @@ export default function PortfolioListPage() {
     <>
       <Toolbar>
         <ToolbarHeading>
-          <h1 className="text-xl font-medium text-gray-900">Portfolio</h1>
-          <p className="text-sm text-gray-700">Sélectionnez une simulation pour consulter son portfolio</p>
+          <h1 className="text-xl font-medium text-gray-900">{t('valo.portfolio')}</h1>
+          <p className="text-sm text-gray-700">{t('valo.portfolioPick')}</p>
         </ToolbarHeading>
         <ToolbarActions>
           <Button variant="outline" size="sm" asChild>
             <Link to="/profile/badges">
               <KeenIcon icon="award" style="duotone" className="text-sm" />
-              Mes badges
+              {t('menu.myBadges')}
             </Link>
           </Button>
         </ToolbarActions>
@@ -122,15 +120,15 @@ export default function PortfolioListPage() {
             <CardContent>
               <EmptyState
                 icon="briefcase"
-                title="Aucune simulation"
-                description="Vous n'avez pas encore de simulation. Lancez une simulation pour construire votre portfolio."
+                title={t('valo.noSims')}
+                description={t('valo.noSimsDesc')}
               />
             </CardContent>
           </Card>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {simulations.map((sim) => {
-              const statusCfg = STATUS_CONFIG[sim.status] ?? { label: sim.status, variant: 'secondary' as const };
+              const statusCfg = STATUS_CONFIG[sim.status] ?? { variant: 'secondary' as const };
               const sectorIcon = getSectorIcon(sim.scenario.sector);
 
               return (
@@ -151,7 +149,7 @@ export default function PortfolioListPage() {
                         </div>
                       </div>
                       <Badge variant={statusCfg.variant} appearance="light" size="sm" className="shrink-0">
-                        {statusCfg.label}
+                        {tv('simulation.status', sim.status)}
                       </Badge>
                     </div>
 
@@ -164,7 +162,7 @@ export default function PortfolioListPage() {
                       )}
                       <span className="flex items-center gap-1">
                         <KeenIcon icon="chart" style="duotone" className="text-xs" />
-                        {DIFFICULTY_LABELS[sim.scenario.difficulty] ?? sim.scenario.difficulty}
+                        {tv('difficulty', sim.scenario.difficulty)}
                       </span>
                     </div>
 
@@ -183,7 +181,7 @@ export default function PortfolioListPage() {
                       <Button variant="primary" size="sm" asChild className="w-full">
                         <Link to={`/simulations/${sim.id}/portfolio`}>
                           <KeenIcon icon="briefcase" style="duotone" className="text-sm" />
-                          Voir le portfolio
+                          {t('valo.seePortfolio')}
                         </Link>
                       </Button>
                     </div>

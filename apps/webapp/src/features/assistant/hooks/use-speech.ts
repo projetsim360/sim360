@@ -22,8 +22,8 @@ function getRecognitionCtor(): RecognitionCtor | null {
   return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
 }
 
-/** Browser speech-to-text (fr-CA). `supported` is false on browsers without the API (e.g. Firefox). */
-export function useSpeechRecognition(onTranscript: (text: string) => void) {
+/** Browser speech-to-text (fr-CA by default). `supported` is false on browsers without the API (e.g. Firefox). */
+export function useSpeechRecognition(onTranscript: (text: string) => void, lang = 'fr-CA') {
   const [listening, setListening] = useState(false);
   const recognitionRef = useRef<Recognition | null>(null);
   const supported = getRecognitionCtor() !== null;
@@ -32,7 +32,7 @@ export function useSpeechRecognition(onTranscript: (text: string) => void) {
     const Ctor = getRecognitionCtor();
     if (!Ctor || listening) return;
     const rec = new Ctor();
-    rec.lang = 'fr-CA';
+    rec.lang = lang;
     rec.interimResults = false;
     rec.maxAlternatives = 1;
     rec.onresult = (e) => {
@@ -44,7 +44,7 @@ export function useSpeechRecognition(onTranscript: (text: string) => void) {
     recognitionRef.current = rec;
     setListening(true);
     rec.start();
-  }, [listening, onTranscript]);
+  }, [listening, onTranscript, lang]);
 
   const stop = useCallback(() => {
     recognitionRef.current?.stop();
@@ -56,8 +56,8 @@ export function useSpeechRecognition(onTranscript: (text: string) => void) {
   return { supported, listening, start, stop };
 }
 
-/** Browser text-to-speech, French voice when available. */
-export function useSpeechSynthesis() {
+/** Browser text-to-speech, with a voice matching `lang` when available. */
+export function useSpeechSynthesis(lang = 'fr-CA') {
   const supported = typeof window !== 'undefined' && 'speechSynthesis' in window;
   const [speaking, setSpeaking] = useState(false);
 
@@ -66,15 +66,15 @@ export function useSpeechSynthesis() {
       if (!supported || !text) return;
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'fr-CA';
-      const voice = window.speechSynthesis.getVoices().find((v) => v.lang.startsWith('fr'));
+      utterance.lang = lang;
+      const voice = window.speechSynthesis.getVoices().find((v) => v.lang.startsWith(lang.slice(0, 2)));
       if (voice) utterance.voice = voice;
       utterance.onend = () => setSpeaking(false);
       utterance.onerror = () => setSpeaking(false);
       setSpeaking(true);
       window.speechSynthesis.speak(utterance);
     },
-    [supported],
+    [supported, lang],
   );
 
   const cancel = useCallback(() => {
