@@ -10,39 +10,24 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { AuthCard } from '@/components/auth/auth-card';
+import { passwordField, passwordStrength } from '@/components/auth/auth-schemas';
+import { useT } from '@/i18n/app/use-t';
 
-const resetSchema = z
-  .object({
-    newPassword: z
-      .string()
-      .min(8, 'Minimum 8 caractères')
-      .regex(/[a-z]/, 'Au moins une minuscule')
-      .regex(/[A-Z]/, 'Au moins une majuscule')
-      .regex(/\d/, 'Au moins un chiffre')
-      .regex(/[^a-zA-Z\d]/, 'Au moins un caractère spécial'),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.newPassword === data.confirmPassword, {
-    message: 'Les mots de passe ne correspondent pas',
-    path: ['confirmPassword'],
-  });
+const resetSchema = (t: ReturnType<typeof useT>) =>
+  z
+    .object({
+      newPassword: passwordField(t),
+      confirmPassword: z.string(),
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+      message: t('auth.password.mismatch'),
+      path: ['confirmPassword'],
+    });
 
-type ResetForm = z.infer<typeof resetSchema>;
-
-function getPasswordStrength(password: string) {
-  let score = 0;
-  if (password.length >= 8) score++;
-  if (/[a-z]/.test(password)) score++;
-  if (/[A-Z]/.test(password)) score++;
-  if (/\d/.test(password)) score++;
-  if (/[^a-zA-Z\d]/.test(password)) score++;
-  if (score <= 2) return { score, label: 'Faible', color: 'bg-red-500' };
-  if (score <= 3) return { score, label: 'Moyen', color: 'bg-yellow-500' };
-  if (score <= 4) return { score, label: 'Fort', color: 'bg-blue-500' };
-  return { score, label: 'Très fort', color: 'bg-green-500' };
-}
+type ResetForm = z.infer<ReturnType<typeof resetSchema>>;
 
 export function ResetPasswordPage() {
+  const t = useT();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
   const navigate = useNavigate();
@@ -52,14 +37,14 @@ export function ResetPasswordPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<ResetForm>({
-    resolver: zodResolver(resetSchema),
+    resolver: zodResolver(resetSchema(t)),
   });
 
   const newPassword = form.watch('newPassword') ?? '';
 
   const onSubmit = async (data: ResetForm) => {
     if (!token) {
-      setServerError('Token manquant');
+      setServerError(t('auth.reset.missingToken'));
       return;
     }
 
@@ -72,7 +57,7 @@ export function ResetPasswordPage() {
       });
       navigate('/auth/reset-password-success');
     } catch (error: any) {
-      setServerError(error.message || 'Erreur lors de la réinitialisation');
+      setServerError(error.message || t('auth.reset.error'));
     } finally {
       setIsSubmitting(false);
     }
@@ -81,22 +66,22 @@ export function ResetPasswordPage() {
   if (!token) {
     return (
       <AuthCard
-        title="Lien invalide."
-        subtitle="Le lien de réinitialisation est invalide ou a expiré."
+        title={t('auth.reset.invalidTitle')}
+        subtitle={t('auth.reset.invalidSubtitle')}
       >
         <Button asChild className="w-full">
-          <Link to="/auth/forgot-password">Demander un nouveau lien</Link>
+          <Link to="/auth/forgot-password">{t('auth.reset.requestNew')}</Link>
         </Button>
       </AuthCard>
     );
   }
 
-  const strength = newPassword ? getPasswordStrength(newPassword) : null;
+  const strength = newPassword ? passwordStrength(newPassword) : null;
 
   return (
     <AuthCard
-      title="Nouveau mot de passe."
-      subtitle="Choisissez un mot de passe robuste."
+      title={t('auth.reset.title')}
+      subtitle={t('auth.reset.subtitle')}
     >
       {serverError && (
         <Alert variant="destructive">
@@ -112,11 +97,11 @@ export function ResetPasswordPage() {
             name="newPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nouveau mot de passe</FormLabel>
+                <FormLabel>{t('auth.reset.newPassword')}</FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Input
-                      placeholder="Minimum 8 caractères"
+                      placeholder={t('auth.password.placeholder')}
                       type={showNewPassword ? 'text' : 'password'}
                       {...field}
                     />
@@ -147,7 +132,7 @@ export function ResetPasswordPage() {
                         />
                       ))}
                     </div>
-                    <p className="text-xs text-muted-foreground">{strength.label}</p>
+                    <p className="text-xs text-muted-foreground">{t(strength.label)}</p>
                   </div>
                 )}
                 <FormMessage />
@@ -160,11 +145,11 @@ export function ResetPasswordPage() {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Confirmer le mot de passe</FormLabel>
+                <FormLabel>{t('auth.password.confirm')}</FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Input
-                      placeholder="Retapez votre mot de passe"
+                      placeholder={t('auth.password.confirmPlaceholder')}
                       type={showConfirmPassword ? 'text' : 'password'}
                       {...field}
                     />
@@ -189,7 +174,7 @@ export function ResetPasswordPage() {
           />
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? 'Mise à jour...' : 'Mettre à jour'}
+            {isSubmitting ? t('auth.reset.updating') : t('auth.reset.submit')}
           </Button>
         </form>
       </Form>

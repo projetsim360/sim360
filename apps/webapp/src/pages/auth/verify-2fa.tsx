@@ -9,8 +9,10 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2 } from '@/components/keenicons/icons';
 import { AuthCard } from '@/components/auth/auth-card';
+import { useT } from '@/i18n/app/use-t';
 
 export function VerifyTwoFactorPage() {
+  const t = useT();
   const navigate = useNavigate();
   const { refreshUser } = useAuth();
   const [mode, setMode] = useState<'totp' | 'backup'>('totp');
@@ -52,11 +54,11 @@ export function VerifyTwoFactorPage() {
       }
     } catch (err: any) {
       verifyingRef.current = false;
-      setError(err?.message || 'Code invalide. Veuillez réessayer.');
+      setError(err?.message || t('auth.twoFa.invalid'));
     } finally {
       setIsLoading(false);
     }
-  }, [navigate, refreshUser]);
+  }, [navigate, refreshUser, t]);
 
   const handleOtpComplete = useCallback((value: string) => {
     setCode(value);
@@ -81,11 +83,11 @@ export function VerifyTwoFactorPage() {
 
   return (
     <AuthCard
-      title="Code de sécurité."
+      title={t('auth.twoFa.title')}
       subtitle={
         mode === 'totp'
-          ? 'Saisissez le code à 6 chiffres de votre application d\'authentification.'
-          : 'Saisissez un de vos codes de récupération.'
+          ? t('auth.twoFa.subtitleTotp')
+          : t('auth.twoFa.subtitleBackup')
       }
       bottomSlot={
         mode === 'totp' ? (
@@ -94,7 +96,7 @@ export function VerifyTwoFactorPage() {
             className="font-medium text-[var(--accent-600)] hover:underline"
             onClick={() => { setMode('backup'); setError(''); }}
           >
-            Utiliser un code de récupération
+            {t('auth.twoFa.useBackup')}
           </button>
         ) : (
           <button
@@ -102,7 +104,7 @@ export function VerifyTwoFactorPage() {
             className="font-medium text-[var(--accent-600)] hover:underline"
             onClick={() => { setMode('totp'); setError(''); }}
           >
-            Utiliser l'application d'authentification
+            {t('auth.twoFa.useTotp')}
           </button>
         )
       }
@@ -137,7 +139,7 @@ export function VerifyTwoFactorPage() {
           {isLoading && (
             <div className="flex items-center gap-2 text-muted-foreground">
               <Loader2 className="size-4 animate-spin" />
-              <span className="text-sm">Vérification...</span>
+              <span className="text-sm">{t('auth.twoFa.verifying')}</span>
             </div>
           )}
         </div>
@@ -154,10 +156,10 @@ export function VerifyTwoFactorPage() {
             {isLoading ? (
               <>
                 <Loader2 className="size-4 animate-spin mr-2" />
-                Vérification...
+                {t('auth.twoFa.verifying')}
               </>
             ) : (
-              'Vérifier'
+              t('auth.twoFa.submit')
             )}
           </Button>
         </form>

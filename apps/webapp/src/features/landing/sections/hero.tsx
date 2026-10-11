@@ -8,8 +8,10 @@ import { usePublicSession } from '../providers/public-session';
 import { MeshBackground } from '../components/mesh-background';
 import { useScrollContainer } from '../hooks/use-scroll-container';
 import { DemoDialog } from '../components/demo-dialog';
+import { useAppLink } from '../hooks/use-public-locale';
 
 export function HeroSection() {
+  const appLink = useAppLink();
   const { formatMessage } = useIntl();
   const { user } = usePublicSession();
   const reduced = useReducedMotion();
@@ -20,7 +22,7 @@ export function HeroSection() {
   const mockupY = useTransform(scrollY, [0, 600], [0, reduced ? 0 : -48]);
   const copyY = useTransform(scrollY, [0, 600], [0, reduced ? 0 : 20]);
 
-  const primaryCta = user ? { to: '/simulations', id: 'hero.ctaLoggedIn' as const } : { to: '/auth/sign-up', id: 'hero.cta' as const };
+  const primaryCta = user ? { to: appLink('/simulations'), id: 'hero.ctaLoggedIn' as const } : { to: appLink('/auth/sign-up'), id: 'hero.cta' as const };
 
   return (
     <section ref={sectionRef} id="hero" className="relative overflow-hidden bg-background px-6 pb-24 pt-32 lg:px-8 lg:pb-32 lg:pt-40">

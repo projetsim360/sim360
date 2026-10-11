@@ -17,6 +17,8 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useShellState } from '../state/shell-state-provider';
+import { useT } from '@/i18n/app/use-t';
+import type { AppMessageKey } from '@/i18n/app/messages';
 import { simulationApi } from '@/features/simulation/api/simulation.api';
 import { usePmoHistory, usePmoContext } from '@/features/pmo/api/pmo.api';
 import { useProfileAdaptation } from '@/features/profile/api/profile.api';
@@ -26,19 +28,19 @@ import { HelpAssistant } from '@/features/assistant/components/help-assistant';
 
 type Tab = 'aide' | 'chat' | 'contexte';
 
-const SIM_STATUS_LABELS: Record<string, string> = {
-  DRAFT: 'Brouillon',
-  ONBOARDING: 'Passation',
-  IN_PROGRESS: 'En cours',
-  PAUSED: 'En pause',
-  COMPLETED: 'Terminée',
-  ABANDONED: 'Abandonnée',
+const SIM_STATUS_KEYS: Record<string, AppMessageKey> = {
+  DRAFT: 'simulation.status.DRAFT',
+  ONBOARDING: 'simulation.status.ONBOARDING',
+  IN_PROGRESS: 'simulation.status.IN_PROGRESS',
+  PAUSED: 'simulation.status.PAUSED',
+  COMPLETED: 'simulation.status.COMPLETED',
+  ABANDONED: 'simulation.status.ABANDONED',
 };
 
-function simulationLabel(s: any): string {
-  const name = s.project?.name || s.scenario?.title || 'Simulation';
-  const status = SIM_STATUS_LABELS[s.status];
-  return status ? `${name} · ${status}` : name;
+function simulationLabel(s: any, t: ReturnType<typeof useT>): string {
+  const name = s.project?.name || s.scenario?.title || t('shell.pmo.simulation');
+  const key = SIM_STATUS_KEYS[s.status];
+  return key ? `${name} · ${t(key)}` : name;
 }
 
 interface PmoPanelProps {
@@ -47,6 +49,7 @@ interface PmoPanelProps {
 
 export function PmoPanel({ className }: PmoPanelProps) {
   const { pmoOpen, setPmoOpen } = useShellState();
+  const t = useT();
   // null = automatic: PMO chat during a simulation, help otherwise.
   const [pickedTab, setActiveTab] = useState<Tab | null>(null);
   const [overrideSimId, setOverrideSimId] = useState<string | null>(null);
@@ -103,10 +106,10 @@ export function PmoPanel({ className }: PmoPanelProps) {
   );
 
   const headerSubtitle = !simulationId
-    ? 'Aucune simulation active'
+    ? t('shell.pmo.noActive')
     : context?.currentPhase
-      ? `Phase ${context.simulation.currentPhaseOrder} · ${context.currentPhase.name}`
-      : 'En ligne';
+      ? t('shell.pmo.phase', { order: context.simulation.currentPhaseOrder, name: context.currentPhase.name })
+      : t('shell.pmo.online');
 
   const currentSim = activeSimulations.find((s: any) => s.id === simulationId);
   const activeTab: Tab = pickedTab ?? (simulationId ? 'chat' : 'aide');
@@ -133,7 +136,7 @@ export function PmoPanel({ className }: PmoPanelProps) {
           <Sparkles className="size-[18px]" />
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-          <span className="font-display text-[15px] font-bold text-foreground">Assistant</span>
+          <span className="font-display text-[15px] font-bold text-foreground">{t('shell.topbar.assistant')}</span>
           <span className="inline-flex items-center gap-1.5 truncate text-xs text-muted-foreground">
             <span
               className={cn(
@@ -153,19 +156,19 @@ export function PmoPanel({ className }: PmoPanelProps) {
                   size="sm"
                   className="max-w-[150px] shrink-0 gap-1.5 rounded-full border-border bg-[var(--brand-50)] px-3 text-xs font-semibold text-[var(--brand-700)]"
                 >
-                  <SelectValue placeholder="Choisir une simulation">
-                    {currentSim?.project?.name ?? currentSim?.scenario?.title ?? 'Choisir une simulation'}
+                  <SelectValue placeholder={t('shell.pmo.pick')}>
+                    {currentSim?.project?.name ?? currentSim?.scenario?.title ?? t('shell.pmo.pick')}
                   </SelectValue>
                 </SelectTrigger>
               </TooltipTrigger>
               <TooltipContent>
-                {currentSim ? simulationLabel(currentSim) : 'Choisir une simulation'}
+                {currentSim ? simulationLabel(currentSim, t) : t('shell.pmo.pick')}
               </TooltipContent>
             </Tooltip>
             <SelectContent>
               {activeSimulations.map((s: any) => (
                 <SelectItem key={s.id} value={s.id}>
-                  {simulationLabel(s)}
+                  {simulationLabel(s, t)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -173,7 +176,7 @@ export function PmoPanel({ className }: PmoPanelProps) {
         )}
         <button
           type="button"
-          aria-label="Fermer"
+          aria-label={t('common.close')}
           onClick={() => setPmoOpen(false)}
           className="inline-flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-sm border-0 bg-transparent text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
@@ -194,7 +197,7 @@ export function PmoPanel({ className }: PmoPanelProps) {
           )}
         >
           <LifeBuoy className="size-3.5" />
-          Aide
+          {t('shell.pmo.tab.help')}
         </button>
         <button
           type="button"
@@ -207,7 +210,7 @@ export function PmoPanel({ className }: PmoPanelProps) {
           )}
         >
           <MessageCircle className="size-3.5" />
-          Agent PMO
+          {t('shell.pmo.tab.chat')}
         </button>
         <button
           type="button"
@@ -220,7 +223,7 @@ export function PmoPanel({ className }: PmoPanelProps) {
           )}
         >
           <Layers className="size-3.5" />
-          Contexte
+          {t('shell.pmo.tab.context')}
         </button>
       </div>
 
@@ -234,9 +237,9 @@ export function PmoPanel({ className }: PmoPanelProps) {
           <div className="flex flex-1 items-center justify-center">
             <EmptyState
               icon="abstract-26"
-              title="Aucune simulation active"
-              description="Lancez ou ouvrez une simulation pour discuter avec votre agent PMO."
-              action={{ label: 'Voir mes simulations', href: '/simulations' }}
+              title={t('shell.pmo.noActive')}
+              description={t('shell.pmo.emptyText')}
+              action={{ label: t('shell.pmo.emptyCta'), href: '/simulations' }}
             />
           </div>
         ) : activeTab === 'chat' ? (

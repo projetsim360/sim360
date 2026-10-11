@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { useIntl } from 'react-intl';
 import { Clapperboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { usePublicLocale } from '../hooks/use-public-locale';
+import { usePublicLocale, useAppLink } from '../hooks/use-public-locale';
 
 /**
  * Self-hosted demo video (roadmap lot 5): `public/media/landing/demo-<locale>.{mp4,webm,vtt}`
@@ -11,6 +11,7 @@ import { usePublicLocale } from '../hooks/use-public-locale';
  * source by itself); until they exist, the player gives way to an honest "coming" card.
  */
 export function DemoVideo() {
+  const appLink = useAppLink();
   const { formatMessage } = useIntl();
   const locale = usePublicLocale();
   const [available, setAvailable] = useState<boolean | null>(null);
@@ -33,7 +34,7 @@ export function DemoVideo() {
         <h2 className="font-display text-xl font-bold text-foreground">{formatMessage({ id: 'demo.unavailable.title' })}</h2>
         <p className="mt-2 max-w-md text-muted-foreground">{formatMessage({ id: 'demo.unavailable.text' })}</p>
         <Button asChild variant="primary" size="sm" className="mt-6 bg-[var(--accent-500)] text-[var(--brand-900)] hover:bg-[var(--accent-400)] hover:text-[var(--brand-900)]">
-          <Link to="/auth/sign-up">{formatMessage({ id: 'demo.cta' })}</Link>
+          <Link to={appLink('/auth/sign-up')}>{formatMessage({ id: 'demo.cta' })}</Link>
         </Button>
       </div>
     );

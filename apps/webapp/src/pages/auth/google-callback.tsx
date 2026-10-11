@@ -3,8 +3,10 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { setTokens } from '@/lib/auth';
 import { AuthCard } from '@/components/auth/auth-card';
 import { Link } from 'react-router-dom';
+import { useT } from '@/i18n/app/use-t';
 
 export function GoogleCallbackPage() {
+  const t = useT();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [error, setError] = useState('');
@@ -24,7 +26,7 @@ export function GoogleCallbackPage() {
     const refreshToken = searchParams.get('refreshToken');
 
     if (!accessToken || !refreshToken) {
-      setError("Erreur lors de l'authentification Google");
+      setError(t('auth.google.error'));
       return;
     }
 
@@ -36,16 +38,16 @@ export function GoogleCallbackPage() {
     // Full page reload to re-initialize AuthProvider with the new tokens
     // This avoids race conditions with AuthProvider's initial fetchUser
     window.location.replace(savedPath || '/dashboard');
-  }, [searchParams, navigate]);
+  }, [searchParams, navigate, t]);
 
   if (error) {
     return (
       <AuthCard
-        title="Connexion en cours…"
-        subtitle="Vous serez redirigé automatiquement."
+        title={t('auth.google.title')}
+        subtitle={t('auth.google.subtitle')}
         bottomSlot={
           <Link to="/auth/sign-in" className="font-medium text-[var(--accent-600)] hover:underline">
-            Retour à la connexion
+            {t('auth.backToSignIn')}
           </Link>
         }
       >
@@ -56,8 +58,8 @@ export function GoogleCallbackPage() {
 
   return (
     <AuthCard
-      title="Connexion en cours…"
-      subtitle="Vous serez redirigé automatiquement."
+      title={t('auth.google.title')}
+      subtitle={t('auth.google.subtitle')}
     >
       <div className="flex justify-center py-4">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--brand-700)] border-t-transparent" />

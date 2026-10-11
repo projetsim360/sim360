@@ -63,3 +63,12 @@ export function localizedPath(path: string, locale: PublicLocale): string {
 export function alternateLocale(locale: PublicLocale): PublicLocale {
   return locale === 'fr' ? 'en' : 'fr';
 }
+
+/**
+ * Link from the public site into the app. localStorage is per origin (apex vs app host), so the
+ * English site passes `?lang=en` and the app's LocaleProvider picks it up.
+ */
+export function appPath(path: string, locale: PublicLocale): string {
+  if (locale !== 'en') return path;
+  return `${path}${path.includes('?') ? '&' : '?'}lang=en`;
+}

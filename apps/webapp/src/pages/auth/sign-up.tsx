@@ -12,48 +12,33 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { AuthCard } from '@/components/auth/auth-card';
+import { emailField, passwordField, passwordStrength } from '@/components/auth/auth-schemas';
+import { useT } from '@/i18n/app/use-t';
+import { Msg } from '@/i18n/app/msg';
+import { useAppLocale } from '@/providers/locale-provider';
 
-const signUpSchema = z
-  .object({
-    firstName: z.string().min(1, 'Requis').max(100),
-    lastName: z.string().min(1, 'Requis').max(100),
-    email: z.string().email('Courriel invalide'),
-    password: z
-      .string()
-      .min(8, 'Minimum 8 caractères')
-      .regex(/[a-z]/, 'Au moins une minuscule')
-      .regex(/[A-Z]/, 'Au moins une majuscule')
-      .regex(/\d/, 'Au moins un chiffre')
-      .regex(/[^a-zA-Z\d]/, 'Au moins un caractère spécial'),
-    confirmPassword: z.string(),
-    gdprConsent: z.literal(true, {
-      errorMap: () => ({ message: 'Vous devez accepter les conditions' }),
-    }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Les mots de passe ne correspondent pas',
-    path: ['confirmPassword'],
-  });
+const signUpSchema = (t: ReturnType<typeof useT>) =>
+  z
+    .object({
+      firstName: z.string().min(1, t('auth.field.required')).max(100),
+      lastName: z.string().min(1, t('auth.field.required')).max(100),
+      email: emailField(t),
+      password: passwordField(t),
+      confirmPassword: z.string(),
+      gdprConsent: z.literal(true, {
+        errorMap: () => ({ message: t('auth.signUp.consentRequired') }),
+      }),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t('auth.password.mismatch'),
+      path: ['confirmPassword'],
+    });
 
-type SignUpForm = z.infer<typeof signUpSchema>;
-
-function getPasswordStrength(password: string): { score: number; label: string; color: string } {
-  if (!password) return { score: 0, label: '', color: '' };
-  let score = 0;
-  if (password.length >= 8) score++;
-  if (/[a-z]/.test(password)) score++;
-  if (/[A-Z]/.test(password)) score++;
-  if (/\d/.test(password)) score++;
-  if (/[^a-zA-Z\d]/.test(password)) score++;
-
-  if (score <= 1) return { score: 1, label: 'Très faible', color: 'bg-destructive' };
-  if (score === 2) return { score: 2, label: 'Faible', color: 'bg-orange-500' };
-  if (score === 3) return { score: 3, label: 'Moyen', color: 'bg-yellow-500' };
-  if (score === 4) return { score: 4, label: 'Fort', color: 'bg-blue-500' };
-  return { score: 5, label: 'Très fort', color: 'bg-green-500' };
-}
+type SignUpForm = z.infer<ReturnType<typeof signUpSchema>>;
 
 export function SignUpPage() {
+  const t = useT();
+  const { locale } = useAppLocale();
   const { register: authRegister } = useAuth();
   const navigate = useNavigate();
   const [serverError, setServerError] = useState('');
@@ -63,7 +48,7 @@ export function SignUpPage() {
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   const form = useForm<SignUpForm>({
-    resolver: zodResolver(signUpSchema),
+    resolver: zodResolver(signUpSchema(t)),
   });
 
   const email = form.watch('email');
@@ -97,7 +82,7 @@ export function SignUpPage() {
       await authRegister(data);
       navigate('/auth/verify-email-sent', { state: { email: data.email } });
     } catch (error: any) {
-      setServerError(error.message || "Erreur lors de l'inscription");
+      setServerError(error.message || t('auth.signUp.error'));
     } finally {
       setIsSubmitting(false);
     }
@@ -105,7 +90,7 @@ export function SignUpPage() {
 
   const googleEnabled = import.meta.env.VITE_GOOGLE_OAUTH_ENABLED === 'true';
   const googleUrl = `${import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1'}/auth/google`;
-  const strength = password ? getPasswordStrength(password) : null;
+  const strength = password ? passwordStrength(password) : null;
 
   const googleButton = googleEnabled ? (
     <Button variant="outline" type="button" className="w-full" asChild>
@@ -116,21 +101,21 @@ export function SignUpPage() {
           <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
           <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
         </svg>
-        Continuer avec Google
+        {t('auth.google.continue')}
       </a>
     </Button>
   ) : undefined;
 
   return (
     <AuthCard
-      title="Créez votre compte."
-      subtitle="5 minutes. Aucune carte requise."
+      title={t('auth.signUp.title')}
+      subtitle={t('auth.signUp.subtitle')}
       topSlot={googleButton}
       bottomSlot={
         <>
-          Déjà inscrit ?{' '}
+          {t('auth.signUp.haveAccount')}{' '}
           <Link to="/auth/sign-in" className="font-medium text-[var(--accent-600)] hover:underline">
-            Se connecter
+            {t('auth.signIn.submit')}
           </Link>
         </>
       }
@@ -150,9 +135,9 @@ export function SignUpPage() {
               name="firstName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Prénom</FormLabel>
+                  <FormLabel>{t('auth.field.firstName')}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Jean" {...field} />
+                    <Input placeholder={t('auth.field.firstNamePlaceholder')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -163,9 +148,9 @@ export function SignUpPage() {
               name="lastName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nom</FormLabel>
+                  <FormLabel>{t('auth.field.lastName')}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Dupont" {...field} />
+                    <Input placeholder={t('auth.field.lastNamePlaceholder')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -178,16 +163,16 @@ export function SignUpPage() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Courriel</FormLabel>
+                <FormLabel>{t('auth.field.email')}</FormLabel>
                 <FormControl>
-                  <Input placeholder="jean.dupont@example.com" type="email" {...field} />
+                  <Input placeholder={t('auth.field.emailPlaceholder')} type="email" {...field} />
                 </FormControl>
                 <FormMessage />
                 {emailAvailable === false && !form.formState.errors.email && (
-                  <p className="text-sm text-destructive">Cet email est déjà utilisé</p>
+                  <p className="text-sm text-destructive">{t('auth.signUp.emailTaken')}</p>
                 )}
                 {emailAvailable === true && !form.formState.errors.email && email && (
-                  <p className="text-sm text-green-600">Email disponible</p>
+                  <p className="text-sm text-green-600">{t('auth.signUp.emailAvailable')}</p>
                 )}
               </FormItem>
             )}
@@ -198,11 +183,11 @@ export function SignUpPage() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Mot de passe</FormLabel>
+                <FormLabel>{t('auth.field.password')}</FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Input
-                      placeholder="Minimum 8 caractères"
+                      placeholder={t('auth.password.placeholder')}
                       type={passwordVisible ? 'text' : 'password'}
                       {...field}
                     />
@@ -231,7 +216,7 @@ export function SignUpPage() {
                         />
                       ))}
                     </div>
-                    <p className="text-xs text-muted-foreground">{strength.label}</p>
+                    <p className="text-xs text-muted-foreground">{t(strength.label)}</p>
                   </div>
                 )}
                 <FormMessage />
@@ -244,11 +229,11 @@ export function SignUpPage() {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Confirmer le mot de passe</FormLabel>
+                <FormLabel>{t('auth.password.confirm')}</FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Input
-                      placeholder="Retapez votre mot de passe"
+                      placeholder={t('auth.password.confirmPlaceholder')}
                       type={confirmPasswordVisible ? 'text' : 'password'}
                       {...field}
                     />
@@ -286,14 +271,21 @@ export function SignUpPage() {
                 </FormControl>
                 <div className="space-y-1">
                   <FormLabel className="text-sm font-normal cursor-pointer">
-                    J'accepte les{' '}
-                    <a href="/cgu" target="_blank" rel="noopener noreferrer" className="text-[var(--accent-600)] hover:underline">
-                      conditions d'utilisation
-                    </a>{' '}
-                    et la{' '}
-                    <a href="/confidentialite" target="_blank" rel="noopener noreferrer" className="text-[var(--accent-600)] hover:underline">
-                      politique de confidentialité
-                    </a>
+                    <Msg
+                      id="auth.signUp.consent"
+                      values={{
+                        terms: (chunks) => (
+                          <a href={locale === 'en' ? '/en/terms' : '/cgu'} target="_blank" rel="noopener noreferrer" className="text-[var(--accent-600)] hover:underline">
+                            {chunks}
+                          </a>
+                        ),
+                        privacy: (chunks) => (
+                          <a href={locale === 'en' ? '/en/privacy' : '/confidentialite'} target="_blank" rel="noopener noreferrer" className="text-[var(--accent-600)] hover:underline">
+                            {chunks}
+                          </a>
+                        ),
+                      }}
+                    />
                   </FormLabel>
                   <FormMessage />
                 </div>
@@ -302,7 +294,7 @@ export function SignUpPage() {
           />
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? 'Inscription...' : 'Commencer'}
+            {isSubmitting ? t('auth.signUp.submitting') : t('auth.signUp.submit')}
           </Button>
         </form>
       </Form>

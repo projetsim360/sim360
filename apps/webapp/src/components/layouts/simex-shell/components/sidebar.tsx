@@ -6,6 +6,8 @@ import { WorkspaceSwitcher } from './workspace-switcher';
 import { useShellState } from '../state/shell-state-provider';
 import { useAuth } from '@/providers/auth-provider';
 import { APP_SIDEBAR_MENU } from '@/config/menu.config';
+import { useT } from '@/i18n/app/use-t';
+import { useMenuLabel } from '@/i18n/app/menu-labels';
 import type { MenuItem, MenuConfig, UserRole } from '@/config/types';
 
 // ---------------------------------------------------------------------------
@@ -97,7 +99,8 @@ interface SectionHeadingProps {
   label: string;
 }
 
-function SectionHeading({ label }: SectionHeadingProps) {
+function SectionHeading({ label: raw }: SectionHeadingProps) {
+  const label = useMenuLabel()(raw);
   return (
     <div
       className={cn(
@@ -120,6 +123,7 @@ interface NavItemProps {
 }
 
 function NavItem({ item, pathname, sidebarCollapsed, accordionState, onToggleAccordion, onLinkClick }: NavItemProps) {
+  const label = useMenuLabel();
   const active = isItemActive(item, pathname);
   const hasChildren = Boolean(item.children && item.children.length > 0);
   const isOpen = hasChildren && item.title ? (accordionState[item.title] ?? false) : false;
@@ -154,14 +158,14 @@ function NavItem({ item, pathname, sidebarCollapsed, accordionState, onToggleAcc
       <div>
         <button
           type="button"
-          data-tip={item.title}
+          data-tip={label(item.title)}
           onClick={() => onToggleAccordion(item.title!)}
           className={cn(itemClasses, 'w-full text-left')}
         >
           {Icon && <Icon className={iconClasses} />}
           {!sidebarCollapsed && (
             <>
-              <span className="simex-nav-label flex-1 whitespace-nowrap">{item.title}</span>
+              <span className="simex-nav-label flex-1 whitespace-nowrap">{label(item.title)}</span>
               {item.badge !== undefined && (
                 <span className={badgeClasses}>{item.badge}</span>
               )}
@@ -199,7 +203,7 @@ function NavItem({ item, pathname, sidebarCollapsed, accordionState, onToggleAcc
                     onClick={(e) => e.preventDefault()}
                     className={childClasses}
                   >
-                    {child.title}
+                    {label(child.title)}
                   </a>
                 );
               }
@@ -211,7 +215,7 @@ function NavItem({ item, pathname, sidebarCollapsed, accordionState, onToggleAcc
                   className={childClasses}
                   onClick={onLinkClick}
                 >
-                  {child.title}
+                  {label(child.title)}
                 </Link>
               );
             })}
@@ -229,7 +233,7 @@ function NavItem({ item, pathname, sidebarCollapsed, accordionState, onToggleAcc
       {Icon && <Icon className={iconClasses} />}
       {!sidebarCollapsed && (
         <>
-          <span className="simex-nav-label flex-1 whitespace-nowrap">{item.title}</span>
+          <span className="simex-nav-label flex-1 whitespace-nowrap">{label(item.title)}</span>
           {item.badge !== undefined && (
             <span className={badgeClasses}>{item.badge}</span>
           )}
@@ -242,7 +246,7 @@ function NavItem({ item, pathname, sidebarCollapsed, accordionState, onToggleAcc
     return (
       <a
         href="#"
-        data-tip={item.title}
+        data-tip={label(item.title)}
         onClick={(e) => e.preventDefault()}
         className={itemClasses}
       >
@@ -254,7 +258,7 @@ function NavItem({ item, pathname, sidebarCollapsed, accordionState, onToggleAcc
   return (
     <Link
       to={item.path!}
-      data-tip={item.title}
+      data-tip={label(item.title)}
       className={itemClasses}
       onClick={onLinkClick}
     >
@@ -272,6 +276,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ className }: SidebarProps) {
+  const t = useT();
   const { sidebarCollapsed, sidebarMobileOpen, setSidebarMobileOpen } = useShellState();
   const { user } = useAuth();
   const { pathname } = useLocation();
@@ -359,7 +364,7 @@ export function Sidebar({ className }: SidebarProps) {
           <Play className="size-[11px]" />
         </span>
         {!sidebarCollapsed && (
-          <span className="simex-cta-label">Lancer une simulation</span>
+          <span className="simex-cta-label">{t('shell.sidebar.launch')}</span>
         )}
       </Link>
 
@@ -407,14 +412,14 @@ export function Sidebar({ className }: SidebarProps) {
 
           <div className="relative z-10">
             <p className="mb-1.5 font-display text-sm font-bold text-[var(--shell-fg-strong)]">
-              Mode coach activé
+              {t('shell.sidebar.coach.title')}
             </p>
             <p className="mb-3 text-[12px] leading-[1.45] text-[var(--shell-fg-muted)]">
-              Retour détaillé après chaque livrable, accès au plan de progression personnalisé.
+              {t('shell.sidebar.coach.text')}
             </p>
             <div className="mb-3 inline-flex items-center gap-1.5 text-[11px] text-[var(--shell-fg)]">
               <Sparkles className="size-3.5 text-[var(--accent-400)]" />
-              Inclus avec votre offre
+              {t('shell.sidebar.coach.included')}
             </div>
             <button
               type="button"
@@ -424,7 +429,7 @@ export function Sidebar({ className }: SidebarProps) {
                 'cursor-pointer transition-colors duration-150 hover:bg-[var(--accent-600)]',
               )}
             >
-              Découvrir
+              {t('shell.sidebar.coach.cta')}
             </button>
           </div>
         </div>

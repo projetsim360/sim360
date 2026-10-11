@@ -1,47 +1,44 @@
 import { useLocation, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { AuthCard } from '@/components/auth/auth-card';
+import { useT } from '@/i18n/app/use-t';
+import { Msg } from '@/i18n/app/msg';
 
 export function CheckEmailPage() {
+  const t = useT();
   const location = useLocation();
   const email = (location.state as any)?.email || '';
 
   return (
     <AuthCard
-      title="Vérifiez vos courriels."
+      title={t('auth.checkEmail.title')}
       subtitle={
         email ? (
-          <>
-            Un lien de réinitialisation a été envoyé à{' '}
-            <strong>{email}</strong>.
-          </>
+          <Msg id="auth.checkEmail.sentTo" values={{ email: <strong>{email}</strong> }} />
         ) : (
-          'Un lien de réinitialisation a été envoyé à votre adresse.'
+          t('auth.checkEmail.sent')
         )
       }
       bottomSlot={
-        <Link
-          to="/auth/sign-in"
-          className="font-medium text-[var(--accent-600)] hover:underline"
-        >
-          Retour à la connexion
+        <Link to="/auth/sign-in" className="font-medium text-[var(--accent-600)] hover:underline">
+          {t('auth.backToSignIn')}
         </Link>
       }
     >
       <div className="text-sm text-muted-foreground">
         {email ? (
-          <>
-            Si un compte existe pour{' '}
-            <span className="font-medium text-foreground">{email}</span>
-            , vous recevrez un lien de réinitialisation dans quelques minutes.
-          </>
+          <Msg
+            id="auth.checkEmail.ifAccountFor"
+            values={{ email: <span className="font-medium text-foreground">{email}</span> }}
+          />
         ) : (
-          'Si un compte existe pour cette adresse, vous recevrez un lien de réinitialisation dans quelques minutes.'
+          t('auth.checkEmail.ifAccount')
         )}
-        <br />Pensez à vérifier vos spams.
+        <br />
+        {t('auth.checkEmail.spam')}
       </div>
       <Button asChild className="w-full">
-        <Link to="/auth/sign-in">Retour à la connexion</Link>
+        <Link to="/auth/sign-in">{t('auth.backToSignIn')}</Link>
       </Button>
     </AuthCard>
   );

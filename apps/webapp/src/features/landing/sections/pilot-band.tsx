@@ -4,6 +4,7 @@ import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePublicSession } from '../providers/public-session';
 import { Reveal } from '../components/reveal';
+import { useAppLink } from '../hooks/use-public-locale';
 
 const POINTS = ['pilot.point.1', 'pilot.point.2', 'pilot.point.3'] as const;
 
@@ -12,6 +13,7 @@ const POINTS = ['pilot.point.1', 'pilot.point.2', 'pilot.point.3'] as const;
  * logos, no invented numbers (roadmap decision D1).
  */
 export function PilotBand() {
+  const appLink = useAppLink();
   const { formatMessage } = useIntl();
   const { user } = usePublicSession();
 
@@ -34,7 +36,7 @@ export function PilotBand() {
           </ul>
           {!user && (
             <Button asChild variant="primary" size="sm" className="mt-6 w-full bg-[var(--accent-500)] text-[var(--brand-900)] hover:bg-[var(--accent-400)] hover:text-[var(--brand-900)]">
-              <Link to="/auth/sign-up">{formatMessage({ id: 'pilot.cta' })}</Link>
+              <Link to={appLink('/auth/sign-up')}>{formatMessage({ id: 'pilot.cta' })}</Link>
             </Button>
           )}
         </div>

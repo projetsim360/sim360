@@ -1,8 +1,10 @@
 import { useShellState } from '@/components/layouts/simex-shell/state/shell-state-provider';
 import { KeenIcon } from '@/components/keenicons';
+import { useT } from '@/i18n/app/use-t';
 
 export function PmoCoachCard() {
   const { setPmoOpen } = useShellState();
+  const t = useT();
 
   return (
     <button
@@ -16,15 +18,15 @@ export function PmoCoachCard() {
           <KeenIcon icon="abstract-26" style="duotone" className="text-sm text-white" />
         </span>
         <span className="text-[11px] font-semibold uppercase tracking-[1px] text-[var(--brand-200)]">
-          Agent PMO
+          {t('shell.pmo.tab.chat')}
         </span>
       </div>
-      <h4 className="font-display text-[15px] font-bold text-white">Votre coach vous accompagne</h4>
+      <h4 className="font-display text-[15px] font-bold text-white">{t('dashboard.coach.title')}</h4>
       <p className="mt-1 text-[13px] leading-relaxed text-[var(--brand-100)]">
-        Il analyse vos décisions et vous propose des pistes à chaque étape.
+        {t('dashboard.coach.text')}
       </p>
       <span className="mt-2.5 inline-block text-[13px] font-semibold text-[var(--accent-300)]">
-        Ouvrir le coach →
+        {t('dashboard.coach.cta')}
       </span>
     </button>
   );

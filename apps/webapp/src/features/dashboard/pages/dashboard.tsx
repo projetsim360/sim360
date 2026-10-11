@@ -18,33 +18,15 @@ import { PmoCoachCard } from '../components/pmo-coach-card';
 import { ScoreEvolutionCard } from '../components/score-evolution-card';
 import { RecentActivityCard } from '../components/recent-activity-card';
 import type { SparkTone } from '../components/sparkline';
+import { useT } from '@/i18n/app/use-t';
+import type { AppMessageKey } from '@/i18n/app/messages';
 
-const ONBOARDING_TOUR_STEPS: TourStep[] = [
-  {
-    target: '[data-slot="toolbar-heading"]',
-    title: 'Voici votre tableau de bord',
-    description: "C'est votre QG. Retrouvez vos simulations en cours, vos actions en attente et votre progression.",
-  },
-  {
-    target: 'a[href="/simulations/new"]',
-    title: 'Lancez votre première simulation',
-    description: 'Choisissez un scénario et immergez-vous dans un projet fictif.',
-  },
-  {
-    target: '[data-tour="getting-started"]',
-    title: 'Suivez votre progression',
-    description: 'Cette checklist vous guide pas à pas dans la découverte de la plateforme.',
-  },
-  {
-    target: '[data-tour="next-step"]',
-    title: 'Actions recommandées',
-    description: 'La plateforme vous recommande toujours la prochaine action la plus pertinente.',
-  },
-  {
-    target: '[data-tour="stats"]',
-    title: 'Valorisez vos compétences',
-    description: 'Après chaque simulation, consultez votre débriefing et partagez vos badges.',
-  },
+const TOUR: { target: string; title: AppMessageKey; description: AppMessageKey }[] = [
+  { target: '[data-slot="toolbar-heading"]', title: 'dashboard.tour.1.title', description: 'dashboard.tour.1.text' },
+  { target: 'a[href="/simulations/new"]', title: 'dashboard.tour.2.title', description: 'dashboard.tour.2.text' },
+  { target: '[data-tour="getting-started"]', title: 'dashboard.tour.3.title', description: 'dashboard.tour.3.text' },
+  { target: '[data-tour="next-step"]', title: 'dashboard.tour.4.title', description: 'dashboard.tour.4.text' },
+  { target: '[data-tour="stats"]', title: 'dashboard.tour.5.title', description: 'dashboard.tour.5.text' },
 ];
 
 function toneFromDelta(delta: number | null | undefined): SparkTone {
@@ -54,20 +36,22 @@ function toneFromDelta(delta: number | null | undefined): SparkTone {
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const t = useT();
+  const tourSteps: TourStep[] = TOUR.map((s) => ({ target: s.target, title: t(s.title), description: t(s.description) }));
   const reduce = useReducedMotion();
   const { data: summary, isLoading, isError } = useDashboardSummary();
 
   if (isError) {
     return (
       <>
-        <PageHeader breadcrumbs={[{ label: 'Tableau de bord' }]} title="Tableau de bord" />
+        <PageHeader breadcrumbs={[{ label: t('menu.dashboard') }]} title={t('menu.dashboard')} />
         <div className="px-6 pb-6">
           <Card>
             <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
               <KeenIcon icon="information-2" style="duotone" className="text-3xl text-[var(--neutral-400)]" />
-              <p className="text-sm font-medium text-[var(--brand-700)]">Impossible de charger le tableau de bord</p>
+              <p className="text-sm font-medium text-[var(--brand-700)]">{t('dashboard.loadError')}</p>
               <Button variant="primary" size="sm" onClick={() => window.location.reload()}>
-                Réessayer
+                {t('common.retry')}
               </Button>
             </CardContent>
           </Card>
@@ -92,36 +76,36 @@ export default function DashboardPage() {
   const kpis = summary
     ? [
         {
-          label: 'Simulations actives',
+          label: t('dashboard.kpi.active'),
           value: String(stats!.activeSimulations),
           series: trends!.activeSimulations.series,
           delta: trends!.activeSimulations.delta,
           tone: toneFromDelta(trends!.activeSimulations.delta),
         },
         {
-          label: 'Score moyen',
+          label: t('dashboard.kpi.score'),
           value: stats!.averageScore != null ? String(stats!.averageScore) : '—',
           suffix: stats!.averageScore != null ? '/100' : undefined,
           series: trends!.averageScore.series,
           delta: trends!.averageScore.delta,
-          deltaLabel: trends!.averageScore.delta == null ? 'Nouveau' : undefined,
+          deltaLabel: trends!.averageScore.delta == null ? t('dashboard.kpi.new') : undefined,
           tone: toneFromDelta(trends!.averageScore.delta),
         },
         {
-          label: 'Simulations terminées',
+          label: t('dashboard.kpi.completed'),
           value: String(stats!.completedSimulations),
           series: trends!.completedSimulations.series,
           delta: trends!.completedSimulations.delta,
           tone: toneFromDelta(trends!.completedSimulations.delta),
         },
         {
-          label: 'Actions en attente',
+          label: t('dashboard.kpi.pending'),
           value: String(pendingTotal),
           deltaLabel:
             summary.pendingActions.decisions > 0
-              ? `${summary.pendingActions.decisions} décision${summary.pendingActions.decisions > 1 ? 's' : ''}`
+              ? t('dashboard.kpi.decisions', { count: summary.pendingActions.decisions })
               : pendingTotal === 0
-                ? 'Tout est à jour'
+                ? t('dashboard.allClear')
                 : undefined,
           tone: pendingTotal > 0 ? ('down' as SparkTone) : ('neutral' as SparkTone),
         },
@@ -130,17 +114,17 @@ export default function DashboardPage() {
 
   return (
     <>
-      <GuidedTour steps={ONBOARDING_TOUR_STEPS} storageKey="onboarding_tour_completed" />
+      <GuidedTour steps={tourSteps} storageKey="onboarding_tour_completed" />
 
       <PageHeader
-        breadcrumbs={[{ label: 'Tableau de bord' }]}
-        title="Tableau de bord"
-        subtitle="Suivi de vos simulations en cours et progression globale."
+        breadcrumbs={[{ label: t('menu.dashboard') }]}
+        title={t('menu.dashboard')}
+        subtitle={t('dashboard.subtitle')}
         actions={
           <Button variant="primary" size="sm" asChild>
             <Link to="/simulations/new">
               <KeenIcon icon="plus" style="duotone" className="text-xs" />
-              Nouvelle simulation
+              {t('menu.newSimulation')}
             </Link>
           </Button>
         }

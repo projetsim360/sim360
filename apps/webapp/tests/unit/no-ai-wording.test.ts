@@ -17,6 +17,7 @@ const EXCLUDED = [
   /features[/\\]dashboard[/\\]pages[/\\]token-usage\.tsx$/,
   /features[/\\]dashboard[/\\]config[/\\]dashboard\.menu\.ts$/,
   /config[/\\]menu\.config\.ts$/,
+  /i18n[/\\]app[/\\]menu-labels\.ts$/,
   /features[/\\]admin-reference[/\\]/,
 ];
 const WORD = /(^|[^A-Za-zÀ-ÿ_])IA(?=[^A-Za-zÀ-ÿ_]|$)/;
@@ -47,6 +48,8 @@ test('no « IA » in learner-facing webapp text', () => {
     lines.forEach((line, i) => {
       const trimmed = line.trim();
       if (trimmed.startsWith('import ') || trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('{/*')) return;
+      // Admin-only menu entry, deliberately keeps the term (same as menu.config.ts).
+      if (trimmed.startsWith("'menu.aiUsage':")) return;
       for (const chunk of visibleChunks(line)) {
         if (/^['"`][\w./@:-]*['"`]$/.test(chunk)) continue;
         if (WORD.test(chunk)) offenders.push(`${relative(SRC, file)}:${i + 1}`);

@@ -3,6 +3,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { ScoreEvolutionItem } from '../types/dashboard.types';
+import { useT } from '@/i18n/app/use-t';
+import { useAppLocale } from '@/providers/locale-provider';
 
 export function ScoreEvolutionCard({
   data,
@@ -11,28 +13,30 @@ export function ScoreEvolutionCard({
   data: ScoreEvolutionItem[];
   loading: boolean;
 }) {
+  const t = useT();
+  const { intlLocale } = useAppLocale();
   return (
     <Card className="shadow-[0_2px_4px_rgba(15,26,46,0.05),0_6px_16px_rgba(15,26,46,0.06)]">
       <CardContent className="p-5">
         <span className="text-[11px] font-semibold uppercase tracking-[1px] text-[var(--neutral-400)]">
-          Performance
+          {t('dashboard.score.kicker')}
         </span>
-        <h4 className="mb-2 font-display text-[16px] font-bold text-[var(--brand-700)]">Évolution du score</h4>
+        <h4 className="mb-2 font-display text-[16px] font-bold text-[var(--brand-700)]">{t('dashboard.score.title')}</h4>
 
         {loading ? (
           <Skeleton className="h-[220px] rounded-lg" />
         ) : data.length < 2 ? (
           <EmptyState
             icon="graph-up"
-            title="Pas encore de données"
-            description="Terminez au moins deux simulations pour visualiser l'évolution de votre score."
+            title={t('dashboard.score.emptyTitle')}
+            description={t('dashboard.score.emptyText')}
           />
         ) : (
           <ResponsiveContainer width="100%" height={220}>
             <AreaChart
               data={data.map((p) => ({
                 name: p.projectName,
-                date: new Date(p.completedAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }),
+                date: new Date(p.completedAt).toLocaleDateString(intlLocale, { day: '2-digit', month: 'short' }),
                 score: p.score,
               }))}
               margin={{ top: 5, right: 10, left: 0, bottom: 0 }}
@@ -48,7 +52,7 @@ export function ScoreEvolutionCard({
                   backgroundColor: '#fff',
                   color: 'var(--brand-700)',
                 }}
-                formatter={(value: number) => [`${value}%`, 'Score']}
+                formatter={(value: number) => [`${value}%`, t('dashboard.score.series')]}
                 labelFormatter={(_, payload) => payload?.[0]?.payload?.name ?? ''}
               />
               <Area

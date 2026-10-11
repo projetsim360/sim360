@@ -8,6 +8,7 @@ import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
 import { staggerContainer, staggerItem } from '@/lib/motion';
 import type { ActiveSimulationSummary } from '../types/dashboard.types';
+import { useT } from '@/i18n/app/use-t';
 
 const TOTAL_PHASES = 5;
 
@@ -60,6 +61,7 @@ export function ActiveSimulationsCard({
   loading: boolean;
 }) {
   const reduce = useReducedMotion();
+  const t = useT();
 
   return (
     <Card className="shadow-[0_2px_4px_rgba(15,26,46,0.05),0_6px_16px_rgba(15,26,46,0.06)]">
@@ -67,12 +69,12 @@ export function ActiveSimulationsCard({
         <div className="mb-2 flex items-baseline justify-between">
           <div>
             <span className="text-[11px] font-semibold uppercase tracking-[1px] text-[var(--neutral-400)]">
-              Simulations
+              {t('menu.simulations')}
             </span>
-            <h3 className="font-display text-[19px] font-bold text-[var(--brand-700)]">En cours</h3>
+            <h3 className="font-display text-[19px] font-bold text-[var(--brand-700)]">{t('dashboard.active.title')}</h3>
           </div>
           <Link to="/simulations" className="text-[13px] font-semibold text-[var(--accent-600)]">
-            Voir tout →
+            {t('common.seeAll')}
           </Link>
         </div>
 
@@ -85,9 +87,9 @@ export function ActiveSimulationsCard({
         ) : simulations.length === 0 ? (
           <EmptyState
             icon="rocket"
-            title="Aucune simulation en cours"
-            description="Lancez votre première simulation pour commencer votre apprentissage."
-            action={{ label: 'Démarrer une simulation', href: '/simulations/new' }}
+            title={t('dashboard.active.emptyTitle')}
+            description={t('dashboard.active.emptyText')}
+            action={{ label: t('dashboard.active.emptyCta'), href: '/simulations/new' }}
           />
         ) : (
           <motion.div
@@ -115,7 +117,7 @@ export function ActiveSimulationsCard({
                             BADGE_TONE[tone],
                           )}
                         >
-                          Phase {sim.currentPhase}
+                          {t('dashboard.active.phase', { n: sim.currentPhase })}
                         </span>
                       </div>
                       <p className="mt-0.5 truncate text-[13px] text-[var(--neutral-500)]">{sim.phaseName}</p>
@@ -124,7 +126,7 @@ export function ActiveSimulationsCard({
                     <div className="flex items-center gap-3">
                       <TeamAvatars members={sim.teamMembers} />
                       <span className="hidden items-center gap-0.5 text-xs font-semibold text-[var(--accent-600)] opacity-0 transition-opacity group-hover:opacity-100 sm:flex">
-                        Reprendre
+                        {t('dashboard.active.resume')}
                         <KeenIcon icon="right" style="duotone" className="text-[10px]" />
                       </span>
                     </div>

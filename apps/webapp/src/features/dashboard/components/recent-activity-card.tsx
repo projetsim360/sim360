@@ -4,14 +4,17 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
 import type { RecentActivityItem } from '../types/dashboard.types';
+import { useT } from '@/i18n/app/use-t';
+import { useAppLocale } from '@/providers/locale-provider';
+import type { AppMessageKey } from '@/i18n/app/messages';
 
-const EVENT_CONFIG: Record<string, { icon: string; label: string; iconClass: string }> = {
-  decision: { icon: 'question-2', label: 'Décision', iconClass: 'bg-[var(--accent-100)] text-[var(--accent-700)]' },
-  meeting: { icon: 'message-text', label: 'Réunion', iconClass: 'bg-[var(--brand-100)] text-[var(--brand-700)]' },
-  event: { icon: 'flash', label: 'Événement', iconClass: 'bg-[var(--warning-50)] text-[var(--warning-700)]' },
-  deliverable: { icon: 'document', label: 'Livrable', iconClass: 'bg-[var(--success-50)] text-[var(--success-700)]' },
-  simulation: { icon: 'rocket', label: 'Simulation', iconClass: 'bg-[var(--brand-100)] text-[var(--brand-700)]' },
-  email: { icon: 'sms', label: 'Email', iconClass: 'bg-[var(--brand-100)] text-[var(--brand-600)]' },
+const EVENT_CONFIG: Record<string, { icon: string; label: AppMessageKey; iconClass: string }> = {
+  decision: { icon: 'question-2', label: 'dashboard.activity.decision', iconClass: 'bg-[var(--accent-100)] text-[var(--accent-700)]' },
+  meeting: { icon: 'message-text', label: 'dashboard.activity.meeting', iconClass: 'bg-[var(--brand-100)] text-[var(--brand-700)]' },
+  event: { icon: 'flash', label: 'dashboard.activity.event', iconClass: 'bg-[var(--warning-50)] text-[var(--warning-700)]' },
+  deliverable: { icon: 'document', label: 'dashboard.activity.deliverable', iconClass: 'bg-[var(--success-50)] text-[var(--success-700)]' },
+  simulation: { icon: 'rocket', label: 'dashboard.activity.simulation', iconClass: 'bg-[var(--brand-100)] text-[var(--brand-700)]' },
+  email: { icon: 'sms', label: 'dashboard.activity.email', iconClass: 'bg-[var(--brand-100)] text-[var(--brand-600)]' },
 };
 
 export function RecentActivityCard({
@@ -21,13 +24,15 @@ export function RecentActivityCard({
   activities: RecentActivityItem[];
   loading: boolean;
 }) {
+  const t = useT();
+  const { intlLocale } = useAppLocale();
   return (
     <Card className="shadow-[0_2px_4px_rgba(15,26,46,0.05),0_6px_16px_rgba(15,26,46,0.06)]">
       <CardContent className="p-5">
         <span className="text-[11px] font-semibold uppercase tracking-[1px] text-[var(--neutral-400)]">
-          Historique
+          {t('dashboard.activity.kicker')}
         </span>
-        <h4 className="mb-2 font-display text-[16px] font-bold text-[var(--brand-700)]">Activité récente</h4>
+        <h4 className="mb-2 font-display text-[16px] font-bold text-[var(--brand-700)]">{t('dashboard.activity.title')}</h4>
 
         {loading ? (
           <div className="space-y-2 pt-1">
@@ -38,8 +43,8 @@ export function RecentActivityCard({
         ) : activities.length === 0 ? (
           <EmptyState
             icon="time"
-            title="Aucune activité récente"
-            description="Votre historique d'activité apparaîtra ici."
+            title={t('dashboard.activity.emptyTitle')}
+            description={t('dashboard.activity.emptyText')}
           />
         ) : (
           <div className="max-h-[280px] space-y-1 overflow-y-auto">
@@ -53,12 +58,12 @@ export function RecentActivityCard({
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13px] font-medium text-[var(--brand-700)]">
-                      {data?.title ?? config.label}
+                      {data?.title ?? t(config.label)}
                     </p>
                     <p className="text-[10px] text-[var(--neutral-400)]">{data?.projectName ?? ''}</p>
                   </div>
                   <span className="shrink-0 text-[10px] text-[var(--neutral-400)]">
-                    {new Date(activity.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}
+                    {new Date(activity.createdAt).toLocaleDateString(intlLocale, { day: '2-digit', month: 'short' })}
                   </span>
                 </div>
               );

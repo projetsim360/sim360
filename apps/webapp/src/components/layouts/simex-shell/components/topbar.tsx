@@ -4,15 +4,17 @@ import { useTheme } from 'next-themes';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { resolveAssetUrl } from '@/lib/asset-url';
-import { getRoleLabel, getUserDisplayName, getUserInitials } from '@/lib/user-display';
+import { roleLabelKey, getUserDisplayName, getUserInitials } from '@/lib/user-display';
 import { useAuth } from '@/providers/auth-provider';
 import { useShellState } from '../state/shell-state-provider';
+import { useT } from '@/i18n/app/use-t';
 
 interface TopbarProps {
   className?: string;
 }
 
 export function Topbar({ className }: TopbarProps) {
+  const t = useT();
   const {
     toggleSidebar,
     toggleSidebarMobile,
@@ -49,7 +51,7 @@ export function Topbar({ className }: TopbarProps) {
         {/* Mobile hamburger — only on < lg */}
         <button
           type="button"
-          aria-label="Ouvrir la barre latérale"
+          aria-label={t('shell.topbar.openSidebar')}
           onClick={toggleSidebarMobile}
           className="lg:hidden inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-md border-0 bg-transparent text-[var(--shell-fg)] transition-colors duration-150 hover:bg-[var(--shell-hover)] hover:text-[var(--shell-fg-strong)]"
         >
@@ -59,7 +61,7 @@ export function Topbar({ className }: TopbarProps) {
         {/* Desktop panel-left — only on lg+ */}
         <button
           type="button"
-          aria-label="Replier la barre latérale"
+          aria-label={t('shell.topbar.collapseSidebar')}
           onClick={toggleSidebar}
           className="hidden lg:inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-md border-0 bg-transparent text-[var(--shell-fg)] transition-colors duration-150 hover:bg-[var(--shell-hover)] hover:text-[var(--shell-fg-strong)]"
         >
@@ -88,7 +90,7 @@ export function Topbar({ className }: TopbarProps) {
       {/* Icon-only button: mobile/tablet < md */}
       <button
         type="button"
-        aria-label="Ouvrir la recherche"
+        aria-label={t('shell.topbar.openSearch')}
         onClick={openSearch}
         className="md:hidden inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-md border border-[var(--shell-border)] bg-[var(--shell-input)] text-[var(--shell-fg-muted)] transition-colors duration-150 hover:border-[var(--accent-500)]"
       >
@@ -98,7 +100,7 @@ export function Topbar({ className }: TopbarProps) {
       {/* Full pill: md+ */}
       <button
         type="button"
-        aria-label="Ouvrir la recherche (⌘K)"
+        aria-label={t('shell.topbar.openSearchShortcut')}
         onClick={openSearch}
         className={cn(
           'hidden md:flex flex-1 max-w-[760px] h-10 cursor-pointer items-center gap-2.5',
@@ -109,7 +111,7 @@ export function Topbar({ className }: TopbarProps) {
       >
         <Search className="size-4 shrink-0 text-[var(--shell-fg-muted)]" />
         <span className="flex-1 text-left text-[var(--shell-fg-muted)] text-sm pointer-events-none select-none">
-          Rechercher pages, livrables, candidats…
+          {t('shell.search.placeholder')}
         </span>
         <kbd
           className={cn(
@@ -127,7 +129,7 @@ export function Topbar({ className }: TopbarProps) {
         {/* Theme toggle */}
         <button
           type="button"
-          aria-label={isDark ? 'Activer le thème clair' : 'Activer le thème sombre'}
+          aria-label={isDark ? t('shell.topbar.lightTheme') : t('shell.topbar.darkTheme')}
           onClick={() => setTheme(isDark ? 'light' : 'dark')}
           className="inline-flex size-9 cursor-pointer items-center justify-center rounded-md border-0 bg-transparent text-[var(--shell-fg)] transition-colors duration-150 hover:bg-[var(--shell-hover)] hover:text-[var(--shell-fg-strong)]"
         >
@@ -137,7 +139,7 @@ export function Topbar({ className }: TopbarProps) {
         {/* Notification bell */}
         <button
           type="button"
-          aria-label="Notifications"
+          aria-label={t('shell.notifications.title')}
           aria-expanded={notifOpen}
           aria-haspopup="true"
           onMouseDown={(e) => e.stopPropagation()}
@@ -158,7 +160,7 @@ export function Topbar({ className }: TopbarProps) {
         {/* Agent PMO pill */}
         <button
           type="button"
-          aria-label="Assistant"
+          aria-label={t('shell.topbar.assistant')}
           aria-pressed={pmoOpen}
           onClick={(e) => {
             e.stopPropagation();
@@ -174,7 +176,7 @@ export function Topbar({ className }: TopbarProps) {
           )}
         >
           <Sparkles className="size-4 shrink-0 text-[var(--accent-500)]" />
-          <span className="hidden sm:inline">Assistant</span>
+          <span className="hidden sm:inline">{t('shell.topbar.assistant')}</span>
         </button>
 
         {/* User chip */}
@@ -199,7 +201,7 @@ export function Topbar({ className }: TopbarProps) {
               {getUserDisplayName(user)}
             </span>
             <span className="text-[10px] font-semibold uppercase tracking-[1px] text-[var(--accent-400)]">
-              {getRoleLabel(user?.role)}
+              {t(roleLabelKey(user?.role))}
             </span>
           </div>
 

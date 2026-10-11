@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { KeenIcon } from '@/components/keenicons';
+import { useT } from '@/i18n/app/use-t';
 
 interface TourStep {
   target: string;
@@ -46,6 +47,7 @@ function getCardPosition(targetEl: Element): Position {
 }
 
 export function GuidedTour({ steps, storageKey, onComplete }: GuidedTourProps) {
+  const t = useT();
   const [currentStep, setCurrentStep] = useState(0);
   const [visible, setVisible] = useState(false);
   const [position, setPosition] = useState<Position | null>(null);
@@ -163,10 +165,10 @@ export function GuidedTour({ steps, storageKey, onComplete }: GuidedTourProps) {
               <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
               <div className="flex items-center justify-between pt-1">
                 <Button variant="ghost" size="sm" onClick={dismiss} className="text-xs">
-                  Passer
+                  {t('common.skip')}
                 </Button>
                 <Button variant="primary" size="sm" onClick={handleNext} className="text-xs">
-                  {isLast ? 'Terminer' : 'Suivant'}
+                  {isLast ? t('common.finish') : t('common.next')}
                   <KeenIcon icon="right" style="solid" className="text-[10px] ms-1" />
                 </Button>
               </div>

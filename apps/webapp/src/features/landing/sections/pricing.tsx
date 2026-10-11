@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { usePublicSession } from '../providers/public-session';
 import { cn } from '@/lib/utils';
 import { Reveal } from '../components/reveal';
-import { usePublicLocale } from '../hooks/use-public-locale';
+import { usePublicLocale, useAppLink } from '../hooks/use-public-locale';
 import { formatCad, planPrice, PUBLIC_PLANS, type BillingPeriod, type PublicPlan } from '../content/pricing';
 
 const CONTACT_HREF = 'mailto:hello@simex.pro';
@@ -70,6 +70,7 @@ function PlanPrice({ plan, period }: { plan: PublicPlan; period: BillingPeriod }
 }
 
 function PlanCta({ plan }: { plan: PublicPlan }) {
+  const appLink = useAppLink();
   const { formatMessage } = useIntl();
   const { user } = usePublicSession();
   const variant = plan.featured ? 'primary' : 'outline';
@@ -85,13 +86,13 @@ function PlanCta({ plan }: { plan: PublicPlan }) {
   if (user) {
     return (
       <Button asChild variant={variant} size="sm" className={cn('w-full', tone)}>
-        <Link to="/dashboard">{formatMessage({ id: 'nav.dashboard' })}</Link>
+        <Link to={appLink('/dashboard')}>{formatMessage({ id: 'nav.dashboard' })}</Link>
       </Button>
     );
   }
   return (
     <Button asChild variant={variant} size="sm" className={cn('w-full', tone)}>
-      <Link to="/auth/sign-up">{formatMessage({ id: plan.cta === 'signup' ? 'pricing.cta.signup' : 'pricing.cta.start' })}</Link>
+      <Link to={appLink('/auth/sign-up')}>{formatMessage({ id: plan.cta === 'signup' ? 'pricing.cta.signup' : 'pricing.cta.start' })}</Link>
     </Button>
   );
 }

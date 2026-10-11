@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { KeenIcon } from '@/components/keenicons';
 import type { NextStep } from '../types/dashboard.types';
+import { useT } from '@/i18n/app/use-t';
 
 interface DashboardHeroProps {
   firstName: string;
@@ -13,6 +14,7 @@ interface DashboardHeroProps {
 
 export function DashboardHero({ firstName, isNewUser, activeCount, averageScore, nextStep }: DashboardHeroProps) {
   const reduce = useReducedMotion();
+  const t = useT();
   const isAllClear = !nextStep || nextStep.type === 'all_clear';
 
   return (
@@ -27,20 +29,20 @@ export function DashboardHero({ firstName, isNewUser, activeCount, averageScore,
         <>
           <div className="min-w-0">
             <span className="text-[11px] font-semibold uppercase tracking-[1px] text-[var(--brand-200)]">
-              Bienvenue sur Simex
+              {t('dashboard.hero.welcome')}
             </span>
             <h2 className="mt-1 font-display text-[24px] font-extrabold tracking-tight">
-              Lancez votre première simulation
+              {t('dashboard.hero.firstTitle')}
             </h2>
             <p className="mt-1 text-sm text-[var(--brand-100)]">
-              Suivez les étapes ci-dessous pour démarrer votre parcours.
+              {t('dashboard.hero.firstText')}
             </p>
           </div>
           <Link
             to="/simulations/new"
             className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-[var(--accent-500)] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[var(--accent-600)]"
           >
-            Démarrer
+            {t('dashboard.hero.start')}
             <KeenIcon icon="right" style="duotone" className="text-xs" />
           </Link>
         </>
@@ -48,23 +50,24 @@ export function DashboardHero({ firstName, isNewUser, activeCount, averageScore,
         <>
           <div className="min-w-0">
             <span className="text-[11px] font-semibold uppercase tracking-[1px] text-[var(--brand-200)]">
-              Tableau de bord
+              {t('menu.dashboard')}
             </span>
             <h2 className="mt-1 font-display text-[24px] font-extrabold tracking-tight">
-              Bonjour {firstName} 👋
+              {t('dashboard.hero.hello', { name: firstName })}
             </h2>
             <p className="mt-1 text-sm text-[var(--brand-100)]">
-              {activeCount} simulation{activeCount > 1 ? 's' : ''} en cours
-              {averageScore != null ? ` · score moyen ${averageScore}/100` : ''}.
+              {averageScore != null
+                ? t('dashboard.hero.summaryScore', { count: activeCount, score: averageScore })
+                : t('dashboard.hero.summary', { count: activeCount })}
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-3 rounded-lg border border-white/15 bg-white/10 px-4 py-3">
             <div className="min-w-0">
               <span className="text-[11px] font-semibold uppercase tracking-[1px] text-[var(--brand-200)]">
-                {isAllClear ? 'Statut' : 'Prochaine action'}
+                {isAllClear ? t('dashboard.hero.status') : t('dashboard.hero.nextAction')}
               </span>
               <p className="mt-0.5 truncate text-sm font-bold text-white">
-                {isAllClear ? 'Tout est à jour' : nextStep!.simulationName || 'Action à traiter'}
+                {isAllClear ? t('dashboard.allClear') : nextStep!.simulationName || t('dashboard.hero.actionPending')}
               </p>
             </div>
             {!isAllClear && (
@@ -72,7 +75,7 @@ export function DashboardHero({ firstName, isNewUser, activeCount, averageScore,
                 to={nextStep!.link}
                 className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-[var(--accent-500)] px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-[var(--accent-600)]"
               >
-                Continuer
+                {t('common.continue')}
                 <KeenIcon icon="right" style="duotone" className="text-xs" />
               </Link>
             )}
