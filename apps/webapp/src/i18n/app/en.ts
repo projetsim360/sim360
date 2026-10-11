@@ -82,6 +82,8 @@ export const en = {
   'shell.topbar.lightTheme': 'Switch to light theme',
   'shell.topbar.darkTheme': 'Switch to dark theme',
   'shell.topbar.assistant': 'Assistant',
+  'shell.notifications.markAll': 'Mark all as read',
+  'shell.notifications.empty': 'No notifications yet.',
   'shell.notifications.title': 'Notifications',
   'shell.search.label': 'Search',
   'shell.search.placeholder': 'Search for a page…',
@@ -2026,4 +2028,8 @@ export const en = {
   'admin.modified': 'Modified',
   'admin.deactivate': 'Deactivate',
   'admin.activate': 'Activate',
+  'combobox.search': 'Search…',
+  'combobox.empty': 'No results',
+  'combobox.use': 'Use “{value}”',
+  'combobox.typeToAdd': 'Type a value, then confirm.',
 } as const satisfies Record<AppMessageKey, string>;

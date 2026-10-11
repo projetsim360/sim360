@@ -81,6 +81,8 @@ export const fr = {
   'shell.topbar.lightTheme': 'Activer le thème clair',
   'shell.topbar.darkTheme': 'Activer le thème sombre',
   'shell.topbar.assistant': 'Assistant',
+  'shell.notifications.markAll': 'Tout marquer comme lu',
+  'shell.notifications.empty': 'Aucune notification pour le moment.',
   'shell.notifications.title': 'Notifications',
   'shell.search.label': 'Recherche',
   'shell.search.placeholder': 'Rechercher une page…',
@@ -2025,6 +2027,10 @@ export const fr = {
   'admin.modified': 'Modifié',
   'admin.deactivate': 'Désactiver',
   'admin.activate': 'Activer',
+  'combobox.search': 'Rechercher…',
+  'combobox.empty': 'Aucun résultat',
+  'combobox.use': 'Utiliser « {value} »',
+  'combobox.typeToAdd': 'Saisissez une valeur puis validez.',
 } as const;
 
 export type AppMessageKey = keyof typeof fr;

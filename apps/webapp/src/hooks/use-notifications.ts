@@ -40,9 +40,9 @@ export function useNotifications() {
         `/notifications?page=${pageNum}&limit=20`,
       );
       if (pageNum === 1) {
-        setNotifications(result.data);
+        setNotifications(result.data ?? []);
       } else {
-        setNotifications((prev) => [...prev, ...result.data]);
+        setNotifications((prev) => [...prev, ...(result.data ?? [])]);
       }
       setPage(pageNum);
       setHasMore(pageNum < result.totalPages);
