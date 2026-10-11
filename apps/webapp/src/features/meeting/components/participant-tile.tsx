@@ -1,4 +1,5 @@
 import type { MeetingParticipant, ParticipantConnectionStatus } from '../types/meeting.types';
+import { useT } from '@/i18n/app/use-t';
 
 interface ParticipantTileProps {
   participant: MeetingParticipant;
@@ -15,12 +16,12 @@ interface ParticipantTileProps {
 // Anneau/onde « parle » accent Simex (un seul accent, pas de palette aléatoire).
 const SPEAKING = { ring: 'ring-[var(--accent-400)]', glow: 'bg-[var(--accent-500)]/15', bar: 'bg-[var(--accent-300)]' };
 
-const STATUS_CONFIG: Record<ParticipantConnectionStatus, { dot: string; label: string }> = {
-  idle: { dot: 'bg-white/30', label: 'Hors ligne' },
-  connecting: { dot: 'bg-[var(--warning-500)] animate-pulse', label: 'Connexion…' },
-  connected: { dot: 'bg-[var(--success-500)]', label: 'Connecté' },
-  error: { dot: 'bg-[var(--error-500)]', label: 'Erreur' },
-  closed: { dot: 'bg-white/30', label: 'Déconnecté' },
+const STATUS_CONFIG: Record<ParticipantConnectionStatus, { dot: string }> = {
+  idle: { dot: 'bg-white/30' },
+  connecting: { dot: 'bg-[var(--warning-500)] animate-pulse' },
+  connected: { dot: 'bg-[var(--success-500)]' },
+  error: { dot: 'bg-[var(--error-500)]' },
+  closed: { dot: 'bg-white/30' },
 };
 
 export function ParticipantTile({
@@ -34,6 +35,7 @@ export function ParticipantTile({
   conferenceMode = 'all',
   onClick,
 }: ParticipantTileProps) {
+  const t = useT();
   const isLarge = size === 'large';
   const statusCfg = STATUS_CONFIG[status];
 
@@ -120,7 +122,7 @@ export function ParticipantTile({
         {/* Name & Role */}
         <div className="text-center">
           <p className={`font-medium text-white/90 truncate ${isLarge ? 'text-sm max-w-[130px]' : 'text-[11px] max-w-[85px]'}`}>
-            {isUser ? 'Vous' : participant.name}
+            {isUser ? t('room.you') : participant.name}
           </p>
           {isLarge && !isUser && (
             <p className="text-[11px] text-white/40 truncate max-w-[130px] mt-0.5">
@@ -149,7 +151,7 @@ export function ParticipantTile({
         {/* "Click to talk" hint in single mode */}
         {conferenceMode === 'single' && !isUser && !isActive && isLarge && (
           <span className="text-[10px] text-white/30 opacity-0 group-hover:opacity-100 transition-opacity">
-            Donner la parole
+            {t('room.giveFloor')}
           </span>
         )}
 
@@ -157,7 +159,7 @@ export function ParticipantTile({
         {conferenceMode === 'single' && isActive && !isUser && isLarge && (
           <div className="flex items-center gap-1 mt-0.5">
             <div className="w-1.5 h-1.5 rounded-full bg-[var(--success-500)] animate-pulse" />
-            <span className="text-[10px] text-[var(--success-700)] font-medium">À la parole</span>
+            <span className="text-[10px] text-[var(--success-700)] font-medium">{t('room.hasFloor')}</span>
           </div>
         )}
       </div>

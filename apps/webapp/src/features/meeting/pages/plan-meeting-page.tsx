@@ -24,18 +24,14 @@ import {
   toCustomMeetingPayload,
   type CustomMeetingFormValues,
 } from '../lib/custom-meeting';
-
-const SECTOR_OPTIONS = SECTORS.filter((s) => s.value !== 'CUSTOM').map((s) => ({ value: s.label, label: s.label }));
-
-const COOPERATION_LABELS: Record<number, string> = {
-  1: '1 — très réticent',
-  2: '2 — réservé',
-  3: '3 — neutre',
-  4: '4 — favorable',
-  5: '5 — très coopératif',
-};
+import { useTv } from '@/i18n/app/use-t';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useT } from '@/i18n/app/use-t';
 
 export default function PlanMeetingPage() {
+  const tv = useTv();
+  const sectorOptions = SECTORS.filter((s) => s.value !== 'CUSTOM').map((s) => ({ value: tv('sector', s.value), label: tv('sector', s.value) }));
+  const t = useT();
   const { simId } = useParams<{ simId: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -49,11 +45,11 @@ export default function PlanMeetingPage() {
   const createMutation = useMutation({
     mutationFn: (values: CustomMeetingFormValues) => meetingApi.createCustomMeeting(simId!, toCustomMeetingPayload(values)),
     onSuccess: (meeting) => {
-      toast.success('Réunion planifiée');
+      toast.success(t('meetingPlan.done'));
       queryClient.invalidateQueries({ queryKey: ['meetings', simId] });
       navigate(`/meetings/${meeting.id}`);
     },
-    onError: (err: Error) => toast.error(err.message || 'Impossible de planifier la réunion'),
+    onError: (err: Error) => toast.error(err.message || t('meetingPlan.error')),
   });
 
   if (!simId) return null;
@@ -62,13 +58,13 @@ export default function PlanMeetingPage() {
     <div>
       <PageHeader
         breadcrumbs={[
-          { label: 'Tableau de bord', to: '/dashboard' },
-          { label: 'Simulation', to: `/simulations/${simId}` },
-          { label: 'Réunions', to: `/simulations/${simId}/meetings` },
-          { label: 'Planifier' },
+          { label: t('menu.dashboard'), to: '/dashboard' },
+          { label: t('dashboard.activity.simulation'), to: `/simulations/${simId}` },
+          { label: t('dashboard.priority.meetings'), to: `/simulations/${simId}/meetings` },
+          { label: t('meetingPlan.crumb') },
         ]}
-        title="Planifier une réunion"
-        subtitle="Choisissez le sujet, les objectifs, la durée et composez la table : rôles, personnalités et niveaux hiérarchiques."
+        title={t('meetingPlan.title')}
+        subtitle={t('meetingPlan.subtitle')}
       />
 
       <div className="px-4 sm:px-6 pb-6">
@@ -77,7 +73,7 @@ export default function PlanMeetingPage() {
             {/* Cadre */}
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="font-display text-base text-[var(--brand-700)]">Cadre de la réunion</CardTitle>
+                <CardTitle className="font-display text-base text-[var(--brand-700)]">{t('meetingPlan.frame')}</CardTitle>
               </CardHeader>
               <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <FormField
@@ -85,9 +81,9 @@ export default function PlanMeetingPage() {
                   name="title"
                   render={({ field }) => (
                     <FormItem className="md:col-span-2">
-                      <FormLabel>Sujet</FormLabel>
+                      <FormLabel>{t('meetingPlan.subject')}</FormLabel>
                       <FormControl>
-                        <Input placeholder="Ex. : arbitrage budgétaire du lot 2" {...field} />
+                        <Input placeholder={t('meetingPlan.subjectPlaceholder')} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -98,11 +94,11 @@ export default function PlanMeetingPage() {
                   name="objectives"
                   render={({ field }) => (
                     <FormItem className="md:col-span-2">
-                      <FormLabel>Objectifs</FormLabel>
+                      <FormLabel>{t('scenario.stat.objectives')}</FormLabel>
                       <FormControl>
-                        <Textarea rows={3} placeholder={'Un objectif par ligne\nEx. : valider le budget révisé'} {...field} />
+                        <Textarea rows={3} placeholder={t('meetingPlan.objectivesPlaceholder')} {...field} />
                       </FormControl>
-                      <FormDescription>Un objectif par ligne (6 au maximum).</FormDescription>
+                      <FormDescription>{t('meetingPlan.objectivesHint')}</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -112,7 +108,7 @@ export default function PlanMeetingPage() {
                   name="durationMinutes"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Durée</FormLabel>
+                      <FormLabel>{t('scenario.stat.duration')}</FormLabel>
                       <Select value={String(field.value)} onValueChange={(v) => field.onChange(Number(v))}>
                         <FormControl>
                           <SelectTrigger>
@@ -122,7 +118,7 @@ export default function PlanMeetingPage() {
                         <SelectContent>
                           {DURATION_OPTIONS.map((d) => (
                             <SelectItem key={d} value={String(d)}>
-                              {d} minutes
+                              {t('meetingPlan.minutes', { n: d })}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -136,7 +132,7 @@ export default function PlanMeetingPage() {
                   name="mode"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Format</FormLabel>
+                      <FormLabel>{t('meetingPlan.format')}</FormLabel>
                       <Select value={field.value} onValueChange={field.onChange}>
                         <FormControl>
                           <SelectTrigger>
@@ -144,8 +140,8 @@ export default function PlanMeetingPage() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="TEXT">Écrite</SelectItem>
-                          <SelectItem value="AUDIO">Vocale</SelectItem>
+                          <SelectItem value="TEXT">{t('meetingPlan.format.text')}</SelectItem>
+                          <SelectItem value="AUDIO">{t('meetingPlan.format.audio')}</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -157,13 +153,13 @@ export default function PlanMeetingPage() {
                   name="sector"
                   render={({ field }) => (
                     <FormItem className="md:col-span-2">
-                      <FormLabel>Secteur d'activité</FormLabel>
+                      <FormLabel>{t('meetingPlan.sector')}</FormLabel>
                       <SearchableCombobox
                         value={field.value ?? ''}
                         onChange={field.onChange}
-                        options={SECTOR_OPTIONS}
-                        placeholder="Secteur de la simulation (par défaut)"
-                        searchPlaceholder="Rechercher ou saisir un secteur…"
+                        options={sectorOptions}
+                        placeholder={t('meetingPlan.sectorPlaceholder')}
+                        searchPlaceholder={t('meetingPlan.sectorSearch')}
                         allowCustom
                       />
                       <FormMessage />
@@ -175,11 +171,11 @@ export default function PlanMeetingPage() {
                   name="stakes"
                   render={({ field }) => (
                     <FormItem className="md:col-span-2">
-                      <FormLabel>Enjeux à traiter</FormLabel>
+                      <FormLabel>{t('meetingPlan.stakes')}</FormLabel>
                       <FormControl>
                         <Textarea
                           rows={3}
-                          placeholder="Ex. : dépassement de 12 % sur le lot 2, fournisseur en retard de 3 semaines, comité de direction vendredi."
+                          placeholder={t('meetingPlan.stakesPlaceholder')}
                           {...field}
                         />
                       </FormControl>
@@ -194,7 +190,7 @@ export default function PlanMeetingPage() {
             <Card>
               <CardHeader className="flex-row items-center justify-between pb-3">
                 <CardTitle className="font-display text-base text-[var(--brand-700)]">
-                  Participants ({participants.fields.length}/6)
+                  {t('meetingPlan.participants', { n: participants.fields.length })}
                 </CardTitle>
                 <Button
                   type="button"
@@ -204,7 +200,7 @@ export default function PlanMeetingPage() {
                   onClick={() => participants.append({ ...EMPTY_PARTICIPANT })}
                 >
                   <KeenIcon icon="plus" style="solid" />
-                  Ajouter
+                  {t('common.add')}
                 </Button>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -212,12 +208,12 @@ export default function PlanMeetingPage() {
                   <div key={item.id} className="rounded-lg border border-[var(--neutral-200)] p-3 sm:p-4">
                     <div className="mb-3 flex items-center justify-between">
                       <span className="text-xs font-bold uppercase tracking-wider text-[var(--neutral-500)]">
-                        Participant {index + 1}
+                        {t('meetingPlan.participant', { n: index + 1 })}
                       </span>
                       {participants.fields.length > 1 && (
                         <button
                           type="button"
-                          aria-label={`Retirer le participant ${index + 1}`}
+                          aria-label={t('meetingPlan.removeParticipant', { n: index + 1 })}
                           onClick={() => participants.remove(index)}
                           className="cursor-pointer rounded p-1 text-[var(--neutral-400)] hover:bg-[var(--neutral-100)] hover:text-[var(--error-600)]"
                         >
@@ -231,9 +227,9 @@ export default function PlanMeetingPage() {
                         name={`participants.${index}.name`}
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Nom</FormLabel>
+                            <FormLabel>{t('auth.field.lastName')}</FormLabel>
                             <FormControl>
-                              <Input placeholder="Ex. : Sophie Martin" {...field} />
+                              <Input placeholder={t('meetingPlan.namePlaceholder')} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -244,9 +240,9 @@ export default function PlanMeetingPage() {
                         name={`participants.${index}.role`}
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Fonction</FormLabel>
+                            <FormLabel>{t('wizard.basics.jobTitle')}</FormLabel>
                             <FormControl>
-                              <Input placeholder="Ex. : directrice financière" {...field} />
+                              <Input placeholder={t('meetingPlan.rolePlaceholder')} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -257,7 +253,7 @@ export default function PlanMeetingPage() {
                         name={`participants.${index}.seniority`}
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Niveau hiérarchique</FormLabel>
+                            <FormLabel>{t('meetingPlan.seniority')}</FormLabel>
                             <Select value={field.value} onValueChange={field.onChange}>
                               <FormControl>
                                 <SelectTrigger>
@@ -267,7 +263,7 @@ export default function PlanMeetingPage() {
                               <SelectContent>
                                 {SENIORITY_OPTIONS.map((o) => (
                                   <SelectItem key={o.value} value={o.value}>
-                                    {o.label}
+                                    {t(o.label)}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
@@ -280,7 +276,7 @@ export default function PlanMeetingPage() {
                         name={`participants.${index}.personality`}
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Personnalité</FormLabel>
+                            <FormLabel>{t('projects.personality')}</FormLabel>
                             <Select value={field.value} onValueChange={field.onChange}>
                               <FormControl>
                                 <SelectTrigger>
@@ -290,7 +286,7 @@ export default function PlanMeetingPage() {
                               <SelectContent>
                                 {PERSONALITY_OPTIONS.map((o) => (
                                   <SelectItem key={o.value} value={o.value}>
-                                    {o.label}
+                                    {t(o.label)}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
@@ -303,7 +299,7 @@ export default function PlanMeetingPage() {
                         name={`participants.${index}.cooperationLevel`}
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Engagement</FormLabel>
+                            <FormLabel>{t('meetingPlan.cooperation')}</FormLabel>
                             <Select value={String(field.value)} onValueChange={(v) => field.onChange(Number(v))}>
                               <FormControl>
                                 <SelectTrigger>
@@ -313,7 +309,7 @@ export default function PlanMeetingPage() {
                               <SelectContent>
                                 {[1, 2, 3, 4, 5].map((n) => (
                                   <SelectItem key={n} value={String(n)}>
-                                    {COOPERATION_LABELS[n]}
+                                    {t(`cooperation.${n}` as AppMessageKey)}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
@@ -326,9 +322,9 @@ export default function PlanMeetingPage() {
                         name={`participants.${index}.communicationStyle`}
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Style de communication</FormLabel>
+                            <FormLabel>{t('meetingPlan.style')}</FormLabel>
                             <FormControl>
-                              <Input placeholder="Ex. : direct et chiffré" {...field} />
+                              <Input placeholder={t('meetingPlan.stylePlaceholder')} {...field} />
                             </FormControl>
                           </FormItem>
                         )}
@@ -338,9 +334,9 @@ export default function PlanMeetingPage() {
                         name={`participants.${index}.objectives`}
                         render={({ field }) => (
                           <FormItem className="sm:col-span-2 lg:col-span-1">
-                            <FormLabel>Ses objectifs</FormLabel>
+                            <FormLabel>{t('meetingPlan.theirObjectives')}</FormLabel>
                             <FormControl>
-                              <Input placeholder="Ex. : limiter le dépassement à 5 %" {...field} />
+                              <Input placeholder={t('meetingPlan.theirObjectivesPlaceholder')} {...field} />
                             </FormControl>
                           </FormItem>
                         )}
@@ -350,9 +346,9 @@ export default function PlanMeetingPage() {
                         name={`participants.${index}.constraints`}
                         render={({ field }) => (
                           <FormItem className="sm:col-span-2 lg:col-span-1">
-                            <FormLabel>Ses contraintes</FormLabel>
+                            <FormLabel>{t('meetingPlan.constraints')}</FormLabel>
                             <FormControl>
-                              <Input placeholder="Ex. : gel des embauches" {...field} />
+                              <Input placeholder={t('meetingPlan.constraintsPlaceholder')} {...field} />
                             </FormControl>
                           </FormItem>
                         )}
@@ -368,11 +364,11 @@ export default function PlanMeetingPage() {
 
             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
               <Button type="button" variant="outline" onClick={() => navigate(`/simulations/${simId}/meetings`)}>
-                Annuler
+                {t('common.cancel')}
               </Button>
               <Button type="submit" variant="primary" disabled={createMutation.isPending}>
                 <KeenIcon icon="calendar-add" style="duotone" />
-                {createMutation.isPending ? 'Planification…' : 'Planifier la réunion'}
+                {createMutation.isPending ? t('meetingPlan.submitting') : t('meetingPlan.submit')}
               </Button>
             </div>
           </form>

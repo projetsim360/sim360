@@ -5,6 +5,7 @@ import { ParticipantTile } from './participant-tile';
 import { TranscriptionPanel } from './transcription-panel';
 import { ConferenceControls } from './conference-controls';
 import type { MeetingParticipant, ConferenceMode, ViewMode } from '../types/meeting.types';
+import { useT } from '@/i18n/app/use-t';
 
 interface MeetingConferenceProps {
   meetingId: string;
@@ -19,15 +20,6 @@ interface MeetingConferenceProps {
 }
 
 // User "self" tile
-const USER_PARTICIPANT: MeetingParticipant = {
-  id: '__user__',
-  name: 'Vous',
-  role: 'Animateur',
-  personality: null,
-  cooperationLevel: 5,
-  avatar: null,
-};
-
 export function MeetingConference({
   meetingId,
   participants,
@@ -39,6 +31,15 @@ export function MeetingConference({
   chatOpen,
   onToggleChat,
 }: MeetingConferenceProps) {
+  const t = useT();
+  const USER_PARTICIPANT: MeetingParticipant = {
+    id: '__user__',
+    name: t('room.you'),
+    role: t('room.facilitator'),
+    personality: null,
+    cooperationLevel: 5,
+    avatar: null,
+  };
   const [conferenceMode, setConferenceMode] = useState<ConferenceMode>(forceSingleMode ? 'single' : 'all');
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [transcriptionOpen, setTranscriptionOpen] = useState(false);
@@ -158,19 +159,19 @@ export function MeetingConference({
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--success-500)]/15">
                 <div className="w-1.5 h-1.5 rounded-full bg-[var(--success-500)] animate-pulse" />
-                <span className="text-[11px] text-white font-medium">En direct</span>
+                <span className="text-[11px] text-white font-medium">{t('room.liveShort')}</span>
               </div>
               {conferenceMode === 'single' && (
                 <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--accent-500)]/15">
                   <svg className="w-3 h-3 text-[var(--accent-300)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                   </svg>
-                  <span className="text-[10px] text-[var(--accent-300)] font-medium">Dites un prénom pour changer</span>
+                  <span className="text-[10px] text-[var(--accent-300)] font-medium">{t('room.sayName')}</span>
                 </div>
               )}
             </div>
           ) : (
-            <span className="text-[11px] text-muted-foreground">Conference audio</span>
+            <span className="text-[11px] text-muted-foreground">{t('room.audioConference')}</span>
           )}
         </div>
         <div className="flex items-center gap-1.5 text-muted-foreground">
@@ -278,7 +279,7 @@ export function MeetingConference({
                       )}
                     </div>
                   ) : (
-                    <p className="text-muted-foreground text-sm">Aucun participant actif</p>
+                    <p className="text-muted-foreground text-sm">{t('room.noActive')}</p>
                   )}
                 </div>
 

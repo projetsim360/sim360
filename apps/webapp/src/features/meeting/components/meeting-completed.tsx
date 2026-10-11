@@ -6,20 +6,17 @@ import { ParticipantAvatar } from './participant-avatar';
 import { ChatBubble } from './chat-bubble';
 import { ActionItemsPanel } from '@/features/action-items/components/action-items-panel';
 
-const KPI_LABELS: Record<string, string> = {
-  budget: 'Budget',
-  schedule: 'Délai',
-  quality: 'Qualité',
-  teamMorale: 'Moral de l’équipe',
-  riskLevel: 'Niveau de risque',
-};
 import type { ChatMessage, MeetingDetail } from '../types/meeting.types';
+import { useTv } from '@/i18n/app/use-t';
+import { useT } from '@/i18n/app/use-t';
 
 interface MeetingCompletedProps {
   meeting: MeetingDetail;
 }
 
 export function MeetingCompleted({ meeting }: MeetingCompletedProps) {
+  const tv = useTv();
+  const t = useT();
   const [showTranscript, setShowTranscript] = useState(false);
 
   const messages: ChatMessage[] = meeting.messages.map((m) => ({
@@ -55,7 +52,7 @@ export function MeetingCompleted({ meeting }: MeetingCompletedProps) {
               <div className="flex flex-wrap gap-2 mt-3">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--success-50)] px-2.5 py-1 text-xs font-semibold text-[var(--success-700)]">
                   <span className="size-1.5 rounded-full bg-[var(--success-500)]" />
-                  Terminée
+                  {t('meetingStatus.COMPLETED')}
                 </span>
                 {durationReal !== null && (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--neutral-100)] px-2.5 py-1 text-xs font-medium text-[var(--neutral-600)]">
@@ -81,7 +78,7 @@ export function MeetingCompleted({ meeting }: MeetingCompletedProps) {
               <CardHeader className="pb-3">
                 <CardTitle className="font-display text-base flex items-center gap-2 text-[var(--brand-700)]">
                   <KeenIcon icon="document" style="duotone" className="size-4 text-[var(--accent-500)]" />
-                  Synthèse
+                  {t('room.summary')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -95,7 +92,7 @@ export function MeetingCompleted({ meeting }: MeetingCompletedProps) {
                 <CardHeader className="pb-3">
                   <CardTitle className="font-display text-base flex items-center gap-2 text-[var(--brand-700)]">
                     <KeenIcon icon="verify" style="duotone" className="size-4 text-[var(--success-500)]" />
-                    Décisions clés
+                    {t('room.keyDecisions')}
                     <span className="inline-flex items-center justify-center rounded-full bg-[var(--success-50)] px-2 py-0.5 text-[11px] font-bold text-[var(--success-700)]">
                       {summary.keyDecisions.length}
                     </span>
@@ -131,7 +128,7 @@ export function MeetingCompleted({ meeting }: MeetingCompletedProps) {
                 >
                   <span className="font-display text-base font-bold text-[var(--brand-700)] flex items-center gap-2">
                     <KeenIcon icon="message-text" style="duotone" className="size-4 text-[var(--accent-500)]" />
-                    Conversation
+                    {t('room.conversation')}
                     <span className="inline-flex items-center justify-center rounded-full bg-[var(--neutral-100)] px-2 py-0.5 text-[11px] font-bold text-[var(--neutral-600)]">
                       {messages.length}
                     </span>
@@ -159,13 +156,13 @@ export function MeetingCompleted({ meeting }: MeetingCompletedProps) {
                 <CardHeader className="pb-3">
                   <CardTitle className="font-display text-base flex items-center gap-2 text-[var(--brand-700)]">
                     <KeenIcon icon="chart-line" style="duotone" className="size-4 text-[var(--accent-500)]" />
-                    Impact sur les indicateurs
+                    {t('room.kpiImpact')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   {Object.entries(summary.kpiImpact).map(([key, val]) => (
                     <div key={key} className="flex items-center justify-between rounded-lg bg-[var(--neutral-50)] px-3 py-2">
-                      <span className="text-sm text-[var(--neutral-600)]">{KPI_LABELS[key] ?? key}</span>
+                      <span className="text-sm text-[var(--neutral-600)]">{tv('kpiKey', key)}</span>
                       <span className={cn(
                         'text-sm font-bold tabular-nums',
                         val > 0 ? 'text-[var(--success-700)]' : val < 0 ? 'text-[var(--error-700)]' : 'text-[var(--neutral-500)]',
@@ -183,7 +180,7 @@ export function MeetingCompleted({ meeting }: MeetingCompletedProps) {
               <CardHeader className="pb-3">
                 <CardTitle className="font-display text-base flex items-center gap-2 text-[var(--brand-700)]">
                   <KeenIcon icon="people" style="duotone" className="size-4 text-[var(--accent-500)]" />
-                  Participants
+                  {t('room.participants')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
@@ -192,8 +189,8 @@ export function MeetingCompleted({ meeting }: MeetingCompletedProps) {
                     <KeenIcon icon="user" style="duotone" className="size-4 text-white" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-medium">Vous</p>
-                    <p className="text-[10px] text-[var(--neutral-500)]">Animateur</p>
+                    <p className="text-sm font-medium">{t('room.you')}</p>
+                    <p className="text-[10px] text-[var(--neutral-500)]">{t('room.facilitator')}</p>
                   </div>
                 </div>
                 {meeting.participants.map((p) => (
@@ -212,7 +209,7 @@ export function MeetingCompleted({ meeting }: MeetingCompletedProps) {
       ) : (
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-sm text-[var(--neutral-500)]">Aucun résumé disponible pour cette réunion.</p>
+            <p className="text-sm text-[var(--neutral-500)]">{t('room.noSummary')}</p>
           </CardContent>
         </Card>
       )}

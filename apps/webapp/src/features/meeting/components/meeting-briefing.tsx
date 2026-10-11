@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { KeenIcon } from '@/components/keenicons';
 import { ParticipantAvatar } from './participant-avatar';
 import type { MeetingDetail } from '../types/meeting.types';
+import { useT } from '@/i18n/app/use-t';
 
 interface MeetingBriefingProps {
   meeting: MeetingDetail;
@@ -11,6 +12,7 @@ interface MeetingBriefingProps {
 }
 
 export function MeetingBriefing({ meeting, onStart, actionLoading }: MeetingBriefingProps) {
+  const t = useT();
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
       <div className="lg:col-span-2 space-y-5">
@@ -18,7 +20,7 @@ export function MeetingBriefing({ meeting, onStart, actionLoading }: MeetingBrie
           <CardHeader className="pb-3">
             <CardTitle className="font-display text-base flex items-center gap-2 text-[var(--brand-700)]">
               <KeenIcon icon="notepad" style="duotone" className="size-4 text-[var(--accent-500)]" />
-              Briefing
+              {t('room.briefing')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -27,7 +29,7 @@ export function MeetingBriefing({ meeting, onStart, actionLoading }: MeetingBrie
             )}
             {meeting.objectives.length > 0 && (
               <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--neutral-500)] mb-2">Objectifs</h4>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--neutral-500)] mb-2">{t('scenario.stat.objectives')}</h4>
                 <div className="space-y-2">
                   {meeting.objectives.map((obj, i) => (
                     <div key={i} className="flex items-start gap-2.5">
@@ -43,11 +45,11 @@ export function MeetingBriefing({ meeting, onStart, actionLoading }: MeetingBrie
             <div className="flex flex-wrap gap-2 pt-2">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--neutral-100)] px-2.5 py-1 text-xs font-medium text-[var(--neutral-600)]">
                 <KeenIcon icon="time" style="duotone" className="text-xs" />
-                {meeting.durationMinutes} min
+                {t('meetings.minutesShort', { n: meeting.durationMinutes })}
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--neutral-100)] px-2.5 py-1 text-xs font-medium text-[var(--neutral-600)]">
                 <KeenIcon icon="people" style="duotone" className="text-xs" />
-                {meeting.participants.length} participant{meeting.participants.length > 1 ? 's' : ''}
+                {t('meetings.participants', { count: meeting.participants.length })}
               </span>
             </div>
           </CardContent>
@@ -62,7 +64,7 @@ export function MeetingBriefing({ meeting, onStart, actionLoading }: MeetingBrie
             className="px-8 bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
           >
             <KeenIcon icon="rocket" style="duotone" className="text-sm" />
-            {actionLoading ? 'Démarrage…' : 'Démarrer la réunion'}
+            {actionLoading ? t('room.startingShort') : t('room.startMeeting')}
           </Button>
         </div>
       </div>
@@ -71,7 +73,7 @@ export function MeetingBriefing({ meeting, onStart, actionLoading }: MeetingBrie
         <CardHeader className="pb-3">
           <CardTitle className="font-display text-base flex items-center gap-2 text-[var(--brand-700)]">
             <KeenIcon icon="people" style="duotone" className="size-4 text-[var(--accent-500)]" />
-            Participants
+            {t('room.participants')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">

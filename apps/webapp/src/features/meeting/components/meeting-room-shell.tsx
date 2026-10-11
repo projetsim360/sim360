@@ -22,6 +22,8 @@ import { MeetingChatPanel } from './meeting-chat-panel';
 import { ParticipantAvatar } from './participant-avatar';
 import { MeetingTimelineChip } from './meeting-timeline-chip';
 import type { ChatMessage, MeetingDetail, MeetingMessage, MeetingParticipant } from '../types/meeting.types';
+import { Msg } from '@/i18n/app/msg';
+import { useT } from '@/i18n/app/use-t';
 
 function toChatMessage(m: MeetingMessage): ChatMessage {
   return {
@@ -53,6 +55,7 @@ interface MeetingRoomShellProps {
 }
 
 export function MeetingRoomShell({ meeting, onComplete, actionLoading }: MeetingRoomShellProps) {
+  const t = useT();
   const [mode, setMode] = useState<'TEXT' | 'AUDIO'>(meeting.mode);
   const [chatDrawerOpen, setChatDrawerOpen] = useState(false);
   const [showAudioWarning, setShowAudioWarning] = useState(false);
@@ -130,7 +133,7 @@ export function MeetingRoomShell({ meeting, onComplete, actionLoading }: Meeting
       },
       onError: (err) => {
         setMessages((prev) =>
-          prev.map((m) => (m.id === assistantId ? { ...m, content: `Erreur: ${err}` } : m)),
+          prev.map((m) => (m.id === assistantId ? { ...m, content: t('common.errorWith', { message: String(err) }) } : m)),
         );
       },
     });
@@ -147,11 +150,11 @@ export function MeetingRoomShell({ meeting, onComplete, actionLoading }: Meeting
           <span className="font-display text-sm font-bold text-white truncate">{meeting.title}</span>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--error-500)]/20 px-2.5 py-0.5 text-[11px] font-bold text-[#FCA5A5]">
             <span className="size-1.5 rounded-full bg-[var(--error-500)] animate-pulse" />
-            EN DIRECT
+            {t('room.live')}
           </span>
         </div>
         <div className="flex items-center gap-2.5">
-          <div role="group" aria-label="Mode de réunion" className="flex items-center rounded-lg border border-white/15 overflow-hidden">
+          <div role="group" aria-label={t('room.mode')} className="flex items-center rounded-lg border border-white/15 overflow-hidden">
             <button
               type="button"
               aria-pressed={mode === 'TEXT'}
@@ -160,7 +163,7 @@ export function MeetingRoomShell({ meeting, onComplete, actionLoading }: Meeting
                 mode === 'TEXT' ? 'bg-[var(--accent-500)] text-white' : 'text-[var(--brand-100)] hover:bg-white/10')}
             >
               <KeenIcon icon="message-text" style="duotone" className="text-sm leading-none" />
-              Texte
+              {t('room.text')}
             </button>
             <button
               type="button"
@@ -170,7 +173,7 @@ export function MeetingRoomShell({ meeting, onComplete, actionLoading }: Meeting
                 mode === 'AUDIO' ? 'bg-[var(--accent-500)] text-white' : 'text-[var(--brand-100)] hover:bg-white/10')}
             >
               <KeenIcon icon="speaker" style="duotone" className="text-sm leading-none" />
-              Audio
+              {t('room.audio')}
             </button>
           </div>
           <MeetingTimelineChip elapsedSeconds={elapsed} durationMinutes={meeting.durationMinutes} />
@@ -183,21 +186,20 @@ export function MeetingRoomShell({ meeting, onComplete, actionLoading }: Meeting
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
               <KeenIcon icon="speaker" style="duotone" className="size-5 text-[var(--warning-500)]" />
-              Mode audio
+              {t('room.audioTitle')}
             </AlertDialogTitle>
             <AlertDialogDescription className="space-y-2">
               <span className="block">
-                Le mode audio utilise la synthèse vocale en temps réel pour chaque participant.
-                Cette fonctionnalité <span className="font-semibold text-foreground">consomme significativement plus de crédits</span> que le mode texte.
+                <Msg id="room.audioText" values={{ b: (chunks) => <span className="font-semibold text-foreground">{chunks}</span> }} />
               </span>
               <span className="block text-xs text-[var(--neutral-500)]">
-                Chaque participant actif génère un flux audio continu tant que la conférence est en cours.
+                {t('room.audioHint')}
               </span>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Rester en texte</AlertDialogCancel>
-            <AlertDialogAction onClick={() => setMode('AUDIO')}>Activer l'audio</AlertDialogAction>
+            <AlertDialogCancel>{t('room.stayText')}</AlertDialogCancel>
+            <AlertDialogAction onClick={() => setMode('AUDIO')}>{t('room.enableAudio')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -222,7 +224,7 @@ export function MeetingRoomShell({ meeting, onComplete, actionLoading }: Meeting
               <div className="absolute inset-0 bg-black/50 sm:hidden" onClick={() => setChatDrawerOpen(false)} />
               <div className="absolute inset-y-0 right-0 w-[88%] max-w-[340px] bg-[var(--brand-900)] p-3 flex flex-col sm:static sm:w-full sm:max-w-none sm:bg-transparent sm:p-0 sm:h-[calc(100vh-180px)]">
                 <div className="flex items-center justify-between mb-2 sm:hidden">
-                  <span className="text-sm font-semibold text-white">Messages</span>
+                  <span className="text-sm font-semibold text-white">{t('room.messages')}</span>
                   <button type="button" onClick={() => setChatDrawerOpen(false)} className="text-white/70 hover:text-white">
                     <KeenIcon icon="cross" style="outline" className="size-4" />
                   </button>
@@ -270,12 +272,12 @@ export function MeetingRoomShell({ meeting, onComplete, actionLoading }: Meeting
             <Card>
               <CardHeader className="p-3 pb-2">
                 <CardTitle className="text-xs font-bold uppercase tracking-wider text-[var(--neutral-500)]">
-                  Donner la parole
+                  {t('room.giveFloor')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-3 pt-1 space-y-2">
                 <p className="text-[10px] text-[var(--neutral-500)] mb-1">
-                  Cliquez sur un participant pour lui adresser la parole.
+                  {t('room.giveFloorHint')}
                 </p>
                 {meeting.participants.map((p) => {
                   const active = selectedParticipant?.id === p.id;
@@ -298,7 +300,7 @@ export function MeetingRoomShell({ meeting, onComplete, actionLoading }: Meeting
                       {active && (
                         <span className="flex items-center gap-1">
                           <span className="size-1.5 rounded-full bg-[var(--success-500)] animate-pulse" />
-                          <span className="text-[9px] text-[var(--success-700)] font-medium">Actif</span>
+                          <span className="text-[9px] text-[var(--success-700)] font-medium">{t('brownfield.active')}</span>
                         </span>
                       )}
                     </button>
@@ -307,7 +309,7 @@ export function MeetingRoomShell({ meeting, onComplete, actionLoading }: Meeting
               </CardContent>
             </Card>
 
-            <DisabledWithTooltip disabled={messages.length === 0} reason="Échangez d'abord avec les participants">
+            <DisabledWithTooltip disabled={messages.length === 0} reason={t('room.closeReason')}>
               <Button
                 variant="outline"
                 size="sm"
@@ -316,7 +318,7 @@ export function MeetingRoomShell({ meeting, onComplete, actionLoading }: Meeting
                 className="w-full"
               >
                 <KeenIcon icon="check-circle" style="duotone" className="text-xs" />
-                {actionLoading ? 'Clôture…' : 'Clôturer la réunion'}
+                {actionLoading ? t('room.closing') : t('room.close')}
               </Button>
             </DisabledWithTooltip>
           </div>

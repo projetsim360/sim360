@@ -1,5 +1,6 @@
 import { MeetingTimelineChip } from './meeting-timeline-chip';
 import type { ConferenceMode, ViewMode } from '../types/meeting.types';
+import { useT } from '@/i18n/app/use-t';
 
 interface ConferenceControlsProps {
   elapsed: number;
@@ -79,6 +80,7 @@ export function ConferenceControls({
   onConnect,
   onDisconnect,
 }: ConferenceControlsProps) {
+  const t = useT();
   // Pre-join state
   if (!isConnected) {
     return (
@@ -89,10 +91,10 @@ export function ConferenceControls({
           className="flex items-center gap-2.5 px-6 py-3 rounded-full bg-[var(--accent-500)] text-white font-medium text-sm hover:bg-[var(--accent-600)] active:scale-[0.98] transition-all shadow-lg shadow-[var(--accent-500)]/20 cursor-pointer"
         >
           <MicIcon muted={false} />
-          Rejoindre la conference
+          {t('room.join')}
         </button>
         <span className="text-[11px] text-white/40">
-          {participantCount} participant{participantCount > 1 ? 's' : ''} simulé{participantCount > 1 ? 's' : ''}
+          {t('room.simulatedCount', { count: participantCount })}
         </span>
       </div>
     );
@@ -131,7 +133,7 @@ export function ConferenceControls({
                 : 'bg-white/10 text-white hover:bg-white/15'
               }
             `}
-            title={isMuted ? 'Reactiver le micro' : 'Couper le micro'}
+            title={isMuted ? t('room.micOn') : t('room.micOff')}
           >
             <MicIcon muted={isMuted} />
           </button>
@@ -151,7 +153,7 @@ export function ConferenceControls({
                   : 'bg-[var(--accent-500)]/15 text-[var(--accent-300)] hover:bg-[var(--accent-500)]/25 ring-1 ring-[var(--accent-500)]/20'
                 }
               `}
-              title={conferenceMode === 'all' ? 'Passer en mode individuel' : 'Passer en mode tous'}
+              title={conferenceMode === 'all' ? t('room.toSingle') : t('room.toAll')}
             >
               {conferenceMode === 'all' ? (
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -162,7 +164,7 @@ export function ConferenceControls({
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               )}
-              {conferenceMode === 'all' ? 'Tous' : 'Individuel'}
+              {conferenceMode === 'all' ? t('room.all') : t('room.single')}
             </button>
           )}
 
@@ -178,7 +180,7 @@ export function ConferenceControls({
                   : 'bg-[var(--accent-500)]/20 text-[var(--accent-300)] hover:bg-[var(--accent-500)]/30'
                 }
               `}
-              title="Messages"
+              title={t('room.messages')}
               aria-pressed={chatOpen}
             >
               <ChatIcon />
@@ -193,7 +195,7 @@ export function ConferenceControls({
             type="button"
             onClick={onDisconnect}
             className="w-11 h-11 rounded-full flex items-center justify-center bg-[var(--error-500)] text-white hover:bg-[var(--error-700)] active:scale-95 transition-all duration-200 shadow-lg shadow-[var(--error-500)]/20"
-            title="Raccrocher"
+            title={t('room.hangUp')}
           >
             <PhoneIcon />
           </button>
@@ -212,7 +214,7 @@ export function ConferenceControls({
                 : 'text-white/40 hover:bg-white/5 hover:text-white/70'
               }
             `}
-            title={viewMode === 'grid' ? 'Vue speaker' : 'Vue grille'}
+            title={viewMode === 'grid' ? t('room.speakerView') : t('room.gridView')}
           >
             {viewMode === 'grid' ? (
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -236,7 +238,7 @@ export function ConferenceControls({
                 : 'text-white/40 hover:bg-white/5 hover:text-white/70'
               }
             `}
-            title="Transcriptions"
+            title={t('room.transcripts')}
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
@@ -248,7 +250,7 @@ export function ConferenceControls({
             type="button"
             onClick={onToggleFullscreen}
             className="w-9 h-9 rounded-lg flex items-center justify-center text-white/40 hover:bg-white/5 hover:text-white/70 transition-all duration-200 cursor-pointer"
-            title={isFullscreen ? 'Quitter le plein ecran' : 'Plein ecran'}
+            title={isFullscreen ? t('room.exitFullscreen') : t('room.fullscreen')}
           >
             {isFullscreen ? (
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

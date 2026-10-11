@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Slot } from '@radix-ui/react-slot';
 import { Label as LabelPrimitive } from 'radix-ui';
 import { Controller, ControllerProps, FieldPath, FieldValues, FormProvider, useFormContext } from 'react-hook-form';
+import { useIntl } from 'react-intl';
 
 const Form = FormProvider;
 
@@ -117,7 +118,10 @@ function FormDescription({ className, ...props }: React.HTMLAttributes<HTMLParag
 
 function FormMessage({ className, children, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
   const { error, formMessageId } = useFormField();
-  const body = error ? String(error?.message) : children;
+  const intl = useIntl();
+  const raw = error ? String(error?.message) : children;
+  // Schemas declared at module level carry catalogue keys as messages; translate them here.
+  const body = typeof raw === 'string' && raw in intl.messages ? intl.formatMessage({ id: raw }) : raw;
 
   if (!body) {
     return null;
