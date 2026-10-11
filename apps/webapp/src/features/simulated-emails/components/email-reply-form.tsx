@@ -2,6 +2,7 @@ import { forwardRef, type FormEvent } from 'react';
 import { KeenIcon } from '@/components/keenicons';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { useT } from '@/i18n/app/use-t';
 
 const MAX_LENGTH = 2000;
 
@@ -14,6 +15,7 @@ interface EmailReplyFormProps {
 
 export const EmailReplyForm = forwardRef<HTMLTextAreaElement, EmailReplyFormProps>(
   function EmailReplyForm({ value, onChange, onSubmit, isPending }, ref) {
+  const t = useT();
     function handleSubmit(e: FormEvent) {
       e.preventDefault();
       const trimmed = value.trim();
@@ -30,11 +32,11 @@ export const EmailReplyForm = forwardRef<HTMLTextAreaElement, EmailReplyFormProp
           ref={ref}
           value={value}
           onChange={(e) => onChange(e.target.value.slice(0, MAX_LENGTH))}
-          placeholder="Rédigez votre réponse..."
+          placeholder={t('emails.replyPlaceholder')}
           rows={3}
           disabled={isPending}
           className="resize-none bg-background"
-          aria-label="Réponse à l'email"
+          aria-label={t('emails.replyAria')}
           aria-describedby="reply-counter"
         />
         <div className="flex items-center justify-between mt-2">
@@ -47,7 +49,7 @@ export const EmailReplyForm = forwardRef<HTMLTextAreaElement, EmailReplyFormProp
             {value.length} / {MAX_LENGTH}
             <span aria-hidden="true">·</span>
             <KeenIcon icon="save-2" style="duotone" className="size-3" />
-            <span>brouillon auto</span>
+            <span>{t('emails.autoDraft')}</span>
           </span>
           <Button
             type="submit"
@@ -55,7 +57,7 @@ export const EmailReplyForm = forwardRef<HTMLTextAreaElement, EmailReplyFormProp
             size="sm"
             disabled={isPending || !value.trim()}
             className="gap-1.5"
-            title="Envoyer (R)"
+            title={t('emails.sendShortcut')}
             aria-keyshortcuts="r"
           >
             {isPending ? (
@@ -65,17 +67,17 @@ export const EmailReplyForm = forwardRef<HTMLTextAreaElement, EmailReplyFormProp
                   style="duotone"
                   className="size-3.5 animate-spin"
                 />
-                Évaluation...
+                {t('emails.evaluating')}
               </>
             ) : (
               <>
                 <KeenIcon icon="send" style="duotone" className="size-3.5" />
-                Envoyer
+                {t('room.send')}
               </>
             )}
           </Button>
           <span className="sr-only" aria-live="assertive" aria-atomic="true">
-            {isPending ? 'Évaluation en cours…' : ''}
+            {isPending ? t('emails.evaluatingLong') : ''}
           </span>
         </div>
       </form>

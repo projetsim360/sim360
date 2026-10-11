@@ -11,8 +11,6 @@ import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { KeenIcon } from '@/components/keenicons';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import { useState } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import {
@@ -21,8 +19,12 @@ import {
   useRespondToEmail,
 } from '../api/simulated-emails.api';
 import { EmailPriorityBadge } from '../components/email-priority-badge';
+import { useAppLocale } from '@/providers/locale-provider';
+import { useT } from '@/i18n/app/use-t';
 
 export default function EmailDetailPage() {
+  const { intlLocale } = useAppLocale();
+  const t = useT();
   const { id: simId, emailId } = useParams<{ id: string; emailId: string }>();
   const navigate = useNavigate();
   const [replyText, setReplyText] = useState('');
@@ -35,10 +37,10 @@ export default function EmailDetailPage() {
     if (!emailId) return;
     try {
       await archiveMutation.mutateAsync(emailId);
-      toast.success('Email archive.');
+      toast.success(t('emails.archived'));
       navigate(`/simulations/${simId}/emails`);
     } catch (_err) {
-      toast.error('Erreur lors de l\'archivage.');
+      toast.error(t('emails.archiveError'));
     }
   }
 
@@ -46,12 +48,12 @@ export default function EmailDetailPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Email" />
+          <ToolbarHeading title={t('emails.single')} />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-sm text-muted-foreground">
-              Paramètres manquants.
+              {t('emails.missingParams')}
             </p>
           </CardContent>
         </Card>
@@ -63,7 +65,7 @@ export default function EmailDetailPage() {
     return (
       <div className="container space-y-5">
         <Toolbar>
-          <ToolbarHeading title="Email" />
+          <ToolbarHeading title={t('emails.single')} />
         </Toolbar>
         <Skeleton className="h-40 rounded-lg" />
         <Skeleton className="h-48 rounded-lg" />
@@ -75,12 +77,12 @@ export default function EmailDetailPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Email" />
+          <ToolbarHeading title={t('emails.single')} />
           <ToolbarActions>
             <Button variant="outline" size="sm" asChild>
               <Link to={`/simulations/${simId}/emails`}>
                 <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
-                Retour
+                {t('common.back')}
               </Link>
             </Button>
           </ToolbarActions>
@@ -88,7 +90,7 @@ export default function EmailDetailPage() {
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-destructive text-sm">
-              {(error as Error)?.message || 'Email introuvable.'}
+              {(error as Error)?.message || t('emails.notFound')}
             </p>
           </CardContent>
         </Card>
@@ -112,13 +114,13 @@ export default function EmailDetailPage() {
               disabled={archiveMutation.isPending}
             >
               <KeenIcon icon="archive" style="duotone" className="size-4" />
-              Archiver
+              {t('emails.archive')}
             </Button>
           )}
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${simId}/emails`}>
               <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
-              Retour
+              {t('common.back')}
             </Link>
           </Button>
         </ToolbarActions>
@@ -146,9 +148,7 @@ export default function EmailDetailPage() {
               <div className="flex items-center gap-3">
                 <EmailPriorityBadge priority={email.priority} />
                 <span className="text-xs text-muted-foreground">
-                  {format(new Date(email.scheduledAt), 'd MMMM yyyy, HH:mm', {
-                    locale: fr,
-                  })}
+                  {new Date(email.scheduledAt).toLocaleString(intlLocale, { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                 </span>
               </div>
             </div>
@@ -167,7 +167,7 @@ export default function EmailDetailPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
                 <KeenIcon icon="double-check" style="duotone" className="size-5 text-success" />
-                Votre réponse
+                {t('emails.yourReply')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -180,15 +180,13 @@ export default function EmailDetailPage() {
               {email.respondedAt && (
                 <p className="text-xs text-muted-foreground">
                   Répondu le{' '}
-                  {format(new Date(email.respondedAt), 'd MMMM yyyy, HH:mm', {
-                    locale: fr,
-                  })}
+                  {new Date(email.respondedAt).toLocaleString(intlLocale, { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                 </p>
               )}
 
               {email.responseScore !== undefined && (
                 <div className="flex items-center gap-3 pt-2">
-                  <span className="text-sm font-medium">Score :</span>
+                  <span className="text-sm font-medium">{t('deliverables.score')}</span>
                   <Badge
                     variant={
                       email.responseScore >= 70
@@ -206,7 +204,7 @@ export default function EmailDetailPage() {
 
               {email.responseFeedback && (
                 <div className="pt-2">
-                  <h4 className="text-sm font-semibold mb-1">Retour détaillé</h4>
+                  <h4 className="text-sm font-semibold mb-1">{t('emails.detailedFeedback')}</h4>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     {email.responseFeedback}
                   </p>
@@ -217,7 +215,7 @@ export default function EmailDetailPage() {
         ) : !isArchived ? (
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Rédiger une réponse</CardTitle>
+              <CardTitle className="text-base">{t('emails.writeReply')}</CardTitle>
             </CardHeader>
             <CardContent>
               <form
@@ -229,10 +227,10 @@ export default function EmailDetailPage() {
                       emailId,
                       data: { response: replyText.trim() },
                     });
-                    toast.success('Réponse envoyée.');
+                    toast.success(t('emails.replySent'));
                     setReplyText('');
                   } catch (_err) {
-                    toast.error("Erreur lors de l'envoi.");
+                    toast.error(t('emails.sendError'));
                   }
                 }}
                 className="space-y-3"
@@ -240,7 +238,7 @@ export default function EmailDetailPage() {
                 <Textarea
                   value={replyText}
                   onChange={(e) => setReplyText(e.target.value.slice(0, 2000))}
-                  placeholder="Rédigez votre réponse..."
+                  placeholder={t('emails.replyPlaceholder')}
                   rows={4}
                   disabled={respondMutation.isPending}
                   className="resize-none"
@@ -258,12 +256,12 @@ export default function EmailDetailPage() {
                     {respondMutation.isPending ? (
                       <>
                         <KeenIcon icon="loading" style="duotone" className="size-4 animate-spin mr-1" />
-                        Évaluation...
+                        {t('emails.evaluating')}
                       </>
                     ) : (
                       <>
                         <KeenIcon icon="send" style="duotone" className="size-4 mr-1" />
-                        Envoyer
+                        {t('room.send')}
                       </>
                     )}
                   </Button>

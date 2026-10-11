@@ -1,6 +1,7 @@
 import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
 import type { EmailPriority } from '../types/simulated-email.types';
+import { useT } from '@/i18n/app/use-t';
 
 interface EmailPriorityBadgeProps {
   priority: EmailPriority;
@@ -19,10 +20,11 @@ export function EmailPriorityBadge({
   size = 'xs',
   className,
 }: EmailPriorityBadgeProps) {
+  const t = useT();
   const isHigh = priority === 'URGENT' || priority === 'HIGH';
   const isNormal = priority === 'NORMAL';
 
-  const label = isHigh ? 'HAUTE' : isNormal ? 'NORMALE' : 'BASSE';
+  const label = isHigh ? t('emails.priority.high') : isNormal ? t('emails.priority.normal') : t('emails.priority.low');
 
   const sizeClasses =
     size === 'xs'

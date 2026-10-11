@@ -1,5 +1,6 @@
 import { KeenIcon } from '@/components/keenicons';
 import { Button } from '@/components/ui/button';
+import { useT } from '@/i18n/app/use-t';
 
 interface EmailBulkBarProps {
   selectedCount: number;
@@ -20,12 +21,13 @@ export function EmailBulkBar({
   onCancel,
   isPending,
 }: EmailBulkBarProps) {
+  const t = useT();
   const allSelected = selectedCount === totalCount;
 
   return (
     <div
       role="toolbar"
-      aria-label="Actions sur la sélection"
+      aria-label={t('emails.bulkActions')}
       className="flex flex-wrap items-center gap-2 py-2 px-3 rounded-md bg-[var(--brand-50)] dark:bg-[var(--brand-950)]/40 border border-[var(--brand-100)] dark:border-[var(--brand-900)]/60"
     >
       <span
@@ -58,7 +60,7 @@ export function EmailBulkBar({
         className="gap-1.5"
       >
         <KeenIcon icon="sms-open" style="duotone" className="size-3.5" />
-        <span className="hidden sm:inline">Marquer comme lu</span>
+        <span className="hidden sm:inline">{t('emails.markRead')}</span>
       </Button>
 
       <Button
@@ -69,7 +71,7 @@ export function EmailBulkBar({
         className="gap-1.5"
       >
         <KeenIcon icon="archive" style="duotone" className="size-3.5" />
-        <span className="hidden sm:inline">Archiver</span>
+        <span className="hidden sm:inline">{t('emails.archive')}</span>
       </Button>
 
       <Button
@@ -80,7 +82,7 @@ export function EmailBulkBar({
         className="gap-1"
       >
         <KeenIcon icon="cross" style="solid" className="size-3" />
-        <span className="hidden sm:inline">Annuler</span>
+        <span className="hidden sm:inline">{t('common.cancel')}</span>
       </Button>
     </div>
   );

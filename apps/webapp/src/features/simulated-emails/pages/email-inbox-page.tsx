@@ -26,6 +26,8 @@ import type {
   EmailStatus,
   EmailPriority,
 } from '../types/simulated-email.types';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useT } from '@/i18n/app/use-t';
 
 const FOLDER_STATUSES: Record<EmailFolder, EmailStatus[]> = {
   inbox: ['UNREAD', 'READ'],
@@ -33,16 +35,16 @@ const FOLDER_STATUSES: Record<EmailFolder, EmailStatus[]> = {
   archived: ['ARCHIVED'],
 };
 
-const FOLDER_TITLES: Record<EmailFolder, string> = {
-  inbox: 'Boîte de réception',
-  responded: 'Emails répondus',
-  archived: 'Emails archivés',
+const FOLDER_TITLES: Record<EmailFolder, AppMessageKey> = {
+  inbox: 'menu.inbox',
+  responded: 'emails.title.responded',
+  archived: 'emails.title.archived',
 };
 
-const FOLDER_SUBTITLES: Record<EmailFolder, string> = {
-  inbox: 'Traitez les emails entrants de votre simulation en cours.',
-  responded: "Relisez vos réponses et votre retour détaillé.",
-  archived: 'Les emails que vous avez archivés.',
+const FOLDER_SUBTITLES: Record<EmailFolder, AppMessageKey> = {
+  inbox: 'emails.sub.inbox',
+  responded: 'emails.sub.responded',
+  archived: 'emails.sub.archived',
 };
 
 function parseFolder(raw: string | undefined): EmailFolder {
@@ -89,6 +91,7 @@ function sortEmails(emails: SimulatedEmail[], sort: SortKey): SimulatedEmail[] {
 }
 
 export default function EmailInboxPage() {
+  const t = useT();
   const { id: simIdFromUrl, folder: folderParam } = useParams<{
     id?: string;
     folder?: string;
@@ -264,10 +267,10 @@ export default function EmailInboxPage() {
     if (!activeEmail) return;
     try {
       await archiveMutation.mutateAsync(activeEmail.id);
-      toast.success('Email archivé.');
+      toast.success(t('emails.archived'));
       closeDrawer();
     } catch (_err) {
-      toast.error("Erreur lors de l'archivage.");
+      toast.error(t('emails.archiveError'));
     }
   }
 
@@ -275,10 +278,10 @@ export default function EmailInboxPage() {
     if (!activeEmail) return;
     try {
       await markUnreadMutation.mutateAsync(activeEmail.id);
-      toast.success('Email marqué comme non lu.');
+      toast.success(t('emails.markedUnread'));
       closeDrawer();
     } catch (_err) {
-      toast.error('Erreur lors de la mise à jour.');
+      toast.error(t('emails.updateError'));
     }
   }
 
@@ -289,9 +292,9 @@ export default function EmailInboxPage() {
         emailId: activeEmail.id,
         data: { response },
       });
-      toast.success('Réponse envoyée.');
+      toast.success(t('emails.replySent'));
     } catch (_err) {
-      toast.error("Erreur lors de l'envoi de la réponse.");
+      toast.error(t('emails.replyError'));
       throw _err; // Re-throw so EmailDetailDrawer.handleSubmit can catch it cleanly
     }
   }
@@ -301,11 +304,11 @@ export default function EmailInboxPage() {
     try {
       const result = await bulkArchiveMutation.mutateAsync(Array.from(selectedIds));
       toast.success(
-        `${result.archived} email${result.archived > 1 ? 's' : ''} archivé${result.archived > 1 ? 's' : ''}.`,
+        t('emails.bulkArchived', { count: result.archived }),
       );
       clearSelection();
     } catch (_err) {
-      toast.error("Erreur lors de l'archivage groupé.");
+      toast.error(t('emails.bulkArchiveError'));
     }
   }
 
@@ -314,11 +317,11 @@ export default function EmailInboxPage() {
     try {
       const result = await bulkMarkReadMutation.mutateAsync(Array.from(selectedIds));
       toast.success(
-        `${result.updated} email${result.updated > 1 ? 's' : ''} marqué${result.updated > 1 ? 's' : ''} comme lu${result.updated > 1 ? 's' : ''}.`,
+        t('emails.bulkRead', { count: result.updated }),
       );
       clearSelection();
     } catch (_err) {
-      toast.error('Erreur lors de la mise à jour groupée.');
+      toast.error(t('emails.bulkUpdateError'));
     }
   }
 
@@ -332,9 +335,9 @@ export default function EmailInboxPage() {
     return (
       <>
         <PageHeader
-          breadcrumbs={[{ label: 'Simulation' }, { label: 'Emails' }]}
-          title={FOLDER_TITLES[activeFolder]}
-          subtitle={FOLDER_SUBTITLES[activeFolder]}
+          breadcrumbs={[{ label: t('dashboard.activity.simulation') }, { label: t('menu.emails') }]}
+          title={t(FOLDER_TITLES[activeFolder])}
+          subtitle={t(FOLDER_SUBTITLES[activeFolder])}
         />
         <div className="px-6 pb-8">
           <Card className="border-[var(--neutral-100)] dark:border-white/[0.06] shadow-[0_1px_2px_rgba(15,26,46,0.04),0_8px_24px_-10px_rgba(15,26,46,0.08)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_8px_24px_-10px_rgba(0,0,0,0.5)]">
@@ -350,9 +353,9 @@ export default function EmailInboxPage() {
   return (
     <>
       <PageHeader
-        breadcrumbs={[{ label: 'Simulation' }, { label: 'Emails' }]}
-        title={FOLDER_TITLES[activeFolder]}
-        subtitle={FOLDER_SUBTITLES[activeFolder]}
+        breadcrumbs={[{ label: t('dashboard.activity.simulation') }, { label: t('menu.emails') }]}
+        title={t(FOLDER_TITLES[activeFolder])}
+        subtitle={t(FOLDER_SUBTITLES[activeFolder])}
       />
 
       <div className="px-6 pb-8 flex flex-col gap-3">
