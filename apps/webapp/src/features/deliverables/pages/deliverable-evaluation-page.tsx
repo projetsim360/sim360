@@ -28,6 +28,8 @@ import { EvaluationCard } from '../components/evaluation-card';
 import { ReferenceComparison } from '../components/reference-comparison';
 import { cn } from '@/lib/utils';
 import { getScoreTextClass } from '@/config/theme.constants';
+import { useAppLocale } from '@/providers/locale-provider';
+import { useT } from '@/i18n/app/use-t';
 
 function gradeColor(grade: string): string {
   switch (grade) {
@@ -47,6 +49,8 @@ function gradeColor(grade: string): string {
 }
 
 export default function DeliverableEvaluationPage() {
+  const { intlLocale } = useAppLocale();
+  const t = useT();
   const { id, delId } = useParams<{ id: string; delId: string }>();
   const navigate = useNavigate();
   const [showReference, setShowReference] = useState(false);
@@ -67,11 +71,11 @@ export default function DeliverableEvaluationPage() {
     if (!id || !delId) return;
     try {
       await reviseMutation.mutateAsync(delId);
-      toast.success('Livrable ouvert en révision.');
+      toast.success(t('evaluation.revisionOpened'));
       navigate(`/simulations/${id}/deliverables/${delId}/edit`);
     } catch (err) {
       toast.error(
-        (err as Error).message || 'Impossible de réviser ce livrable.',
+        (err as Error).message || t('evaluation.reviseError'),
       );
     }
   }
@@ -90,18 +94,18 @@ export default function DeliverableEvaluationPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Évaluation" />
+          <ToolbarHeading title={t('evaluation.title')} />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-destructive text-sm">
-              Évaluation introuvable.
+              {t('evaluation.notFound')}
             </p>
-            <Button variant="link" asChild className="mt-2">
+            <Button mode="link" asChild className="mt-2">
               <Link
                 to={id ? `/simulations/${id}/deliverables` : '/simulations'}
               >
-                Retour aux livrables
+                {t('editor.backToList')}
               </Link>
             </Button>
           </CardContent>
@@ -123,7 +127,7 @@ export default function DeliverableEvaluationPage() {
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}/deliverables`}>
               <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
-              Retour
+              {t('common.back')}
             </Link>
           </Button>
         </ToolbarActions>
@@ -155,7 +159,7 @@ export default function DeliverableEvaluationPage() {
                 >
                   {evaluation.score}
                 </div>
-                <p className="text-sm text-muted-foreground mt-1">sur 100</p>
+                <p className="text-sm text-muted-foreground mt-1">{t('evaluation.outOf100')}</p>
               </div>
 
               {/* Grade */}
@@ -174,10 +178,7 @@ export default function DeliverableEvaluationPage() {
                       {deliverable.title}
                     </h2>
                     <p className="text-sm text-muted-foreground">
-                      Révision {evaluation.revisionNumber} - Évaluation du{' '}
-                      {new Date(evaluation.createdAt).toLocaleDateString(
-                        'fr-FR',
-                      )}
+                      {t('evaluation.revisionOn', { n: evaluation.revisionNumber, date: new Date(evaluation.createdAt).toLocaleDateString(intlLocale) })}
                     </p>
                   </div>
                 </div>
@@ -186,7 +187,7 @@ export default function DeliverableEvaluationPage() {
               {/* Actions */}
               <div className="ml-auto flex items-center gap-3">
                 <Badge variant="secondary" appearance="light" size="sm">
-                  Révision {deliverable.revisionNumber} sur {deliverable.maxRevisions}
+                  {t('evaluation.revisionOf', { n: deliverable.revisionNumber, max: deliverable.maxRevisions })}
                 </Badge>
 
                 <Button
@@ -200,12 +201,12 @@ export default function DeliverableEvaluationPage() {
                     className="size-4"
                   />
                   {showReference
-                    ? 'Masquer la référence'
-                    : 'Voir l\'exemple de référence'}
+                    ? t('evaluation.hideReference')
+                    : t('evaluation.showReference')}
                 </Button>
 
                 {canRevise ? (
-                  <DisabledWithTooltip disabled={reviseMutation.isPending} reason="Révision en cours...">
+                  <DisabledWithTooltip disabled={reviseMutation.isPending} reason={t('evaluation.revising')}>
                     <Button
                       size="sm"
                       onClick={handleRevise}
@@ -216,7 +217,7 @@ export default function DeliverableEvaluationPage() {
                         style="duotone"
                         className="size-4"
                       />
-                      Reviser
+                      {t('evaluation.revise')}
                     </Button>
                   </DisabledWithTooltip>
                 ) : (
@@ -224,8 +225,8 @@ export default function DeliverableEvaluationPage() {
                     disabled
                     reason={
                       deliverable.status === 'VALIDATED'
-                        ? 'Ce livrable est déjà validé.'
-                        : 'Nombre maximum de révisions atteint.'
+                        ? t('evaluation.alreadyValidated')
+                        : t('evaluation.maxRevisions')
                     }
                   >
                     <Button size="sm" disabled>
@@ -234,7 +235,7 @@ export default function DeliverableEvaluationPage() {
                         style="duotone"
                         className="size-4"
                       />
-                      Reviser
+                      {t('evaluation.revise')}
                     </Button>
                   </DisabledWithTooltip>
                 )}
@@ -252,12 +253,12 @@ export default function DeliverableEvaluationPage() {
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-sm flex items-center gap-2">
                       <KeenIcon icon="time" style="duotone" className="size-4 text-muted-foreground" />
-                      Évaluations précédentes ({deliverable.evaluations.length - 1})
+                      {t('evaluation.previous', { n: deliverable.evaluations.length - 1 })}
                     </CardTitle>
                     <CollapsibleTrigger asChild>
                       <Button variant="ghost" size="sm" className="h-7 text-xs">
                         <KeenIcon icon="arrow-down" style="duotone" className="size-3 mr-1" />
-                        Afficher / Masquer
+                        {t('evaluation.toggle')}
                       </Button>
                     </CollapsibleTrigger>
                   </div>
@@ -283,7 +284,7 @@ export default function DeliverableEvaluationPage() {
                                 {prevEval.grade}
                               </span>
                               <span className="text-sm font-medium">
-                                Révision {prevEval.revisionNumber}
+                                {t('evaluation.revisionN', { n: prevEval.revisionNumber })}
                               </span>
                             </div>
                             <div className="flex items-center gap-2">
@@ -291,14 +292,14 @@ export default function DeliverableEvaluationPage() {
                                 {prevEval.score}/100
                               </span>
                               <span className="text-sm text-muted-foreground">
-                                {new Date(prevEval.createdAt).toLocaleDateString('fr-FR')}
+                                {new Date(prevEval.createdAt).toLocaleDateString(intlLocale)}
                               </span>
                             </div>
                           </div>
                           {prevEval.recommendations.length > 0 && (
                             <div>
                               <p className="text-sm font-semibold text-muted-foreground mb-1">
-                                Recommandations :
+                                {t('evaluation.recommendationsColon')}
                               </p>
                               <ul className="space-y-0.5">
                                 {prevEval.recommendations.map((rec, ri) => (
@@ -317,7 +318,7 @@ export default function DeliverableEvaluationPage() {
                           {prevEval.improvements.length > 0 && (
                             <div>
                               <p className="text-sm font-semibold text-muted-foreground mb-1">
-                                Points à améliorer :
+                                {t('evaluation.improvementsColon')}
                               </p>
                               <ul className="space-y-0.5">
                                 {prevEval.improvements.map((imp, ii) => (
@@ -358,7 +359,7 @@ export default function DeliverableEvaluationPage() {
               <Card>
                 <CardContent className="py-6 text-center">
                   <p className="text-sm text-muted-foreground">
-                    Aucun exemple de référence disponible pour ce livrable.
+                    {t('evaluation.noReference')}
                   </p>
                 </CardContent>
               </Card>
@@ -369,42 +370,42 @@ export default function DeliverableEvaluationPage() {
         {/* Evaluation sections */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <EvaluationCard
-            title="Points positifs"
+            title={t('evaluation.positives')}
             icon="check-circle"
             iconColor="text-success"
             items={evaluation.positives}
-            emptyMessage="Aucun point positif identifié."
+            emptyMessage={t('evaluation.positivesEmpty')}
           />
 
           <EvaluationCard
-            title="Points à améliorer"
+            title={t('evaluation.improvements')}
             icon="information-2"
             iconColor="text-warning"
             items={evaluation.improvements}
-            emptyMessage="Aucun point à améliorer."
+            emptyMessage={t('evaluation.improvementsEmpty')}
           />
 
           <EvaluationCard
-            title="Éléments manquants"
+            title={t('evaluation.missing')}
             icon="cross-circle"
             iconColor="text-destructive"
             items={evaluation.missingElements}
-            emptyMessage="Aucun élément manquant."
+            emptyMessage={t('evaluation.missingEmpty')}
           />
 
           <EvaluationCard
-            title="Recommandations"
+            title={t('evaluation.recommendations')}
             icon="abstract-26"
             iconColor="text-primary"
             items={evaluation.recommendations}
-            emptyMessage="Aucune recommandation."
+            emptyMessage={t('evaluation.recommendationsEmpty')}
           />
         </div>
 
         {/* Incorrect elements */}
         {evaluation.incorrectElements.length > 0 && (
           <EvaluationCard
-            title="Éléments incorrects"
+            title={t('evaluation.incorrect')}
             icon="cross"
             iconColor="text-destructive"
             items={evaluation.incorrectElements}
@@ -423,7 +424,7 @@ export default function DeliverableEvaluationPage() {
                     style="duotone"
                     className="size-4 text-primary"
                   />
-                  Alignement PMI
+                  {t('evaluation.pmi')}
                 </CardTitle>
                 <Badge
                   variant={
@@ -436,8 +437,7 @@ export default function DeliverableEvaluationPage() {
                   appearance="light"
                   size="sm"
                 >
-                  {evaluation.pmiOutputsCovered.length}/
-                  {evaluation.pmiOutputsCovered.length + evaluation.pmiOutputsMissing.length} outputs couverts
+                  {t('evaluation.outputsCoveredRatio', { done: evaluation.pmiOutputsCovered.length, total: evaluation.pmiOutputsCovered.length + evaluation.pmiOutputsMissing.length })}
                 </Badge>
               </div>
             </CardHeader>
@@ -451,7 +451,7 @@ export default function DeliverableEvaluationPage() {
                       style="duotone"
                       className="size-3.5"
                     />
-                    Outputs couverts ({evaluation.pmiOutputsCovered.length})
+                    {t('evaluation.outputsCovered', { n: evaluation.pmiOutputsCovered.length })}
                   </h4>
                   <ul className="space-y-1.5">
                     {evaluation.pmiOutputsCovered.map((output, i) => (
@@ -478,11 +478,11 @@ export default function DeliverableEvaluationPage() {
                       style="duotone"
                       className="size-3.5"
                     />
-                    Outputs manquants ({evaluation.pmiOutputsMissing.length})
+                    {t('evaluation.outputsMissing', { n: evaluation.pmiOutputsMissing.length })}
                   </h4>
                   {evaluation.pmiOutputsMissing.length === 0 ? (
                     <p className="text-sm text-muted-foreground italic">
-                      Tous les outputs sont couverts.
+                      {t('evaluation.allCovered')}
                     </p>
                   ) : (
                     <ul className="space-y-1.5">
@@ -512,7 +512,7 @@ export default function DeliverableEvaluationPage() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm">
-                Compte rendu généré automatiquement
+                {t('evaluation.autoMinutes')}
               </CardTitle>
             </CardHeader>
             <CardContent>

@@ -18,6 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { useT } from '@/i18n/app/use-t';
 
 interface RichTextEditorProps {
   content: string;
@@ -68,9 +69,10 @@ function ToolbarDivider() {
 }
 
 function EditorToolbar({ editor, disabled }: { editor: Editor; disabled?: boolean }) {
+  const t = useT();
   const setLink = useCallback(() => {
     const previousUrl = editor.getAttributes('link').href;
-    const url = window.prompt('URL du lien :', previousUrl);
+    const url = window.prompt(t('rte.linkPrompt'), previousUrl);
     if (url === null) return;
     if (url === '') {
       editor.chain().focus().extendMarkRange('link').unsetLink().run();
@@ -88,35 +90,35 @@ function EditorToolbar({ editor, disabled }: { editor: Editor; disabled?: boolea
       {/* Text style */}
       <ToolbarButton
         icon="text-bold"
-        label="Gras (Ctrl+B)"
+        label={t('rte.bold')}
         isActive={editor.isActive('bold')}
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleBold().run()}
       />
       <ToolbarButton
         icon="text-italic"
-        label="Italique (Ctrl+I)"
+        label={t('rte.italic')}
         isActive={editor.isActive('italic')}
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleItalic().run()}
       />
       <ToolbarButton
         icon="text-underline"
-        label="Souligne (Ctrl+U)"
+        label={t('rte.underline')}
         isActive={editor.isActive('underline')}
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleUnderline().run()}
       />
       <ToolbarButton
         icon="text-strikethrough"
-        label="Barre"
+        label={t('rte.strike')}
         isActive={editor.isActive('strike')}
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleStrike().run()}
       />
       <ToolbarButton
         icon="color-swatch"
-        label="Surligner"
+        label={t('rte.highlight')}
         isActive={editor.isActive('highlight')}
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleHighlight().run()}
@@ -127,21 +129,21 @@ function EditorToolbar({ editor, disabled }: { editor: Editor; disabled?: boolea
       {/* Headings */}
       <ToolbarButton
         icon="text-number"
-        label="Titre 1"
+        label={t('rte.h1')}
         isActive={editor.isActive('heading', { level: 1 })}
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
       />
       <ToolbarButton
         icon="text-number"
-        label="Titre 2"
+        label={t('rte.h2')}
         isActive={editor.isActive('heading', { level: 2 })}
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
       />
       <ToolbarButton
         icon="text-number"
-        label="Titre 3"
+        label={t('rte.h3')}
         isActive={editor.isActive('heading', { level: 3 })}
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
@@ -152,21 +154,21 @@ function EditorToolbar({ editor, disabled }: { editor: Editor; disabled?: boolea
       {/* Alignment */}
       <ToolbarButton
         icon="text-align-left"
-        label="Aligner a gauche"
+        label={t('rte.alignLeft')}
         isActive={editor.isActive({ textAlign: 'left' })}
         disabled={disabled}
         onClick={() => editor.chain().focus().setTextAlign('left').run()}
       />
       <ToolbarButton
         icon="text-align-center"
-        label="Centrer"
+        label={t('rte.center')}
         isActive={editor.isActive({ textAlign: 'center' })}
         disabled={disabled}
         onClick={() => editor.chain().focus().setTextAlign('center').run()}
       />
       <ToolbarButton
         icon="text-align-right"
-        label="Aligner a droite"
+        label={t('rte.alignRight')}
         isActive={editor.isActive({ textAlign: 'right' })}
         disabled={disabled}
         onClick={() => editor.chain().focus().setTextAlign('right').run()}
@@ -177,21 +179,21 @@ function EditorToolbar({ editor, disabled }: { editor: Editor; disabled?: boolea
       {/* Lists */}
       <ToolbarButton
         icon="bullet-list"
-        label="Liste a puces"
+        label={t('rte.bullets')}
         isActive={editor.isActive('bulletList')}
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleBulletList().run()}
       />
       <ToolbarButton
         icon="numbered-list"
-        label="Liste numérotée"
+        label={t('rte.numbered')}
         isActive={editor.isActive('orderedList')}
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
       />
       <ToolbarButton
         icon="check-squared"
-        label="Liste de tâches"
+        label={t('rte.tasks')}
         isActive={editor.isActive('taskList')}
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleTaskList().run()}
@@ -202,21 +204,21 @@ function EditorToolbar({ editor, disabled }: { editor: Editor; disabled?: boolea
       {/* Block elements */}
       <ToolbarButton
         icon="quote-right"
-        label="Citation"
+        label={t('rte.quote')}
         isActive={editor.isActive('blockquote')}
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
       />
       <ToolbarButton
         icon="code"
-        label="Code inline"
+        label={t('rte.code')}
         isActive={editor.isActive('code')}
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleCode().run()}
       />
       <ToolbarButton
         icon="abstract-26"
-        label="Bloc de code"
+        label={t('rte.codeBlock')}
         isActive={editor.isActive('codeBlock')}
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleCodeBlock().run()}
@@ -227,20 +229,20 @@ function EditorToolbar({ editor, disabled }: { editor: Editor; disabled?: boolea
       {/* Insert */}
       <ToolbarButton
         icon="link"
-        label="Lien"
+        label={t('rte.link')}
         isActive={editor.isActive('link')}
         disabled={disabled}
         onClick={setLink}
       />
       <ToolbarButton
         icon="row-horizontal"
-        label="Tableau"
+        label={t('rte.table')}
         disabled={disabled}
         onClick={insertTable}
       />
       <ToolbarButton
         icon="minus"
-        label="Separateur"
+        label={t('rte.divider')}
         disabled={disabled}
         onClick={() => editor.chain().focus().setHorizontalRule().run()}
       />
@@ -250,13 +252,13 @@ function EditorToolbar({ editor, disabled }: { editor: Editor; disabled?: boolea
       {/* History */}
       <ToolbarButton
         icon="arrow-left"
-        label="Annuler (Ctrl+Z)"
+        label={t('rte.undo')}
         disabled={disabled || !editor.can().undo()}
         onClick={() => editor.chain().focus().undo().run()}
       />
       <ToolbarButton
         icon="arrow-right"
-        label="Rétablir (Ctrl+Shift+Z)"
+        label={t('rte.redo')}
         disabled={disabled || !editor.can().redo()}
         onClick={() => editor.chain().focus().redo().run()}
       />
@@ -268,9 +270,10 @@ export function RichTextEditor({
   content,
   onChange,
   disabled = false,
-  placeholder = 'Rédigez votre livrable ici...',
+  placeholder,
   className,
 }: RichTextEditorProps) {
+  const t = useT();
   const isSettingContent = useRef(false);
 
   const editor = useEditor({
@@ -278,7 +281,7 @@ export function RichTextEditor({
       StarterKit.configure({
         heading: { levels: [1, 2, 3, 4] },
       }),
-      Placeholder.configure({ placeholder }),
+      Placeholder.configure({ placeholder: placeholder ?? t('editor.placeholder') }),
       Underline,
       Highlight.configure({ multicolor: false }),
       TaskList,

@@ -35,9 +35,14 @@ import { DeliverableWorkflowStepper } from '../components/deliverable-workflow-s
 import { MarkdownPreview } from '../components/markdown-preview';
 import { RichTextEditor } from '../components/rich-text-editor';
 import { formatDistanceToNow } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { enCA, fr } from 'date-fns/locale';
+import { useAppLocale } from '@/providers/locale-provider';
+import { useT } from '@/i18n/app/use-t';
 
 export default function DeliverableEditorPage() {
+  const { locale, intlLocale } = useAppLocale();
+  const dfLocale = locale === 'en' ? enCA : fr;
+  const t = useT();
   const { id, delId } = useParams<{ id: string; delId: string }>();
   const navigate = useNavigate();
   const [content, setContent] = useState('');
@@ -76,7 +81,7 @@ export default function DeliverableEditorPage() {
       setLastSaved(new Date());
       contentChangedRef.current = false;
     } catch {
-      toast.error('Erreur lors de la sauvegarde.');
+      toast.error(t('editor.saveError'));
     } finally {
       setIsSaving(false);
     }
@@ -121,11 +126,11 @@ export default function DeliverableEditorPage() {
         contentChangedRef.current = false;
       }
       await submitMutation.mutateAsync(delId);
-      toast.success("Livrable soumis avec succès ! L'évaluation est en cours.");
+      toast.success(t('editor.submitted'));
       navigate(`/simulations/${id}/deliverables`);
     } catch (err) {
       toast.error(
-        (err as Error).message || 'Erreur lors de la soumission.',
+        (err as Error).message || t('editor.submitError'),
       );
     }
   }
@@ -144,16 +149,16 @@ export default function DeliverableEditorPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Éditeur de livrable" />
+          <ToolbarHeading title={t('editor.title')} />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-destructive text-sm">
-              {(error as Error)?.message || 'Livrable introuvable.'}
+              {(error as Error)?.message || t('editor.notFound')}
             </p>
-            <Button variant="link" asChild className="mt-2">
+            <Button mode="link" asChild className="mt-2">
               <Link to={id ? `/simulations/${id}/deliverables` : '/simulations'}>
-                Retour aux livrables
+                {t('editor.backToList')}
               </Link>
             </Button>
           </CardContent>
@@ -183,14 +188,14 @@ export default function DeliverableEditorPage() {
                   style="duotone"
                   className="size-3 inline animate-spin"
                 />{' '}
-                Sauvegarde...
+                {t('editor.saving')}
               </>
             ) : lastSaved ? (
               <>
-                Sauvegardé{' '}
+                {t('editor.saved')}{' '}
                 {formatDistanceToNow(lastSaved, {
                   addSuffix: true,
-                  locale: fr,
+                  locale: dfLocale,
                 })}
               </>
             ) : null}
@@ -204,7 +209,7 @@ export default function DeliverableEditorPage() {
             disabled={isSaving || isReadOnly}
           >
             <KeenIcon icon="disk" style="duotone" className="size-4" />
-            Sauvegarder
+            {t('common.save')}
           </Button>
 
           {/* Template toggle */}
@@ -214,41 +219,39 @@ export default function DeliverableEditorPage() {
             onClick={() => setShowTemplate(!showTemplate)}
           >
             <KeenIcon icon="book" style="duotone" className="size-4" />
-            {showTemplate ? 'Masquer template' : 'Voir template'}
+            {showTemplate ? t('editor.hideTemplate') : t('editor.showTemplate')}
           </Button>
 
           {/* Submit */}
           {!isReadOnly && (
-            <DisabledWithTooltip disabled={!content.trim()} reason="Rédigez du contenu pour pouvoir soumettre">
+            <DisabledWithTooltip disabled={!content.trim()} reason={t('editor.writeFirst')}>
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button size="sm" disabled={!content.trim()}>
                   <KeenIcon icon="send" style="duotone" className="size-4" />
-                  Soumettre
+                  {t('common.submit')}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>
-                    Soumettre pour évaluation ?
+                    {t('editor.confirmTitle')}
                   </AlertDialogTitle>
                   <AlertDialogDescription>
-                    Votre livrable sera évalué automatiquement. Vous ne pourrez plus le
-                    modifier tant que l'évaluation n'est pas terminée.
+                    {t('editor.confirmText')}
                     {deliverable.revisionNumber > 0 && (
                       <>
                         <br />
                         <br />
-                        Il s'agit de votre révision{' '}
-                        {deliverable.revisionNumber}/{deliverable.maxRevisions}.
+                        {t('editor.revisionNote', { n: deliverable.revisionNumber, max: deliverable.maxRevisions })}
                       </>
                     )}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Annuler</AlertDialogCancel>
+                  <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
                   <AlertDialogAction onClick={handleSubmit}>
-                    Confirmer la soumission
+                    {t('editor.confirm')}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
@@ -259,18 +262,18 @@ export default function DeliverableEditorPage() {
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}/deliverables`}>
               <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
-              Retour
+              {t('common.back')}
             </Link>
           </Button>
           <ContextualHelp
-            title="Comment rédiger un livrable"
-            description="L'éditeur vous permet de rédiger votre livrable en utilisant du texte enrichi. Consultez le template pour connaître la structure attendue."
+            title={t('editor.help.title')}
+            description={t('editor.help.text')}
             tips={[
-              'Utilisez le bouton "Voir template" pour afficher le modèle de référence à suivre.',
-              'Votre travail est sauvegardé automatiquement toutes les 30 secondes.',
-              'Vous pouvez sauvegarder manuellement à tout moment avec le bouton Sauvegarder.',
-              'Une fois soumis, votre livrable sera évalué automatiquement. Vous ne pourrez plus le modifier.',
-              'Vérifiez le nombre de révisions restantes avant de soumettre.',
+              t('editor.help.1'),
+              t('editor.help.2'),
+              t('editor.help.3'),
+              t('editor.help.4'),
+              t('editor.help.5'),
             ]}
           />
         </ToolbarActions>
@@ -286,7 +289,7 @@ export default function DeliverableEditorPage() {
           <div className="flex items-center gap-2 rounded-lg bg-info/10 p-3 mb-4">
             <KeenIcon icon="information-2" style="duotone" className="size-4 text-info shrink-0" />
             <p className="text-sm text-info">
-              Ce livrable est en attente d'évaluation. Vous ne pouvez plus le modifier.
+              {t('editor.readOnly')}
             </p>
           </div>
         )}
@@ -295,14 +298,14 @@ export default function DeliverableEditorPage() {
           {/* WYSIWYG Editor */}
           <Card className={showTemplate ? 'lg:col-span-2' : ''}>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Éditeur</CardTitle>
+              <CardTitle className="text-sm">{t('editor.editor')}</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               <RichTextEditor
                 content={content}
                 onChange={handleContentChange}
                 disabled={isReadOnly}
-                placeholder="Rédigez votre livrable ici..."
+                placeholder={t('editor.placeholder')}
               />
             </CardContent>
           </Card>
@@ -313,7 +316,7 @@ export default function DeliverableEditorPage() {
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm text-primary">
-                    Template : {template.title}
+                    {t('editor.templateTitle', { title: template.title })}
                   </CardTitle>
                   <Button
                     variant="ghost"
@@ -321,14 +324,14 @@ export default function DeliverableEditorPage() {
                     className="h-7 text-xs"
                     onClick={() => {
                       navigator.clipboard.writeText(template.content).then(() => {
-                        toast('Template copie !');
+                        toast(t('editor.templateCopied'));
                       }).catch(() => {
-                        toast.error('Impossible de copier le template.');
+                        toast.error(t('editor.copyError'));
                       });
                     }}
                   >
                     <KeenIcon icon="copy" style="duotone" className="size-3 mr-1" />
-                    Copier le template
+                    {t('editor.copyTemplate')}
                   </Button>
                 </div>
               </CardHeader>
@@ -338,7 +341,7 @@ export default function DeliverableEditorPage() {
                   {template.pmiProcess && (
                     <div className="px-4 pb-4 pt-2 border-t border-border">
                       <p className="text-sm text-muted-foreground">
-                        <span className="font-semibold">Processus PMI :</span>{' '}
+                        <span className="font-semibold">{t('editor.pmiProcess')}</span>{' '}
                         {template.pmiProcess}
                       </p>
                     </div>
@@ -347,7 +350,7 @@ export default function DeliverableEditorPage() {
                 {template.evaluationCriteria && Object.keys(template.evaluationCriteria).length > 0 && (
                   <div className="px-4 pb-4 pt-3 border-t border-border">
                     <p className="text-sm font-semibold text-foreground mb-2">
-                      Critères d'évaluation :
+                      {t('editor.criteria')}
                     </p>
                     <div className="flex flex-wrap gap-1.5">
                       {Object.entries(template.evaluationCriteria).map(([key, value]) => (
@@ -377,14 +380,13 @@ export default function DeliverableEditorPage() {
 
         {/* Deliverable info */}
         <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
-          <span>Phase {deliverable.phaseOrder}</span>
+          <span>{t('dashboard.active.phase', { n: deliverable.phaseOrder })}</span>
           <span>
-            Révision {deliverable.revisionNumber}/{deliverable.maxRevisions}
+            {t('deliverables.revision', { n: deliverable.revisionNumber, max: deliverable.maxRevisions })}
           </span>
           {deliverable.dueDate && (
             <span>
-              Échéance :{' '}
-              {new Date(deliverable.dueDate).toLocaleDateString('fr-FR')}
+              {t('editor.due', { date: new Date(deliverable.dueDate).toLocaleDateString(intlLocale) })}
             </span>
           )}
         </div>

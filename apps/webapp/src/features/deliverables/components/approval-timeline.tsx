@@ -1,7 +1,10 @@
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { enCA, fr } from 'date-fns/locale';
+import { useTv } from '@/i18n/app/use-t';
+import { useAppLocale } from '@/providers/locale-provider';
+import { useT } from '@/i18n/app/use-t';
 
 interface ChainStep {
   role: string;
@@ -24,20 +27,17 @@ interface ApprovalTimelineProps {
 
 const STATUS_CONFIG: Record<
   string,
-  { label: string; variant: 'secondary' | 'success' | 'destructive'; dotColor: string }
+  { variant: 'secondary' | 'success' | 'destructive'; dotColor: string }
 > = {
   PENDING: {
-    label: 'En attente',
     variant: 'secondary',
     dotColor: 'bg-gray-400',
   },
   APPROVED: {
-    label: 'Approuvé',
     variant: 'success',
     dotColor: 'bg-green-500',
   },
   REJECTED: {
-    label: 'Rejeté',
     variant: 'destructive',
     dotColor: 'bg-red-500',
   },
@@ -48,6 +48,9 @@ function getApprovalForRole(approvals: Approval[], role: string) {
 }
 
 export function ApprovalTimeline({ chain, approvals }: ApprovalTimelineProps) {
+  const tv = useTv();
+  const { locale } = useAppLocale();
+  const t = useT();
   if (!chain || chain.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
@@ -87,7 +90,7 @@ export function ApprovalTimeline({ chain, approvals }: ApprovalTimelineProps) {
                   appearance="light"
                   size="xs"
                 >
-                  {config.label}
+                  {tv('approvalStatus', approval?.status ?? 'PENDING')}
                 </Badge>
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">
@@ -101,7 +104,7 @@ export function ApprovalTimeline({ chain, approvals }: ApprovalTimelineProps) {
               {approval?.reviewedAt && (
                 <p className="text-[10px] text-muted-foreground mt-0.5">
                   {format(new Date(approval.reviewedAt), 'd MMM yyyy HH:mm', {
-                    locale: fr,
+                    locale: locale === 'en' ? enCA : fr,
                   })}
                 </p>
               )}

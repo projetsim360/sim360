@@ -1,6 +1,7 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { cn } from '@/lib/utils';
+import { useT } from '@/i18n/app/use-t';
 
 interface MarkdownPreviewProps {
   content: string;
@@ -8,10 +9,11 @@ interface MarkdownPreviewProps {
 }
 
 export function MarkdownPreview({ content, className }: MarkdownPreviewProps) {
+  const t = useT();
   if (!content) {
     return (
       <div className={cn('text-sm text-muted-foreground italic p-4', className)}>
-        Aucun contenu a afficher.
+        {t('markdown.empty')}
       </div>
     );
   }
