@@ -13,16 +13,16 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/" />
   </url>
   <url>
-    <loc>https://simex-pro.com/scenarios</loc>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/scenarios" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/scenarios" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/scenarios" />
+    <loc>https://simex-pro.com/catalogue</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/catalogue" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/catalogue" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/catalogue" />
   </url>
   <url>
-    <loc>https://simex-pro.com/en/scenarios</loc>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/scenarios" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/scenarios" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/scenarios" />
+    <loc>https://simex-pro.com/en/catalogue</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://simex-pro.com/catalogue" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://simex-pro.com/en/catalogue" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://simex-pro.com/catalogue" />
   </url>
   <url>
     <loc>https://simex-pro.com/demo</loc>

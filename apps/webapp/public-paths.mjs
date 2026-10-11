@@ -17,7 +17,8 @@
 /** @type {readonly PublicRoute[]} */
 export const PUBLIC_ROUTES = [
   { id: 'home', fr: '/', en: '/en' },
-  { id: 'scenarios', fr: '/scenarios', en: '/en/scenarios' },
+  // Not /scenarios: that path is the application's own (authenticated) catalogue on app.simex-pro.com.
+  { id: 'scenarios', fr: '/catalogue', en: '/en/catalogue' },
   { id: 'demo', fr: '/demo', en: '/en/demo' },
   { id: 'about', fr: '/a-propos', en: '/en/about' },
   { id: 'careers', fr: '/carrieres', en: '/en/careers' },

@@ -21,7 +21,7 @@ map $host:$uri $bounce_apex_non_root {
     # Public site pages (served by site.html) stay on the apex: French at "/", English under "/en".
     # Keep in sync with apps/webapp/public-paths.ts and the $spa_entry map below.
     "~^simex-pro\.com:/en(/|$)" "";
-    "~^simex-pro\.com:/(scenarios|demo|a-propos|carrieres|contact|confidentialite|cgu|mentions-legales|cookies)/?$" "";
+    "~^simex-pro\.com:/(catalogue|demo|a-propos|carrieres|contact|confidentialite|cgu|mentions-legales|cookies)/?$" "";
 
     # Anything else under apex (real "page" routes) → bounce to app subdomain.
     "~^simex-pro\.com:/.+$" 1;
@@ -32,7 +32,7 @@ map $host:$uri $bounce_app_root {
     # app.simex-pro.com or web.simex-pro.com with a public site path → bounce to apex
     "~^(app|web)\.simex-pro\.com:/$" 1;
     "~^(app|web)\.simex-pro\.com:/en(/|$)" 1;
-    "~^(app|web)\.simex-pro\.com:/(scenarios|demo|a-propos|carrieres|contact|confidentialite|cgu|mentions-legales|cookies)/?$" 1;
+    "~^(app|web)\.simex-pro\.com:/(catalogue|demo|a-propos|carrieres|contact|confidentialite|cgu|mentions-legales|cookies)/?$" 1;
 }
 
 # Which SPA entry serves a non-file URL: the public site (small bundle) or the application.
@@ -41,8 +41,8 @@ map $uri $spa_entry {
     default /index.html;
     "/" /site-fr.html;
     "/en" /site-en.html;
-    "~^/scenarios/?$" /site-fr-scenarios.html;
-    "~^/en/scenarios/?$" /site-en-scenarios.html;
+    "~^/catalogue/?$" /site-fr-scenarios.html;
+    "~^/en/catalogue/?$" /site-en-scenarios.html;
     "~^/demo/?$" /site-fr-demo.html;
     "~^/en/demo/?$" /site-en-demo.html;
     "~^/a-propos/?$" /site-fr-about.html;
