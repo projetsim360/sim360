@@ -49,3 +49,9 @@ redis-data/
 
 # Demo video work files (recordings, narration)
 tools/demo-video/.work/
+tools/demo-video/promo/renders/
+tools/demo-video/promo/snapshots/
+tools/demo-video/promo/.hyperframes/
+tools/demo-video/promo/node_modules/
+tools/demo-video/promo/.thumbnails/
+tools/demo-video/promo/.waveform-cache/
