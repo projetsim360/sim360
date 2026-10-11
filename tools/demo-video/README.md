@@ -1,32 +1,25 @@
-# Vidéo de démo
+# Vidéos de démo
 
-Produit `apps/webapp/public/media/landing/demo-{fr,en}.{mp4,webm,vtt}` et `demo-poster.webp`, servis par le site public sur la page Démo et hébergés dans le projet (décision D6 de la feuille de route).
+Deux chaînes produisent `apps/webapp/public/media/landing/demo-{fr,en}.{mp4,webm,vtt}` et `demo-poster.webp`, lus par la modale « Voir la démo » et la page Démo du site public.
 
-## Générer
+## 1. Vidéo produit (HyperFrames) — `promo/`
+
+La vidéo en ligne. Composition HTML animée (GSAP) dans `promo/index.html` : huit scènes, 61 s, 1920 × 1080, bilingue par variables de rendu.
+
+- **Interface reconstituée en HTML** : les six scènes produit (tableau de bord, catalogue, fiche scénario, mes simulations, réunion, rapport) sont des maquettes animées fidèles à l'application (cadre `SimexShell` : barre latérale, barre du haut, contenu), pas des captures. Chaque élément s'anime (compteurs, jauges, cascades, caméra) et la qualité reste vectorielle à toute résolution. Référence visuelle : `app.simex-pro.com` ; mettre la maquette à jour quand l'interface change.
+- **Narration** : `promo/narration.json` (FR et EN), synthèse `say` (Amélie fr_CA, Samantha en_US) dans `promo/assets/audio/<lang>/sN.m4a`, durées dans `durations.json`.
+- **Langue** : variable `lang` (`fr` par défaut) et `vo1…vo8` (fichiers audio). `variables.en.json` contient le jeu anglais.
 
 ```bash
-pnpm --filter @sim360/webapp build          # le site public doit être construit
-pnpm --filter @sim360/webapp preview        # http://localhost:4173
-pnpm demo:video                             # les deux langues, ~3 min
-pnpm demo:video --locale fr                 # une seule langue
+pnpm demo:promo:check      # lint, runtime, layout, motion, contraste (npm run check dans promo/)
+pnpm demo:promo:render     # renders/demo-fr.mp4 et renders/demo-en.mp4
+pnpm demo:promo:publish    # copie MP4, encode WebM, écrit les .vtt et l'affiche dans public/media/landing
 ```
 
-Prérequis : macOS (synthèse vocale `say`, voix Amélie fr_CA et Samantha en_US), `ffmpeg` avec libx264, libvpx-vp9 et libopus, Playwright (dépendance du dépôt).
+Prévisualisation éditable : `cd tools/demo-video/promo && npx hyperframes preview --background` (Studio).
 
-## Comment c'est fait
+Pour changer un texte : `COPY` dans `index.html` (les deux langues côte à côte, y compris les libellés de l'interface) et `narration.json`, puis régénérer la narration (voir `run.mjs` pour la commande `say`) et relancer check → render → publish.
 
-1. **Narration** : `scenes.mjs` décrit chaque scène (texte FR et EN, durée visuelle minimale). Chaque phrase est synthétisée séparément ; sa durée fixe celle de la scène.
-2. **Captation** : Playwright enregistre le site public en 1280 × 720 (`recordVideo`), scène par scène : accueil, bande pilote, les trois étapes animées, le catalogue (API simulée par `CATALOGUE_FIXTURE`), les tarifs, le pied de page. Un bandeau de titre discret est injecté dans la page.
-3. **Assemblage** : ffmpeg place chaque narration au début de sa scène, encode en H.264 (MP4, `faststart`) et VP9/Opus (WebM), extrait l'affiche et écrit les sous-titres WebVTT depuis la chronologie mesurée.
+## 2. Captation du site public (Playwright) — `run.mjs`
 
-Fichiers de travail dans `tools/demo-video/.work/` (ignorés par git).
-
-## Remplacer par de vraies captures produit
-
-La vidéo actuelle montre le site public et ses maquettes animées : le compte démo n'existe pas en production et aucune pile locale n'était disponible au moment de la production. Quand une pile avec `prisma/seed-demo-user.ts` est accessible :
-
-1. Ajouter dans `run.mjs` une action par écran produit (connexion, tableau de bord, réunion, rapport) qui navigue dans l'application avec le compte démo.
-2. Déclarer les scènes correspondantes dans `scenes.mjs` avec leur narration.
-3. Relancer `pnpm demo:video`. Rien d'autre ne change : sous-titres, durées et encodage suivent.
-
-Voix humaine : remplacer l'étape `narrate()` par la lecture de fichiers `tools/demo-video/voice/<locale>/<scene>.wav` ; le reste de la chaîne est identique.
+Ancienne chaîne, conservée : enregistre le site public lui-même (`pnpm demo:video`). Utile pour une vidéo « visite du site » ; la vidéo produit ci-dessus la remplace sur le site.

@@ -1,0 +1,673 @@
+<!doctype html>
+<html
+  lang="fr"
+  data-composition-variables='[
+    {"id":"lang","type":"enum","label":"Language","default":"fr","options":[{"value":"fr","label":"Français"},{"value":"en","label":"English"}]},
+    {"id":"vo1","type":"string","label":"Voice 1","default":"assets/audio/fr/s1.m4a"},
+    {"id":"vo2","type":"string","label":"Voice 2","default":"assets/audio/fr/s2.m4a"},
+    {"id":"vo3","type":"string","label":"Voice 3","default":"assets/audio/fr/s3.m4a"},
+    {"id":"vo4","type":"string","label":"Voice 4","default":"assets/audio/fr/s4.m4a"},
+    {"id":"vo5","type":"string","label":"Voice 5","default":"assets/audio/fr/s5.m4a"},
+    {"id":"vo6","type":"string","label":"Voice 6","default":"assets/audio/fr/s6.m4a"},
+    {"id":"vo7","type":"string","label":"Voice 7","default":"assets/audio/fr/s7.m4a"},
+    {"id":"vo8","type":"string","label":"Voice 8","default":"assets/audio/fr/s8.m4a"}
+  ]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Simex pro — démo produit</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      /* ─── Palette: brand tokens of apps/webapp/src/styles/theme.css ─── */
+      :root {
+        --bg: #0f1a2e; --bg-deep: #08111f; --card: #14223a; --fg: #fafaf9; --fg-muted: rgba(250, 250, 249, 0.68);
+        --accent: #ee7a3a; --accent-400: #f59763; --accent-300: #ffb685; --accent-700: #c45c24; --accent-900: #8a3d12;
+        --success: #10b981; --warning: #f59e0b; --error: #ef4444; --info: #3b82f6;
+        --ink: #0c0a09; --ink-2: #44403c; --ink-3: #57534e; --paper: #f5f5f4; --paper-2: #e7e5e4;
+      }
+      body { margin: 0; background: var(--bg-deep); color: var(--fg); font-family: Inter, system-ui, sans-serif; }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--bg); }
+      .clip { position: absolute; inset: 0; overflow: hidden; }
+      .display { font-family: Montserrat, system-ui, sans-serif; font-weight: 800; letter-spacing: -0.02em; }
+
+      /* ─── Persistent background layer ─── */
+      #bg { position: absolute; inset: 0; overflow: hidden; }
+      #bg .fill { position: absolute; inset: 0; background: radial-gradient(ellipse 1200px 800px at 70% 10%, rgba(238, 122, 58, 0.14), transparent 60%), linear-gradient(180deg, #0f1a2e 0%, #0b1527 100%); }
+      #bg .glow { position: absolute; border-radius: 50%; filter: blur(90px); will-change: transform; }
+      #bg .glow-a { width: 900px; height: 900px; left: 1150px; top: -380px; background: rgba(238, 122, 58, 0.22); }
+      #bg .glow-b { width: 820px; height: 820px; left: -300px; top: 420px; background: rgba(90, 112, 153, 0.35); }
+      #bg .grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(250, 250, 249, 0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(250, 250, 249, 0.045) 1px, transparent 1px); background-size: 96px 96px; mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, #000 30%, transparent 100%); }
+      #bg .ghost { position: absolute; left: 60px; bottom: -70px; font-family: Montserrat, sans-serif; font-weight: 900; font-size: 420px; letter-spacing: -0.04em; color: rgba(250, 250, 249, 0.035); line-height: 1; white-space: nowrap; will-change: transform; }
+
+      /* ─── Kinetic type (S1) and CTA (S8) ─── */
+      .center { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+      .beat { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); font-size: 112px; line-height: 1.02; color: var(--fg); text-align: center; }
+      .beat .em { color: var(--accent); }
+      .wordmark { display: inline-flex; align-items: center; gap: 22px; font-size: 128px; line-height: 1; }
+      .wordmark .dot { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); display: inline-block; }
+      .wordmark .pro { color: var(--accent); }
+      .tag { font-size: 30px; color: var(--fg-muted); font-weight: 500; margin-top: 26px; letter-spacing: 0.01em; }
+      .cta-btn { display: inline-flex; align-items: center; gap: 14px; margin-top: 34px; padding: 22px 40px; border-radius: 16px; background: var(--accent); color: var(--bg); font-weight: 800; font-size: 32px; letter-spacing: -0.01em; box-shadow: 0 18px 50px rgba(238, 122, 58, 0.4); transform-origin: 50% 50%; will-change: transform; }
+      .url { margin-top: 30px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 44px; color: var(--fg-muted); letter-spacing: 0.02em; }
+      .url .c { display: inline-block; width: 3px; height: 44px; background: var(--accent); vertical-align: -6px; margin-left: 4px; }
+
+      /* ─── Application frame, faithful to the SimexShell: dark sidebar + topbar, light content ─── */
+      .app { position: absolute; left: 160px; top: 70px; width: 1600px; height: 940px; border-radius: 22px; overflow: hidden; background: var(--bg); box-shadow: 0 40px 120px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(250, 250, 249, 0.08); transform-origin: 50% 50%; will-change: transform; font-size: 15px; color: var(--ink); }
+      .app .side { position: absolute; left: 0; top: 0; bottom: 0; width: 250px; padding: 20px 14px; box-sizing: border-box; color: #fff; }
+      .app .logo { font-family: Montserrat, sans-serif; font-weight: 800; font-size: 24px; letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px; margin: 0 0 18px 8px; }
+      .app .logo i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); display: inline-block; }
+      .app .logo b { color: var(--accent); font-weight: 800; }
+      .app .space { display: flex; align-items: center; gap: 8px; border: 1px solid rgba(255, 255, 255, 0.12); background: rgba(255, 255, 255, 0.06); border-radius: 10px; padding: 9px 12px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255, 255, 255, 0.78); margin-bottom: 12px; will-change: transform, opacity; }
+      .app .space i { width: 7px; height: 7px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
+      .app .space b { color: #fff; }
+      .app .launch { display: flex; align-items: center; gap: 10px; background: var(--accent); color: var(--bg); border-radius: 10px; padding: 12px 14px; font-weight: 700; font-size: 14px; margin-bottom: 18px; will-change: transform, opacity; }
+      .app .launch i { width: 20px; height: 20px; border-radius: 50%; background: rgba(15, 26, 46, 0.18); display: grid; place-items: center; }
+      .app .launch i::after { content: ''; border-left: 7px solid var(--bg); border-top: 4px solid transparent; border-bottom: 4px solid transparent; margin-left: 2px; }
+      .app .nav-h { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.62); margin: 14px 10px 6px; }
+      .app .nav { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 9px; color: rgba(255, 255, 255, 0.82); font-size: 14px; margin-bottom: 2px; will-change: transform, opacity; }
+      .app .nav.on { background: var(--accent); color: var(--bg); font-weight: 700; }
+      .app .nav i { width: 16px; height: 16px; border-radius: 4px; border: 1.6px solid currentColor; opacity: 0.85; flex: none; box-sizing: border-box; }
+      .app .nav i.r { border-radius: 50%; }
+      .app .nav .chev { margin-left: auto; width: 7px; height: 7px; border-right: 1.6px solid currentColor; border-bottom: 1.6px solid currentColor; transform: rotate(-45deg); opacity: 0.6; }
+      .app .coach { position: absolute; left: 14px; right: 14px; bottom: 16px; border-radius: 12px; padding: 16px; border: 1px solid rgba(255, 255, 255, 0.1); background-color: #182742; overflow: hidden; will-change: transform, opacity; }
+      .app .coach h5 { margin: 0 0 6px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 14px; }
+      .app .coach p { margin: 0 0 10px; font-size: 11px; color: rgba(255, 255, 255, 0.7); line-height: 1.4; }
+      .app .coach .b { background: var(--accent); color: var(--bg); text-align: center; border-radius: 8px; padding: 8px; font-size: 12px; font-weight: 700; }
+      .app .top { position: absolute; left: 250px; right: 0; top: 0; height: 60px; display: flex; align-items: center; gap: 14px; padding: 0 22px; box-sizing: border-box; color: #fff; }
+      .app .search { flex: 0 0 560px; height: 34px; border-radius: 8px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; gap: 10px; padding: 0 12px; box-sizing: border-box; font-size: 13px; color: rgba(255, 255, 255, 0.72); }
+      .app .search i { width: 12px; height: 12px; border: 1.6px solid currentColor; border-radius: 50%; position: relative; }
+      .app .search i::after { content: ''; position: absolute; width: 5px; height: 1.6px; background: currentColor; right: -4px; bottom: -2px; transform: rotate(45deg); }
+      .app .search b { margin-left: auto; font-weight: 500; font-size: 11px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 4px; padding: 1px 5px; }
+      .app .ico { width: 18px; height: 18px; border-radius: 50%; border: 1.6px solid rgba(255, 255, 255, 0.6); box-sizing: border-box; }
+      .app .assist { margin-left: auto; display: flex; align-items: center; gap: 8px; background: #fff; color: var(--ink); border-radius: 999px; padding: 7px 14px; font-weight: 600; font-size: 13px; }
+      .app .assist i { width: 10px; height: 10px; background: var(--accent); clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); }
+      .app .user { display: flex; align-items: center; gap: 10px; }
+      .app .user .n { text-align: right; line-height: 1.1; } .app .user .n b { display: block; font-size: 13px; } .app .user .n small { font-size: 9px; letter-spacing: 0.1em; color: var(--accent-300); text-transform: uppercase; }
+      .app .user .av { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: var(--bg); display: grid; place-items: center; font-size: 12px; font-weight: 800; }
+      .app .main { position: absolute; left: 250px; right: 0; top: 60px; bottom: 0; background: var(--paper); border-top-left-radius: 16px; padding: 30px 40px; box-sizing: border-box; overflow: hidden; }
+      .crumb { font-size: 13px; color: var(--ink-3); margin-bottom: 10px; } .crumb b { color: var(--ink); font-weight: 600; }
+      .h1 { font-family: Montserrat, sans-serif; font-weight: 800; font-size: 38px; letter-spacing: -0.02em; color: var(--ink); margin: 0; line-height: 1.1; }
+      .sub { color: var(--ink-3); font-size: 15px; margin: 6px 0 20px; }
+      .head2 { display: flex; justify-content: space-between; align-items: flex-start; }
+      .btn { display: inline-flex; align-items: center; gap: 8px; border-radius: 9px; padding: 9px 14px; font-weight: 700; font-size: 13px; }
+      .btn.pri { background: var(--accent); color: var(--bg); } .btn.ghost { background: #fff; border: 1px solid var(--paper-2); color: var(--ink); }
+      .pane { background: #fff; border: 1px solid var(--paper-2); border-radius: 14px; box-shadow: 0 1px 2px rgba(15, 26, 46, 0.04); will-change: transform, opacity; }
+      .k { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; }
+      .chip { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 3px 9px; font-size: 11px; font-weight: 600; background: var(--paper-2); color: var(--ink-2); }
+      .chip.o { background: #ffeadb; color: #7a330e; } .chip.r { background: #fee2e2; color: #b91c1c; } .chip.i { background: #e7e5e4; } .chip.rec { position: absolute; right: 14px; top: 14px; background: #ffeadb; color: #7a330e; }
+      .callout { position: absolute; display: inline-flex; align-items: center; gap: 12px; padding: 14px 22px; border-radius: 14px; background: rgba(15, 26, 46, 0.92); border: 1px solid rgba(250, 250, 249, 0.14); color: var(--fg); font-weight: 600; font-size: 24px; box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45); backdrop-filter: blur(10px); transform-origin: 0 50%; will-change: transform, opacity; }
+      .callout b { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); flex: none; }
+      .lower { position: absolute; left: 160px; bottom: 40px; display: inline-flex; align-items: center; gap: 16px; padding: 13px 24px; border-radius: 16px; background: rgba(8, 17, 31, 0.86); border-left: 5px solid var(--accent); color: var(--fg); font-size: 28px; font-weight: 600; letter-spacing: -0.01em; will-change: transform, opacity; }
+      .lower .n { font-family: Montserrat, sans-serif; font-weight: 800; color: var(--accent-400); font-size: 22px; letter-spacing: 0.06em; }
+
+      /* Dashboard */
+      .hero-card { background: linear-gradient(135deg, #1a2b48, #0f1a2e); color: #fff; border-radius: 14px; padding: 26px 30px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; will-change: transform, opacity; }
+      .hero-card .k { color: rgba(255, 255, 255, 0.72); } .hero-card h3 { margin: 6px 0 4px; font-family: Montserrat, sans-serif; font-size: 24px; font-weight: 700; } .hero-card p { margin: 0; color: rgba(255, 255, 255, 0.8); font-size: 14px; }
+      .hero-card .st { background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px 16px; font-weight: 700; font-size: 14px; } .hero-card .st .k { margin-bottom: 4px; }
+      .steps { padding: 20px 26px; margin-bottom: 18px; display: grid; grid-template-columns: 1fr 70px; align-items: center; gap: 20px; }
+      .steps .head { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; } .steps .head i { width: 34px; height: 34px; border-radius: 9px; background: #e8edf5; display: grid; place-items: center; } .steps .head i svg { width: 18px; height: 18px; } .steps .head b { display: block; font-size: 15px; } .steps .head small { color: var(--ink-3); font-size: 12px; }
+      .track { position: relative; display: flex; justify-content: space-between; align-items: flex-start; padding: 0 8px; }
+      .track .ln { position: absolute; left: 60px; right: 60px; top: 15px; height: 2px; background: var(--paper-2); } .track .ln i { display: block; height: 100%; width: 100%; background: var(--success); transform-origin: 0 50%; }
+      .node { position: relative; width: 110px; text-align: center; font-size: 11px; color: var(--ink-3); } .node i { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; margin: 0 auto 8px; background: var(--paper-2); color: #fff; font-weight: 700; will-change: transform; }
+      .node.ok i { background: var(--success); } .node.now i { background: #fff; border: 2px solid var(--accent); box-sizing: border-box; } .node.now i::after { content: ''; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); } .node.now { color: var(--ink); font-weight: 600; }
+      .node i svg { width: 16px; height: 16px; }
+      .ring { position: relative; width: 70px; height: 70px; } .ring svg { position: absolute; inset: 0; transform: rotate(-90deg); } .ring .v { position: absolute; inset: 0; display: grid; place-items: center; font-weight: 700; font-size: 14px; }
+      .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 18px; }
+      .kpi { padding: 18px 20px 14px; } .kpi .v { font-family: Montserrat, sans-serif; font-weight: 800; font-size: 34px; margin: 8px 0 2px; } .kpi .v small { font-size: 16px; color: var(--ink-3); } .kpi .d { font-size: 12px; color: var(--ink-3); } .kpi .d.up { color: #047857; }
+      .kpi svg { display: block; width: 100%; height: 36px; margin-top: 10px; }
+      .two { display: grid; grid-template-columns: 1.6fr 1fr; gap: 18px; }
+      .list { padding: 18px 22px; } .list .hd { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; } .list .hd b { font-family: Montserrat, sans-serif; font-size: 18px; } .list .hd a { color: var(--accent-900); font-size: 12px; font-weight: 700; }
+      .row { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-top: 1px solid var(--paper-2); } .row .ic { width: 36px; height: 36px; border-radius: 10px; background: #ffe4d1; color: var(--accent-900); display: grid; place-items: center; font-weight: 800; font-size: 12px; } .row .t b { display: block; font-size: 14px; } .row .t small { color: var(--ink-3); font-size: 12px; }
+      .row .bar { margin-left: auto; width: 150px; height: 6px; border-radius: 3px; background: var(--paper-2); overflow: hidden; } .row .bar i { display: block; height: 100%; background: var(--accent); transform-origin: 0 50%; }
+      .todo { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid var(--paper-2); font-size: 13px; } .todo i { width: 18px; height: 18px; border-radius: 50%; border: 1.6px solid var(--accent); flex: none; box-sizing: border-box; display: grid; place-items: center; } .todo i.ok { background: var(--success); border-color: var(--success); } .todo i svg { width: 11px; height: 11px; }
+
+      /* Catalogue */
+      .tabs { display: flex; gap: 26px; border-bottom: 1px solid var(--paper-2); margin: 4px 0 22px; font-size: 14px; color: var(--ink-3); } .tabs span { padding: 0 2px 12px; } .tabs .on { color: var(--accent-900); font-weight: 700; border-bottom: 2px solid var(--accent); }
+      .sect { font-weight: 700; font-size: 15px; margin-bottom: 12px; }
+      .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+      .card { position: relative; padding: 18px 20px; } .card .sec { display: flex; align-items: center; gap: 8px; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; margin-bottom: 10px; } .card .sec i { width: 20px; height: 20px; border-radius: 50%; background: #e8edf5; color: #2c4166; display: grid; place-items: center; font-size: 11px; font-weight: 800; font-style: normal; }
+      .card h4 { margin: 0 0 8px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px; line-height: 1.25; } .card p { margin: 0 0 12px; font-size: 12.5px; line-height: 1.45; color: var(--ink-2); min-height: 54px; } .card .tags { display: flex; gap: 6px; }
+      .filters { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-size: 13px; color: var(--ink-3); } .filters .sel { display: flex; gap: 8px; } .filters .sel span { background: #fff; border: 1px solid var(--paper-2); border-radius: 8px; padding: 7px 12px; color: var(--ink); font-size: 12.5px; }
+
+      /* Scenario dialog */
+      .dim { position: absolute; inset: 0; background: rgba(15, 26, 46, 0.55); backdrop-filter: blur(3px); }
+      .dlg { position: absolute; left: 50%; top: 50%; width: 1080px; margin-left: -540px; margin-top: -360px; height: 720px; background: #fff; border-radius: 16px; box-shadow: 0 40px 120px rgba(0, 0, 0, 0.5); color: var(--ink); transform-origin: 50% 50%; will-change: transform, opacity; overflow: hidden; }
+      .dlg .hd { padding: 26px 32px 18px; border-bottom: 1px solid var(--paper-2); } .dlg .hd h3 { margin: 10px 0 8px; font-family: Montserrat, sans-serif; font-size: 24px; font-weight: 700; } .dlg .hd p { margin: 0 0 12px; color: var(--ink-2); font-size: 14px; line-height: 1.5; }
+      .dlg .x { position: absolute; right: 22px; top: 22px; width: 24px; height: 24px; color: var(--ink-3); font-size: 22px; line-height: 24px; text-align: center; }
+      .dlg .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; padding: 18px 32px; background: var(--paper); } .dlg .stat { background: #fff; border: 1px solid var(--paper-2); border-radius: 10px; padding: 12px 16px; will-change: transform, opacity; } .dlg .stat .v { font-family: Montserrat, sans-serif; font-weight: 800; font-size: 26px; margin-top: 4px; } .dlg .stat .v small { font-size: 13px; color: var(--ink-3); }
+      .dlg .body { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; padding: 22px 32px; }
+      .obj { display: flex; gap: 12px; align-items: flex-start; background: var(--paper); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; font-size: 13.5px; line-height: 1.4; will-change: transform, opacity; } .obj i { width: 20px; height: 20px; border-radius: 50%; background: #ffe4d1; color: var(--accent-900); font-size: 11px; font-weight: 700; font-style: normal; display: grid; place-items: center; flex: none; }
+      .comp { display: flex; flex-wrap: wrap; gap: 8px; } .comp span { border: 1px solid var(--paper-2); border-radius: 999px; padding: 6px 12px; font-size: 12.5px; will-change: transform, opacity; }
+      .phases { padding: 6px 32px 0; } .phases .bar { display: flex; gap: 6px; margin-top: 10px; } .phases .bar i { flex: 1; height: 7px; border-radius: 4px; background: var(--paper-2); overflow: hidden; } .phases .bar i b { display: block; height: 100%; background: var(--accent); transform-origin: 0 50%; }
+      .phases .lb { display: flex; gap: 6px; margin-top: 8px; font-size: 11px; color: var(--ink-3); } .phases .lb span { flex: 1; } .phases .lb span.on { color: var(--accent-900); font-weight: 700; }
+      .dlg .ft { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; padding: 16px 32px; border-top: 1px solid var(--paper-2); background: #fff; }
+      .dlg .ft .go { background: var(--accent); color: var(--bg); border-radius: 9px; padding: 11px 18px; font-weight: 800; font-size: 14px; transform-origin: 50% 50%; will-change: transform; }
+
+      /* Simulations */
+      .sims { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+      .sim { padding: 20px 22px; } .sim .st { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-3); margin-bottom: 8px; } .sim .st i { width: 7px; height: 7px; border-radius: 50%; background: var(--info); display: inline-block; margin-right: 6px; }
+      .sim h4 { margin: 0 0 4px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 18px; } .sim .sub2 { color: var(--ink-3); font-size: 13px; margin-bottom: 10px; }
+      .seg { display: flex; justify-content: space-between; font-size: 11px; color: var(--ink-3); margin-top: 14px; } .segbar { display: flex; gap: 5px; margin: 6px 0 16px; } .segbar i { flex: 1; height: 6px; border-radius: 3px; background: var(--paper-2); overflow: hidden; } .segbar i b { display: block; height: 100%; transform-origin: 0 50%; }
+      .gs { display: flex; justify-content: space-between; padding: 0 6px; } .g { width: 86px; text-align: center; position: relative; will-change: transform, opacity; } .g .c { position: relative; width: 58px; height: 58px; margin: 0 auto 6px; } .g .c svg { position: absolute; inset: 0; transform: rotate(-90deg); } .g .c .v { position: absolute; inset: 0; display: grid; place-items: center; font-weight: 800; font-size: 15px; } .g .l { font-size: 10px; color: var(--ink-3); }
+      .g .delta { position: absolute; right: 2px; top: -8px; font-size: 11px; font-weight: 800; border-radius: 999px; padding: 2px 7px; background: #d1fae5; color: #047857; will-change: transform, opacity; } .g .delta.bad { background: #fee2e2; color: #b91c1c; }
+      .toast { position: absolute; left: 300px; top: 572px; background: #fff; border: 1px solid var(--paper-2); border-left: 4px solid var(--accent); border-radius: 12px; padding: 14px 18px; box-shadow: 0 18px 50px rgba(15, 26, 46, 0.25); font-size: 13px; width: 560px; color: var(--ink); will-change: transform, opacity; } .toast b { display: block; font-size: 14px; margin-bottom: 3px; }
+
+      /* ─── Meeting mockup (S6) ─── */
+      .meeting { position: absolute; left: 330px; top: 110px; width: 1260px; height: 860px; border-radius: 24px; background: #fafaf9; color: #0c0a09; box-shadow: 0 40px 120px rgba(0, 0, 0, 0.55); overflow: hidden; transform-origin: 50% 50%; will-change: transform; }
+      .meeting .head { height: 92px; background: #0f1a2e; color: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 36px; box-sizing: border-box; }
+      .meeting .head .t { font-family: Montserrat, sans-serif; font-weight: 700; font-size: 26px; }
+      .meeting .head .t small { display: block; font-family: Inter, sans-serif; font-weight: 500; font-size: 15px; color: rgba(255, 255, 255, 0.6); margin-top: 2px; }
+      .meeting .live { display: inline-flex; align-items: center; gap: 10px; background: rgba(238, 122, 58, 0.18); border: 1px solid rgba(238, 122, 58, 0.5); color: #ffb685; padding: 8px 16px; border-radius: 999px; font-size: 15px; font-weight: 700; }
+      .meeting .live i { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); display: block; }
+      .meeting .body { display: grid; grid-template-columns: 330px 1fr; height: calc(100% - 92px); }
+      .meeting .side { border-right: 1px solid #e7e5e4; padding: 28px 24px; box-sizing: border-box; }
+      .meeting .side h4 { margin: 0 0 16px; font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: #57534e; }
+      .person { display: flex; align-items: center; gap: 14px; padding: 12px 10px; border-radius: 14px; will-change: transform, opacity; }
+      .person .av { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 15px; flex: none; }
+      .person .nm { font-weight: 700; font-size: 18px; } .person .rl { font-size: 14px; color: #44403c; }
+      .thread { padding: 30px 36px; display: flex; flex-direction: column; gap: 18px; box-sizing: border-box; }
+      .bubble { max-width: 640px; padding: 18px 22px; border-radius: 18px; background: #f0efed; font-size: 21px; line-height: 1.4; transform-origin: 0 100%; will-change: transform, opacity; }
+      .bubble .who { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: #57534e; font-weight: 700; margin-bottom: 6px; }
+      .bubble.me { align-self: flex-end; background: #0f1a2e; color: #fff; transform-origin: 100% 100%; } .bubble.me .who { color: rgba(255, 255, 255, 0.6); }
+      .typing { display: inline-flex; gap: 6px; padding: 16px 20px; border-radius: 18px; background: #f0efed; align-self: flex-start; will-change: opacity; } .typing i { width: 9px; height: 9px; border-radius: 50%; background: #a8a29e; display: block; }
+
+      /* ─── Report mockup (S7) ─── */
+      .report { position: absolute; left: 210px; top: 110px; width: 1500px; height: 860px; border-radius: 24px; background: #fafaf9; color: #0c0a09; box-shadow: 0 40px 120px rgba(0, 0, 0, 0.55); overflow: hidden; transform-origin: 50% 50%; will-change: transform; display: grid; grid-template-columns: 520px 1fr; }
+      .report .score { padding: 56px 48px; border-right: 1px solid #e7e5e4; box-sizing: border-box; } .report .score .k { font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; color: #57534e; font-weight: 700; }
+      .report .score .big { font-family: Montserrat, sans-serif; font-weight: 800; font-size: 150px; line-height: 1; color: var(--accent); margin-top: 10px; } .report .score .big small { font-size: 46px; color: #a8a29e; }
+      .report .score .ringwrap { position: relative; width: 300px; height: 300px; margin: 36px auto 0; } .report .score .ringwrap svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+      .report .main { padding: 56px 52px; box-sizing: border-box; } .report h3 { margin: 0; font-family: Montserrat, sans-serif; font-size: 34px; font-weight: 800; letter-spacing: -0.01em; } .report .sub7 { color: #57534e; font-size: 20px; margin-top: 6px; }
+      .radar { position: absolute; right: 60px; top: 48px; width: 380px; height: 340px; }
+      .recos { margin-top: 300px; display: flex; flex-direction: column; gap: 14px; }
+      .reco { display: flex; gap: 16px; align-items: flex-start; background: #fff; border: 1px solid #e7e5e4; border-left: 5px solid var(--accent); border-radius: 14px; padding: 16px 20px; font-size: 20px; line-height: 1.35; will-change: transform, opacity; } .reco b { font-family: Montserrat, sans-serif; color: var(--accent); font-size: 16px; letter-spacing: 0.08em; padding-top: 3px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="simex-demo" data-start="0" data-width="1920" data-height="1080" data-duration="61.2">
+      <div id="bg">
+        <div class="fill"></div>
+        <div class="glow glow-a" id="glow-a"></div>
+        <div class="glow glow-b" id="glow-b"></div>
+        <div class="grid"></div>
+        <div class="ghost" id="ghost" data-layout-ignore aria-hidden="true">SIMEX</div>
+      </div>
+
+      <!-- S1 · Hook (0–5) -->
+      <section id="s1" class="clip" data-start="0" data-duration="5" data-track-index="1">
+        <div class="beat display" id="s1-b1" data-i18n="s1b1">Un vrai projet.</div>
+        <div class="beat display" id="s1-b2" data-i18n="s1b2">Une vraie équipe.</div>
+        <div class="beat display" id="s1-b3"><span class="em" data-i18n="s1b3">Vos décisions.</span></div>
+        <div class="center" id="s1-mark">
+          <div>
+            <div class="wordmark display"><span>Simex</span><span class="dot"></span><span class="pro">pro</span></div>
+            <div class="tag" data-i18n="s1tag">Simulation de gestion de projet · Québec</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- S2 · Dashboard, rebuilt in HTML (5–13) -->
+      <section id="s2" class="clip" data-start="5" data-duration="8" data-track-index="1">
+        <div class="app" id="s2-app" data-frame="dashboard">
+          <div class="main" id="s2-main">
+            <div class="crumb" data-i18n="s2crumb">Tableau de bord</div>
+            <div class="head2">
+              <div><h1 class="h1" data-i18n="s2h1">Tableau de bord</h1><div class="sub" data-i18n="s2sub">Suivi de vos simulations en cours et progression globale.</div></div>
+              <span class="btn pri" id="s2-new">+ <span data-i18n="s2new">Nouvelle simulation</span></span>
+            </div>
+            <div class="hero-card" id="s2-hero">
+              <div><div class="k" data-i18n="s2k">Tableau de bord</div><h3><span data-i18n="s2hi">Bonjour</span> Marie</h3><p data-i18n="s2hp">2 simulations en cours · score moyen 78/100.</p></div>
+              <div class="st"><div class="k" data-i18n="s2st">Statut</div><span data-i18n="s2stv">Tout est à jour</span></div>
+            </div>
+            <div class="pane steps" id="s2-steps">
+              <div>
+                <div class="head"><i><svg viewBox="0 0 16 16" fill="none" stroke="#2c4166" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14V2h8l-2 3 2 3H4" /></svg></i><div><b data-i18n="s2fs">Premiers pas</b><small data-i18n="s2fss">3/5 étapes complétées</small></div></div>
+                <div class="track" id="s2-track"><div class="ln"><i id="s2-ln"></i></div></div>
+              </div>
+              <div class="ring" id="s2-ring"><svg viewBox="0 0 70 70"><circle cx="35" cy="35" r="30" fill="none" stroke="#e7e5e4" stroke-width="6" /><circle cx="35" cy="35" r="30" fill="none" stroke="#2c4166" stroke-width="6" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" class="arc" /></svg><div class="v"><span><span class="num" data-to="60">0</span>%</span></div></div>
+            </div>
+            <div class="kpis" id="s2-kpis"></div>
+            <div class="two">
+              <div class="pane list" id="s2-list">
+                <div class="hd"><b data-i18n="s2l1">Simulations · En cours</b><a data-i18n="s2all">Voir tout →</a></div>
+                <div class="row"><div class="ic">ERP</div><div class="t"><b data-i18n="s2r1">Déploiement ERP GlobalFinance</b><small data-i18n="s2r1s">Exécution & redressement · 2/5</small></div><div class="bar"><i id="s2-bar1"></i></div></div>
+                <div class="row"><div class="ic">CLD</div><div class="t"><b data-i18n="s2r2">Migration infrastructure vers le Cloud</b><small data-i18n="s2r2s">Audit & cadrage · 1/5</small></div><div class="bar"><i id="s2-bar2"></i></div></div>
+              </div>
+              <div class="pane list" id="s2-todo">
+                <div class="hd"><b data-i18n="s2l2">À traiter</b></div>
+                <div class="todo"><i class="ok"><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-7" /></svg></i><span data-i18n="s2t1">Répondre au commanditaire</span></div>
+                <div class="todo"><i></i><span data-i18n="s2t2">Décision en attente · tour 4</span></div>
+                <div class="todo"><i></i><span data-i18n="s2t3">Livrable : plan de migration</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="callout" id="s2-c1" style="left: 1040px; top: 392px"><b></b><span data-i18n="s2c1">Votre progression, étape par étape</span></div>
+        <div class="callout" id="s2-c2" style="left: 1040px; top: 236px"><b></b><span data-i18n="s2c2">Score, simulations, actions à traiter</span></div>
+        <div class="lower" id="s2-l"><span class="n">01</span><span data-i18n="s2l">Votre tableau de bord</span></div>
+      </section>
+
+      <!-- S3 · Catalogue, rebuilt (13–23.2) -->
+      <section id="s3" class="clip" data-start="13" data-duration="10.2" data-track-index="1">
+        <div class="app" id="s3-app" data-frame="simulations">
+          <div class="main">
+            <div class="crumb"><span data-i18n="s2crumb">Tableau de bord</span> / <span data-i18n="s3cr2">Simulations</span> / <b data-i18n="s3cr3">Nouvelle</b></div>
+            <h1 class="h1" data-i18n="s3h1">Nouvelle simulation</h1>
+            <div class="sub" data-i18n="s3sub">Choisissez un scénario du catalogue ou générez une nouvelle simulation sur mesure.</div>
+            <div class="tabs"><span class="on" data-i18n="s3t1">Catalogue</span><span data-i18n="s3t2">Générer une nouvelle simulation</span></div>
+            <div class="sect" data-i18n="s3rec">Recommandés pour vous</div>
+            <div class="cards" id="s3-cards-a"></div>
+            <div class="filters" id="s3-filters"><span data-i18n="s3pick">Choisissez un scénario pour démarrer une nouvelle simulation.</span><div class="sel"><span data-i18n="s3f1">Tous les secteurs ▾</span><span data-i18n="s3f2">Tous les niveaux ▾</span><span data-i18n="s3f3">Toutes les situations ▾</span></div></div>
+            <div class="cards" id="s3-cards-b"></div>
+          </div>
+        </div>
+        <div class="callout" id="s3-c1" style="left: 1000px; top: 300px"><b></b><span data-i18n="s3c1">Construction · Finance · TI</span></div>
+        <div class="lower" id="s3-l"><span class="n">02</span><span data-i18n="s3l">Choisissez votre scénario</span></div>
+      </section>
+
+      <!-- S4 · Scenario sheet dialog, rebuilt (23.2–30.7) -->
+      <section id="s4" class="clip" data-start="23.2" data-duration="7.5" data-track-index="1">
+        <div class="app" id="s4-app" data-frame="simulations">
+          <div class="main" data-layout-ignore>
+            <div class="crumb"><span data-i18n="s2crumb">Tableau de bord</span> / <span data-i18n="s3cr2">Simulations</span> / <b data-i18n="s3cr3">Nouvelle</b></div>
+            <h1 class="h1" data-i18n="s3h1">Nouvelle simulation</h1>
+            <div class="sub" data-i18n="s3sub">Choisissez un scénario du catalogue ou générez une nouvelle simulation sur mesure.</div>
+            <div class="tabs"><span class="on" data-i18n="s3t1">Catalogue</span><span data-i18n="s3t2">Générer une nouvelle simulation</span></div>
+            <div class="sect" data-i18n="s3rec">Recommandés pour vous</div>
+            <div class="cards" id="s4-cards"></div>
+          </div>
+          <div class="dim" id="s4-dim" data-layout-ignore></div>
+          <div class="dlg" id="s4-dlg">
+            <div class="hd">
+              <span class="chip o" data-i18n="lvl2">Intermédiaire</span> <span class="chip" data-i18n="newp">Nouveau projet</span>
+              <h3 data-i18n="sc3">Migration infrastructure vers le Cloud</h3>
+              <p data-i18n="s4desc">Vous pilotez la migration de l’infrastructure d’une entreprise de services financiers vers le nuage. Le projet implique la migration de 15 applications critiques, la mise en place de la sécurité et la formation des équipes. Enjeu : zéro interruption sur les services critiques.</p>
+              <span class="chip i">Finance</span> <span class="chip i" data-i18n="s4sims">4 simulations</span>
+              <div class="x">×</div>
+            </div>
+            <div class="stats">
+              <div class="stat" id="s4-st1"><div class="k" data-i18n="s4k1">Phases</div><div class="v"><span class="num" data-to="5">0</span></div></div>
+              <div class="stat" id="s4-st2"><div class="k" data-i18n="s4k2">Durée</div><div class="v"><span class="num" data-to="5">0</span><small>h</small></div></div>
+              <div class="stat" id="s4-st3"><div class="k" data-i18n="s4k3">Objectifs</div><div class="v"><span class="num" data-to="4">0</span></div></div>
+              <div class="stat" id="s4-st4"><div class="k" data-i18n="s4k4">Compétences</div><div class="v"><span class="num" data-to="5">0</span></div></div>
+            </div>
+            <div class="body">
+              <div><div class="k" style="margin-bottom: 10px" data-i18n="s4o">Objectifs du scénario</div><div id="s4-objs"></div></div>
+              <div><div class="k" style="margin-bottom: 10px" data-i18n="s4c">Compétences travaillées</div><div class="comp" id="s4-comp"></div></div>
+            </div>
+            <div class="phases"><div class="k" data-i18n="s4p">Déroulement du projet</div><div class="bar" id="s4-pbar"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div><div class="lb" id="s4-plb"></div></div>
+            <div class="ft"><span class="btn ghost" data-i18n="cancel">Annuler</span><span class="go" id="s4-go" data-i18n="s4go">Lancer la simulation</span></div>
+          </div>
+        </div>
+        <div class="lower" id="s4-l"><span class="n">03</span><span data-i18n="s4l">Un brief, une équipe, un budget</span></div>
+      </section>
+
+      <!-- S5 · My simulations: decisions move the indicators (30.7–38.7) -->
+      <section id="s5" class="clip" data-start="30.7" data-duration="8" data-track-index="1">
+        <div class="app" id="s5-app" data-frame="simulations">
+          <div class="main">
+            <div class="crumb"><span data-i18n="s2crumb">Tableau de bord</span> / <b data-i18n="s3cr2">Simulations</b></div>
+            <div class="head2">
+              <div><h1 class="h1" data-i18n="s5h1">Mes simulations</h1><div class="sub" data-i18n="s5sub">Pilotez vos simulations en cours, lancez-en de nouvelles.</div></div>
+              <span class="btn pri">+ <span data-i18n="s2new">Nouvelle simulation</span></span>
+            </div>
+            <div class="tabs"><span class="on" data-i18n="s5t1">Toutes (2)</span><span data-i18n="s5t2">En cours</span><span data-i18n="s5t3">Terminées</span></div>
+            <div class="sims" id="s5-sims"></div>
+          </div>
+          <div class="toast" id="s5-toast"><b data-i18n="s5tb">Décision prise · tour 4</b><span data-i18n="s5tt">Renforcer l’équipe de test, réduire la portée du lot 2.</span></div>
+        </div>
+        <div class="callout" id="s5-c1" style="left: 560px; top: 800px"><b></b><span data-i18n="s5c1">Chaque décision fait bouger les indicateurs</span></div>
+      </section>
+
+      <!-- S6 · Meeting (38.7–46.2) -->
+      <section id="s6" class="clip" data-start="38.7" data-duration="7.5" data-track-index="1">
+        <div class="meeting" id="s6-room">
+          <div class="head">
+            <div class="t"><span data-i18n="s6t">Comité de pilotage · Tour 4</span><small data-i18n="s6ts">Déploiement ERP GlobalFinance</small></div>
+            <div class="live"><i></i><span data-i18n="s6live">En direct · 12 min</span></div>
+          </div>
+          <div class="body">
+            <div class="side">
+              <h4 data-i18n="s6side">Participants</h4>
+              <div class="person" id="s6-p1"><div class="av" style="background: #1d4ed8">MS</div><div><div class="nm">Marc Simard</div><div class="rl" data-i18n="s6r1">Commanditaire</div></div></div>
+              <div class="person" id="s6-p2"><div class="av" style="background: #6d28d9">ND</div><div><div class="nm">Nina Desrochers</div><div class="rl" data-i18n="s6r2">Responsable technique</div></div></div>
+              <div class="person" id="s6-p3"><div class="av" style="background: #047857">TC</div><div><div class="nm">Tom Caron</div><div class="rl">PMO</div></div></div>
+              <div class="person" id="s6-p4"><div class="av" style="background: #9c4718" data-i18n="s6you">VOUS</div><div><div class="nm" data-i18n="s6youn">Chef de projet</div><div class="rl" data-i18n="s6your">Vous</div></div></div>
+            </div>
+            <div class="thread">
+              <div class="bubble" id="s6-m1"><div class="who">Marc Simard · <span data-i18n="s6r1b">Commanditaire</span></div><span data-i18n="s6m1">Trois semaines de retard. Je veux une date de livraison ferme avant la fin de la réunion.</span></div>
+              <div class="bubble me" id="s6-m2"><div class="who" data-i18n="s6m2w">Vous</div><span data-i18n="s6m2">On réduit la portée du lot 2 et on renforce l’équipe de test. Livraison le 14, sans toucher à la conformité.</span></div>
+              <div class="typing" id="s6-typing"><i></i><i></i><i></i></div>
+              <div class="bubble" id="s6-m3"><div class="who">Nina Desrochers · <span data-i18n="s6r2b">Responsable technique</span></div><span data-i18n="s6m3">Renforcer les tests, d’accord. Mais deux personnes de plus, c’est deux semaines d’intégration. Qui les forme ?</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="lower" id="s6-l"><span class="n">04</span><span data-i18n="s6l">Des participants simulés qui réagissent</span></div>
+      </section>
+
+      <!-- S7 · Report (46.2–54.7) -->
+      <section id="s7" class="clip" data-start="46.2" data-duration="8.5" data-track-index="1">
+        <div class="report" id="s7-rep">
+          <div class="score">
+            <div class="k" data-i18n="s7k">Score global</div>
+            <div class="big"><span class="num" id="s7-score" data-to="78">0</span><small>/100</small></div>
+            <div class="ringwrap"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="#e7e5e4" stroke-width="10" /><circle id="s7-arc" cx="60" cy="60" r="52" fill="none" stroke="#ee7a3a" stroke-width="10" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" /></svg></div>
+          </div>
+          <div class="main">
+            <h3 data-i18n="s7h">Rapport de fin de simulation</h3>
+            <div class="sub7" data-i18n="s7sub">Calibré sur le référentiel PMI · 5 dimensions</div>
+            <svg class="radar" viewBox="0 0 380 340" id="s7-radar">
+              <g fill="none" stroke="#e7e5e4" stroke-width="1.5"><polygon id="s7-outer" points="" /><polygon id="s7-mid" points="" /><g id="s7-axes"></g></g>
+              <polygon id="s7-data" points="" fill="rgba(238,122,58,0.22)" stroke="#ee7a3a" stroke-width="3" stroke-linejoin="round" />
+              <g id="s7-dots" fill="#ee7a3a"></g>
+              <g id="s7-labels" font-family="Inter, sans-serif" font-size="15" font-weight="600" fill="#57534e" text-anchor="middle"></g>
+            </svg>
+            <div class="recos">
+              <div class="reco" id="s7-r1"><b>01</b><span data-i18n="s7r1">Communication hebdomadaire avec le commanditaire : fixez le format dès la phase d’audit.</span></div>
+              <div class="reco" id="s7-r2"><b>02</b><span data-i18n="s7r2">Les risques humains sont sous le seuil : planifiez la montée en compétence avant d’élargir l’équipe.</span></div>
+              <div class="reco" id="s7-r3"><b>03</b><span data-i18n="s7r3">Bonne tenue du budget après le tour 3 : documentez l’arbitrage portée / qualité pour le prochain projet.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="lower" id="s7-l"><span class="n">05</span><span data-i18n="s7l">Un retour de niveau senior</span></div>
+      </section>
+
+      <!-- S8 · CTA (54.7–61.2) -->
+      <section id="s8" class="clip" data-start="54.7" data-duration="6.5" data-track-index="1">
+        <div class="center">
+          <div id="s8-stack">
+            <div class="wordmark display" id="s8-mark"><span>Simex</span><span class="dot"></span><span class="pro">pro</span></div>
+            <div class="tag" id="s8-tag" data-i18n="s8tag">Programme pilote 2026 · Conçu au Québec</div>
+            <div class="cta-btn display" id="s8-btn"><span data-i18n="s8btn">Rejoindre le programme pilote</span></div>
+            <div class="url" id="s8-url"><span id="s8-url-text"></span><span class="c" id="s8-caret"></span></div>
+          </div>
+        </div>
+      </section>
+
+      <audio id="vo1" src="assets/audio/fr/s1.m4a" data-var-src="vo1" data-start="0.4" data-duration="3.4" data-volume="1" data-track-index="3"></audio>
+      <audio id="vo2" src="assets/audio/fr/s2.m4a" data-var-src="vo2" data-start="5.4" data-duration="7.0" data-volume="1" data-track-index="3"></audio>
+      <audio id="vo3" src="assets/audio/fr/s3.m4a" data-var-src="vo3" data-start="13.4" data-duration="9.4" data-volume="1" data-track-index="3"></audio>
+      <audio id="vo4" src="assets/audio/fr/s4.m4a" data-var-src="vo4" data-start="23.6" data-duration="6.3" data-volume="1" data-track-index="3"></audio>
+      <audio id="vo5" src="assets/audio/fr/s5.m4a" data-var-src="vo5" data-start="31.1" data-duration="6.8" data-volume="1" data-track-index="3"></audio>
+      <audio id="vo6" src="assets/audio/fr/s6.m4a" data-var-src="vo6" data-start="39.1" data-duration="6.4" data-volume="1" data-track-index="3"></audio>
+      <audio id="vo7" src="assets/audio/fr/s7.m4a" data-var-src="vo7" data-start="46.6" data-duration="7.7" data-volume="1" data-track-index="3"></audio>
+      <audio id="vo8" src="assets/audio/fr/s8.m4a" data-var-src="vo8" data-start="55.1" data-duration="3.5" data-volume="1" data-track-index="3"></audio>
+    </div>
+
+    <script>
+      // ─── Copy, both languages (never "IA"/"AI") ─────────────────────────────
+      const COPY = {
+        fr: {
+          s1b1: 'Un vrai projet.', s1b2: 'Une vraie équipe.', s1b3: 'Vos décisions.', s1tag: 'Simulation de gestion de projet · Québec',
+          nav: { space: 'Espace', spaceb: 'Apprenant', launch: 'Lancer une simulation', dash: 'Tableau de bord', app: 'Application', sims: 'Simulations', mail: 'Courriels', rep: 'Rapports', val: 'Valorisation', ment: 'Mentorat', acc: 'Compte', set: 'Paramètres', sup: 'Soutien', doc: 'Documentation', help: 'Aide & soutien', coach: 'Mode coach activé', coachp: 'Retour détaillé après chaque livrable, accès au plan de progression personnalisé.', coachb: 'Découvrir', search: 'Rechercher pages, livrables, candidats…', assist: 'Assistant', role: 'Apprenante' },
+          s2crumb: 'Tableau de bord', s2h1: 'Tableau de bord', s2sub: 'Suivi de vos simulations en cours et progression globale.', s2new: 'Nouvelle simulation', s2k: 'Tableau de bord', s2hi: 'Bonjour', s2hp: '2 simulations en cours · score moyen 78/100.', s2st: 'Statut', s2stv: 'Tout est à jour',
+          s2fs: 'Premiers pas', s2fss: '3/5 étapes complétées', steps: ['Profil', 'Simulation', 'Livrable', 'Débriefing', 'Portfolio'],
+          kpis: [['Simulations actives', '2', '', '+1 ce mois', 'up'], ['Score moyen', '78', '/100', 'En progression', 'up'], ['Simulations terminées', '1', '', 'Stable', ''], ['Actions en attente', '3', '', 'À traiter aujourd’hui', '']],
+          s2l1: 'Simulations · En cours', s2all: 'Voir tout →', s2r1: 'Déploiement ERP GlobalFinance', s2r1s: 'Exécution & redressement · 2/5', s2r2: 'Passage au nuage · Assurances Boréal', s2r2s: 'Audit & cadrage · 1/5', s2l2: 'À traiter', s2t1: 'Répondre au commanditaire', s2t2: 'Décision en attente · tour 4', s2t3: 'Livrable : plan de migration',
+          s2c1: 'Votre progression, étape par étape', s2c2: 'Score, simulations, actions à traiter', s2l: 'Votre tableau de bord',
+          s3cr2: 'Simulations', s3cr3: 'Nouvelle', s3h1: 'Nouvelle simulation', s3sub: 'Choisissez un scénario du catalogue ou générez une nouvelle simulation sur mesure.', s3t1: 'Catalogue', s3t2: 'Générer une nouvelle simulation', s3rec: 'Recommandés pour vous', s3pick: 'Choisissez un scénario pour démarrer une nouvelle simulation.', s3f1: 'Tous les secteurs ▾', s3f2: 'Tous les niveaux ▾', s3f3: 'Toutes les situations ▾', s3c1: 'Construction · Finance · TI', s3l: 'Choisissez votre scénario',
+          sectors: { construction: 'Construction', finance: 'Finance', it: 'Technologies de l’information', health: 'Santé', startup: 'Démarrage d’entreprise' }, lvl2: 'Intermédiaire', lvl3: 'Avancé', newp: 'Nouveau projet', resume: 'Reprise en cours', rec: 'Recommandé',
+          sc1: 'Construction verte à partir de zéro', sc1d: 'Un promoteur veut bâtir un complexe résidentiel écologique sur un terrain vierge, avec des normes environnementales strictes et des délais serrés.',
+          sc2: 'Reprise d’un projet ERP en difficulté', sc2d: 'Le chef de projet précédent est parti en pleine exécution : 3 semaines de retard, budget consommé à 65 %, moral de l’équipe au plus bas.',
+          sc3: 'Migration infrastructure vers le Cloud', sc3d: 'Vous pilotez la migration vers le nuage d’une entreprise de services financiers : 15 applications critiques, sécurité et formation.',
+          sc4: 'Refonte d’un site e-commerce', sc4d: 'Refonte complète d’un site e-commerce pour une PME qui veut doubler son chiffre d’affaires sans jamais interrompre les ventes.',
+          sc5: 'Ouverture d’une clinique de proximité', sc5d: 'Un réseau de santé ouvre une clinique de première ligne en région : recrutement, conformité et équipements prêts pour la date annoncée.',
+          sc6: 'Lancement d’un produit en démarrage', sc6d: 'Livrer un premier produit en 12 semaines avec une équipe réduite et un financement qui dépend d’une démonstration réussie.',
+          s4desc: 'Vous pilotez la migration de l’infrastructure d’une entreprise de services financiers vers le nuage. Le projet implique la migration de 15 applications critiques, la mise en place de la sécurité et la formation des équipes. Enjeu : zéro interruption sur les services critiques.', s4sims: '4 simulations',
+          s4k1: 'Phases', s4k2: 'Durée', s4k3: 'Objectifs', s4k4: 'Compétences', s4o: 'Objectifs du scénario', s4c: 'Compétences travaillées', s4p: 'Déroulement du projet', cancel: 'Annuler', s4go: 'Lancer la simulation', s4l: 'Un brief, une équipe, un budget',
+          objs: ['Migrer 15 applications vers le nuage sans interruption de service', 'Respecter les normes de sécurité financière (PCI-DSS)', 'Former les équipes DevOps à la gestion infonuagique', 'Réduire les coûts d’infrastructure de 30 %'], comps: ['gestion des risques', 'communication', 'planification', 'leadership', 'parties prenantes'], phases: ['Audit & cadrage', 'Architecture', 'Migration', 'Sécurité', 'Passation'],
+          s5h1: 'Mes simulations', s5sub: 'Pilotez vos simulations en cours, lancez-en de nouvelles.', s5t1: 'Toutes (2)', s5t2: 'En cours', s5t3: 'Terminées', status: 'En cours', ago1: 'il y a 2 h', ago2: 'il y a 3 jours', phase1: 'Exécution & redressement', phase2: 'Audit & cadrage', s5tb: 'Décision prise · tour 4', s5tt: 'Renforcer l’équipe de test, réduire la portée du lot 2.', s5c1: 'Chaque décision fait bouger les indicateurs',
+          g: ['Budget', 'Délai', 'Qualité', 'Moral', 'Risque'],
+          s6t: 'Comité de pilotage · Tour 4', s6ts: 'Déploiement ERP GlobalFinance', s6live: 'En direct · 12 min', s6side: 'Participants', s6r1: 'Commanditaire', s6r2: 'Responsable technique', s6you: 'VOUS', s6youn: 'Chef de projet', s6your: 'Vous', s6r1b: 'Commanditaire', s6r2b: 'Responsable technique',
+          s6m1: 'Trois semaines de retard. Je veux une date de livraison ferme avant la fin de la réunion.', s6m2w: 'Vous', s6m2: 'On réduit la portée du lot 2 et on renforce l’équipe de test. Livraison le 14, sans toucher à la conformité.', s6m3: 'Renforcer les tests, d’accord. Mais deux personnes de plus, c’est deux semaines d’intégration. Qui les forme ?', s6l: 'Des participants simulés qui réagissent',
+          s7k: 'Score global', s7h: 'Rapport de fin de simulation', s7sub: 'Calibré sur le référentiel PMI · 5 dimensions', s7r1: 'Communication hebdomadaire avec le commanditaire : fixez le format dès la phase d’audit.', s7r2: 'Les risques humains sont sous le seuil : planifiez la montée en compétence avant d’élargir l’équipe.', s7r3: 'Bonne tenue du budget après le tour 3 : documentez l’arbitrage portée / qualité pour le prochain projet.', s7l: 'Un retour de niveau senior', radar: ['Communication', 'Délai', 'Équipe', 'Budget', 'Risque'],
+          s8tag: 'Programme pilote 2026 · Conçu au Québec', s8btn: 'Rejoindre le programme pilote',
+        },
+        en: {
+          s1b1: 'A real project.', s1b2: 'A real team.', s1b3: 'Your decisions.', s1tag: 'Project management simulation · Québec',
+          nav: { space: 'Workspace', spaceb: 'Learner', launch: 'Start a simulation', dash: 'Dashboard', app: 'Application', sims: 'Simulations', mail: 'Emails', rep: 'Reports', val: 'Credentials', ment: 'Mentoring', acc: 'Account', set: 'Settings', sup: 'Support', doc: 'Documentation', help: 'Help & support', coach: 'Coach mode on', coachp: 'Detailed feedback after each deliverable, access to your personal progression plan.', coachb: 'Discover', search: 'Search pages, deliverables, candidates…', assist: 'Assistant', role: 'Learner' },
+          s2crumb: 'Dashboard', s2h1: 'Dashboard', s2sub: 'Your running simulations and overall progress.', s2new: 'New simulation', s2k: 'Dashboard', s2hi: 'Hello', s2hp: '2 simulations running · average score 78/100.', s2st: 'Status', s2stv: 'All up to date',
+          s2fs: 'First steps', s2fss: '3/5 steps completed', steps: ['Profile', 'Simulation', 'Deliverable', 'Debrief', 'Portfolio'],
+          kpis: [['Active simulations', '2', '', '+1 this month', 'up'], ['Average score', '78', '/100', 'Improving', 'up'], ['Completed simulations', '1', '', 'Steady', ''], ['Pending actions', '3', '', 'Due today', '']],
+          s2l1: 'Simulations · Running', s2all: 'See all →', s2r1: 'ERP rollout GlobalFinance', s2r1s: 'Execution & recovery · 2/5', s2r2: 'Cloud move · Boréal Insurance', s2r2s: 'Audit & scoping · 1/5', s2l2: 'To handle', s2t1: 'Reply to the sponsor', s2t2: 'Decision pending · round 4', s2t3: 'Deliverable: migration plan',
+          s2c1: 'Your progress, step by step', s2c2: 'Score, simulations, pending actions', s2l: 'Your dashboard',
+          s3cr2: 'Simulations', s3cr3: 'New', s3h1: 'New simulation', s3sub: 'Pick a scenario from the catalogue or generate a custom simulation.', s3t1: 'Catalogue', s3t2: 'Generate a new simulation', s3rec: 'Recommended for you', s3pick: 'Pick a scenario to start a new simulation.', s3f1: 'All sectors ▾', s3f2: 'All levels ▾', s3f3: 'All situations ▾', s3c1: 'Construction · Finance · IT', s3l: 'Pick your scenario',
+          sectors: { construction: 'Construction', finance: 'Finance', it: 'Information technology', health: 'Health care', startup: 'Startup' }, lvl2: 'Intermediate', lvl3: 'Advanced', newp: 'New project', resume: 'Takeover', rec: 'Recommended',
+          sc1: 'Green construction from scratch', sc1d: 'A developer wants an ecological residential complex on an empty lot, with strict environmental standards and a tight schedule.',
+          sc2: 'Turning around a troubled ERP project', sc2d: 'The previous project lead left mid-execution: 3 weeks late, 65% of the budget spent, team morale at its lowest.',
+          sc3: 'Infrastructure migration to the cloud', sc3d: 'You lead a financial-services company’s move to the cloud: 15 critical applications, security and team training.',
+          sc4: 'E-commerce site redesign', sc4d: 'Complete redesign of an e-commerce site for a retailer that wants to double revenue without ever interrupting sales.',
+          sc5: 'Opening a community clinic', sc5d: 'A health network opens a primary-care clinic in a rural region: hiring, compliance and equipment ready for the announced date.',
+          sc6: 'Launching a startup’s first product', sc6d: 'Ship a first product in 12 weeks with a small team and funding that depends on a successful demo.',
+          s4desc: 'You lead the migration of a financial-services company’s infrastructure to the cloud. The project involves migrating 15 critical applications, setting up security and training the teams. Stake: zero downtime on critical services.', s4sims: '4 simulations',
+          s4k1: 'Phases', s4k2: 'Duration', s4k3: 'Objectives', s4k4: 'Skills', s4o: 'Scenario objectives', s4c: 'Skills practised', s4p: 'Project flow', cancel: 'Cancel', s4go: 'Start the simulation', s4l: 'A brief, a team, a budget',
+          objs: ['Migrate 15 applications to the cloud without service interruption', 'Meet financial security standards (PCI-DSS)', 'Train DevOps teams in cloud operations', 'Cut infrastructure costs by 30%'], comps: ['risk management', 'communication', 'planning', 'leadership', 'stakeholders'], phases: ['Audit & scoping', 'Architecture', 'Migration', 'Security', 'Handover'],
+          s5h1: 'My simulations', s5sub: 'Steer your running simulations, start new ones.', s5t1: 'All (2)', s5t2: 'Running', s5t3: 'Completed', status: 'Running', ago1: '2 h ago', ago2: '3 days ago', phase1: 'Execution & recovery', phase2: 'Audit & scoping', s5tb: 'Decision made · round 4', s5tt: 'Reinforce the test team, cut the scope of lot 2.', s5c1: 'Every decision moves the indicators',
+          g: ['Budget', 'Schedule', 'Quality', 'Morale', 'Risk'],
+          s6t: 'Steering committee · Round 4', s6ts: 'ERP rollout GlobalFinance', s6live: 'Live · 12 min', s6side: 'Participants', s6r1: 'Sponsor', s6r2: 'Tech lead', s6you: 'YOU', s6youn: 'Project lead', s6your: 'You', s6r1b: 'Sponsor', s6r2b: 'Tech lead',
+          s6m1: 'Three weeks late. I want a firm delivery date before this meeting ends.', s6m2w: 'You', s6m2: 'We cut the scope of lot 2 and reinforce the test team. Delivery on the 14th, compliance untouched.', s6m3: 'More testing, fine. But two extra people means two weeks of onboarding. Who trains them?', s6l: 'Simulated participants who react',
+          s7k: 'Overall score', s7h: 'End-of-simulation report', s7sub: 'Calibrated on the PMI standard · 5 dimensions', s7r1: 'Weekly communication with the sponsor: set the format during the audit phase.', s7r2: 'People risks are below the threshold: plan the upskilling before growing the team.', s7r3: 'Budget held well after round 3: document the scope / quality trade-off for the next project.', s7l: 'Senior-level feedback', radar: ['Communication', 'Schedule', 'Team', 'Budget', 'Risk'],
+          s8tag: '2026 pilot program · Built in Québec', s8btn: 'Join the pilot program',
+        },
+      };
+      const vars = (window.__hyperframes && window.__hyperframes.getVariables && window.__hyperframes.getVariables()) || {};
+      const lang = vars.lang === 'en' ? 'en' : 'fr';
+      const T = COPY[lang];
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-i18n]').forEach((el) => { const v = T[el.getAttribute('data-i18n')]; if (typeof v === 'string') el.textContent = v; });
+
+      // ─── Application chrome, built once per frame (deterministic markup) ─────
+      const CHECK = '<svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-7"/></svg>';
+      const N = T.nav;
+      function chrome(active) {
+        const nav = (label, on, round, chev) => '<div class="nav' + (on ? ' on' : '') + '"><i class="' + (round ? 'r' : '') + '"></i>' + label + (chev ? '<span class="chev"></span>' : '') + '</div>';
+        return (
+          '<div class="side">' +
+          '<div class="logo">Simex <i></i> <b>pro</b></div>' +
+          '<div class="space"><i></i>' + N.space + ' <b>' + N.spaceb + '</b></div>' +
+          '<div class="launch"><i></i>' + N.launch + '</div>' +
+          nav(N.dash, active === 'dashboard', false, false) +
+          '<div class="nav-h">' + N.app + '</div>' +
+          nav(N.sims, active === 'simulations', false, true) + nav(N.mail, false, false, true) + nav(N.rep, false, false, true) + nav(N.val, false, true, true) + nav(N.ment, false, true, true) +
+          '<div class="nav-h">' + N.acc + '</div>' + nav(N.set, false, true, false) +
+          '<div class="nav-h">' + N.sup + '</div>' + nav(N.doc, false, false, false) + nav(N.help, false, true, false) +
+          '<div class="coach"><h5>' + N.coach + '</h5><p>' + N.coachp + '</p><div class="b">' + N.coachb + '</div></div>' +
+          '</div>' +
+          '<div class="top">' +
+          '<div class="search"><i></i>' + N.search + '<b>⌘K</b></div>' +
+          '<span class="assist"><i></i>' + N.assist + '</span>' +
+          '<span class="ico"></span><span class="ico"></span>' +
+          '<div class="user"><div class="n"><b>Marie Tremblay</b><small>' + N.role + '</small></div><div class="av">MT</div></div>' +
+          '</div>'
+        );
+      }
+      document.querySelectorAll('.app').forEach((app) => app.insertAdjacentHTML('afterbegin', chrome(app.dataset.frame)));
+
+      // S2 content
+      document.getElementById('s2-track').insertAdjacentHTML('beforeend', T.steps.map((s, i) => '<div class="node ' + (i < 3 ? 'ok' : i === 3 ? 'now' : '') + '" id="s2-n' + i + '"><i>' + (i < 3 ? CHECK : '') + '</i>' + s + '</div>').join(''));
+      const SPARK = ['M0,30 L40,26 L80,27 L120,16 L160,12 L200,6', 'M0,28 L50,22 L100,20 L150,10 L200,7', 'M0,20 L60,20 L120,19 L200,18', 'M0,24 L70,14 L140,16 L200,8'];
+      document.getElementById('s2-kpis').innerHTML = T.kpis.map(([k, v, s, d, up], i) => '<div class="pane kpi" id="s2-k' + i + '"><div class="k">' + k + '</div><div class="v"><span class="num" data-to="' + v + '">0</span><small>' + s + '</small></div><div class="d ' + up + '">' + d + '</div><svg viewBox="0 0 200 36" preserveAspectRatio="none"><path id="s2-sp' + i + '" d="' + SPARK[i] + '" fill="none" stroke="' + (up ? '#10b981' : '#a8a29e') + '" stroke-width="2.5" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/></svg></div>').join('');
+
+      // S3 / S4 catalogue cards
+      const cardHTML = (id, glyph, secKey, title, desc, lvl, kind, rec) => '<div class="pane card" id="' + id + '">' + (rec ? '<span class="chip rec">' + T.rec + '</span>' : '') + '<div class="sec"><i>' + glyph + '</i>' + T.sectors[secKey] + '</div><h4>' + title + '</h4><p>' + desc + '</p><div class="tags"><span class="chip ' + (lvl === 3 ? 'r' : 'o') + '">' + (lvl === 3 ? T.lvl3 : T.lvl2) + '</span><span class="chip">' + (kind === 'resume' ? T.resume : T.newp) + '</span></div></div>';
+      const rowA = (p, rec) => [cardHTML(p + '1', 'C', 'construction', T.sc1, T.sc1d, 2, 'new', rec), cardHTML(p + '2', 'F', 'finance', T.sc2, T.sc2d, 3, 'resume', rec), cardHTML(p + '3', 'F', 'finance', T.sc3, T.sc3d, 2, 'new', rec)].join('');
+      const rowB = (p) => [cardHTML(p + '1', 'T', 'it', T.sc4, T.sc4d, 2, 'new', false), cardHTML(p + '2', 'S', 'health', T.sc5, T.sc5d, 3, 'new', false), cardHTML(p + '3', 'D', 'startup', T.sc6, T.sc6d, 2, 'new', false)].join('');
+      document.getElementById('s3-cards-a').innerHTML = rowA('s3a', true);
+      document.getElementById('s3-cards-b').innerHTML = rowB('s3b');
+      document.getElementById('s4-cards').innerHTML = rowA('s4a', true);
+      document.getElementById('s4-objs').innerHTML = T.objs.map((o, i) => '<div class="obj" id="s4-o' + i + '"><i>' + (i + 1) + '</i>' + o + '</div>').join('');
+      document.getElementById('s4-comp').innerHTML = T.comps.map((c, i) => '<span id="s4-c' + i + '">' + c + '</span>').join('');
+      document.getElementById('s4-plb').innerHTML = T.phases.map((p, i) => '<span class="' + (i === 0 ? 'on' : '') + '">' + p + '</span>').join('');
+
+      // S5 simulations — gauges are health scores: [before, after, colour]
+      const GA = [[37, 33, '#ef4444'], [86, 91, '#10b981'], [62, 70, '#f59e0b'], [43, 58, '#f59e0b'], [59, 48, '#f59e0b']];
+      const GB = [[72, 72, '#10b981'], [64, 64, '#f59e0b'], [81, 81, '#10b981'], [69, 69, '#f59e0b'], [35, 35, '#10b981']];
+      const gaugeHTML = (p, i, g, deltas) => '<div class="g" id="' + p + 'g' + i + '">' + (deltas ? '<span class="delta" id="' + p + 'd' + i + '"></span>' : '') + '<div class="c"><svg viewBox="0 0 58 58"><circle cx="29" cy="29" r="24" fill="none" stroke="#e7e5e4" stroke-width="5"/><circle class="arc" cx="29" cy="29" r="24" fill="none" stroke="' + g[2] + '" stroke-width="5" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/></svg><div class="v"><span class="num">0</span></div></div><div class="l">' + T.g[i] + '</div></div>';
+      const simHTML = (p, title, sub, lvl, phase, done, ago, gauges, deltas) => '<div class="pane sim" id="' + p + '"><div class="st"><span><i></i>' + T.status + '</span><span>' + ago + '</span></div><h4>' + title + '</h4><div class="sub2">' + sub + '</div><span class="chip i">Finance</span> <span class="chip ' + (lvl === 3 ? 'r' : 'o') + '">' + (lvl === 3 ? T.lvl3 : T.lvl2) + '</span><div class="seg"><span>' + phase + '</span><span>' + done + '/5</span></div><div class="segbar">' + [0, 1, 2, 3, 4].map((i) => '<i><b id="' + p + 'sb' + i + '" style="background:' + (i < done - 1 ? '#10b981' : '#ee7a3a') + '"></b></i>').join('') + '</div><div class="gs">' + gauges.map((g, i) => gaugeHTML(p, i, g, deltas)).join('') + '</div></div>';
+      document.getElementById('s5-sims').innerHTML = simHTML('s5a', T.s2r1, T.sc2, 3, T.phase1, 2, T.ago1, GA, true) + simHTML('s5b', T.s2r2, T.sc3, 2, T.phase2, 1, T.ago2, GB, false);
+
+      // S7 radar geometry
+      (() => {
+        const cx = 190, cy = 170, r = 120, vals = [82, 88, 74, 71, 65];
+        const pt = (i, rad) => { const a = ((-90 + i * 72) * Math.PI) / 180; return [cx + rad * Math.cos(a), cy + rad * Math.sin(a)]; };
+        const poly = (f) => vals.map((v, i) => pt(i, f(v)).map((n) => n.toFixed(1)).join(',')).join(' ');
+        document.getElementById('s7-outer').setAttribute('points', poly(() => r));
+        document.getElementById('s7-mid').setAttribute('points', poly(() => r * 0.5));
+        document.getElementById('s7-axes').innerHTML = vals.map((_, i) => { const [x, y] = pt(i, r); return '<line x1="' + cx + '" y1="' + cy + '" x2="' + x.toFixed(1) + '" y2="' + y.toFixed(1) + '" />'; }).join('');
+        document.getElementById('s7-data').setAttribute('points', poly((v) => (r * v) / 100));
+        document.getElementById('s7-dots').innerHTML = vals.map((v, i) => { const [x, y] = pt(i, (r * v) / 100); return '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="5" />'; }).join('');
+        document.getElementById('s7-labels').innerHTML = vals.map((v, i) => { const [x, y] = pt(i, r + 26); return '<text x="' + x.toFixed(1) + '" y="' + (y + 5).toFixed(1) + '">' + T.radar[i] + ' · ' + v + '</text>'; }).join('');
+      })();
+
+      // ─── Timeline ────────────────────────────────────────────────────────────
+      const E = { out: 'power3.out', expo: 'expo.out', in: 'power2.in', inOut: 'power2.inOut', sine: 'sine.inOut' };
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo('#glow-a', { scale: 0.92, x: 0 }, { scale: 1.08, x: -60, duration: 10, ease: E.sine, repeat: 6, yoyo: true }, 0);
+      tl.fromTo('#glow-b', { scale: 1.05, y: 0 }, { scale: 0.9, y: 50, duration: 12, ease: E.sine, repeat: 5, yoyo: true }, 0);
+      tl.fromTo('#ghost', { x: 0 }, { x: -260, duration: 61.2, ease: 'none' }, 0);
+
+      const q = (id) => document.getElementById(id);
+      const countUp = (el, to, at, dur, suffix = '') => { const o = { v: Number(el.textContent) || 0 }; tl.to(o, { v: to, duration: dur, ease: E.expo, onUpdate: () => { el.textContent = Math.round(o.v) + suffix; } }, at); };
+      const pop = (sel, at, o = {}) => tl.fromTo(sel, { scale: o.from ?? 0.86, opacity: 0, y: o.y ?? 0 }, { scale: 1, opacity: 1, y: 0, duration: o.dur ?? 0.55, ease: o.ease ?? E.out, stagger: o.stagger ?? 0 }, at);
+      // The app frame flies in, then its chrome populates (sidebar items slide, topbar drops).
+      const appIn = (sel, at) => {
+        tl.fromTo(sel, { y: 90, scale: 0.94, opacity: 0, rotateX: 9, transformPerspective: 1600 }, { y: 0, scale: 1, opacity: 1, rotateX: 0, duration: 0.9, ease: E.expo }, at);
+        tl.fromTo(sel + ' .side > *', { x: -24, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: E.out, stagger: 0.035 }, at + 0.35);
+        tl.fromTo(sel + ' .top > *', { y: -12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: E.out, stagger: 0.06 }, at + 0.45);
+      };
+      const appOut = (sel, at) => tl.to(sel, { scale: '-=0.05', opacity: 0, y: '-=30', duration: 0.4, ease: E.in }, at);
+      const lowerIn = (sel, at) => tl.fromTo(sel, { x: -40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: E.expo }, at);
+      const lowerOut = (sel, at) => tl.to(sel, { x: -30, opacity: 0, duration: 0.3, ease: E.in }, at);
+      // Camera: scale around the centre and translate so the app-local point (px, py ∈ 0..1) lands at screen centre.
+      const cam = (sel, at, px, py, s, dur = 1.4) => tl.to(sel, { scale: s, x: (0.5 - px) * 1600 * s, y: (0.5 - py) * 940 * s, duration: dur, ease: E.inOut }, at);
+      const drawArc = (sel, to, at, dur = 1.2) => tl.to(sel, { strokeDashoffset: 100 - to, duration: dur, ease: E.expo }, at);
+
+      // S1 — kinetic beats → wordmark
+      tl.set(['#s1-b1', '#s1-b2', '#s1-b3', '#s1-mark'], { opacity: 0 }, 0);
+      tl.fromTo('#s1-b1', { opacity: 0, scale: 1.18, filter: 'blur(14px)' }, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.5, ease: E.expo }, 0.25);
+      tl.to('#s1-b1', { opacity: 0, scale: 0.9, duration: 0.25, ease: E.in }, 1.25);
+      tl.fromTo('#s1-b2', { opacity: 0, x: 120 }, { opacity: 1, x: 0, duration: 0.45, ease: E.expo }, 1.4);
+      tl.to('#s1-b2', { opacity: 0, x: -80, duration: 0.25, ease: E.in }, 2.35);
+      tl.fromTo('#s1-b3', { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.6, ease: E.expo }, 2.5);
+      tl.to('#s1-b3', { opacity: 0, scale: 1.3, filter: 'blur(10px)', duration: 0.35, ease: E.in }, 3.45);
+      tl.fromTo('#s1-mark', { opacity: 0, scale: 0.86 }, { opacity: 1, scale: 1, duration: 0.7, ease: E.expo }, 3.7);
+      tl.fromTo('#s1-mark .dot', { scale: 0 }, { scale: 1, duration: 0.5, ease: 'back.out(2)' }, 4.05);
+      tl.fromTo('#s1-mark .tag', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, ease: E.out }, 4.2);
+
+      // S2 — the dashboard builds itself, then the camera reads it.
+      appIn('#s2-app', 5.1);
+      lowerIn('#s2-l', 5.6);
+      tl.fromTo(['#s2-hero', '#s2-steps', '#s2-kpis', '#s2-list', '#s2-todo'], { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.6, ease: E.expo, stagger: 0.12 }, 5.7);
+      tl.fromTo(['#s2-n0 i', '#s2-n1 i', '#s2-n2 i', '#s2-n3 i'], { scale: 0 }, { scale: 1, duration: 0.5, ease: 'back.out(1.6)', stagger: 0.2 }, 6.5);
+      tl.fromTo('#s2-ln', { scaleX: 0 }, { scaleX: 0.62, duration: 1.1, ease: E.inOut }, 6.55);
+      drawArc('#s2-ring .arc', 60, 6.7, 1.3);
+      countUp(q('s2-ring').querySelector('.num'), 60, 6.7, 1.3);
+      [0, 1, 2, 3].forEach((i) => { const n = q('s2-k' + i).querySelector('.num'); countUp(n, Number(n.dataset.to), 7.0 + i * 0.12, 1.1); tl.to('#s2-sp' + i, { strokeDashoffset: 0, duration: 1.1, ease: E.inOut }, 7.1 + i * 0.12); });
+      tl.fromTo('#s2-bar1', { scaleX: 0 }, { scaleX: 0.4, duration: 0.9, ease: E.expo }, 7.6);
+      tl.fromTo('#s2-bar2', { scaleX: 0 }, { scaleX: 0.2, duration: 0.9, ease: E.expo }, 7.75);
+      cam('#s2-app', 7.4, 0.58, 0.42, 1.3);
+      pop('#s2-c1', 7.9, { y: 10, ease: E.expo });
+      tl.to('#s2-c1', { opacity: 0, duration: 0.3 }, 10.0);
+      cam('#s2-app', 9.9, 0.5, 0.68, 1.35);
+      pop('#s2-c2', 10.6, { y: 10, ease: E.expo });
+      lowerOut('#s2-l', 7.15);
+      appOut('#s2-app', 12.6);
+
+      // S3 — catalogue: cards cascade in, one gets picked.
+      appIn('#s3-app', 13.1);
+      lowerIn('#s3-l', 13.6);
+      tl.fromTo('#s3-app .main > *', { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.5, ease: E.out, stagger: 0.08 }, 13.6);
+      pop('#s3-cards-a .card', 14.0, { y: 24, from: 0.94, ease: E.expo, stagger: 0.14, dur: 0.65 });
+      pop('#s3-cards-b .card', 14.9, { y: 24, from: 0.94, ease: E.expo, stagger: 0.12, dur: 0.6 });
+      pop('#s3-c1', 15.6, { y: 10, ease: E.expo });
+      tl.to('#s3-c1', { opacity: 0, duration: 0.3 }, 18.6);
+      cam('#s3-app', 19.0, 0.66, 0.42, 1.25);
+      tl.to('#s3a3', { y: -10, boxShadow: '0 0 0 3px #ee7a3a, 0 0 0 9px rgba(238,122,58,0.18), 0 24px 60px rgba(15,26,46,0.22)', duration: 0.6, ease: E.expo }, 19.8);
+      lowerOut('#s3-l', 22.75);
+      appOut('#s3-app', 22.8);
+
+      // S4 — the scenario sheet opens; its content arrives in reading order.
+      appIn('#s4-app', 23.3);
+      lowerIn('#s4-l', 23.8);
+      tl.fromTo('#s4-dim', { opacity: 0 }, { opacity: 1, duration: 0.5 }, 23.9);
+      tl.fromTo('#s4-dlg', { opacity: 0, scale: 0.92, y: 24 }, { opacity: 1, scale: 1, y: 0, duration: 0.7, ease: E.expo }, 24.0);
+      pop(['#s4-st1', '#s4-st2', '#s4-st3', '#s4-st4'], 24.6, { y: 12, ease: E.expo, stagger: 0.12, dur: 0.5 });
+      ['s4-st1', 's4-st2', 's4-st3', 's4-st4'].forEach((id, i) => { const n = q(id).querySelector('.num'); countUp(n, Number(n.dataset.to), 24.8 + i * 0.12, 1.0); });
+      tl.fromTo('#s4-objs .obj', { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.45, ease: E.out, stagger: 0.14 }, 25.6);
+      pop('#s4-comp span', 26.0, { from: 0.8, ease: E.out, stagger: 0.09, dur: 0.4 });
+      tl.fromTo('#s4-pbar i:first-child b', { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: E.expo }, 26.8);
+      tl.fromTo('#s4-go', { scale: 1 }, { scale: 0.95, duration: 0.14, ease: E.in, yoyo: true, repeat: 1 }, 29.2);
+      lowerOut('#s4-l', 30.25);
+      appOut('#s4-app', 30.3);
+
+      // S5 — my simulations: a decision lands, the indicators move.
+      appIn('#s5-app', 30.8);
+      tl.set('#s5-toast', { opacity: 0 }, 30.7);
+      tl.fromTo('#s5-app .main > *', { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.5, ease: E.out, stagger: 0.08 }, 31.3);
+      pop('#s5-sims .sim', 31.7, { y: 24, from: 0.95, ease: E.expo, stagger: 0.16, dur: 0.65 });
+      tl.fromTo(['#s5asb0', '#s5asb1'], { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: E.expo, stagger: 0.08 }, 32.2);
+      tl.fromTo('#s5asb2', { scaleX: 0 }, { scaleX: 0.45, duration: 0.7, ease: E.expo }, 32.36);
+      tl.fromTo('#s5bsb0', { scaleX: 0 }, { scaleX: 0.6, duration: 0.7, ease: E.expo }, 32.35);
+      GA.forEach((g, i) => { drawArc('#s5ag' + i + ' .arc', g[0], 32.5 + i * 0.1, 1.0); countUp(q('s5ag' + i).querySelector('.num'), g[0], 32.5 + i * 0.1, 1.0); });
+      GB.forEach((g, i) => { drawArc('#s5bg' + i + ' .arc', g[0], 32.65 + i * 0.1, 1.0); countUp(q('s5bg' + i).querySelector('.num'), g[0], 32.65 + i * 0.1, 1.0); });
+      cam('#s5-app', 33.8, 0.38, 0.52, 1.4, 1.2);
+      tl.fromTo('#s5-toast', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: E.expo }, 35.0);
+      GA.forEach((g, i) => {
+        const [from, to] = g;
+        drawArc('#s5ag' + i + ' .arc', to, 35.9 + i * 0.1, 0.9);
+        countUp(q('s5ag' + i).querySelector('.num'), to, 35.9 + i * 0.1, 0.9);
+        const d = q('s5ad' + i);
+        const delta = to - from;
+        const good = i === 4 ? delta < 0 : delta > 0;
+        d.textContent = (delta > 0 ? '+' : '') + delta;
+        if (!good) d.classList.add('bad');
+        tl.fromTo(d, { opacity: 0, scale: 0.6, y: 6 }, { opacity: 1, scale: 1, y: 0, duration: 0.4, ease: 'back.out(1.6)' }, 36.2 + i * 0.1);
+      });
+      pop('#s5-c1', 36.3, { y: 10, ease: E.expo });
+      tl.to('#s5-c1', { opacity: 0, duration: 0.3 }, 38.2);
+      appOut('#s5-app', 38.3);
+
+      // S6 — meeting
+      tl.fromTo('#s6-room', { y: 90, scale: 0.94, opacity: 0, rotateX: 9, transformPerspective: 1600 }, { y: 0, scale: 1, opacity: 1, rotateX: 0, duration: 0.9, ease: E.expo }, 38.8);
+      lowerIn('#s6-l', 39.3);
+      tl.fromTo(['#s6-p1', '#s6-p2', '#s6-p3', '#s6-p4'], { opacity: 0, x: -18 }, { opacity: 1, x: 0, duration: 0.45, ease: E.out, stagger: 0.1 }, 39.5);
+      tl.set(['#s6-m1', '#s6-m2', '#s6-m3', '#s6-typing'], { opacity: 0 }, 38.7);
+      tl.fromTo('#s6-m1', { opacity: 0, scale: 0.9, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: E.expo }, 40.0);
+      tl.fromTo('#s6-m2', { opacity: 0, scale: 0.9, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: E.expo }, 41.6);
+      tl.fromTo('#s6-typing', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 42.9);
+      tl.fromTo('#s6-typing i', { y: 0 }, { y: -6, duration: 0.3, ease: E.sine, stagger: 0.12, repeat: 3, yoyo: true }, 43.0);
+      tl.to('#s6-typing', { opacity: 0, duration: 0.2 }, 44.2);
+      tl.fromTo('#s6-m3', { opacity: 0, scale: 0.9, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: E.expo }, 44.3);
+      tl.fromTo('#s6-room .live i', { opacity: 1 }, { opacity: 0.3, duration: 0.6, ease: E.sine, repeat: 11, yoyo: true }, 38.8);
+      lowerOut('#s6-l', 45.75);
+      tl.to('#s6-room', { scale: 0.96, opacity: 0, y: -30, duration: 0.4, ease: E.in }, 45.8);
+
+      // S7 — report
+      tl.fromTo('#s7-rep', { y: 90, scale: 0.94, opacity: 0, rotateX: 9, transformPerspective: 1600 }, { y: 0, scale: 1, opacity: 1, rotateX: 0, duration: 0.9, ease: E.expo }, 46.3);
+      lowerIn('#s7-l', 46.8);
+      countUp(q('s7-score'), 78, 47.0, 1.6);
+      tl.to('#s7-arc', { strokeDashoffset: 22, duration: 1.6, ease: E.expo }, 47.0);
+      tl.fromTo('#s7-data', { scale: 0, transformOrigin: '190px 170px' }, { scale: 1, duration: 1.1, ease: E.expo }, 47.6);
+      tl.fromTo('#s7-dots circle', { scale: 0, transformOrigin: 'center' }, { scale: 1, duration: 0.4, ease: E.out, stagger: 0.08 }, 48.3);
+      tl.fromTo('#s7-labels text', { opacity: 0 }, { opacity: 1, duration: 0.4, stagger: 0.08 }, 48.4);
+      tl.fromTo(['#s7-r1', '#s7-r2', '#s7-r3'], { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: 0.5, ease: E.expo, stagger: 0.35 }, 49.6);
+      lowerOut('#s7-l', 54.25);
+      tl.to('#s7-rep', { scale: 0.96, opacity: 0, y: -30, duration: 0.4, ease: E.in }, 54.3);
+
+      // S8 — CTA
+      tl.fromTo('#s8-mark', { opacity: 0, scale: 0.88 }, { opacity: 1, scale: 1, duration: 0.7, ease: E.expo }, 54.9);
+      tl.fromTo('#s8-mark .dot', { scale: 0 }, { scale: 1, duration: 0.45, ease: 'back.out(1.8)' }, 55.2);
+      tl.fromTo('#s8-tag', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: E.out }, 55.4);
+      tl.fromTo('#s8-btn', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.55, ease: E.expo }, 55.9);
+      tl.fromTo('#s8-btn', { scale: 1 }, { scale: 1.02, duration: 0.9, ease: E.sine, repeat: 5, yoyo: true }, 56.6);
+      const url = 'simex-pro.com';
+      const typed = { n: 0 };
+      tl.set('#s8-url', { opacity: 1 }, 56.4);
+      tl.to(typed, { n: url.length, duration: 1.1, ease: 'none', onUpdate: () => { q('s8-url-text').textContent = url.slice(0, Math.round(typed.n)); } }, 56.5);
+      tl.fromTo('#s8-caret', { opacity: 1 }, { opacity: 0, duration: 0.45, ease: 'steps(1)', repeat: 9, yoyo: true }, 56.5);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines['simex-demo'] = tl;
+    </script>
+  </body>
+</html>
