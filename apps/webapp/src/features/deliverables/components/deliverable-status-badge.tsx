@@ -1,17 +1,19 @@
 import { Badge } from '@/components/ui/badge';
 import type { UserDeliverableStatus } from '../types/deliverables.types';
+import { useTv } from '@/i18n/app/use-t';
+import { useT } from '@/i18n/app/use-t';
 
 const STATUS_CONFIG: Record<
   UserDeliverableStatus,
-  { label: string; variant: 'secondary' | 'primary' | 'warning' | 'info' | 'success' | 'destructive' }
+  { variant: 'secondary' | 'primary' | 'warning' | 'info' | 'success' | 'destructive' }
 > = {
-  DRAFT: { label: 'Brouillon', variant: 'secondary' },
-  SUBMITTED: { label: 'Soumis', variant: 'primary' },
-  EVALUATED: { label: 'Évalué', variant: 'warning' },
-  REVISED: { label: 'Revise', variant: 'info' },
-  VALIDATED: { label: 'Validé', variant: 'success' },
-  REJECTED: { label: 'Rejeté', variant: 'destructive' },
-  PENDING_APPROVAL: { label: 'En approbation', variant: 'warning' },
+  DRAFT: { variant: 'secondary' },
+  SUBMITTED: { variant: 'primary' },
+  EVALUATED: { variant: 'warning' },
+  REVISED: { variant: 'info' },
+  VALIDATED: { variant: 'success' },
+  REJECTED: { variant: 'destructive' },
+  PENDING_APPROVAL: { variant: 'warning' },
 };
 
 interface DeliverableStatusBadgeProps {
@@ -23,14 +25,15 @@ export function DeliverableStatusBadge({
   status,
   size = 'sm',
 }: DeliverableStatusBadgeProps) {
+  const tv = useTv();
+  const t = useT();
   const config = STATUS_CONFIG[status] || {
-    label: status,
     variant: 'secondary' as const,
   };
 
   return (
     <Badge variant={config.variant} appearance="light" size={size}>
-      {config.label}
+      {tv('deliverableStatus', status)}
     </Badge>
   );
 }

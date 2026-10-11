@@ -1,24 +1,25 @@
 import { WorkflowStepper, type WorkflowStep } from '@/components/ui/workflow-stepper';
+import { useT } from '@/i18n/app/use-t';
 
 interface Props {
   status: string;
 }
 
-function getDeliverableSteps(status: string): WorkflowStep[] {
+function getDeliverableSteps(status: string, t: ReturnType<typeof useT>): WorkflowStep[] {
   const isRejected = status === 'REJECTED';
 
   const past = (statuses: string[]) => statuses.includes(status);
 
   return [
     {
-      label: 'Brouillon',
+      label: t('deliverableStatus.DRAFT'),
       status:
         status === 'DRAFT'
           ? 'active'
           : 'completed',
     },
     {
-      label: 'Soumis',
+      label: t('deliverableStatus.SUBMITTED'),
       status:
         status === 'SUBMITTED'
           ? 'active'
@@ -27,7 +28,7 @@ function getDeliverableSteps(status: string): WorkflowStep[] {
             : 'upcoming',
     },
     {
-      label: isRejected ? 'Rejeté' : 'Évalué',
+      label: isRejected ? t('deliverableStatus.REJECTED') : t('deliverableStatus.EVALUATED'),
       status: isRejected
         ? 'disabled'
         : status === 'EVALUATED'
@@ -37,7 +38,7 @@ function getDeliverableSteps(status: string): WorkflowStep[] {
             : 'upcoming',
     },
     {
-      label: 'Revise',
+      label: t('deliverableStatus.REVISED'),
       status:
         status === 'REVISED'
           ? 'active'
@@ -46,7 +47,7 @@ function getDeliverableSteps(status: string): WorkflowStep[] {
             : 'upcoming',
     },
     {
-      label: 'Validé',
+      label: t('deliverableStatus.VALIDATED'),
       status:
         status === 'VALIDATED'
           ? 'completed'
@@ -56,7 +57,8 @@ function getDeliverableSteps(status: string): WorkflowStep[] {
 }
 
 export function DeliverableWorkflowStepper({ status }: Props) {
-  const steps = getDeliverableSteps(status);
+  const t = useT();
+  const steps = getDeliverableSteps(status, t);
 
   return <WorkflowStepper steps={steps} size="sm" />;
 }

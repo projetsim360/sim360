@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { KeenIcon } from '@/components/keenicons';
 import { MarkdownPreview } from './markdown-preview';
+import { useT } from '@/i18n/app/use-t';
 
 interface ReferenceComparisonProps {
   userContent: string;
@@ -49,7 +50,7 @@ function isMinutesType(type?: string): boolean {
 /**
  * Parses a meeting minutes text into structured sections for comparison.
  */
-function parseMinutesSections(content: string): Array<{ title: string; body: string }> {
+function parseMinutesSections(content: string, labels = { intro: 'Introduction', content: 'Contenu' }): Array<{ title: string; body: string }> {
   const sections: Array<{ title: string; body: string }> = [];
   const lines = content.split('\n');
   let currentTitle = '';
@@ -60,7 +61,7 @@ function parseMinutesSections(content: string): Array<{ title: string; body: str
     if (headingMatch) {
       if (currentTitle || currentBody.length > 0) {
         sections.push({
-          title: currentTitle || 'Introduction',
+          title: currentTitle || labels.intro,
           body: currentBody.join('\n').trim(),
         });
       }
@@ -73,7 +74,7 @@ function parseMinutesSections(content: string): Array<{ title: string; body: str
 
   if (currentTitle || currentBody.length > 0) {
     sections.push({
-      title: currentTitle || 'Contenu',
+      title: currentTitle || labels.content,
       body: currentBody.join('\n').trim(),
     });
   }
@@ -86,6 +87,7 @@ export function ReferenceComparison({
   referenceContent,
   deliverableType,
 }: ReferenceComparisonProps) {
+  const t = useT();
   const coverageScore = useMemo(
     () => computeCoverageScore(userContent, referenceContent),
     [userContent, referenceContent],
@@ -93,11 +95,11 @@ export function ReferenceComparison({
 
   const isMinutes = isMinutesType(deliverableType);
   const userSections = useMemo(
-    () => (isMinutes ? parseMinutesSections(userContent) : []),
+    () => (isMinutes ? parseMinutesSections(userContent, { intro: t('compare.intro'), content: t('compare.content') }) : []),
     [isMinutes, userContent],
   );
   const referenceSections = useMemo(
-    () => (isMinutes ? parseMinutesSections(referenceContent) : []),
+    () => (isMinutes ? parseMinutesSections(referenceContent, { intro: t('compare.intro'), content: t('compare.content') }) : []),
     [isMinutes, referenceContent],
   );
 
@@ -110,7 +112,7 @@ export function ReferenceComparison({
       <div className="flex items-center justify-between px-1">
         <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
           <KeenIcon icon="eye" style="duotone" className="size-4 text-primary" />
-          Comparaison avec la référence
+          {t('compare.title')}
         </h3>
         <Badge variant={coverageBadgeVariant} appearance="light" size="sm">
           Score de couverture : {coverageScore}%
@@ -124,7 +126,7 @@ export function ReferenceComparison({
             <CardHeader className="pb-2 bg-success/5 rounded-t-lg">
               <CardTitle className="text-sm flex items-center gap-2 text-success">
                 <KeenIcon icon="document" style="duotone" className="size-4" />
-                Votre livrable
+                {t('compare.yours')}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
@@ -143,7 +145,7 @@ export function ReferenceComparison({
             <CardHeader className="pb-2 bg-primary/5 rounded-t-lg">
               <CardTitle className="text-sm flex items-center gap-2 text-primary">
                 <KeenIcon icon="abstract-26" style="duotone" className="size-4" />
-                Référence attendue
+                {t('compare.expected')}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
@@ -165,7 +167,7 @@ export function ReferenceComparison({
             <CardHeader className="pb-2 bg-success/5 rounded-t-lg">
               <CardTitle className="text-sm flex items-center gap-2 text-success">
                 <KeenIcon icon="document" style="duotone" className="size-4" />
-                Votre livrable
+                {t('compare.yours')}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
@@ -179,7 +181,7 @@ export function ReferenceComparison({
             <CardHeader className="pb-2 bg-primary/5 rounded-t-lg">
               <CardTitle className="text-sm flex items-center gap-2 text-primary">
                 <KeenIcon icon="abstract-26" style="duotone" className="size-4" />
-                Référence attendue
+                {t('compare.expected')}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">

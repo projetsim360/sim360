@@ -23,36 +23,21 @@ import { DeliverableStatusBadge } from '../components/deliverable-status-badge';
 import type { UserDeliverableStatus, UserDeliverable } from '../types/deliverables.types';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { enCA, fr } from 'date-fns/locale';
+import { useTv } from '@/i18n/app/use-t';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useAppLocale } from '@/providers/locale-provider';
+import { useT } from '@/i18n/app/use-t';
 
 type DelegationFilter = 'ALL' | 'SELF' | 'DELEGATED' | 'APPROVAL';
 
-const TYPE_LABELS: Record<string, string> = {
-  CHARTER: 'Charte projet',
-  WBS: 'WBS',
-  SCHEDULE: 'Planning',
-  BUDGET: 'Budget',
-  RISK_REGISTER: 'Registre des risques',
-  STAKEHOLDER_REGISTER: 'Registre parties prenantes',
-  COMMUNICATION_PLAN: 'Plan de communication',
-  STATUS_REPORT: 'Rapport d\'avancement',
-  MEETING_MINUTES: 'Compte rendu réunion',
-  LESSONS_LEARNED: 'Leçons apprises',
-  CLOSURE_REPORT: 'Rapport de clôture',
-  CUSTOM: 'Personnalisé',
-};
-
-const STATUS_OPTIONS: { value: UserDeliverableStatus; label: string }[] = [
-  { value: 'DRAFT', label: 'Brouillon' },
-  { value: 'SUBMITTED', label: 'Soumis' },
-  { value: 'EVALUATED', label: 'Évalué' },
-  { value: 'REVISED', label: 'Revise' },
-  { value: 'VALIDATED', label: 'Validé' },
-  { value: 'REJECTED', label: 'Rejeté' },
-  { value: 'PENDING_APPROVAL', label: 'En approbation' },
-];
+const STATUS_OPTIONS: UserDeliverableStatus[] = ['DRAFT', 'SUBMITTED', 'EVALUATED', 'REVISED', 'VALIDATED', 'REJECTED', 'PENDING_APPROVAL'];
 
 export default function DeliverablesListPage() {
+  const tv = useTv();
+  const { locale } = useAppLocale();
+  const dfLocale = locale === 'en' ? enCA : fr;
+  const t = useT();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [filterPhase, setFilterPhase] = useState('');
@@ -99,22 +84,22 @@ export default function DeliverablesListPage() {
   }
 
   function getActionLabel(status: UserDeliverableStatus) {
-    if (status === 'DRAFT' || status === 'REVISED') return 'Editer';
-    if (status === 'SUBMITTED') return 'En attente';
-    if (status === 'PENDING_APPROVAL') return 'Approbation';
-    return 'Voir';
+    if (status === 'DRAFT' || status === 'REVISED') return t('deliverables.action.edit');
+    if (status === 'SUBMITTED') return t('lists.waiting');
+    if (status === 'PENDING_APPROVAL') return t('deliverables.action.approval');
+    return t('lists.view');
   }
 
   if (!id) {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Mes livrables" />
+          <ToolbarHeading title={t('deliverables.title')} />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-sm text-muted-foreground">
-              Aucune simulation sélectionnée.
+              {t('meetings.noSimulation')}
             </p>
           </CardContent>
         </Card>
@@ -125,17 +110,17 @@ export default function DeliverablesListPage() {
   return (
     <div className="container">
       <Toolbar>
-        <ToolbarHeading title="Mes livrables" />
+        <ToolbarHeading title={t('deliverables.title')} />
         <ToolbarActions>
           {totalCount > 0 && (
             <Badge variant="success" appearance="light" size="md">
-              {validatedCount}/{totalCount} valides
+              {t('deliverables.validated', { done: validatedCount, total: totalCount })}
             </Badge>
           )}
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}`}>
               <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
-              Retour
+              {t('common.back')}
             </Link>
           </Button>
         </ToolbarActions>
@@ -146,10 +131,10 @@ export default function DeliverablesListPage() {
           <div className="flex items-center gap-1 mb-4 border-b border-border">
             {(
               [
-                { key: 'ALL', label: 'Tous' },
-                { key: 'SELF', label: 'Mes livrables' },
-                { key: 'DELEGATED', label: 'Délégués' },
-                { key: 'APPROVAL', label: 'En approbation' },
+                { key: 'ALL', label: 'deliverables.tab.all' },
+                { key: 'SELF', label: 'deliverables.title' },
+                { key: 'DELEGATED', label: 'deliverables.tab.delegated' },
+                { key: 'APPROVAL', label: 'deliverableStatus.PENDING_APPROVAL' },
               ] as const
             ).map((tab) => (
               <button
@@ -163,7 +148,7 @@ export default function DeliverablesListPage() {
                 )}
                 onClick={() => setDelegationFilter(tab.key)}
               >
-                {tab.label}
+                {t(tab.label as AppMessageKey)}
               </button>
             ))}
           </div>
@@ -178,13 +163,13 @@ export default function DeliverablesListPage() {
                 onValueChange={(v) => setFilterPhase(v === 'ALL' ? '' : v)}
               >
                 <SelectTrigger className="w-full sm:w-[180px]">
-                  <SelectValue placeholder="Toutes les phases" />
+                  <SelectValue placeholder={t('meetings.allPhases')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="ALL">Toutes les phases</SelectItem>
+                  <SelectItem value="ALL">{t('meetings.allPhases')}</SelectItem>
                   {availablePhases.map((p) => (
                     <SelectItem key={p} value={String(p)}>
-                      Phase {p}
+                      {t('dashboard.active.phase', { n: p })}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -195,13 +180,13 @@ export default function DeliverablesListPage() {
               onValueChange={(v) => setFilterStatus(v === 'ALL' ? '' : v)}
             >
               <SelectTrigger className="w-full sm:w-[180px]">
-                <SelectValue placeholder="Tous les statuts" />
+                <SelectValue placeholder={t('meetings.allStatuses')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="ALL">Tous les statuts</SelectItem>
+                <SelectItem value="ALL">{t('meetings.allStatuses')}</SelectItem>
                 {STATUS_OPTIONS.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>
-                    {opt.label}
+                  <SelectItem key={opt} value={opt}>
+                    {tv('deliverableStatus', opt)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -215,7 +200,7 @@ export default function DeliverablesListPage() {
                   setFilterStatus('');
                 }}
               >
-                Réinitialiser
+                {t('meetings.reset')}
               </Button>
             )}
           </div>
@@ -246,7 +231,7 @@ export default function DeliverablesListPage() {
           <Card>
             <CardContent className="py-8 text-center">
               <p className="text-destructive text-sm">
-                {(error as Error).message || 'Erreur lors du chargement.'}
+                {(error as Error).message || t('common.loadError')}
               </p>
             </CardContent>
           </Card>
@@ -255,8 +240,8 @@ export default function DeliverablesListPage() {
             <CardContent>
               <EmptyState
                 icon="document"
-                title="Aucun livrable"
-                description="Les livrables apparaissent à chaque nouvelle phase. Avancez dans la simulation pour les débloquer."
+                title={t('projects.deliverablesEmptyTitle')}
+                description={t('deliverables.emptyText')}
               />
             </CardContent>
           </Card>
@@ -275,7 +260,7 @@ export default function DeliverablesListPage() {
                         {deliverable.title}
                       </h3>
                       <p className="text-sm text-muted-foreground mt-0.5">
-                        {TYPE_LABELS[deliverable.type] ?? deliverable.type}
+                        {tv('deliverableType', deliverable.type)}
                       </p>
                     </div>
                     <DeliverableStatusBadge status={deliverable.status} />
@@ -291,7 +276,7 @@ export default function DeliverablesListPage() {
                           className="size-3.5 text-muted-foreground"
                         />
                         <span className="text-xs text-muted-foreground">
-                          Délégué à{' '}
+                          {t('deliverables.delegatedTo')}{' '}
                           <span className="font-medium text-foreground">
                             {deliverable.assignedToMember.name}
                           </span>{' '}
@@ -302,11 +287,11 @@ export default function DeliverablesListPage() {
 
                   <div className="flex items-center justify-between text-sm text-muted-foreground">
                     <div className="flex items-center gap-3">
-                      <span>Phase {deliverable.phaseOrder}</span>
+                      <span>{t('dashboard.active.phase', { n: deliverable.phaseOrder })}</span>
                       {deliverable.evaluations &&
                         deliverable.evaluations.length > 0 && (
                           <span className="font-medium text-foreground">
-                            Score:{' '}
+                            {t('deliverables.score')}{' '}
                             {deliverable.evaluations[
                               deliverable.evaluations.length - 1
                             ].score}
@@ -320,7 +305,7 @@ export default function DeliverablesListPage() {
                           {format(
                             new Date(deliverable.submittedAt),
                             'd MMM yyyy',
-                            { locale: fr },
+                            { locale: dfLocale },
                           )}
                         </span>
                       )}
@@ -339,8 +324,7 @@ export default function DeliverablesListPage() {
                   {deliverable.revisionNumber > 0 && (
                     <div className="mt-2 pt-2 border-t border-border">
                       <p className="text-[10px] text-muted-foreground">
-                        Révision {deliverable.revisionNumber}/
-                        {deliverable.maxRevisions}
+                        {t('deliverables.revision', { n: deliverable.revisionNumber, max: deliverable.maxRevisions })}
                       </p>
                     </div>
                   )}
@@ -359,7 +343,7 @@ export default function DeliverablesListPage() {
                           }}
                         >
                           <KeenIcon icon="people" style="duotone" className="text-xs leading-none" />
-                          Assigner à un expert
+                          {t('deliverables.assignExpert')}
                         </Button>
                       </div>
                     )}

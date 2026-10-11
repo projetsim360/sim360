@@ -14,6 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
+import { useT } from '@/i18n/app/use-t';
 
 interface TeamMember {
   id: string;
@@ -39,6 +40,7 @@ export function ExpertAssignmentDialog({
   onAssign,
   loading = false,
 }: ExpertAssignmentDialogProps) {
+  const t = useT();
   const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
   const [instructions, setInstructions] = useState('');
 
@@ -61,10 +63,9 @@ export function ExpertAssignmentDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[540px]">
         <DialogHeader>
-          <DialogTitle>Déléguer le livrable</DialogTitle>
+          <DialogTitle>{t('expert.title')}</DialogTitle>
           <DialogDescription>
-            Sélectionnez un membre de l&apos;équipe pour lui confier la
-            réalisation de ce livrable.
+            {t('expert.text')}
           </DialogDescription>
         </DialogHeader>
 
@@ -130,16 +131,16 @@ export function ExpertAssignmentDialog({
               htmlFor="assignment-instructions"
               className="text-sm font-medium"
             >
-              Instructions{' '}
+              {t('expert.instructions')}{' '}
               <span className="text-muted-foreground font-normal">
-                (optionnel)
+                {t('common.optionalParen')}
               </span>
             </label>
             <Textarea
               id="assignment-instructions"
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
-              placeholder="Précisions ou consignes pour le membre de l'équipe..."
+              placeholder={t('expert.placeholder')}
               rows={3}
             />
           </div>
@@ -152,7 +153,7 @@ export function ExpertAssignmentDialog({
             onClick={() => handleOpenChange(false)}
             disabled={loading}
           >
-            Annuler
+            {t('common.cancel')}
           </Button>
           <Button
             variant="primary"
@@ -160,7 +161,7 @@ export function ExpertAssignmentDialog({
             onClick={handleAssign}
             disabled={!selectedMemberId || loading}
           >
-            {loading ? 'Assignation...' : 'Assigner'}
+            {loading ? t('expert.assigning') : t('expert.assign')}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
+import { useT } from '@/i18n/app/use-t';
 
 interface EvaluationCardProps {
   title: string;
@@ -15,8 +16,9 @@ export function EvaluationCard({
   icon,
   iconColor,
   items,
-  emptyMessage = 'Aucun élément.',
+  emptyMessage,
 }: EvaluationCardProps) {
+  const t = useT();
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -32,7 +34,7 @@ export function EvaluationCard({
       </CardHeader>
       <CardContent>
         {items.length === 0 ? (
-          <p className="text-sm text-muted-foreground italic">{emptyMessage}</p>
+          <p className="text-sm text-muted-foreground italic">{emptyMessage ?? t('evaluation.emptyItems')}</p>
         ) : (
           <ul className="space-y-1.5">
             {items.map((item, index) => (
