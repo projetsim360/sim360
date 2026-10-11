@@ -69,7 +69,7 @@ async function record(locale, scenes) {
   await context.route('**/api/v1/**', (r) => r.fulfill({ status: 401, json: {} }));
   const page = context.pages()[0] ?? (await context.newPage());
   const home = locale === 'en' ? '/en' : '/';
-  const catalogue = locale === 'en' ? '/en/scenarios' : '/scenarios';
+  const catalogue = locale === 'en' ? '/en/catalogue' : '/catalogue';
   const startedAt = Date.now();
   const timeline = [];
   const hold = async (seconds) => page.waitForTimeout(seconds * 1000);
