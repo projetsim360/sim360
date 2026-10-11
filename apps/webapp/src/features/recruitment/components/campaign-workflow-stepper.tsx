@@ -1,4 +1,5 @@
 import { WorkflowStepper, type WorkflowStep } from '@/components/ui/workflow-stepper';
+import { useT } from '@/i18n/app/use-t';
 
 interface Props {
   campaign: {
@@ -8,7 +9,7 @@ interface Props {
   };
 }
 
-function getCampaignSteps(campaign: Props['campaign']): WorkflowStep[] {
+function getCampaignSteps(campaign: Props['campaign'], t: ReturnType<typeof useT>): WorkflowStep[] {
   const status = campaign.status;
   const hasScenario = !!campaign.generatedScenarioId;
   const candidateCount = campaign._count?.candidateResults ?? 0;
@@ -17,19 +18,19 @@ function getCampaignSteps(campaign: Props['campaign']): WorkflowStep[] {
 
   return [
     {
-      label: 'Créer',
+      label: t('recruit.step.create'),
       status: 'completed',
     },
     {
-      label: 'Scénario',
+      label: t('recruit.step.scenario'),
       status: hasScenario ? 'completed' : 'upcoming',
     },
     {
-      label: 'Publier',
+      label: t('recruit.step.publish'),
       status: isActiveOrBeyond ? 'completed' : 'upcoming',
     },
     {
-      label: 'Recruter',
+      label: t('recruit.step.recruit'),
       status: isClosedOrArchived
         ? 'completed'
         : status === 'ACTIVE' && candidateCount > 0
@@ -37,7 +38,7 @@ function getCampaignSteps(campaign: Props['campaign']): WorkflowStep[] {
           : 'upcoming',
     },
     {
-      label: 'Analyser',
+      label: t('recruit.step.analyze'),
       status: isClosedOrArchived
         ? 'completed'
         : candidateCount > 0
@@ -45,14 +46,15 @@ function getCampaignSteps(campaign: Props['campaign']): WorkflowStep[] {
           : 'upcoming',
     },
     {
-      label: 'Clôturer',
+      label: t('recruit.step.close'),
       status: isClosedOrArchived ? 'completed' : 'upcoming',
     },
   ];
 }
 
 export function CampaignWorkflowStepper({ campaign }: Props) {
-  const steps = getCampaignSteps(campaign);
+  const t = useT();
+  const steps = getCampaignSteps(campaign, t);
 
   return <WorkflowStepper steps={steps} size="sm" />;
 }

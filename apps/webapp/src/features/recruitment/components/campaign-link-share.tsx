@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { KeenIcon } from '@/components/keenicons';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { useT } from '@/i18n/app/use-t';
 
 interface CampaignLinkShareProps {
   slug: string;
@@ -11,6 +12,7 @@ interface CampaignLinkShareProps {
 }
 
 export function CampaignLinkShare({ slug, className }: CampaignLinkShareProps) {
+  const t = useT();
   const [copied, setCopied] = useState(false);
   const publicUrl = `${window.location.origin}/recruitment/join/${slug}`;
 
@@ -18,10 +20,10 @@ export function CampaignLinkShare({ slug, className }: CampaignLinkShareProps) {
     try {
       await navigator.clipboard.writeText(publicUrl);
       setCopied(true);
-      toast.success('Lien copie dans le presse-papiers');
+      toast.success(t('valo.copied'));
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      toast.error('Impossible de copier le lien');
+      toast.error(t('recruit.copyError'));
     }
   };
 
@@ -34,7 +36,7 @@ export function CampaignLinkShare({ slug, className }: CampaignLinkShareProps) {
           style="duotone"
           className="size-4"
         />
-        {copied ? 'Copie' : 'Copier'}
+        {copied ? t('recruit.copied') : t('valo.copy')}
       </Button>
     </div>
   );

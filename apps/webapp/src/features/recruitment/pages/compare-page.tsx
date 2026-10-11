@@ -18,8 +18,10 @@ import { useCompareCandidates } from '../api/recruitment.api';
 import { CandidateStatusBadge } from '../components/candidate-status-badge';
 import { useEffect, useState } from 'react';
 import type { ComparisonResult } from '../types/recruitment.types';
+import { useT } from '@/i18n/app/use-t';
 
 export default function ComparePage() {
+  const t = useT();
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const candidateAId = searchParams.get('a') ?? '';
@@ -32,7 +34,7 @@ export default function ComparePage() {
 
   useEffect(() => {
     if (!candidateAId || !candidateBId || !id) {
-      setError('Paramètres manquants pour la comparaison.');
+      setError(t('recruit.compareMissing'));
       setLoading(false);
       return;
     }
@@ -40,7 +42,7 @@ export default function ComparePage() {
     compareMutation
       .mutateAsync({ campaignId: id, candidateIds: [candidateAId, candidateBId] })
       .then(setResult)
-      .catch(() => setError('Erreur lors de la comparaison.'))
+      .catch(() => setError(t('recruit.compareError')))
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, candidateAId, candidateBId]);
@@ -49,7 +51,7 @@ export default function ComparePage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Comparaison" />
+          <ToolbarHeading title={t('recruit.comparison')} />
         </Toolbar>
         <div className="flex justify-center py-16">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
@@ -62,13 +64,13 @@ export default function ComparePage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Comparaison" />
+          <ToolbarHeading title={t('recruit.comparison')} />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-destructive text-sm">{error ?? 'Impossible de charger la comparaison.'}</p>
+            <p className="text-destructive text-sm">{error ?? t('recruit.compareLoadError')}</p>
             <Button variant="outline" size="sm" className="mt-4" asChild>
-              <Link to={`/recruitment/campaigns/${id}/shortlist`}>Retour à la shortlist</Link>
+              <Link to={`/recruitment/campaigns/${id}/shortlist`}>{t('recruit.backToShortlist')}</Link>
             </Button>
           </CardContent>
         </Card>
@@ -80,58 +82,58 @@ export default function ComparePage() {
 
   const nameA = candidateA.user
     ? `${candidateA.user.firstName} ${candidateA.user.lastName}`
-    : 'Candidat A';
+    : t('recruit.candidateA');
   const nameB = candidateB.user
     ? `${candidateB.user.firstName} ${candidateB.user.lastName}`
-    : 'Candidat B';
+    : t('recruit.candidateB');
 
   const radarData = [
     {
-      axis: 'Hard Skills',
+      axis: t('recruit.hardSkills'),
       [nameA]: candidateA.hardSkillsScore ?? 0,
       [nameB]: candidateB.hardSkillsScore ?? 0,
     },
     {
-      axis: 'Soft Skills',
+      axis: t('recruit.softSkills'),
       [nameA]: candidateA.softSkillsScore ?? 0,
       [nameB]: candidateB.softSkillsScore ?? 0,
     },
     {
-      axis: 'Fiabilité',
+      axis: t('recruit.reliability'),
       [nameA]: candidateA.reliabilityScore ?? 0,
       [nameB]: candidateB.reliabilityScore ?? 0,
     },
     {
-      axis: 'Adaptabilité',
+      axis: t('recruit.adaptability'),
       [nameA]: candidateA.adaptabilityScore ?? 0,
       [nameB]: candidateB.adaptabilityScore ?? 0,
     },
     {
-      axis: 'Leadership',
+      axis: t('recruit.leadership'),
       [nameA]: candidateA.leadershipScore ?? 0,
       [nameB]: candidateB.leadershipScore ?? 0,
     },
   ];
 
   const scoreItems = [
-    { label: 'Score global', a: candidateA.globalScore, b: candidateB.globalScore },
-    { label: 'Hard Skills', a: candidateA.hardSkillsScore, b: candidateB.hardSkillsScore },
-    { label: 'Soft Skills', a: candidateA.softSkillsScore, b: candidateB.softSkillsScore },
-    { label: 'Fiabilité', a: candidateA.reliabilityScore, b: candidateB.reliabilityScore },
-    { label: 'Adaptabilité', a: candidateA.adaptabilityScore, b: candidateB.adaptabilityScore },
-    { label: 'Leadership', a: candidateA.leadershipScore, b: candidateB.leadershipScore },
-    { label: 'Compatibilité', a: candidateA.matchPercentage, b: candidateB.matchPercentage },
+    { label: t('valo.overallScore'), a: candidateA.globalScore, b: candidateB.globalScore },
+    { label: t('recruit.hardSkills'), a: candidateA.hardSkillsScore, b: candidateB.hardSkillsScore },
+    { label: t('recruit.softSkills'), a: candidateA.softSkillsScore, b: candidateB.softSkillsScore },
+    { label: t('recruit.reliability'), a: candidateA.reliabilityScore, b: candidateB.reliabilityScore },
+    { label: t('recruit.adaptability'), a: candidateA.adaptabilityScore, b: candidateB.adaptabilityScore },
+    { label: t('recruit.leadership'), a: candidateA.leadershipScore, b: candidateB.leadershipScore },
+    { label: t('recruit.compatibility'), a: candidateA.matchPercentage, b: candidateB.matchPercentage },
   ];
 
   return (
     <div className="container space-y-5">
       <Toolbar>
-        <ToolbarHeading title="Comparaison de candidats" />
+        <ToolbarHeading title={t('recruit.compareTitle')} />
         <ToolbarActions>
           <Button variant="outline" size="sm" asChild>
             <Link to={`/recruitment/campaigns/${id}/shortlist`}>
               <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
-              Retour à la shortlist
+              {t('recruit.backToShortlist')}
             </Link>
           </Button>
         </ToolbarActions>
@@ -174,7 +176,7 @@ export default function ComparePage() {
         {/* Radar chart */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm">Comparaison des compétences</CardTitle>
+            <CardTitle className="text-sm">{t('recruit.skillsComparison')}</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={350}>
@@ -210,7 +212,7 @@ export default function ComparePage() {
         {/* Score comparison table */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm">Scores détaillés</CardTitle>
+            <CardTitle className="text-sm">{t('recruit.detailedScores')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {scoreItems.map(({ label, a, b }) => {
@@ -265,7 +267,7 @@ export default function ComparePage() {
             <CardHeader>
               <CardTitle className="text-sm flex items-center gap-2">
                 <KeenIcon icon="artificial-intelligence" style="duotone" className="size-4 text-primary" />
-                Analyse comparative
+                {t('recruit.comparativeAnalysis')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -285,7 +287,7 @@ export default function ComparePage() {
                   <KeenIcon icon="star" style="duotone" className="size-4" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold mb-1">Recommandation</h4>
+                  <h4 className="text-sm font-semibold mb-1">{t('recruit.recommendation')}</h4>
                   <p className="text-sm text-muted-foreground">{result.recommendation}</p>
                 </div>
               </div>

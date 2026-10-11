@@ -6,26 +6,29 @@ import { KeenIcon } from '@/components/keenicons';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { useCampaignPublicInfo, useJoinCampaign } from '../api/recruitment.api';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useT } from '@/i18n/app/use-t';
 
-const INFO_CARDS = [
+const INFO_CARDS: Array<{ icon: string; title: AppMessageKey; description: AppMessageKey }> = [
   {
     icon: 'chart-simple',
-    title: 'Décisions stratégiques',
-    description: 'Prenez des décisions critiques qui impactent le projet : budget, planning, ressources et risques.',
+    title: 'recruit.join.card1',
+    description: 'recruit.join.card1.desc',
   },
   {
     icon: 'people',
-    title: 'Réunions virtuelles',
-    description: 'Participez à des réunions avec des parties prenantes simulées et défendez vos choix.',
+    title: 'recruit.join.card2',
+    description: 'recruit.join.card2.desc',
   },
   {
     icon: 'document',
-    title: 'Livrables professionnels',
-    description: 'Produisez des livrables concrets : plans, rapports, analyses de risques et tableaux de bord.',
+    title: 'recruit.join.card3',
+    description: 'recruit.join.card3.desc',
   },
 ];
 
 export default function JoinCampaignPage() {
+  const t = useT();
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { data: info, isLoading, error } = useCampaignPublicInfo(slug!);
@@ -34,17 +37,17 @@ export default function JoinCampaignPage() {
   const handleStart = async () => {
     try {
       const result = await joinMutation.mutateAsync(slug!);
-      toast.success('Évaluation démarrée avec succès');
+      toast.success(t('recruit.join.started'));
       navigate(`/simulations/${result.simulationId}`);
     } catch {
-      toast.error("Erreur lors du démarrage de l'évaluation. Veuillez vous connecter.");
+      toast.error(t('recruit.join.startError'));
       navigate(`/auth/sign-in?redirect=/recruitment/join/${slug}`);
     }
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen w-full bg-background flex items-center justify-center">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary" />
       </div>
     );
@@ -52,15 +55,15 @@ export default function JoinCampaignPage() {
 
   if (error || !info) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="min-h-screen w-full bg-background flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
           <CardContent className="flex flex-col items-center justify-center py-12 gap-4">
             <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center">
               <KeenIcon icon="information-2" style="duotone" className="size-8 text-destructive" />
             </div>
-            <h2 className="text-lg font-semibold">Campagne introuvable</h2>
+            <h2 className="text-lg font-semibold">{t('recruit.join.notFound')}</h2>
             <p className="text-sm text-muted-foreground text-center">
-              Ce lien de campagne n'est pas valide ou a expiré.
+              {t('recruit.join.notFoundDesc')}
             </p>
           </CardContent>
         </Card>
@@ -70,15 +73,15 @@ export default function JoinCampaignPage() {
 
   if (info.isFull) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="min-h-screen w-full bg-background flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
           <CardContent className="flex flex-col items-center justify-center py-12 gap-4">
             <div className="w-16 h-16 rounded-full bg-warning/10 flex items-center justify-center">
               <KeenIcon icon="people" style="duotone" className="size-8 text-warning" />
             </div>
-            <h2 className="text-lg font-semibold">Campagne complete</h2>
+            <h2 className="text-lg font-semibold">{t('recruit.join.full')}</h2>
             <p className="text-sm text-muted-foreground text-center">
-              Cette campagne a atteint le nombre maximum de candidats.
+              {t('recruit.join.fullDesc')}
             </p>
           </CardContent>
         </Card>
@@ -88,15 +91,15 @@ export default function JoinCampaignPage() {
 
   if (!info.isOpen) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="min-h-screen w-full bg-background flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
           <CardContent className="flex flex-col items-center justify-center py-12 gap-4">
             <div className="w-16 h-16 rounded-full bg-warning/10 flex items-center justify-center">
               <KeenIcon icon="lock" style="duotone" className="size-8 text-warning" />
             </div>
-            <h2 className="text-lg font-semibold">Campagne terminée</h2>
+            <h2 className="text-lg font-semibold">{t('recruit.join.closed')}</h2>
             <p className="text-sm text-muted-foreground text-center">
-              Cette campagne de recrutement est terminée et n'accepte plus de nouvelles candidatures.
+              {t('recruit.join.closedDesc')}
             </p>
           </CardContent>
         </Card>
@@ -105,7 +108,7 @@ export default function JoinCampaignPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen w-full bg-background flex items-center justify-center p-4">
       <div className="max-w-2xl w-full space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
@@ -117,7 +120,7 @@ export default function JoinCampaignPage() {
           </Badge>
           <h1 className="text-2xl font-bold text-foreground mt-2">{info.title}</h1>
           <p className="text-base text-muted-foreground">
-            Évaluation par simulation de gestion de projet
+            {t('recruit.join.subtitle')}
           </p>
         </div>
 
@@ -127,7 +130,7 @@ export default function JoinCampaignPage() {
             <div>
               <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
                 <KeenIcon icon="briefcase" style="duotone" className="size-4 text-primary" />
-                Poste
+                {t('recruit.col.job')}
               </h3>
               <p className="text-sm font-medium">{info.jobTitle}</p>
             </div>
@@ -135,7 +138,7 @@ export default function JoinCampaignPage() {
             <div>
               <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
                 <KeenIcon icon="document" style="duotone" className="size-4 text-primary" />
-                Description
+                {t('onboarding.custom.description')}
               </h3>
               <p className="text-sm text-muted-foreground whitespace-pre-wrap">
                 {info.description}
@@ -145,10 +148,7 @@ export default function JoinCampaignPage() {
             {/* Process description */}
             <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Vous allez piloter un projet fictif pendant environ 1 heure.
-                Vous serez confronté à des situations réalistes : décisions stratégiques,
-                réunions d'équipe, événements imprévus et livrables à produire.
-                Vos actions seront évaluées pour produire un rapport 360.
+                {t('recruit.join.intro')}
               </p>
             </div>
           </CardContent>
@@ -162,9 +162,9 @@ export default function JoinCampaignPage() {
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                   <KeenIcon icon={card.icon} style="duotone" className="size-5 text-primary" />
                 </div>
-                <h4 className="text-sm font-semibold">{card.title}</h4>
+                <h4 className="text-sm font-semibold">{t(card.title)}</h4>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  {card.description}
+                  {t(card.description)}
                 </p>
               </CardContent>
             </Card>
@@ -179,35 +179,35 @@ export default function JoinCampaignPage() {
                 <KeenIcon icon="time" style="duotone" className="size-4 text-primary" />
               </div>
               <div>
-                <p className="text-sm font-medium">Durée estimée</p>
-                <p className="text-sm text-muted-foreground">~1 heure</p>
+                <p className="text-sm font-medium">{t('recruit.join.duration')}</p>
+                <p className="text-sm text-muted-foreground">{t('recruit.join.durationValue')}</p>
               </div>
             </div>
 
             <div className="rounded-lg border border-border bg-accent/30 p-4">
-              <h4 className="text-sm font-semibold mb-2">Comment ça fonctionne ?</h4>
+              <h4 className="text-sm font-semibold mb-2">{t('recruit.join.how')}</h4>
               <ol className="space-y-2 text-sm text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs shrink-0">1</span>
-                  Connectez-vous ou créez un compte
+                  {t('recruit.join.step1')}
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs shrink-0">2</span>
-                  Lancez la simulation de gestion de projet
+                  {t('recruit.join.step2')}
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs shrink-0">3</span>
-                  Prenez des décisions, gérez des réunions et des événements
+                  {t('recruit.join.step3')}
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs shrink-0">4</span>
-                  Recevez votre rapport d'évaluation 360
+                  {t('recruit.join.step4')}
                 </li>
               </ol>
             </div>
 
             <p className="text-sm text-muted-foreground text-center">
-              Vous serez guidé étape par étape tout au long de la simulation.
+              {t('recruit.join.guided')}
             </p>
 
             <Button
@@ -220,12 +220,12 @@ export default function JoinCampaignPage() {
               {joinMutation.isPending ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                  Démarrage...
+                  {t('recruit.join.starting')}
                 </>
               ) : (
                 <>
                   <KeenIcon icon="rocket" style="duotone" className="size-5" />
-                  Commencer l'évaluation
+                  {t('recruit.join.start')}
                 </>
               )}
             </Button>
@@ -235,12 +235,12 @@ export default function JoinCampaignPage() {
         {/* Footer with recruiter note (US-8.1) */}
         <div className="text-center space-y-2">
           <p className="text-sm text-muted-foreground">
-            Propulsé par Simex pro - Évaluation par simulation de gestion de projet
+            {t('recruit.join.poweredBy')}
           </p>
           <p className="text-sm text-muted-foreground">
             Vous êtes recruteur ?{' '}
             <Link to="/contact" className="text-primary hover:underline font-medium">
-              Contactez-nous pour créer votre espace entreprise.
+              {t('recruit.join.contact')}
             </Link>
           </p>
         </div>

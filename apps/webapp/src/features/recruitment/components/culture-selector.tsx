@@ -1,32 +1,31 @@
 import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
 import type { CultureType } from '../types/recruitment.types';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useT } from '@/i18n/app/use-t';
 
 const CULTURE_OPTIONS: Array<{
   value: CultureType;
-  label: string;
-  description: string;
+  label: AppMessageKey;
+  description: AppMessageKey;
   icon: string;
 }> = [
   {
     value: 'STRICT',
-    label: 'Stricte / Predictive',
-    description:
-      'Processus rigoureux, planification détaillée, respect strict des délais et du périmètre. Idéal pour les environnements réglementaires.',
+    label: 'recruit.culture.STRICT',
+    description: 'recruit.culture.STRICT.desc',
     icon: 'shield-tick',
   },
   {
     value: 'AGILE',
-    label: 'Agile / Iterative',
-    description:
-      'Sprints courts, adaptation continue, livraisons incrémentales. Favorise la réactivité et le feedback rapide.',
+    label: 'recruit.culture.AGILE',
+    description: 'recruit.culture.AGILE.desc',
     icon: 'arrows-loop',
   },
   {
     value: 'COLLABORATIVE',
-    label: 'Collaborative / Hybride',
-    description:
-      'Équilibre entre structure et flexibilité. Communication ouverte, prise de décision partagée, focus sur le consensus.',
+    label: 'recruit.culture.COLLABORATIVE',
+    description: 'recruit.culture.COLLABORATIVE.desc',
     icon: 'people',
   },
 ];
@@ -38,6 +37,7 @@ interface CultureSelectorProps {
 }
 
 export function CultureSelector({ value, onChange, className }: CultureSelectorProps) {
+  const t = useT();
   return (
     <div className={cn('grid grid-cols-1 md:grid-cols-3 gap-4', className)}>
       {CULTURE_OPTIONS.map((option) => {
@@ -63,9 +63,9 @@ export function CultureSelector({ value, onChange, className }: CultureSelectorP
               <KeenIcon icon={option.icon} style="duotone" className="size-5" />
             </div>
             <div>
-              <h4 className="text-sm font-semibold">{option.label}</h4>
+              <h4 className="text-sm font-semibold">{t(option.label)}</h4>
               <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                {option.description}
+                {t(option.description)}
               </p>
             </div>
             {isSelected && (

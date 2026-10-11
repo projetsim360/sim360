@@ -8,15 +8,17 @@ import { KeenIcon } from '@/components/keenicons';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useInterviewGuide, useCandidateReport } from '../api/recruitment.api';
+import { useT } from '@/i18n/app/use-t';
 
 export default function InterviewGuidePage() {
+  const t = useT();
   const { id, candidateId } = useParams<{ id: string; candidateId: string }>();
   const { data: questions, isLoading, error } = useInterviewGuide(id!, candidateId!);
   const { data: candidate } = useCandidateReport(id!, candidateId!);
 
   const candidateName = candidate?.user
     ? `${candidate.user.firstName} ${candidate.user.lastName}`
-    : 'Candidat';
+    : t('recruit.candidate');
 
   const handlePrint = () => {
     window.print();
@@ -26,7 +28,7 @@ export default function InterviewGuidePage() {
     return (
       <div className="container space-y-5">
         <Toolbar>
-          <ToolbarHeading title="Guide d'entretien" />
+          <ToolbarHeading title={t('recruit.guide.title')} />
         </Toolbar>
         <Skeleton className="h-16 rounded-lg" />
         <div className="space-y-4">
@@ -42,14 +44,14 @@ export default function InterviewGuidePage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Guide d'entretien" />
+          <ToolbarHeading title={t('recruit.guide.title')} />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-destructive text-sm">Impossible de charger le guide d'entretien.</p>
+            <p className="text-destructive text-sm">{t('recruit.guide.loadError')}</p>
             <Button variant="outline" size="sm" className="mt-4" asChild>
               <Link to={`/recruitment/campaigns/${id}/candidates/${candidateId}`}>
-                Retour au rapport
+                {t('recruit.backToReport')}
               </Link>
             </Button>
           </CardContent>
@@ -61,16 +63,16 @@ export default function InterviewGuidePage() {
   return (
     <div className="container space-y-5">
       <Toolbar>
-        <ToolbarHeading title={`Guide d'entretien - ${candidateName}`} />
+        <ToolbarHeading title={t('recruit.guide.titleFor', { name: candidateName })} />
         <ToolbarActions>
           <Button variant="outline" size="sm" onClick={handlePrint}>
             <KeenIcon icon="printer" style="duotone" className="size-4" />
-            Imprimer
+            {t('recruit.print')}
           </Button>
           <Button variant="outline" size="sm" asChild>
             <Link to={`/recruitment/campaigns/${id}/candidates/${candidateId}`}>
               <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
-              Retour au rapport
+              {t('recruit.backToReport')}
             </Link>
           </Button>
         </ToolbarActions>
@@ -84,9 +86,7 @@ export default function InterviewGuidePage() {
               </div>
               <div className="text-sm text-muted-foreground space-y-1">
                 <p>
-                  Ce guide a été généré automatiquement à partir des résultats de la simulation
-                  du candidat. Il propose des questions ciblées pour approfondir l'évaluation
-                  lors d'un entretien en personne.
+                  {t('recruit.guide.intro')}
                 </p>
                 <p>
                   <strong>{questions.length} questions</strong> preparees pour {candidateName}.
@@ -111,14 +111,14 @@ export default function InterviewGuidePage() {
               <CardContent className="space-y-3">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground mb-1 uppercase tracking-wide">
-                    Contexte
+                    {t('recruit.guide.context')}
                   </p>
                   <p className="text-sm text-muted-foreground">{q.context}</p>
                 </div>
                 <Separator />
                 <div>
                   <p className="text-sm font-medium text-muted-foreground mb-1 uppercase tracking-wide">
-                    Insight attendu
+                    {t('recruit.guide.insight')}
                   </p>
                   <p className="text-sm text-muted-foreground">{q.expectedInsight}</p>
                 </div>
@@ -132,8 +132,8 @@ export default function InterviewGuidePage() {
             <CardContent>
               <EmptyState
                 icon="question-2"
-                title="Guide non disponible"
-                description="Le guide d'entretien sera généré une fois que le candidat aura terminé sa simulation."
+                title={t('recruit.guide.unavailable')}
+                description={t('recruit.guide.unavailableDesc')}
               />
             </CardContent>
           </Card>

@@ -5,6 +5,7 @@ import { Slider } from '@/components/ui/slider';
 import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
 import type { SkillWeight } from '../types/recruitment.types';
+import { useT } from '@/i18n/app/use-t';
 
 interface SkillsInputProps {
   value: SkillWeight[];
@@ -13,6 +14,7 @@ interface SkillsInputProps {
 }
 
 export function SkillsInput({ value, onChange, className }: SkillsInputProps) {
+  const t = useT();
   const [newSkill, setNewSkill] = useState('');
 
   const handleAdd = () => {
@@ -47,12 +49,12 @@ export function SkillsInput({ value, onChange, className }: SkillsInputProps) {
           value={newSkill}
           onChange={(e) => setNewSkill(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Ajouter une compétence..."
+          placeholder={t('recruit.skills.addPh')}
           className="flex-1"
         />
         <Button type="button" variant="outline" size="sm" onClick={handleAdd} disabled={!newSkill.trim()}>
           <KeenIcon icon="plus" style="duotone" className="size-4" />
-          Ajouter
+          {t('common.add')}
         </Button>
       </div>
 
@@ -90,7 +92,7 @@ export function SkillsInput({ value, onChange, className }: SkillsInputProps) {
 
       {value.length === 0 && (
         <p className="text-sm text-muted-foreground text-center py-4">
-          Aucune compétence ajoutée. Utilisez le champ ci-dessus pour en ajouter.
+          {t('recruit.skills.empty')}
         </p>
       )}
     </div>

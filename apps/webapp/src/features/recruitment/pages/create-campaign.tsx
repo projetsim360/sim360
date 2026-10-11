@@ -25,16 +25,20 @@ import { useCreateCampaign } from '../api/recruitment.api';
 import { SkillsInput } from '../components/skills-input';
 import { CultureSelector } from '../components/culture-selector';
 import type { SkillWeight, CultureType } from '../types/recruitment.types';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useTv } from '@/i18n/app/use-t';
+import { Msg } from '@/i18n/app/msg';
+import { useT } from '@/i18n/app/use-t';
 
 // ---------------------------------------------------------------------------
 // Schema
 // ---------------------------------------------------------------------------
 const campaignSchema = z.object({
-  title: z.string().min(3, 'Le titre doit contenir au moins 3 caractères'),
-  jobTitle: z.string().min(2, 'Le poste est requis'),
-  jobDescription: z.string().min(10, 'La description doit contenir au moins 10 caractères'),
-  experienceLevel: z.string().min(1, "Le niveau d'expérience est requis"),
-  projectTypes: z.array(z.string()).min(1, 'Sélectionnez au moins un type de projet'),
+  title: z.string().min(3, 'recruit.form.titleMin'),
+  jobTitle: z.string().min(2, 'recruit.form.jobRequired'),
+  jobDescription: z.string().min(10, 'recruit.form.descMin'),
+  experienceLevel: z.string().min(1, 'recruit.form.levelRequired'),
+  projectTypes: z.array(z.string()).min(1, 'recruit.form.typeRequired'),
   culture: z.enum(['STRICT', 'AGILE', 'COLLABORATIVE']),
   cultureDescription: z.string().optional(),
   maxCandidates: z.number().min(1).optional(),
@@ -42,33 +46,38 @@ const campaignSchema = z.object({
 
 type CampaignFormData = z.infer<typeof campaignSchema>;
 
-const STEPS = [
-  { label: 'Informations', icon: 'document' },
-  { label: 'Compétences', icon: 'award' },
-  { label: 'Culture', icon: 'people' },
-  { label: 'Paramètres', icon: 'setting-2' },
-  { label: 'Résumé', icon: 'check' },
+const STEPS: Array<{ label: AppMessageKey; icon: string }> = [
+  { label: 'recruit.wizard.info', icon: 'document' },
+  { label: 'recruit.wizard.skills', icon: 'award' },
+  { label: 'recruit.wizard.culture', icon: 'people' },
+  { label: 'recruit.wizard.settings', icon: 'setting-2' },
+  { label: 'recruit.wizard.summary', icon: 'check' },
 ];
 
-const EXPERIENCE_LEVELS = [
-  { value: 'JUNIOR', label: 'Junior (0-2 ans)' },
-  { value: 'INTERMEDIATE', label: 'Intermédiaire (2-5 ans)' },
-  { value: 'SENIOR', label: 'Senior (5-10 ans)' },
-  { value: 'EXPERT', label: 'Expert (10+ ans)' },
+const EXPERIENCE_LEVELS: Array<{ value: string; label: AppMessageKey }> = [
+  { value: 'JUNIOR', label: 'recruit.level.JUNIOR' },
+  { value: 'INTERMEDIATE', label: 'recruit.level.INTERMEDIATE' },
+  { value: 'SENIOR', label: 'recruit.level.SENIOR' },
+  { value: 'EXPERT', label: 'recruit.level.EXPERT' },
 ];
 
-const PROJECT_TYPES = [
-  'IT / Digital',
-  'Construction / BTP',
-  'Industrie',
-  'Consulting',
-  'Marketing',
-  'R&D',
-  'Transformation',
-  'Infrastructure',
+/** Values are stored as-is on the campaign; only the label is translated. */
+const PROJECT_TYPES: Array<{ value: string; label: AppMessageKey }> = [
+  { value: 'IT / Digital', label: 'recruit.pt.it' },
+  { value: 'Construction / BTP', label: 'recruit.pt.construction' },
+  { value: 'Industrie', label: 'recruit.pt.industry' },
+  { value: 'Consulting', label: 'recruit.pt.consulting' },
+  { value: 'Marketing', label: 'recruit.pt.marketing' },
+  { value: 'R&D', label: 'recruit.pt.rd' },
+  { value: 'Transformation', label: 'recruit.pt.transformation' },
+  { value: 'Infrastructure', label: 'recruit.pt.infrastructure' },
 ];
+
+const projectTypeLabel = (value: string) => PROJECT_TYPES.find((p) => p.value === value)?.label;
 
 export default function CreateCampaignPage() {
+  const tv = useTv();
+  const t = useT();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [skills, setSkills] = useState<SkillWeight[]>([]);
@@ -89,15 +98,15 @@ export default function CreateCampaignPage() {
 
     for (const file of files) {
       if (documents.length + validFiles.length >= MAX_FILES) {
-        toast.error(`Maximum ${MAX_FILES} fichiers autorisés`);
+        toast.error(t('recruit.files.max', { n: MAX_FILES }));
         break;
       }
       if (!ACCEPTED_TYPES.includes(file.type)) {
-        toast.error(`Format non supporte : ${file.name}. Utilisez PDF ou DOCX.`);
+        toast.error(t('recruit.files.format', { name: file.name }));
         continue;
       }
       if (file.size > MAX_FILE_SIZE) {
-        toast.error(`Fichier trop volumineux : ${file.name}. Maximum 10 Mo.`);
+        toast.error(t('recruit.files.size', { name: file.name }));
         continue;
       }
       validFiles.push(file);
@@ -152,10 +161,10 @@ export default function CreateCampaignPage() {
         requiredSkills: skills,
         documents: documents.map((f) => f.name),
       });
-      toast.success('Campagne créée avec succès');
+      toast.success(t('recruit.created'));
       navigate(`/recruitment/campaigns/${result.id}`);
     } catch {
-      toast.error('Erreur lors de la création de la campagne');
+      toast.error(t('recruit.createError'));
     }
   };
 
@@ -179,15 +188,15 @@ export default function CreateCampaignPage() {
   return (
     <div className="container">
       <Toolbar>
-        <ToolbarHeading title="Nouvelle campagne de recrutement" />
+        <ToolbarHeading title={t('recruit.newCampaignTitle')} />
         <ToolbarActions>
           <Button variant="outline" size="sm" onClick={() => navigate('/recruitment/campaigns')}>
-            Annuler
+            {t('common.cancel')}
           </Button>
         </ToolbarActions>
       </Toolbar>
         {/* Step indicators */}
-        <div className="flex items-center justify-center gap-2 mb-8">
+        <div className="flex items-center justify-start gap-2 mb-8 overflow-x-auto pb-1 sm:justify-center">
           {STEPS.map((s, i) => (
             <div key={i} className="flex items-center gap-2">
               <button
@@ -203,7 +212,7 @@ export default function CreateCampaignPage() {
                 )}
               >
                 <KeenIcon icon={s.icon} style="duotone" className="size-4" />
-                <span className="hidden sm:inline">{s.label}</span>
+                <span className="hidden sm:inline">{t(s.label)}</span>
                 <span className="sm:hidden">{i + 1}</span>
               </button>
               {i < STEPS.length - 1 && (
@@ -219,7 +228,7 @@ export default function CreateCampaignPage() {
             {step === 0 && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Informations du poste</CardTitle>
+                  <CardTitle>{t('recruit.form.jobInfo')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-5">
                   <FormField
@@ -227,9 +236,9 @@ export default function CreateCampaignPage() {
                     name="title"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Titre de la campagne</FormLabel>
+                        <FormLabel>{t('recruit.form.campaignTitle')}</FormLabel>
                         <FormControl>
-                          <Input placeholder="Ex: Chef de projet IT - Q1 2026" {...field} />
+                          <Input placeholder={t('recruit.form.campaignTitlePh')} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -240,9 +249,9 @@ export default function CreateCampaignPage() {
                     name="jobTitle"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Intitule du poste</FormLabel>
+                        <FormLabel>{t('recruit.form.jobTitle')}</FormLabel>
                         <FormControl>
-                          <Input placeholder="Ex: Chef de projet senior" {...field} />
+                          <Input placeholder={t('recruit.form.jobTitlePh')} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -253,10 +262,10 @@ export default function CreateCampaignPage() {
                     name="jobDescription"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Description du poste</FormLabel>
+                        <FormLabel>{t('recruit.form.jobDesc')}</FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Décrivez les responsabilités, le contexte et les attentes..."
+                            placeholder={t('recruit.form.jobDescPh')}
                             rows={5}
                             {...field}
                           />
@@ -270,17 +279,17 @@ export default function CreateCampaignPage() {
                     name="experienceLevel"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Niveau d'expérience</FormLabel>
+                        <FormLabel>{t('settings.profile.experience')}</FormLabel>
                         <Select value={field.value} onValueChange={field.onChange}>
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Sélectionnez un niveau" />
+                              <SelectValue placeholder={t('recruit.form.levelPh')} />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
                             {EXPERIENCE_LEVELS.map((level) => (
                               <SelectItem key={level.value} value={level.value}>
-                                {level.label}
+                                {t(level.label)}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -290,9 +299,9 @@ export default function CreateCampaignPage() {
                     )}
                   />
                   <div>
-                    <FormLabel>Types de projet</FormLabel>
+                    <FormLabel>{t('recruit.form.projectTypes')}</FormLabel>
                     <div className="flex flex-wrap gap-2 mt-2">
-                      {PROJECT_TYPES.map((type) => (
+                      {PROJECT_TYPES.map(({ value: type, label }) => (
                         <button
                           key={type}
                           type="button"
@@ -304,13 +313,13 @@ export default function CreateCampaignPage() {
                               : 'bg-transparent text-muted-foreground border-border hover:border-primary/40',
                           )}
                         >
-                          {type}
+                          {t(label)}
                         </button>
                       ))}
                     </div>
                     {form.formState.errors.projectTypes && (
                       <p className="text-sm text-destructive mt-1">
-                        {form.formState.errors.projectTypes.message}
+                        {t(form.formState.errors.projectTypes.message as AppMessageKey)}
                       </p>
                     )}
                   </div>
@@ -322,7 +331,7 @@ export default function CreateCampaignPage() {
             {step === 1 && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Compétences requises</CardTitle>
+                  <CardTitle>{t('recruit.form.requiredSkills')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">
@@ -337,12 +346,11 @@ export default function CreateCampaignPage() {
             {step === 2 && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Culture de gestion de projet</CardTitle>
+                  <CardTitle>{t('recruit.form.culture')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-5">
                   <p className="text-sm text-muted-foreground">
-                    Sélectionnez la culture de gestion de projet qui correspond à votre organisation.
-                    Le scénario de simulation sera adapté en conséquence.
+                    {t('recruit.form.cultureDesc')}
                   </p>
                   <FormField
                     control={form.control}
@@ -364,10 +372,10 @@ export default function CreateCampaignPage() {
                     name="cultureDescription"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Précisions supplémentaires (optionnel)</FormLabel>
+                        <FormLabel>{t('recruit.form.cultureMore')}</FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Décrivez les spécificités de votre culture projet..."
+                            placeholder={t('recruit.form.cultureMorePh')}
                             rows={3}
                             {...field}
                           />
@@ -379,7 +387,7 @@ export default function CreateCampaignPage() {
 
                   {/* Document upload zone (US-8.4) */}
                   <div className="space-y-3">
-                    <FormLabel>Documents internes (optionnel)</FormLabel>
+                    <FormLabel>{t('recruit.form.docs')}</FormLabel>
                     <p className="text-sm text-muted-foreground">
                       Ajoutez des documents de référence pour enrichir le scénario (PDF, DOCX). Maximum {MAX_FILES} fichiers, 10 Mo chacun.
                     </p>
@@ -401,10 +409,10 @@ export default function CreateCampaignPage() {
                       />
                       <KeenIcon icon="folder-up" style="duotone" className="size-8 text-muted-foreground mx-auto mb-2" />
                       <p className="text-sm text-muted-foreground">
-                        Cliquez ou déposez vos fichiers ici
+                        {t('recruit.files.drop')}
                       </p>
                       <p className="text-sm text-muted-foreground mt-1">
-                        PDF ou DOCX - {documents.length}/{MAX_FILES} fichiers
+                        {t('recruit.files.count', { n: documents.length, max: MAX_FILES })}
                       </p>
                     </div>
 
@@ -420,7 +428,7 @@ export default function CreateCampaignPage() {
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-medium truncate">{file.name}</p>
                               <p className="text-sm text-muted-foreground">
-                                {(file.size / 1024 / 1024).toFixed(2)} Mo
+                                {t('recruit.files.mb', { n: (file.size / 1024 / 1024).toFixed(2) })}
                               </p>
                             </div>
                             <Button
@@ -440,7 +448,7 @@ export default function CreateCampaignPage() {
                     <div className="flex items-start gap-2 rounded-lg bg-warning/10 border border-warning/20 p-3">
                       <KeenIcon icon="information-2" style="duotone" className="size-4 text-warning mt-0.5 shrink-0" />
                       <p className="text-sm text-warning">
-                        Assurez-vous d'anonymiser les données sensibles avant de télécharger vos documents.
+                        {t('recruit.files.anonymize')}
                       </p>
                     </div>
                   </div>
@@ -452,7 +460,7 @@ export default function CreateCampaignPage() {
             {step === 3 && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Paramètres</CardTitle>
+                  <CardTitle>{t('recruit.wizard.settings')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-5">
                   <FormField
@@ -460,12 +468,12 @@ export default function CreateCampaignPage() {
                     name="maxCandidates"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Nombre maximum de candidats (optionnel)</FormLabel>
+                        <FormLabel>{t('recruit.form.maxCandidates')}</FormLabel>
                         <FormControl>
                           <Input
                             type="number"
                             min={1}
-                            placeholder="Illimité"
+                            placeholder={t('recruit.form.unlimited')}
                             value={field.value ?? ''}
                             onChange={(e) =>
                               field.onChange(e.target.value ? Number(e.target.value) : undefined)
@@ -480,10 +488,9 @@ export default function CreateCampaignPage() {
                     <div className="flex items-start gap-3">
                       <KeenIcon icon="information-2" style="duotone" className="size-5 text-primary mt-0.5" />
                       <div className="text-sm text-muted-foreground space-y-1">
-                        <p>La campagne sera créée en mode <strong>Brouillon</strong>.</p>
+                        <p><Msg id="recruit.form.draftNote" values={{ b: (chunks) => <strong>{chunks}</strong> }} /></p>
                         <p>
-                          Vous pourrez la publier depuis sa page de détail.
-                          Un lien unique sera généré pour inviter les candidats.
+                          {t('recruit.form.publishNote')}
                         </p>
                       </div>
                     </div>
@@ -496,34 +503,34 @@ export default function CreateCampaignPage() {
             {step === 4 && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Résumé de la campagne</CardTitle>
+                  <CardTitle>{t('recruit.form.summaryTitle')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-3">
-                      <h4 className="text-sm font-semibold">Informations</h4>
+                      <h4 className="text-sm font-semibold">{t('recruit.wizard.info')}</h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Titre</span>
+                          <span className="text-muted-foreground">{t('recruit.col.title')}</span>
                           <span className="font-medium">{form.getValues('title')}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Poste</span>
+                          <span className="text-muted-foreground">{t('recruit.col.job')}</span>
                           <span className="font-medium">{form.getValues('jobTitle')}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Expérience</span>
+                          <span className="text-muted-foreground">{t('recruit.form.experience')}</span>
                           <span className="font-medium">
-                            {EXPERIENCE_LEVELS.find((l) => l.value === form.getValues('experienceLevel'))?.label}
+                            {tv('recruit.level', form.getValues('experienceLevel'))}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Culture</span>
-                          <span className="font-medium">{form.getValues('culture')}</span>
+                          <span className="text-muted-foreground">{t('recruit.wizard.culture')}</span>
+                          <span className="font-medium">{tv('recruit.culture', form.getValues('culture'))}</span>
                         </div>
                         {form.getValues('maxCandidates') && (
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">Max candidats</span>
+                            <span className="text-muted-foreground">{t('recruit.form.maxCandidatesShort')}</span>
                             <span className="font-medium">{form.getValues('maxCandidates')}</span>
                           </div>
                         )}
@@ -538,18 +545,18 @@ export default function CreateCampaignPage() {
                           </Badge>
                         ))}
                       </div>
-                      <h4 className="text-sm font-semibold mt-4">Types de projet</h4>
+                      <h4 className="text-sm font-semibold mt-4">{t('recruit.form.projectTypes')}</h4>
                       <div className="flex flex-wrap gap-2">
-                        {selectedProjectTypes.map((t) => (
-                          <Badge key={t} variant="secondary" appearance="light" size="sm">
-                            {t}
+                        {selectedProjectTypes.map((pt) => (
+                          <Badge key={pt} variant="secondary" appearance="light" size="sm">
+                            {projectTypeLabel(pt) ? t(projectTypeLabel(pt)!) : pt}
                           </Badge>
                         ))}
                       </div>
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <h4 className="text-sm font-semibold">Description</h4>
+                    <h4 className="text-sm font-semibold">{t('onboarding.custom.description')}</h4>
                     <p className="text-sm text-muted-foreground whitespace-pre-wrap">
                       {form.getValues('jobDescription')}
                     </p>
@@ -581,7 +588,7 @@ export default function CreateCampaignPage() {
                 disabled={step === 0}
               >
                 <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
-                Precedent
+                {t('common.previous')}
               </Button>
               {step < STEPS.length - 1 ? (
                 <Button
@@ -591,7 +598,7 @@ export default function CreateCampaignPage() {
                   onClick={goNext}
                   disabled={!canProceed()}
                 >
-                  Suivant
+                  {t('common.next')}
                   <KeenIcon icon="arrow-right" style="duotone" className="size-4" />
                 </Button>
               ) : (
@@ -604,12 +611,12 @@ export default function CreateCampaignPage() {
                   {createMutation.isPending ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                      Creation...
+                      {t('mentoring.creating')}
                     </>
                   ) : (
                     <>
                       <KeenIcon icon="check" style="duotone" className="size-4" />
-                      Créer la campagne
+                      {t('recruit.createBtn')}
                     </>
                   )}
                 </Button>

@@ -39,6 +39,10 @@ import { CandidateStatusBadge } from '../components/candidate-status-badge';
 import { CampaignLinkShare } from '../components/campaign-link-share';
 import { CampaignWorkflowStepper } from '../components/campaign-workflow-stepper';
 import type { CandidateResult } from '../types/recruitment.types';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useTv } from '@/i18n/app/use-t';
+import { useAppLocale } from '@/providers/locale-provider';
+import { useT } from '@/i18n/app/use-t';
 
 function StatCard({ label, value, icon, color }: { label: string; value: string | number; icon: string; color: string }) {
   return (
@@ -57,12 +61,12 @@ function StatCard({ label, value, icon, color }: { label: string; value: string 
 }
 
 const SORT_OPTIONS = [
-  { value: 'globalScore', label: 'Score global' },
-  { value: 'hardSkillsScore', label: 'Hard Skills' },
-  { value: 'softSkillsScore', label: 'Soft Skills' },
-  { value: 'reliabilityScore', label: 'Fiabilité' },
-  { value: 'adaptabilityScore', label: 'Adaptabilité' },
-  { value: 'leadershipScore', label: 'Leadership' },
+  { value: 'globalScore', label: 'valo.overallScore' as AppMessageKey },
+  { value: 'hardSkillsScore', label: 'recruit.hardSkills' as AppMessageKey },
+  { value: 'softSkillsScore', label: 'recruit.softSkills' as AppMessageKey },
+  { value: 'reliabilityScore', label: 'recruit.reliability' as AppMessageKey },
+  { value: 'adaptabilityScore', label: 'recruit.adaptability' as AppMessageKey },
+  { value: 'leadershipScore', label: 'recruit.leadership' as AppMessageKey },
 ] as const;
 
 type SortKey = (typeof SORT_OPTIONS)[number]['value'];
@@ -76,6 +80,9 @@ function sortCandidates(candidates: CandidateResult[], sortBy: SortKey): Candida
 }
 
 export default function CampaignDetailPage() {
+  const tv = useTv();
+  const { intlLocale } = useAppLocale();
+  const t = useT();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -95,27 +102,27 @@ export default function CampaignDetailPage() {
   const handlePublish = async () => {
     try {
       await publishMutation.mutateAsync(id!);
-      toast.success('Campagne publiée ! Partagez le lien avec vos candidats.');
+      toast.success(t('recruit.detail.published'));
     } catch {
-      toast.error('Erreur lors de la publication');
+      toast.error(t('recruit.detail.publishError'));
     }
   };
 
   const handleClose = async () => {
     try {
       await closeMutation.mutateAsync(id!);
-      toast.success('Campagne clôturée.');
+      toast.success(t('recruit.detail.closed'));
     } catch {
-      toast.error('Erreur lors de la clôture');
+      toast.error(t('recruit.detail.closeError'));
     }
   };
 
   const handleArchive = async () => {
     try {
       await archiveMutation.mutateAsync(id!);
-      toast.success('Campagne archivée.');
+      toast.success(t('recruit.detail.archived'));
     } catch {
-      toast.error("Erreur lors de l'archivage");
+      toast.error(t('recruit.detail.archiveError'));
     }
   };
 
@@ -123,7 +130,7 @@ export default function CampaignDetailPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Chargement..." />
+          <ToolbarHeading title={t('mentoring.loading')} />
         </Toolbar>
         <Skeleton className="h-12 rounded-lg mb-5" />
         <Skeleton className="h-16 rounded-lg mb-5" />
@@ -144,13 +151,13 @@ export default function CampaignDetailPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Campagne introuvable" />
+          <ToolbarHeading title={t('recruit.join.notFound')} />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-muted-foreground text-sm">Cette campagne n'existe pas.</p>
+            <p className="text-muted-foreground text-sm">{t('recruit.detail.notExist')}</p>
             <Button variant="primary" size="sm" className="mt-4" asChild>
-              <Link to="/recruitment/campaigns">Retour aux campagnes</Link>
+              <Link to="/recruitment/campaigns">{t('recruit.detail.backToCampaigns')}</Link>
             </Button>
           </CardContent>
         </Card>
@@ -174,28 +181,28 @@ export default function CampaignDetailPage() {
           {/* US-8.7: capacity badges */}
           {isFull && (
             <Badge variant="destructive" appearance="light" size="sm">
-              Campagne complete
+              {t('recruit.join.full')}
             </Badge>
           )}
           {isAlmostFull && (
             <Badge variant="warning" appearance="light" size="sm">
-              Bientôt complet
+              {t('recruit.detail.almostFull')}
             </Badge>
           )}
           <DisabledWithTooltip
             disabled={campaign.status !== 'ACTIVE'}
-            reason={campaign.status === 'DRAFT' ? 'Publiez la campagne pour accéder à la shortlist' : 'Campagne non active'}
+            reason={campaign.status === 'DRAFT' ? t('recruit.detail.publishForShortlist') : t('recruit.detail.notActive')}
           >
             <Button variant="outline" size="sm" asChild={campaign.status === 'ACTIVE'}>
               {campaign.status === 'ACTIVE' ? (
                 <Link to={`/recruitment/campaigns/${id}/shortlist`}>
                   <KeenIcon icon="star" style="duotone" className="size-4" />
-                  Shortlist
+                  {t('recruit.shortlist')}
                 </Link>
               ) : (
                 <>
                   <KeenIcon icon="star" style="duotone" className="size-4" />
-                  Shortlist
+                  {t('recruit.shortlist')}
                 </>
               )}
             </Button>
@@ -203,7 +210,7 @@ export default function CampaignDetailPage() {
           <Button variant="outline" size="sm" asChild>
             <Link to="/recruitment/campaigns">
               <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
-              Retour
+              {t('common.back')}
             </Link>
           </Button>
         </ToolbarActions>
@@ -219,7 +226,7 @@ export default function CampaignDetailPage() {
             <CardContent className="py-4">
               <div className="flex items-center gap-3 mb-2">
                 <KeenIcon icon="share" style="duotone" className="size-4 text-primary" />
-                <span className="text-sm font-medium">Lien de candidature</span>
+                <span className="text-sm font-medium">{t('recruit.detail.applyLink')}</span>
               </div>
               {campaign.status === 'ACTIVE' && campaign.slug ? (
                 <CampaignLinkShare slug={campaign.slug} />
@@ -227,7 +234,7 @@ export default function CampaignDetailPage() {
                 <div className="flex items-center gap-2 rounded-lg bg-muted p-3">
                   <KeenIcon icon="information-2" style="duotone" className="size-4 text-muted-foreground shrink-0" />
                   <p className="text-sm text-muted-foreground">
-                    Publiez la campagne pour obtenir le lien de partage
+                    {t('recruit.detail.publishForLink')}
                   </p>
                 </div>
               )}
@@ -242,7 +249,7 @@ export default function CampaignDetailPage() {
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium flex items-center gap-2">
                   <KeenIcon icon="people" style="duotone" className="size-4 text-primary" />
-                  Candidats
+                  {t('recruit.col.candidates')}
                 </span>
                 <span className="text-sm font-bold">
                   {candidateCount} / {maxCandidates} candidats
@@ -264,15 +271,15 @@ export default function CampaignDetailPage() {
           <TabsList variant="line" className="mb-5">
             <TabsTrigger value="dashboard">
               <KeenIcon icon="chart-simple" style="duotone" className="size-4" />
-              Dashboard
+              {t('recruit.detail.dashboard')}
             </TabsTrigger>
             <TabsTrigger value="candidates">
               <KeenIcon icon="people" style="duotone" className="size-4" />
-              Candidats
+              {t('recruit.col.candidates')}
             </TabsTrigger>
             <TabsTrigger value="settings">
               <KeenIcon icon="setting-2" style="duotone" className="size-4" />
-              Paramètres
+              {t('recruit.wizard.settings')}
             </TabsTrigger>
           </TabsList>
 
@@ -294,13 +301,13 @@ export default function CampaignDetailPage() {
               <div className="space-y-5">
                 {/* KPI summary cards */}
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-                  <StatCard label="Total candidats" value={dashboard.totalCandidates} icon="people" color="bg-primary/10 text-primary" />
-                  <StatCard label="En attente" value={dashboard.pending} icon="time" color="bg-warning/10 text-warning" />
-                  <StatCard label="En cours" value={dashboard.inProgress} icon="loading" color="bg-info/10 text-info" />
-                  <StatCard label="Terminés" value={dashboard.completed} icon="check-circle" color="bg-success/10 text-success" />
-                  <StatCard label="Abandonnes" value={dashboard.abandoned} icon="cross-circle" color="bg-destructive/10 text-destructive" />
+                  <StatCard label={t('recruit.detail.total')} value={dashboard.totalCandidates} icon="people" color="bg-primary/10 text-primary" />
+                  <StatCard label={t('recruit.candidateStatus.PENDING')} value={dashboard.pending} icon="time" color="bg-warning/10 text-warning" />
+                  <StatCard label={t('recruit.candidateStatus.IN_PROGRESS')} value={dashboard.inProgress} icon="loading" color="bg-info/10 text-info" />
+                  <StatCard label={t('recruit.col.completed')} value={dashboard.completed} icon="check-circle" color="bg-success/10 text-success" />
+                  <StatCard label={t('recruit.detail.abandoned')} value={dashboard.abandoned} icon="cross-circle" color="bg-destructive/10 text-destructive" />
                   <StatCard
-                    label="Score moyen"
+                    label={t('trainer.avgScore')}
                     value={dashboard.averageScore !== null ? `${Math.round(dashboard.averageScore)}%` : '-'}
                     icon="medal-star"
                     color="bg-primary/10 text-primary"
@@ -312,7 +319,7 @@ export default function CampaignDetailPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <Card>
                       <CardHeader>
-                        <CardTitle className="text-sm">Taux de completion</CardTitle>
+                        <CardTitle className="text-sm">{t('recruit.detail.completionRate')}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="flex flex-col items-center gap-3">
@@ -329,7 +336,7 @@ export default function CampaignDetailPage() {
                             <span className="text-xl font-bold">{Math.round(dashboard.completionRate)}%</span>
                           </div>
                           <p className="text-sm text-muted-foreground">
-                            {dashboard.completed} sur {dashboard.totalCandidates} candidats
+                            {t('recruit.detail.completedOf', { done: dashboard.completed, total: dashboard.totalCandidates })}
                           </p>
                           <Progress value={dashboard.completionRate} className="h-2.5 w-full" />
                         </div>
@@ -338,7 +345,7 @@ export default function CampaignDetailPage() {
 
                     <Card>
                       <CardHeader>
-                        <CardTitle className="text-sm">Score moyen</CardTitle>
+                        <CardTitle className="text-sm">{t('trainer.avgScore')}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="flex flex-col items-center gap-3">
@@ -357,7 +364,7 @@ export default function CampaignDetailPage() {
                             </span>
                           </div>
                           <p className="text-sm text-muted-foreground">
-                            {dashboard.averageScore !== null ? 'sur 100' : 'Aucun résultat'}
+                            {dashboard.averageScore !== null ? t('evaluation.outOf100') : t('recruit.detail.noResult')}
                           </p>
                         </div>
                       </CardContent>
@@ -368,7 +375,7 @@ export default function CampaignDetailPage() {
             ) : (
               <Card>
                 <CardContent className="py-8 text-center">
-                  <p className="text-muted-foreground text-sm">Aucune donnee disponible.</p>
+                  <p className="text-muted-foreground text-sm">{t('recruit.detail.noData')}</p>
                 </CardContent>
               </Card>
             )}
@@ -381,11 +388,11 @@ export default function CampaignDetailPage() {
                 <CardContent>
                   <EmptyState
                     icon="people"
-                    title="Aucun candidat"
+                    title={t('recruit.detail.noCandidates')}
                     description={
                       campaign.status === 'DRAFT'
-                        ? 'Publiez la campagne et partagez le lien pour recevoir des candidatures.'
-                        : 'Les candidats apparaîtront ici quand ils rejoindront la campagne. Partagez le lien !'
+                        ? t('recruit.detail.emptyDraft')
+                        : t('recruit.detail.emptyActive')
                     }
                   />
                 </CardContent>
@@ -394,7 +401,7 @@ export default function CampaignDetailPage() {
               <div className="space-y-4">
                 {/* US-10.6: Sort by competence */}
                 <div className="flex items-center justify-end gap-2">
-                  <span className="text-sm text-muted-foreground">Trier par compétence :</span>
+                  <span className="text-sm text-muted-foreground">{t('recruit.detail.sortBy')}</span>
                   <Select value={sortBy} onValueChange={(val) => setSortBy(val as SortKey)}>
                     <SelectTrigger className="w-full sm:w-[180px] h-9 text-xs">
                       <SelectValue />
@@ -402,7 +409,7 @@ export default function CampaignDetailPage() {
                     <SelectContent>
                       {SORT_OPTIONS.map((opt) => (
                         <SelectItem key={opt.value} value={opt.value}>
-                          {opt.label}
+                          {t(opt.label)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -415,24 +422,24 @@ export default function CampaignDetailPage() {
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead>Candidat</TableHead>
-                            <TableHead>Statut</TableHead>
-                            <TableHead className="text-center">Phase</TableHead>
-                            <TableHead className="text-center">Phase d'abandon</TableHead>
-                            <TableHead className="text-right">Score</TableHead>
+                            <TableHead>{t('recruit.candidate')}</TableHead>
+                            <TableHead>{t('actions.statusLabel')}</TableHead>
+                            <TableHead className="text-center">{t('recruit.detail.phase')}</TableHead>
+                            <TableHead className="text-center">{t('recruit.detail.abandonPhase')}</TableHead>
+                            <TableHead className="text-right">{t('recruit.score')}</TableHead>
                             <TableHead className="text-right">
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <span className="cursor-help">Match</span>
+                                  <span className="cursor-help">{t('recruit.match')}</span>
                                 </TooltipTrigger>
                                 <TooltipContent variant="light" className="max-w-[280px]">
-                                  Pourcentage d'adéquation entre les compétences du candidat et les exigences du poste.
+                                  {t('recruit.report.matchDesc')}
                                 </TooltipContent>
                               </Tooltip>
                             </TableHead>
-                            <TableHead className="text-right">Début</TableHead>
-                            <TableHead className="text-right">Fin</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
+                            <TableHead className="text-right">{t('recruit.detail.start')}</TableHead>
+                            <TableHead className="text-right">{t('recruit.detail.end')}</TableHead>
+                            <TableHead className="text-right">{t('recruit.col.actions')}</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -449,7 +456,7 @@ export default function CampaignDetailPage() {
                                   <p className="text-sm font-medium">
                                     {candidate.user
                                       ? `${candidate.user.firstName} ${candidate.user.lastName}`
-                                      : 'Candidat inconnu'}
+                                      : t('recruit.detail.unknown')}
                                   </p>
                                   {candidate.user && (
                                     <p className="text-sm text-muted-foreground">{candidate.user.email}</p>
@@ -466,7 +473,7 @@ export default function CampaignDetailPage() {
                                 {candidate.status === 'ABANDONED' && candidate.abandonedPhase
                                   ? (
                                     <Badge variant="destructive" appearance="light" size="sm">
-                                      Phase {candidate.abandonedPhase}
+                                      {t('recruit.detail.phaseN', { n: candidate.abandonedPhase })}
                                     </Badge>
                                   )
                                   : '-'}
@@ -483,12 +490,12 @@ export default function CampaignDetailPage() {
                               </TableCell>
                               <TableCell className="text-right text-xs text-muted-foreground">
                                 {candidate.startedAt
-                                  ? new Date(candidate.startedAt).toLocaleDateString('fr-FR')
+                                  ? new Date(candidate.startedAt).toLocaleDateString(intlLocale)
                                   : '-'}
                               </TableCell>
                               <TableCell className="text-right text-xs text-muted-foreground">
                                 {candidate.completedAt
-                                  ? new Date(candidate.completedAt).toLocaleDateString('fr-FR')
+                                  ? new Date(candidate.completedAt).toLocaleDateString(intlLocale)
                                   : '-'}
                               </TableCell>
                               <TableCell className="text-right">
@@ -519,47 +526,41 @@ export default function CampaignDetailPage() {
             <div className="space-y-5">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-sm">Informations de la campagne</CardTitle>
+                  <CardTitle className="text-sm">{t('recruit.detail.info')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 text-sm">
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <span className="text-muted-foreground">Poste</span>
+                      <span className="text-muted-foreground">{t('recruit.col.job')}</span>
                       <p className="font-medium">{campaign.jobTitle}</p>
                     </div>
                     <div>
-                      <span className="text-muted-foreground">Expérience</span>
-                      <p className="font-medium">{campaign.experienceLevel}</p>
+                      <span className="text-muted-foreground">{t('recruit.form.experience')}</span>
+                      <p className="font-medium">{tv('recruit.level', campaign.experienceLevel)}</p>
                     </div>
                     <div>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <span className="text-muted-foreground cursor-help">Culture</span>
+                          <span className="text-muted-foreground cursor-help">{t('recruit.wizard.culture')}</span>
                         </TooltipTrigger>
                         <TooltipContent variant="light" className="max-w-[300px]">
-                          {campaign.culture === 'AGILE'
-                            ? 'Environnement agile : favorise l\'adaptabilité, la collaboration et les itérations rapides.'
-                            : campaign.culture === 'STRICT'
-                              ? 'Environnement strict : processus formalisés, hiérarchie claire et respect des procédures.'
-                              : campaign.culture === 'COLLABORATIVE'
-                                ? 'Environnement collaboratif : travail d\'équipe, communication ouverte et prise de décision collective.'
-                                : 'Type de culture organisationnelle de l\'entreprise.'}
+                          {tv('recruit.cultureHint', campaign.culture, t('recruit.cultureHint.default'))}
                         </TooltipContent>
                       </Tooltip>
-                      <p className="font-medium">{campaign.culture}</p>
+                      <p className="font-medium">{tv('recruit.culture', campaign.culture)}</p>
                     </div>
                     <div>
-                      <span className="text-muted-foreground">Max candidats</span>
-                      <p className="font-medium">{campaign.maxCandidates ?? 'Illimité'}</p>
+                      <span className="text-muted-foreground">{t('recruit.form.maxCandidatesShort')}</span>
+                      <p className="font-medium">{campaign.maxCandidates ?? t('recruit.form.unlimited')}</p>
                     </div>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Description</span>
+                    <span className="text-muted-foreground">{t('onboarding.custom.description')}</span>
                     <p className="mt-1 whitespace-pre-wrap">{campaign.jobDescription}</p>
                   </div>
                   {campaign.requiredSkills.length > 0 && (
                     <div>
-                      <span className="text-muted-foreground">Compétences</span>
+                      <span className="text-muted-foreground">{t('recruit.wizard.skills')}</span>
                       <div className="flex flex-wrap gap-2 mt-1">
                         {campaign.requiredSkills.map((s, i) => (
                           <Tooltip key={i}>
@@ -581,7 +582,7 @@ export default function CampaignDetailPage() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-sm">Actions</CardTitle>
+                  <CardTitle className="text-sm">{t('recruit.col.actions')}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-wrap gap-3">
                   {campaign.status === 'DRAFT' && (
@@ -589,20 +590,19 @@ export default function CampaignDetailPage() {
                       <AlertDialogTrigger asChild>
                         <Button variant="primary" size="sm">
                           <KeenIcon icon="rocket" style="duotone" className="size-4" />
-                          Publier la campagne
+                          {t('recruit.detail.publish')}
                         </Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Publier la campagne ?</AlertDialogTitle>
+                          <AlertDialogTitle>{t('recruit.detail.publishQ')}</AlertDialogTitle>
                           <AlertDialogDescription>
-                            La campagne sera accessible via un lien public.
-                            Les candidats pourront commencer leur évaluation.
+                            {t('recruit.detail.publishConfirm')}
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Annuler</AlertDialogCancel>
-                          <AlertDialogAction onClick={handlePublish}>Publier</AlertDialogAction>
+                          <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+                          <AlertDialogAction onClick={handlePublish}>{t('recruit.step.publish')}</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
@@ -613,28 +613,27 @@ export default function CampaignDetailPage() {
                       <AlertDialogTrigger asChild>
                         <Button variant="destructive" size="sm">
                           <KeenIcon icon="lock" style="duotone" className="size-4" />
-                          Clôturer la campagne
+                          {t('recruit.detail.close')}
                         </Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Clôturer la campagne ?</AlertDialogTitle>
+                          <AlertDialogTitle>{t('recruit.detail.closeQ')}</AlertDialogTitle>
                           <AlertDialogDescription>
-                            Plus aucun candidat ne pourra s'inscrire.
-                            Les évaluations en cours pourront se terminer.
+                            {t('recruit.detail.closeConfirm')}
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Annuler</AlertDialogCancel>
-                          <AlertDialogAction onClick={handleClose}>Clôturer</AlertDialogAction>
+                          <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+                          <AlertDialogAction onClick={handleClose}>{t('recruit.step.close')}</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
                   ) : campaign.status === 'DRAFT' ? (
-                    <DisabledWithTooltip disabled reason="Disponible après publication">
+                    <DisabledWithTooltip disabled reason={t('recruit.detail.afterPublish')}>
                       <Button variant="destructive" size="sm">
                         <KeenIcon icon="lock" style="duotone" className="size-4" />
-                        Clôturer la campagne
+                        {t('recruit.detail.close')}
                       </Button>
                     </DisabledWithTooltip>
                   ) : null}
@@ -644,28 +643,27 @@ export default function CampaignDetailPage() {
                       <AlertDialogTrigger asChild>
                         <Button variant="outline" size="sm">
                           <KeenIcon icon="archive" style="duotone" className="size-4" />
-                          Archiver
+                          {t('emails.archive')}
                         </Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Archiver la campagne ?</AlertDialogTitle>
+                          <AlertDialogTitle>{t('recruit.detail.archiveQ')}</AlertDialogTitle>
                           <AlertDialogDescription>
-                            La campagne sera déplacée dans les archives.
-                            Les données resteront consultables.
+                            {t('recruit.detail.archiveConfirm')}
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Annuler</AlertDialogCancel>
-                          <AlertDialogAction onClick={handleArchive}>Archiver</AlertDialogAction>
+                          <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+                          <AlertDialogAction onClick={handleArchive}>{t('emails.archive')}</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
                   ) : (campaign.status === 'ACTIVE' || campaign.status === 'DRAFT') ? (
-                    <DisabledWithTooltip disabled reason="Fermez d'abord la campagne">
+                    <DisabledWithTooltip disabled reason={t('recruit.detail.closeFirst')}>
                       <Button variant="outline" size="sm">
                         <KeenIcon icon="archive" style="duotone" className="size-4" />
-                        Archiver
+                        {t('emails.archive')}
                       </Button>
                     </DisabledWithTooltip>
                   ) : null}

@@ -17,8 +17,10 @@ import {
 } from 'recharts';
 import { useCandidateReport, useCampaign } from '../api/recruitment.api';
 import { CandidateStatusBadge } from '../components/candidate-status-badge';
+import { useT } from '@/i18n/app/use-t';
 
 export default function CandidateReportPage() {
+  const t = useT();
   const { id, candidateId } = useParams<{ id: string; candidateId: string }>();
   const { data: candidate, isLoading, error } = useCandidateReport(id!, candidateId!);
   const { data: campaign } = useCampaign(id!);
@@ -27,7 +29,7 @@ export default function CandidateReportPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Chargement..." />
+          <ToolbarHeading title={t('mentoring.loading')} />
         </Toolbar>
         <div className="flex justify-center py-16">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
@@ -40,13 +42,13 @@ export default function CandidateReportPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Rapport candidat" />
+          <ToolbarHeading title={t('recruit.report.title')} />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-destructive text-sm">Impossible de charger le rapport.</p>
+            <p className="text-destructive text-sm">{t('recruit.report.loadError')}</p>
             <Button variant="outline" size="sm" className="mt-4" asChild>
-              <Link to={`/recruitment/campaigns/${id}`}>Retour</Link>
+              <Link to={`/recruitment/campaigns/${id}`}>{t('common.back')}</Link>
             </Button>
           </CardContent>
         </Card>
@@ -56,40 +58,40 @@ export default function CandidateReportPage() {
 
   const candidateName = candidate.user
     ? `${candidate.user.firstName} ${candidate.user.lastName}`
-    : 'Candidat';
+    : t('recruit.candidate');
 
   const radarData = candidate.report360
     ? [
-        { axis: 'Hard Skills', value: candidate.report360.hardSkills.score },
-        { axis: 'Soft Skills', value: candidate.report360.softSkills.score },
-        { axis: 'Fiabilité', value: candidate.report360.reliability.score },
-        { axis: 'Adaptabilité', value: candidate.report360.adaptability.score },
-        { axis: 'Leadership', value: candidate.report360.leadership.score },
+        { axis: t('recruit.hardSkills'), value: candidate.report360.hardSkills.score },
+        { axis: t('recruit.softSkills'), value: candidate.report360.softSkills.score },
+        { axis: t('recruit.reliability'), value: candidate.report360.reliability.score },
+        { axis: t('recruit.adaptability'), value: candidate.report360.adaptability.score },
+        { axis: t('recruit.leadership'), value: candidate.report360.leadership.score },
       ]
     : [
-        { axis: 'Hard Skills', value: candidate.hardSkillsScore ?? 0 },
-        { axis: 'Soft Skills', value: candidate.softSkillsScore ?? 0 },
-        { axis: 'Fiabilité', value: candidate.reliabilityScore ?? 0 },
-        { axis: 'Adaptabilité', value: candidate.adaptabilityScore ?? 0 },
-        { axis: 'Leadership', value: candidate.leadershipScore ?? 0 },
+        { axis: t('recruit.hardSkills'), value: candidate.hardSkillsScore ?? 0 },
+        { axis: t('recruit.softSkills'), value: candidate.softSkillsScore ?? 0 },
+        { axis: t('recruit.reliability'), value: candidate.reliabilityScore ?? 0 },
+        { axis: t('recruit.adaptability'), value: candidate.adaptabilityScore ?? 0 },
+        { axis: t('recruit.leadership'), value: candidate.leadershipScore ?? 0 },
       ];
 
   return (
     <div className="container space-y-5">
       <Toolbar>
-        <ToolbarHeading title={`Rapport 360 - ${candidateName}`} />
+        <ToolbarHeading title={t('recruit.report.titleFor', { name: candidateName })} />
         <ToolbarActions>
           <CandidateStatusBadge status={candidate.status} />
           <Button variant="outline" size="sm" asChild>
             <Link to={`/recruitment/campaigns/${id}/candidates/${candidateId}/interview`}>
               <KeenIcon icon="message-text" style="duotone" className="size-4" />
-              Guide d'entretien
+              {t('recruit.guide.title')}
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
             <Link to={`/recruitment/campaigns/${id}`}>
               <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
-              Retour
+              {t('common.back')}
             </Link>
           </Button>
         </ToolbarActions>
@@ -116,22 +118,22 @@ export default function CandidateReportPage() {
                   </span>
                 </div>
               </div>
-              <p className="text-sm font-medium mt-3">Score global</p>
-              <p className="text-sm text-muted-foreground">sur 100</p>
+              <p className="text-sm font-medium mt-3">{t('valo.overallScore')}</p>
+              <p className="text-sm text-muted-foreground">{t('evaluation.outOf100')}</p>
 
               {candidate.matchPercentage !== undefined && candidate.matchPercentage !== null && (
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="w-full mt-6 space-y-2 cursor-help">
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Compatibilité</span>
+                        <span className="text-muted-foreground">{t('recruit.compatibility')}</span>
                         <span className="font-semibold">{Math.round(candidate.matchPercentage)}%</span>
                       </div>
                       <Progress value={candidate.matchPercentage} className="h-2" />
                     </div>
                   </TooltipTrigger>
                   <TooltipContent variant="light" className="max-w-[280px]">
-                    Pourcentage d'adéquation entre les compétences du candidat et les exigences du poste.
+                    {t('recruit.report.matchDesc')}
                   </TooltipContent>
                 </Tooltip>
               )}
@@ -141,7 +143,7 @@ export default function CandidateReportPage() {
           {/* Radar chart */}
           <Card className="md:col-span-2">
             <CardHeader>
-              <CardTitle className="text-sm">Profil de compétences</CardTitle>
+              <CardTitle className="text-sm">{t('recruit.report.skillsProfile')}</CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -157,7 +159,7 @@ export default function CandidateReportPage() {
                     tick={{ fontSize: 10, fill: 'var(--color-muted-foreground)' }}
                   />
                   <Radar
-                    name="Score"
+                    name={t('recruit.score')}
                     dataKey="value"
                     stroke="var(--color-primary)"
                     fill="var(--color-primary)"
@@ -174,11 +176,11 @@ export default function CandidateReportPage() {
         {candidate.report360 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
-              { key: 'hardSkills' as const, label: 'Hard Skills', icon: 'code' },
-              { key: 'softSkills' as const, label: 'Soft Skills', icon: 'people' },
-              { key: 'reliability' as const, label: 'Fiabilité', icon: 'shield-tick' },
-              { key: 'adaptability' as const, label: 'Adaptabilité', icon: 'arrows-loop' },
-              { key: 'leadership' as const, label: 'Leadership', icon: 'crown' },
+              { key: 'hardSkills' as const, label: t('recruit.hardSkills'), icon: 'code' },
+              { key: 'softSkills' as const, label: t('recruit.softSkills'), icon: 'people' },
+              { key: 'reliability' as const, label: t('recruit.reliability'), icon: 'shield-tick' },
+              { key: 'adaptability' as const, label: t('recruit.adaptability'), icon: 'arrows-loop' },
+              { key: 'leadership' as const, label: t('recruit.leadership'), icon: 'crown' },
             ].map(({ key, label, icon }) => (
               <Card key={key}>
                 <CardHeader className="pb-2">
@@ -205,7 +207,7 @@ export default function CandidateReportPage() {
             <CardHeader>
               <CardTitle className="text-sm flex items-center gap-2">
                 <KeenIcon icon="check-circle" style="duotone" className="size-4 text-success" />
-                Points forts
+                {t('valo.strengths')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -219,7 +221,7 @@ export default function CandidateReportPage() {
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm text-muted-foreground">Aucun point fort identifié.</p>
+                <p className="text-sm text-muted-foreground">{t('recruit.report.noStrengths')}</p>
               )}
             </CardContent>
           </Card>
@@ -227,7 +229,7 @@ export default function CandidateReportPage() {
             <CardHeader>
               <CardTitle className="text-sm flex items-center gap-2">
                 <KeenIcon icon="information-2" style="duotone" className="size-4 text-warning" />
-                Points d'amélioration
+                {t('recruit.report.improvements')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -241,7 +243,7 @@ export default function CandidateReportPage() {
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm text-muted-foreground">Aucun point d'amélioration identifié.</p>
+                <p className="text-sm text-muted-foreground">{t('recruit.report.noImprovements')}</p>
               )}
             </CardContent>
           </Card>
@@ -253,7 +255,7 @@ export default function CandidateReportPage() {
             <CardHeader>
               <CardTitle className="text-sm flex items-center gap-2">
                 <KeenIcon icon="chart-simple" style="duotone" className="size-4 text-primary" />
-                Adéquation au poste
+                {t('recruit.report.jobFit')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-5">
@@ -271,13 +273,13 @@ export default function CandidateReportPage() {
                 >
                   <span className="text-2xl font-bold">{Math.round(candidate.matchPercentage)}%</span>
                 </div>
-                <p className="text-sm font-medium">Compatibilité avec le poste</p>
+                <p className="text-sm font-medium">{t('recruit.report.jobCompat')}</p>
               </div>
 
               {/* Gap analysis: required vs demonstrated */}
               {campaign?.requiredSkills && campaign.requiredSkills.length > 0 && candidate.competencyScores && (
                 <div className="space-y-3">
-                  <h4 className="text-sm font-semibold">Analyse des écarts</h4>
+                  <h4 className="text-sm font-semibold">{t('recruit.report.gaps')}</h4>
                   {campaign.requiredSkills.map((req) => {
                     const demonstrated = candidate.competencyScores?.[req.skill] ?? 0;
                     const requiredNormalized = req.weight * 10; // weight 1-10 -> 10-100 (poids: 1 = peu important, 10 = critique)
@@ -306,7 +308,7 @@ export default function CandidateReportPage() {
                         <div className="flex items-center gap-2">
                           <div className="flex-1 space-y-1">
                             <div className="flex items-center gap-2">
-                              <span className="text-[10px] text-muted-foreground w-16">Requis</span>
+                              <span className="text-[10px] text-muted-foreground w-16">{t('recruit.report.required')}</span>
                               <div className="flex-1 h-1.5 bg-accent rounded-full overflow-hidden">
                                 <div
                                   className="h-full bg-muted-foreground/40 rounded-full"
@@ -316,7 +318,7 @@ export default function CandidateReportPage() {
                               <span className="text-[10px] text-muted-foreground w-8 text-right">{requiredNormalized}%</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className="text-[10px] text-muted-foreground w-16">Démontré</span>
+                              <span className="text-[10px] text-muted-foreground w-16">{t('recruit.report.shown')}</span>
                               <div className="flex-1 h-1.5 bg-accent rounded-full overflow-hidden">
                                 <div
                                   className={cn(
@@ -345,7 +347,7 @@ export default function CandidateReportPage() {
             <CardHeader>
               <CardTitle className="text-sm flex items-center gap-2">
                 <KeenIcon icon="artificial-intelligence" style="duotone" className="size-4 text-primary" />
-                Analyse détaillée
+                {t('recruit.report.detailed')}
               </CardTitle>
             </CardHeader>
             <CardContent>
