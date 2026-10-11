@@ -1,0 +1,23 @@
+/* Stylesheet of the PUBLIC site entry (site.html → site-main.tsx).
+   Tailwind only scans the public pages and the few UI components they use, so the
+   public stylesheet carries none of the application's layouts, icon fonts or editors.
+   Tokens, fonts and base rules come from theme.css, shared with the application. */
+@import 'tailwindcss' source(none);
+@source "../../site.html";
+@source "../site-app.tsx";
+@source "../site-main.tsx";
+@source "../features/landing";
+@source "../i18n";
+@source "../components/logo";
+@source "../components/ui/button.tsx";
+@source "../components/ui/avatar.tsx";
+@source "../components/ui/form.tsx";
+@source "../components/ui/label.tsx";
+@source "../components/ui/input.tsx";
+@source "../components/ui/textarea.tsx";
+@import 'tw-animate-css';
+
+/** Dark Mode Variant **/
+@custom-variant dark (&:is(.dark *));
+
+@import './theme.css';

@@ -10,7 +10,7 @@ import { FinalCta } from '../sections/final-cta';
 /** Public home page. Nav, footer, locale and document head come from `PublicShell`. */
 export default function LandingPage() {
   return (
-    <>
+    <main>
       <HeroSection />
       <PilotBand />
       <HowItWorksSection />
@@ -19,6 +19,6 @@ export default function LandingPage() {
       <PricingSection />
       <FaqSection />
       <FinalCta />
-    </>
+    </main>
   );
 }

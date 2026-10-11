@@ -30,7 +30,7 @@ function LinkColumn({ titleId, links }: { titleId: 'footer.product' | 'footer.co
   const { formatMessage } = useIntl();
   return (
     <div>
-      <h3 className="mb-5 text-sm font-semibold text-white">{formatMessage({ id: titleId })}</h3>
+      <h2 className="mb-5 text-sm font-semibold text-white">{formatMessage({ id: titleId })}</h2>
       <ul className="space-y-3">
         {links.map((link) => (
           <li key={link.labelKey}>

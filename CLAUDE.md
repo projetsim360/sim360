@@ -97,7 +97,9 @@ Domain modules:
 - State: TanStack React Query for server state (staleTime: 5min), no global state library
 - Routing: `src/routing/app-routing-setup.tsx` with auth provider, layout switcher, socket/notification providers
 - Menu config: `src/config/menu.config.ts` is the single source of truth for all navigation menus
-- Public site (landing, `/` and `/en`): separate entry `site.html` → `src/site-main.tsx` → `src/features/landing/`, prerendered to `dist/site-fr.html` / `dist/site-en.html` by `scripts/prerender.mjs` during `pnpm build`. Which paths use it: `apps/webapp/public-paths.mjs` (dev/preview middleware) and the `$spa_entry` map in `nginx.prod.conf.template` (prod). Public pages must stay SSR-safe (no `window`/`localStorage` during render) and read the session from `usePublicSession()`, not `useAuth()`.
+- Public site (landing and footer pages, `/` and `/en/*`, slugs in `apps/webapp/public-paths.mjs`): separate entry `site.html` → `src/site-main.tsx` → `src/features/landing/`, prerendered to `dist/site-fr.html` / `dist/site-en.html` by `scripts/prerender.mjs` during `pnpm build`. Which paths use it: `apps/webapp/public-paths.mjs` (dev/preview middleware) and the `$spa_entry` map in `nginx.prod.conf.template` (prod). Public pages must stay SSR-safe (no `window`/`localStorage` during render) and read the session from `usePublicSession()`, not `useAuth()`.
+- Stylesheets: `src/styles/theme.css` (fonts, tokens, Tailwind token mapping, base rules) is shared by `globals.css` (application, adds icon fonts, shell, editors) and `site.css` (public entry, Tailwind scoped to the public sources). Put application-only CSS in `globals.css`, never in `theme.css`.
+- Public site checks: `pnpm test:smoke:landing`, `pnpm test:smoke:public`, `pnpm test:a11y:public` (against `vite preview`), `pnpm demo:video` regenerates the demo video (`tools/demo-video/README.md`).
 
 #### Design System (MUST follow)
 

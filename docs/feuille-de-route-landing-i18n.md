@@ -187,3 +187,32 @@ Dépendances externes : validation de la grille de prix (D2), textes légaux et 
 - Blog et contenu éditorial.
 - Analytics et bandeau de consentement (seulement si un traceur est ajouté).
 - Autres langues que FR/EN.
+
+---
+
+## 6. Suivi d'exécution (11 octobre 2026)
+
+Boucle lancée sur demande : un sprint par branche, PR mergée dans `main` avant le sprint suivant. Les chiffres Lighthouse viennent de `vite preview` en local (simulation mobile 4G lente, CPU ×4).
+
+| Sprint | PR | Contenu livré | Vérifications |
+|---|---|---|---|
+| 1 | #9, mergée | Landing découpée en `features/landing/`, FR à `/` et EN à `/en`, CTA connectés, grille CAD, bande pilote à la place des preuves fictives, garde-fou « IA » | 11 tests unitaires, smoke 8 cas |
+| 2 | #10, mergée | Motion (mesh, parallaxe, rail de progression, maquettes animées), entrée publique séparée `site.html` (166 Ko gz de JS au lieu de 330+), prérendu statique, WebP, Montserrat WOFF2, contrastes, robots et sitemap | Lighthouse mobile 4 → 73, desktop 30 → 96, a11y/SEO 100 |
+| 3 | #11, mergée | 9 pages publiques FR/EN avec slugs traduits, `GET /public/scenarios`, `POST /public/contact` (anti-spam, 5/h/IP, courriel Resend), textes légaux Loi 25 avec champs « à compléter » | smoke pages 18 cas, tests API 21 |
+| 4 | #12, mergée | Chaîne `tools/demo-video/` (voix `say` Amélie/Samantha, captation Playwright 720p, ffmpeg), `demo-fr` et `demo-en` (~2,7 Mo, 68 s) + sous-titres + affiche, hébergés dans le projet | smoke pages 18 cas, images extraites relues |
+| 5 | #13 | Balayage axe sur les 20 pages (aucune violation, repères `main` et ordre des titres corrigés), réactif 375/768/1024/1440 sans débordement, `theme.css` partagé + `site.css` restreint aux sources publiques (76 Ko gz → 12 Ko gz) | Lighthouse mobile 81 (LCP 3,4 s), desktop 98 ; smoke 8 + 18 cas |
+
+### Écarts par rapport au plan
+
+- **Vidéo** : images du site public et de ses maquettes animées, pas de l'application. Le compte démo n'existe pas en production et aucune pile locale n'était disponible (pas de Docker). `tools/demo-video/README.md` explique comment ajouter des scènes produit ; la chaîne ne change pas.
+- **`hero-dashboard.webp`** montre toujours l'ancien tableau de bord : même cause.
+- **Textes légaux** : rédigés en FR et EN, à valider par un juriste ; `content/legal-entity.ts` porte NEQ, adresse et responsable Loi 25 en « à compléter ».
+- **CI GitHub** : aucun run créé pour les PR #11 et #12 malgré ouverture, réouverture et push ; vérifications faites en local (typecheck, lint, tests, build) et CI exécutée sur `main` après merge.
+- **Limites des plans** : les quotas affichés (réunions par mois) ne sont pas encore appliqués par l'API (hors périmètre, à faire avant de vendre).
+
+### Prochaines actions côté toi
+
+1. Redeploy des services web et API sur Kapapra (nginx a changé : slugs publics sur l'apex, fichiers prérendus, cache des médias).
+2. `CONTACT_EMAIL` sur le service API (sinon `SMTP_FROM`, puis hello@simex.pro).
+3. Compléter `apps/webapp/src/features/landing/content/legal-entity.ts` et faire relire les pages légales.
+4. Quand une pile avec le compte démo est disponible : captures produit pour la vidéo et le hero.
