@@ -5,6 +5,7 @@ import { PrismaService } from '@sim360/core';
 import {
   PLAN_LABEL,
   PLAN_LIMITS,
+  PLAN_RANK,
   includesPlan,
   monthlyLimit,
   remaining,
@@ -41,7 +42,7 @@ export class PlanQuotaService {
   }
 
   async usage(tenantId: string, userId: string, now = new Date()): Promise<PlanUsage> {
-    const plan = await this.planOf(tenantId);
+    const plan = await this.planOf(tenantId, userId);
     const since = startOfMonth(now);
     const [text, voice] = await Promise.all([
       this.countStarted(tenantId, userId, 'TEXT', since),
@@ -63,7 +64,7 @@ export class PlanQuotaService {
   /** Before a meeting moves to IN_PROGRESS (or switches to voice). */
   async assertCanStartMeeting(tenantId: string, userId: string, mode: MeetingMode, now = new Date()) {
     if (!this.enforced) return;
-    const plan = await this.planOf(tenantId);
+    const plan = await this.planOf(tenantId, userId);
     const limit = monthlyLimit(plan, mode);
     if (limit === null) return;
     const kind = mode === 'AUDIO' ? 'vocales' : 'écrites';
@@ -79,9 +80,9 @@ export class PlanQuotaService {
   }
 
   /** Before a simulation is created from a scenario. */
-  async assertCanUseScenario(tenantId: string, requiredPlan: TenantPlan) {
+  async assertCanUseScenario(tenantId: string, requiredPlan: TenantPlan, userId?: string) {
     if (!this.enforced) return;
-    const plan = await this.planOf(tenantId);
+    const plan = await this.planOf(tenantId, userId);
     if (!includesPlan(plan, requiredPlan)) {
       throw this.denied(
         `Ce scénario fait partie du plan ${PLAN_LABEL[requiredPlan]}. Votre plan actuel : ${PLAN_LABEL[plan]}.`,
@@ -90,9 +91,9 @@ export class PlanQuotaService {
   }
 
   /** Before a learner plans a custom meeting. */
-  async assertCanCreateCustomMeeting(tenantId: string) {
+  async assertCanCreateCustomMeeting(tenantId: string, userId?: string) {
     if (!this.enforced) return;
-    const plan = await this.planOf(tenantId);
+    const plan = await this.planOf(tenantId, userId);
     if (!PLAN_LIMITS[plan].customMeetings) {
       throw this.denied(`Les réunions personnalisées font partie du plan ${PLAN_LABEL.PRO}.`);
     }
@@ -102,10 +103,17 @@ export class PlanQuotaService {
     return new ForbiddenException(`${PLAN_QUOTA_ERROR}:${message}`);
   }
 
-  private async planOf(tenantId: string): Promise<TenantPlan> {
+  /**
+   * Effective plan: the higher of the tenant plan (team contracts) and the user's personal
+   * plan (individual Stripe subscription). Sign-ups share one tenant, so personal plans
+   * must never be written on the tenant.
+   */
+  private async planOf(tenantId: string, userId?: string): Promise<TenantPlan> {
     const tenant = await this.prisma.tenant.findUnique({ where: { id: tenantId }, select: { plan: true } });
     if (!tenant) throw new NotFoundException('Tenant introuvable');
-    return tenant.plan;
+    if (!userId) return tenant.plan;
+    const user = await this.prisma.user.findUnique({ where: { id: userId }, select: { plan: true } });
+    return user?.plan && PLAN_RANK[user.plan] > PLAN_RANK[tenant.plan] ? user.plan : tenant.plan;
   }
 
   private countStarted(tenantId: string, userId: string, mode: MeetingMode, since: Date) {

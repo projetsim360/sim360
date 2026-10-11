@@ -111,7 +111,7 @@ export class SimulationsService {
 
     if (!scenario) throw new NotFoundException('Scenario introuvable');
     if (!scenario.isPublished) throw new BadRequestException('Ce scenario n\'est pas encore disponible');
-    await this.quotas.assertCanUseScenario(tenantId, scenario.requiredPlan);
+    await this.quotas.assertCanUseScenario(tenantId, scenario.requiredPlan, userId);
 
     const projectTemplate = scenario.projectTemplate as Record<string, any>;
     const initialKpis = scenario.initialKpis as Record<string, number>;

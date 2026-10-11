@@ -29,6 +29,7 @@ const GROUPS: SettingsScrollspyGroup[] = [
       { title: 'auth.field.password', target: 'auth_password' },
       { title: 'settings.social.title', target: 'auth_social' },
       { title: 'settings.nav.twoFactor', target: 'auth_two_factor' },
+      { title: 'billing.title', target: 'billing' },
     ],
   },
   {

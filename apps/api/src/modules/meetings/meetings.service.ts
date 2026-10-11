@@ -258,7 +258,7 @@ export class MeetingsService {
     if (simulation.status === 'COMPLETED' || simulation.status === 'ABANDONED') {
       throw new BadRequestException('Impossible de planifier une réunion dans une simulation terminée');
     }
-    await this.quotas.assertCanCreateCustomMeeting(tenantId);
+    await this.quotas.assertCanCreateCustomMeeting(tenantId, userId);
 
     const objectives = dto.objectives.map((o) => o.trim()).filter(Boolean);
     const meeting = await this.prisma.meeting.create({

@@ -27,6 +27,7 @@ import { RecruitmentModule } from './modules/recruitment/recruitment.module';
 import { MentoringModule } from './modules/mentoring/mentoring.module';
 import { ActionItemsModule } from './modules/action-items/action-items.module';
 import { PlansModule } from './modules/plans/plans.module';
+import { BillingModule } from './modules/billing';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { PlansModule } from './modules/plans/plans.module';
     MentoringModule,
     ActionItemsModule,
     PlansModule,
+    BillingModule,
   ],
   providers: [
     {

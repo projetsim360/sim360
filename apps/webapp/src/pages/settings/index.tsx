@@ -12,6 +12,7 @@ import { Preferences } from './components/preferences';
 import { Appearance } from './components/appearance';
 import { Notifications } from './components/notifications';
 import { DeleteAccount } from './components/delete-account';
+import { Billing } from './components/billing';
 import { useT } from '@/i18n/app/use-t';
 
 export function SettingsPage() {
@@ -64,6 +65,7 @@ export function SettingsPage() {
             <AuthPassword />
             <AuthSocial />
             <AuthTwoFactor />
+            <Billing />
             <Preferences />
             <Appearance />
             <Notifications />
