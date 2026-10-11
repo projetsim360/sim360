@@ -4,25 +4,15 @@ import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
 import { staggerItem } from '@/lib/motion';
 import type { Scenario } from '../types/simulation.types';
-import { getSectorIcon, getSectorLabel } from '../config/sectors';
-
-const DIFFICULTY_LABEL: Record<string, string> = {
-  BEGINNER: 'Débutant',
-  INTERMEDIATE: 'Intermédiaire',
-  ADVANCED: 'Avancé',
-  EXPERT: 'Expert',
-};
+import { getSectorIcon } from '../config/sectors';
+import { useTv } from '@/i18n/app/use-t';
+import { useT } from '@/i18n/app/use-t';
 
 const DIFFICULTY_PILL: Record<string, string> = {
   BEGINNER: 'bg-[var(--success-50)] text-[var(--success-700)]',
   INTERMEDIATE: 'bg-[var(--warning-50)] text-[var(--warning-700)]',
   ADVANCED: 'bg-[var(--error-50)] text-[var(--error-700)]',
   EXPERT: 'bg-[var(--error-50)] text-[var(--error-700)]',
-};
-
-const TYPE_LABEL: Record<string, string> = {
-  GREENFIELD: 'Nouveau projet',
-  BROWNFIELD: 'Reprise en cours',
 };
 
 interface ScenarioCardProps {
@@ -32,6 +22,8 @@ interface ScenarioCardProps {
 }
 
 export function ScenarioCard({ scenario, onSelect, recommended = false }: ScenarioCardProps) {
+  const tv = useTv();
+  const t = useT();
   const reduce = useReducedMotion();
   return (
     <motion.div variants={reduce ? undefined : staggerItem}>
@@ -46,12 +38,12 @@ export function ScenarioCard({ scenario, onSelect, recommended = false }: Scenar
                 <KeenIcon icon={getSectorIcon(scenario.sector)} style="duotone" className="text-sm text-[var(--brand-700)]" />
               </span>
               <span className="text-[10px] font-semibold uppercase tracking-[1px] text-[var(--neutral-400)]">
-                {getSectorLabel(scenario.sector)}
+                {tv('sector', scenario.sector)}
               </span>
             </div>
             {recommended && (
               <span className="rounded-full bg-[var(--accent-100)] px-2 py-0.5 text-[10px] font-bold text-[var(--accent-700)]">
-                Recommandé
+                {t('scenario.recommended')}
               </span>
             )}
           </div>
@@ -67,11 +59,11 @@ export function ScenarioCard({ scenario, onSelect, recommended = false }: Scenar
 
           <div className="mt-3 flex flex-wrap items-center gap-1.5">
             <span className={cn('rounded px-1.5 py-0.5 text-[10px] font-semibold', DIFFICULTY_PILL[scenario.difficulty] ?? 'bg-[var(--brand-50)] text-[var(--brand-700)]')}>
-              {DIFFICULTY_LABEL[scenario.difficulty] ?? scenario.difficulty}
+              {tv('difficulty', scenario.difficulty)}
             </span>
             {scenario.scenarioType && (
               <span className="rounded bg-[var(--brand-50)] px-1.5 py-0.5 text-[10px] text-[var(--brand-700)]">
-                {TYPE_LABEL[scenario.scenarioType] ?? scenario.scenarioType}
+                {tv('scenarioType', scenario.scenarioType)}
               </span>
             )}
           </div>

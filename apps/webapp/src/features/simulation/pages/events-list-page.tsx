@@ -13,6 +13,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { simulationApi } from '../api/simulation.api';
 import type { Simulation, RandomEvent } from '../types/simulation.types';
+import { useTv } from '@/i18n/app/use-t';
+import { useAppLocale } from '@/providers/locale-provider';
+import { useT } from '@/i18n/app/use-t';
 
 const SEVERITY_VARIANT: Record<string, 'info' | 'warning' | 'destructive'> = {
   LOW: 'info',
@@ -21,14 +24,8 @@ const SEVERITY_VARIANT: Record<string, 'info' | 'warning' | 'destructive'> = {
   CRITICAL: 'destructive',
 };
 
-const SEVERITY_LABEL: Record<string, string> = {
-  LOW: 'Faible',
-  MEDIUM: 'Moyen',
-  HIGH: 'Élevé',
-  CRITICAL: 'Critique',
-};
-
 export default function EventsListPage() {
+  const t = useT();
   const { id } = useParams<{ id: string }>();
   const [sim, setSim] = useState<Simulation | null>(null);
   const [loading, setLoading] = useState(true);
@@ -69,7 +66,7 @@ export default function EventsListPage() {
       <div className="container-fixed">
         <Toolbar>
           <ToolbarHeading>
-            <h1 className="text-xl font-medium text-gray-900">Événements aléatoires</h1>
+            <h1 className="text-xl font-medium text-gray-900">{t('lists.events.title')}</h1>
           </ToolbarHeading>
         </Toolbar>
         <Card>
@@ -85,16 +82,16 @@ export default function EventsListPage() {
     <div className="container-fixed space-y-5">
       <Toolbar>
         <ToolbarHeading>
-          <h1 className="text-xl font-medium text-gray-900">Événements aléatoires</h1>
+          <h1 className="text-xl font-medium text-gray-900">{t('lists.events.title')}</h1>
           <p className="text-sm text-gray-700">
-            {events.length} evenement(s) — {pending.length} en attente, {resolved.length} resolu(s)
+            {t('lists.events.summary', { total: events.length, pending: pending.length, resolved: resolved.length })}
           </p>
         </ToolbarHeading>
         <ToolbarActions>
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}`}>
               <KeenIcon icon="arrow-left" style="duotone" className="text-sm" />
-              Retour
+              {t('common.back')}
             </Link>
           </Button>
         </ToolbarActions>
@@ -105,8 +102,8 @@ export default function EventsListPage() {
           <CardContent>
             <EmptyState
               icon="flash"
-              title="Aucun événement"
-              description="Les événements aléatoires apparaîtront au fil de la simulation."
+              title={t('timelinePage.emptyTitle')}
+              description={t('lists.events.emptyText')}
             />
           </CardContent>
         </Card>
@@ -116,7 +113,7 @@ export default function EventsListPage() {
             <div className="space-y-3">
               <h2 className="text-sm font-semibold text-warning flex items-center gap-2">
                 <KeenIcon icon="flash" style="duotone" className="text-sm" />
-                En attente ({pending.length})
+                {t('lists.pending', { count: pending.length })}
               </h2>
               {pending.map((evt) => (
                 <EventCard key={evt.id} event={evt} simId={id!} />
@@ -128,7 +125,7 @@ export default function EventsListPage() {
             <div className="space-y-3">
               <h2 className="text-sm font-semibold text-success flex items-center gap-2">
                 <KeenIcon icon="check-circle" style="duotone" className="text-sm" />
-                Resolus ({resolved.length})
+                {t('lists.events.resolved', { count: resolved.length })}
               </h2>
               {resolved.map((evt) => (
                 <EventCard key={evt.id} event={evt} simId={id!} />
@@ -142,6 +139,9 @@ export default function EventsListPage() {
 }
 
 function EventCard({ event, simId }: { event: RandomEvent; simId: string }) {
+  const tv = useTv();
+  const { intlLocale } = useAppLocale();
+  const t = useT();
   const isResolved = event.selectedOption !== null;
 
   return (
@@ -157,7 +157,7 @@ function EventCard({ event, simId }: { event: RandomEvent; simId: string }) {
                 appearance="light"
                 size="sm"
               >
-                {SEVERITY_LABEL[event.severity] ?? event.severity}
+                {tv('severity', event.severity)}
               </Badge>
             </div>
             <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
@@ -165,24 +165,24 @@ function EventCard({ event, simId }: { event: RandomEvent; simId: string }) {
             </p>
             <div className="flex items-center gap-2 flex-wrap">
               <Badge variant="secondary" size="sm">
-                Phase {event.phaseOrder + 1}
+                {t('dashboard.active.phase', { n: event.phaseOrder + 1 })}
               </Badge>
               <Badge variant={isResolved ? 'success' : 'warning'} appearance="light" size="sm">
-                {isResolved ? 'Résolu' : 'En attente'}
+                {isResolved ? t('brownfield.resolved') : t('lists.waiting')}
               </Badge>
               <span className="text-xs text-muted-foreground">
-                Type : {event.type}
+                {t('lists.type', { type: event.type })}
               </span>
               {isResolved && event.resolvedAt && (
                 <span className="text-xs text-muted-foreground">
-                  {new Date(event.resolvedAt).toLocaleDateString('fr-FR')}
+                  {new Date(event.resolvedAt).toLocaleDateString(intlLocale)}
                 </span>
               )}
             </div>
           </div>
           <Button variant={isResolved ? 'outline' : 'primary'} size="sm" asChild>
             <Link to={`/simulations/${simId}/events/${event.id}`}>
-              {isResolved ? 'Voir' : 'Réagir'}
+              {isResolved ? t('lists.view') : t('lists.events.react')}
             </Link>
           </Button>
         </div>

@@ -1,7 +1,9 @@
 import { useShellState } from '@/components/layouts/simex-shell/state/shell-state-provider';
 import { KeenIcon } from '@/components/keenicons';
+import { useT } from '@/i18n/app/use-t';
 
 export function CockpitPmoBanner() {
+  const t = useT();
   const { setPmoOpen } = useShellState();
 
   return (
@@ -17,14 +19,14 @@ export function CockpitPmoBanner() {
         </span>
         <div>
           <span className="text-[11px] font-semibold uppercase tracking-[1px] text-[var(--brand-200)]">
-            Agent PMO
+            {t('shell.pmo.tab.chat')}
           </span>
           <p className="text-[13px] font-semibold text-white">
-            Votre coach vous accompagne à chaque décision de cette simulation.
+            {t('cockpit.coachText')}
           </p>
         </div>
       </div>
-      <span className="shrink-0 text-[13px] font-semibold text-[var(--accent-300)]">Ouvrir le coach →</span>
+      <span className="shrink-0 text-[13px] font-semibold text-[var(--accent-300)]">{t('dashboard.coach.cta')}</span>
     </button>
   );
 }

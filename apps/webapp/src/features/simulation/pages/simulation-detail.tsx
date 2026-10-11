@@ -18,52 +18,60 @@ import { CockpitPmoBanner } from '../components/cockpit-pmo-banner';
 import { KpiGauge, type KpiKey } from '../components/kpi-gauge';
 import { useKpiSocket } from '../hooks/use-kpi-socket';
 import type { Simulation, TimelineEntry, KpiValues } from '../types/simulation.types';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useAppLocale } from '@/providers/locale-provider';
+import { useT } from '@/i18n/app/use-t';
 
-const KPI_TOOLTIPS: Record<KpiKey, string> = {
-  budget: 'Pourcentage du budget restant. En dessous de 40 %, le projet est en danger financier.',
-  schedule: "Respect du calendrier. En dessous de 40 %, le projet risque de dépasser les échéances.",
-  quality: 'Indice de qualité des livrables et du travail produit.',
-  teamMorale: "Moral de l'équipe. Un moral bas réduit la productivité.",
-  riskLevel: "Exposition aux risques. Plus c'est bas, plus la situation est critique.",
+const KPI_TOOLTIPS: Record<KpiKey, AppMessageKey> = {
+  budget: 'cockpit.kpi.budget.tip',
+  schedule: 'cockpit.kpi.schedule.tip',
+  quality: 'cockpit.kpi.quality.tip',
+  teamMorale: 'cockpit.kpi.morale.tip',
+  riskLevel: 'cockpit.kpi.risk.tip',
 };
 
-const KPI_LABELS: Record<KpiKey, string> = {
-  budget: 'Budget',
-  schedule: 'Délai',
-  quality: 'Qualité',
-  teamMorale: 'Moral équipe',
-  riskLevel: 'Risque',
+const KPI_LABELS: Record<KpiKey, AppMessageKey> = {
+  budget: 'kpi.budget',
+  schedule: 'kpi.schedule',
+  quality: 'kpi.quality',
+  teamMorale: 'cockpit.kpi.teamMorale',
+  riskLevel: 'kpi.risk',
 };
 
-function captionFor(kpiKey: KpiKey, kpis: KpiValues, project: Simulation['project']): string | undefined {
+type T = (id: AppMessageKey, values?: Record<string, string | number>) => string;
+
+function captionFor(kpiKey: KpiKey, kpis: KpiValues, project: Simulation['project'], t: T, locale: 'fr-CA' | 'en-CA'): string | undefined {
   if (kpiKey === 'budget' && project) {
     const remaining = Math.round((kpis.budget / 100) * project.initialBudget);
-    return `${remaining.toLocaleString('fr-FR')} € restants sur ${project.initialBudget.toLocaleString('fr-FR')} €`;
+    const money = new Intl.NumberFormat(locale, { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 });
+    return t('cockpit.kpi.budget.caption', { remaining: money.format(remaining), total: money.format(project.initialBudget) });
   }
   if (kpiKey === 'schedule') {
-    if (kpis.schedule >= 90) return 'Dans les temps';
-    if (kpis.schedule >= 60) return 'Glissement léger';
-    return 'En retard';
+    if (kpis.schedule >= 90) return t('cockpit.kpi.schedule.ok');
+    if (kpis.schedule >= 60) return t('cockpit.kpi.schedule.slip');
+    return t('cockpit.kpi.schedule.late');
   }
   if (kpiKey === 'quality') {
-    if (kpis.quality >= 70) return 'Livrables conformes';
-    if (kpis.quality >= 40) return 'À surveiller';
-    return 'Qualité dégradée';
+    if (kpis.quality >= 70) return t('cockpit.kpi.quality.ok');
+    if (kpis.quality >= 40) return t('cockpit.kpi.quality.watch');
+    return t('cockpit.kpi.quality.bad');
   }
   if (kpiKey === 'teamMorale') {
-    if (kpis.teamMorale >= 70) return 'Équipe motivée';
-    if (kpis.teamMorale >= 40) return 'Tensions légères';
-    return 'Démotivation';
+    if (kpis.teamMorale >= 70) return t('cockpit.kpi.morale.ok');
+    if (kpis.teamMorale >= 40) return t('cockpit.kpi.morale.tension');
+    return t('cockpit.kpi.morale.low');
   }
   if (kpiKey === 'riskLevel') {
-    if (kpis.riskLevel <= 30) return 'Sous contrôle';
-    if (kpis.riskLevel <= 60) return 'Vigilance';
-    return 'Risque élevé';
+    if (kpis.riskLevel <= 30) return t('cockpit.kpi.risk.ok');
+    if (kpis.riskLevel <= 60) return t('cockpit.kpi.risk.watch');
+    return t('cockpit.kpi.risk.high');
   }
   return undefined;
 }
 
 export default function SimulationDetailPage() {
+  const { intlLocale } = useAppLocale();
+  const t = useT();
   const { id } = useParams<{ id: string }>();
   const reduce = useReducedMotion();
   const [sim, setSim] = useState<Simulation | null>(null);
@@ -116,7 +124,7 @@ export default function SimulationDetailPage() {
       else if (sim.status === 'PAUSED') await simulationApi.resumeSimulation(id);
       await loadData();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Action impossible.');
+      toast.error(err instanceof Error ? err.message : t('cockpit.actionFailed'));
     } finally {
       setActionLoading(false);
     }
@@ -128,9 +136,9 @@ export default function SimulationDetailPage() {
     try {
       await simulationApi.advancePhase(id);
       await loadData();
-      toast.success('Phase suivante démarrée — de nouvelles actions sont disponibles.');
+      toast.success(t('cockpit.phaseStarted'));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Erreur lors du passage de phase.');
+      toast.error(err instanceof Error ? err.message : t('cockpit.phaseError'));
     } finally {
       setActionLoading(false);
     }
@@ -139,15 +147,15 @@ export default function SimulationDetailPage() {
   if (error) {
     return (
       <>
-        <PageHeader breadcrumbs={[{ label: 'Tableau de bord', to: '/dashboard' }, { label: 'Simulations', to: '/simulations' }, { label: 'Cockpit' }]} title="Cockpit" />
+        <PageHeader breadcrumbs={[{ label: t('menu.dashboard'), to: '/dashboard' }, { label: t('menu.simulations'), to: '/simulations' }, { label: t('cockpit.title') }]} title={t('cockpit.title')} />
         <div className="px-6 pb-6">
           <Card>
             <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
               <KeenIcon icon="information-2" style="duotone" className="text-3xl text-muted-foreground" />
-              <p className="text-sm font-medium text-foreground">Impossible de charger cette simulation</p>
+              <p className="text-sm font-medium text-foreground">{t('cockpit.loadError')}</p>
               <p className="max-w-md text-xs text-muted-foreground">{error}</p>
               <Button variant="primary" size="sm" onClick={() => { setError(null); setLoading(true); loadData(); }}>
-                Réessayer
+                {t('common.retry')}
               </Button>
             </CardContent>
           </Card>
@@ -159,7 +167,7 @@ export default function SimulationDetailPage() {
   if (loading || !sim) {
     return (
       <>
-        <PageHeader breadcrumbs={[{ label: 'Tableau de bord', to: '/dashboard' }, { label: 'Simulations', to: '/simulations' }, { label: 'Cockpit' }]} title="Cockpit" />
+        <PageHeader breadcrumbs={[{ label: t('menu.dashboard'), to: '/dashboard' }, { label: t('menu.simulations'), to: '/simulations' }, { label: t('cockpit.title') }]} title={t('cockpit.title')} />
         <div className="px-6 pb-8">
           <div className="grid gap-5">
             <Skeleton className="h-24 rounded-lg" />
@@ -182,14 +190,14 @@ export default function SimulationDetailPage() {
   const kpis = sim.kpis;
 
   const breadcrumbs = [
-    { label: 'Tableau de bord', to: '/dashboard' },
-    { label: 'Simulations', to: '/simulations' },
-    { label: sim.project?.name ?? 'Cockpit' },
+    { label: t('menu.dashboard'), to: '/dashboard' },
+    { label: t('menu.simulations'), to: '/simulations' },
+    { label: sim.project?.name ?? t('cockpit.title') },
   ];
 
   return (
     <>
-      <PageHeader breadcrumbs={breadcrumbs} title="Cockpit" />
+      <PageHeader breadcrumbs={breadcrumbs} title={t('cockpit.title')} />
 
       <div className="px-6 pb-8">
         <div className="grid gap-5">
@@ -207,13 +215,13 @@ export default function SimulationDetailPage() {
 
           <CockpitPhaseStrip phases={sim.phases ?? []} />
 
-          <nav aria-label="Accès rapides" className="flex flex-wrap gap-2">
+          <nav aria-label={t('cockpit.quickLinks')} className="flex flex-wrap gap-2">
             {[
-              { to: `/simulations/${sim.id}/meetings`, icon: 'message-text', label: 'Réunions' },
-              { to: `/simulations/${sim.id}/decisions`, icon: 'question-2', label: 'Décisions' },
-              { to: `/simulations/${sim.id}/events`, icon: 'flash', label: 'Événements' },
-              { to: `/simulations/${sim.id}/timeline`, icon: 'time', label: 'Chronologie' },
-              { to: `/simulations/${sim.id}/kpis`, icon: 'chart-line', label: 'Historique KPI' },
+              { to: `/simulations/${sim.id}/meetings`, icon: 'message-text', label: t('dashboard.priority.meetings') },
+              { to: `/simulations/${sim.id}/decisions`, icon: 'question-2', label: t('dashboard.priority.decisions') },
+              { to: `/simulations/${sim.id}/events`, icon: 'flash', label: t('dashboard.priority.events') },
+              { to: `/simulations/${sim.id}/timeline`, icon: 'time', label: t('cockpit.timeline') },
+              { to: `/simulations/${sim.id}/kpis`, icon: 'chart-line', label: t('cockpit.kpiHistory') },
             ].map((l) => (
               <Link
                 key={l.to}
@@ -237,11 +245,11 @@ export default function SimulationDetailPage() {
                 <motion.div key={k} variants={reduce ? undefined : staggerItem}>
                   <KpiGauge
                     kpiKey={k}
-                    label={KPI_LABELS[k]}
+                    label={t(KPI_LABELS[k])}
                     value={kpis[k]}
                     inverse={k === 'riskLevel'}
-                    caption={captionFor(k, kpis, sim.project)}
-                    tooltip={KPI_TOOLTIPS[k]}
+                    caption={captionFor(k, kpis, sim.project, t, intlLocale)}
+                    tooltip={t(KPI_TOOLTIPS[k])}
                   />
                 </motion.div>
               ))}

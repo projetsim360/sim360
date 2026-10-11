@@ -1,14 +1,8 @@
 import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
 import type { BrownfieldContext } from '../types/simulation.types';
-
-const MORALE_LABELS: Record<string, string> = {
-  very_low: 'Très bas',
-  low: 'Bas',
-  neutral: 'Neutre',
-  high: 'Haut',
-  very_high: 'Très haut',
-};
+import { useTv } from '@/i18n/app/use-t';
+import { useT } from '@/i18n/app/use-t';
 
 const RISK_DOT: Record<string, string> = {
   CRITICAL: 'bg-[var(--error-500)]',
@@ -22,6 +16,8 @@ interface ScenarioBrownfieldBannerProps {
 }
 
 export function ScenarioBrownfieldBanner({ ctx }: ScenarioBrownfieldBannerProps) {
+  const tv = useTv();
+  const t = useT();
   const activeRisks = ctx.knownRisks.filter((r) => r.status === 'ACTIVE').length;
   const budgetPct = Math.round(ctx.budgetUsed * 100);
 
@@ -34,10 +30,10 @@ export function ScenarioBrownfieldBanner({ ctx }: ScenarioBrownfieldBannerProps)
         </span>
         <div>
           <div className="text-[10px] font-bold uppercase tracking-[0.8px] text-[var(--brand-200)]">
-            Contexte de reprise
+            {t('brownfield.kicker')}
           </div>
           <div className="font-display text-[14px] font-bold text-white">
-            Vous reprenez ce projet en cours
+            {t('brownfield.title')}
           </div>
         </div>
       </div>
@@ -54,25 +50,25 @@ export function ScenarioBrownfieldBanner({ ctx }: ScenarioBrownfieldBannerProps)
         <div className="rounded-lg border border-white/15 bg-white/10 p-3 text-center">
           <div className="font-display text-[18px] font-extrabold text-[var(--accent-300)]">
             {ctx.accumulatedDelays}
-            <span className="text-[11px]">j</span>
+            <span className="text-[11px]">{t('brownfield.daysUnit')}</span>
           </div>
-          <div className="text-[9px] font-bold uppercase tracking-[0.5px] text-[var(--brand-200)]">Retard accumulé</div>
+          <div className="text-[9px] font-bold uppercase tracking-[0.5px] text-[var(--brand-200)]">{t('brownfield.delay')}</div>
         </div>
         <div className="rounded-lg border border-white/15 bg-white/10 p-3 text-center">
           <div className="font-display text-[18px] font-extrabold text-[var(--accent-300)]">{budgetPct}%</div>
-          <div className="text-[9px] font-bold uppercase tracking-[0.5px] text-[var(--brand-200)]">Budget consommé</div>
+          <div className="text-[9px] font-bold uppercase tracking-[0.5px] text-[var(--brand-200)]">{t('brownfield.budget')}</div>
         </div>
         <div className="rounded-lg border border-white/15 bg-white/10 p-3 text-center">
           <div className={cn('font-display text-[18px] font-extrabold', activeRisks >= 3 ? 'text-[#FCA5A5]' : 'text-white')}>
             {activeRisks}
           </div>
-          <div className="text-[9px] font-bold uppercase tracking-[0.5px] text-[var(--brand-200)]">Risques actifs</div>
+          <div className="text-[9px] font-bold uppercase tracking-[0.5px] text-[var(--brand-200)]">{t('brownfield.risks')}</div>
         </div>
         <div className="rounded-lg border border-white/15 bg-white/10 p-3 text-center">
           <div className="font-display text-[16px] font-extrabold text-white">
-            {MORALE_LABELS[ctx.teamMorale] ?? ctx.teamMorale}
+            {tv('morale', ctx.teamMorale)}
           </div>
-          <div className="text-[9px] font-bold uppercase tracking-[0.5px] text-[var(--brand-200)]">Moral équipe</div>
+          <div className="text-[9px] font-bold uppercase tracking-[0.5px] text-[var(--brand-200)]">{t('brownfield.morale')}</div>
         </div>
       </div>
 
@@ -80,7 +76,7 @@ export function ScenarioBrownfieldBanner({ ctx }: ScenarioBrownfieldBannerProps)
       {ctx.knownRisks.length > 0 && (
         <div className="mt-3.5">
           <div className="mb-2 text-[10px] font-bold uppercase tracking-[0.8px] text-[var(--brand-200)]">
-            Risques identifiés
+            {t('brownfield.knownRisks')}
           </div>
           <div className="flex flex-col gap-1.5">
             {ctx.knownRisks.map((risk, i) => {
@@ -98,7 +94,7 @@ export function ScenarioBrownfieldBanner({ ctx }: ScenarioBrownfieldBannerProps)
                       isActive ? 'bg-white/15 text-white' : 'bg-white/10 text-[var(--brand-200)]',
                     )}
                   >
-                    {isActive ? 'Actif' : 'Résolu'}
+                    {isActive ? t('brownfield.active') : t('brownfield.resolved')}
                   </span>
                 </div>
               );

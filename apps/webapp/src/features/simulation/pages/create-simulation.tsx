@@ -28,19 +28,20 @@ import {
   sectorsPresent,
   type ScenarioFilters,
 } from '../config/sectors';
+import { useTv } from '@/i18n/app/use-t';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useT } from '@/i18n/app/use-t';
 
-const DIFFICULTY_OPTIONS = [
-  { value: 'BEGINNER', label: 'Débutant' },
-  { value: 'INTERMEDIATE', label: 'Intermédiaire' },
-  { value: 'ADVANCED', label: 'Avancé' },
-];
+const DIFFICULTY_OPTIONS = ['BEGINNER', 'INTERMEDIATE', 'ADVANCED'].map((value) => ({ value }));
 
-const SCENARIO_TYPE_OPTIONS = [
-  { value: 'GREENFIELD', label: 'Nouveau projet (Greenfield)' },
-  { value: 'BROWNFIELD', label: 'Reprise en cours (Brownfield)' },
+const SCENARIO_TYPE_OPTIONS: { value: string; label: AppMessageKey }[] = [
+  { value: 'GREENFIELD', label: 'newSim.type.greenfield' },
+  { value: 'BROWNFIELD', label: 'newSim.type.brownfield' },
 ];
 
 export default function CreateSimulationPage() {
+  const tv = useTv();
+  const t = useT();
   const navigate = useNavigate();
   const [scenarios, setScenarios] = useState<Scenario[]>([]);
   const [recommendedScenarios, setRecommendedScenarios] = useState<Scenario[]>([]);
@@ -119,10 +120,10 @@ export default function CreateSimulationPage() {
       const scenario = await simulationApi.generateScenario(params);
       setSelectedScenario(scenario);
       setIsGenerated(true);
-      toast.success('Scénario généré avec succès !');
+      toast.success(t('newSim.generated'));
     } catch (err: any) {
       setError(err.message);
-      toast.error('Erreur lors de la génération du scénario');
+      toast.error(t('newSim.generateError'));
     } finally {
       setGenerating(false);
     }
@@ -137,12 +138,12 @@ export default function CreateSimulationPage() {
     <>
       <PageHeader
         breadcrumbs={[
-          { label: 'Tableau de bord', to: '/dashboard' },
-          { label: 'Simulations', to: '/simulations' },
-          { label: 'Nouvelle' },
+          { label: t('menu.dashboard'), to: '/dashboard' },
+          { label: t('menu.simulations'), to: '/simulations' },
+          { label: t('newSim.crumb') },
         ]}
-        title="Nouvelle simulation"
-        subtitle="Choisissez un scénario du catalogue ou générez une nouvelle simulation sur mesure."
+        title={t('menu.newSimulation')}
+        subtitle={t('newSim.subtitle')}
       />
 
       {/* Scenario detail modal */}
@@ -191,7 +192,7 @@ export default function CreateSimulationPage() {
           >
             <span className="flex items-center gap-2">
               <KeenIcon icon="element-11" style="duotone" />
-              Catalogue
+              {t('newSim.tab.catalog')}
             </span>
           </button>
           <button
@@ -205,7 +206,7 @@ export default function CreateSimulationPage() {
           >
             <span className="flex items-center gap-2">
               <KeenIcon icon="add-files" style="duotone" />
-              Générer une nouvelle simulation
+              {t('newSim.tab.generate')}
             </span>
           </button>
         </div>
@@ -226,7 +227,7 @@ export default function CreateSimulationPage() {
                 <CardContent className="flex flex-col items-center justify-center py-16 gap-4">
                   <KeenIcon icon="questionnaire-tablet" style="duotone" className="text-4xl text-[var(--neutral-400)]" />
                   <p className="text-muted-foreground text-sm">
-                    Aucun scénario disponible pour le moment.
+                    {t('newSim.empty')}
                   </p>
                 </CardContent>
               </Card>
@@ -238,7 +239,7 @@ export default function CreateSimulationPage() {
                 {recommendedScenarios.length > 0 && (
                   <section className="mb-6">
                     <h3 className="mb-3 font-display text-[15px] font-bold text-[var(--brand-700)]">
-                      Recommandés pour vous
+                      {t('newSim.recommended')}
                     </h3>
                     <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
                       {recommendedScenarios.map((scenario) => (
@@ -256,44 +257,44 @@ export default function CreateSimulationPage() {
                 {/* All scenarios + filters */}
                 <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
                   <p className="text-sm text-muted-foreground">
-                    Choisissez un scénario pour démarrer une nouvelle simulation.
+                    {t('newSim.pick')}
                   </p>
                   <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 lg:w-[620px]">
                     <Select value={filters.sector} onValueChange={(v) => setFilters((f) => ({ ...f, sector: v }))}>
-                      <SelectTrigger aria-label="Filtrer par secteur">
+                      <SelectTrigger aria-label={t('newSim.filter.sector')}>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="ALL">Tous les secteurs</SelectItem>
+                        <SelectItem value="ALL">{t('newSim.filter.allSectors')}</SelectItem>
                         {availableSectors.map((opt) => (
                           <SelectItem key={opt.value} value={opt.value}>
-                            {opt.label}
+                            {tv('sector', opt.value)}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                     <Select value={filters.difficulty} onValueChange={(v) => setFilters((f) => ({ ...f, difficulty: v }))}>
-                      <SelectTrigger aria-label="Filtrer par niveau de responsabilité">
+                      <SelectTrigger aria-label={t('newSim.filter.level')}>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="ALL">Tous les niveaux</SelectItem>
+                        <SelectItem value="ALL">{t('newSim.filter.allLevels')}</SelectItem>
                         {DIFFICULTY_OPTIONS.map((opt) => (
                           <SelectItem key={opt.value} value={opt.value}>
-                            {opt.label}
+                            {tv('difficulty', opt.value)}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                     <Select value={filters.scenarioType} onValueChange={(v) => setFilters((f) => ({ ...f, scenarioType: v }))}>
-                      <SelectTrigger aria-label="Filtrer par type de situation">
+                      <SelectTrigger aria-label={t('newSim.filter.type')}>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="ALL">Toutes les situations</SelectItem>
+                        <SelectItem value="ALL">{t('newSim.filter.allTypes')}</SelectItem>
                         {SCENARIO_TYPE_OPTIONS.map((opt) => (
                           <SelectItem key={opt.value} value={opt.value}>
-                            {opt.label}
+                            {t(opt.label)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -304,10 +305,10 @@ export default function CreateSimulationPage() {
                 {visibleScenarios.length === 0 && (
                   <Card>
                     <CardContent className="flex flex-col items-center justify-center gap-3 py-10 text-center">
-                      <p className="text-sm text-muted-foreground">Aucun scénario ne correspond à ces filtres.</p>
+                      <p className="text-sm text-muted-foreground">{t('newSim.noMatch')}</p>
                       {filtersActive && (
                         <Button variant="outline" size="sm" onClick={() => setFilters(EMPTY_SCENARIO_FILTERS)}>
-                          Réinitialiser les filtres
+                          {t('newSim.resetFilters')}
                         </Button>
                       )}
                     </CardContent>
@@ -334,13 +335,12 @@ export default function CreateSimulationPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <KeenIcon icon="add-files" style="duotone" />
-                Générer une nouvelle simulation
+                {t('newSim.tab.generate')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-5">
               <p className="text-sm text-muted-foreground">
-                Décrivez votre projet et vos objectifs d'apprentissage : un scénario de simulation
-                adapté à vos besoins sera préparé pour vous.
+                {t('newSim.gen.intro')}
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -348,18 +348,18 @@ export default function CreateSimulationPage() {
                 <div className="space-y-4">
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-foreground">
-                      Nom du projet
-                      <span className="text-muted-foreground font-normal ml-1">(optionnel)</span>
+                      {t('onboarding.custom.name')}
+                      <span className="text-muted-foreground font-normal ml-1">{t('common.optionalParen')}</span>
                     </label>
                     <Input
-                      placeholder="Ex. : agrandissement d’une usine"
+                      placeholder={t('newSim.gen.namePlaceholder')}
                       value={genForm.projectName}
                       onChange={(e) => setGenForm((p) => ({ ...p, projectName: e.target.value }))}
                     />
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-foreground">Secteur</label>
+                    <label className="text-sm font-medium text-foreground">{t('onboarding.custom.sector')}</label>
                     <Select
                       value={genForm.sector}
                       onValueChange={(v) => setGenForm((p) => ({ ...p, sector: v }))}
@@ -370,7 +370,7 @@ export default function CreateSimulationPage() {
                       <SelectContent>
                         {SECTORS.map((opt) => (
                           <SelectItem key={opt.value} value={opt.value}>
-                            {opt.label}
+                            {tv('sector', opt.value)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -378,7 +378,7 @@ export default function CreateSimulationPage() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-foreground">Difficulté</label>
+                    <label className="text-sm font-medium text-foreground">{t('onboarding.preview.difficultyLabel')}</label>
                     <Select
                       value={genForm.difficulty}
                       onValueChange={(v) => setGenForm((p) => ({ ...p, difficulty: v }))}
@@ -389,7 +389,7 @@ export default function CreateSimulationPage() {
                       <SelectContent>
                         {DIFFICULTY_OPTIONS.map((opt) => (
                           <SelectItem key={opt.value} value={opt.value}>
-                            {opt.label}
+                            {tv('difficulty', opt.value)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -397,7 +397,7 @@ export default function CreateSimulationPage() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-foreground">Type de scénario</label>
+                    <label className="text-sm font-medium text-foreground">{t('newSim.gen.type')}</label>
                     <Select
                       value={genForm.scenarioType}
                       onValueChange={(v) => setGenForm((p) => ({ ...p, scenarioType: v }))}
@@ -408,7 +408,7 @@ export default function CreateSimulationPage() {
                       <SelectContent>
                         {SCENARIO_TYPE_OPTIONS.map((opt) => (
                           <SelectItem key={opt.value} value={opt.value}>
-                            {opt.label}
+                            {t(opt.label)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -424,7 +424,7 @@ export default function CreateSimulationPage() {
                       }
                     />
                     <label htmlFor="useProfile" className="text-sm text-foreground cursor-pointer">
-                      Utiliser mon profil pour calibrer le scénario
+                      {t('newSim.gen.useProfile')}
                     </label>
                   </div>
                 </div>
@@ -433,11 +433,11 @@ export default function CreateSimulationPage() {
                 <div className="space-y-4">
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-foreground">
-                      Description du projet
-                      <span className="text-muted-foreground font-normal ml-1">(optionnel)</span>
+                      {t('newSim.gen.description')}
+                      <span className="text-muted-foreground font-normal ml-1">{t('common.optionalParen')}</span>
                     </label>
                     <Textarea
-                      placeholder="Décrivez le contexte et les enjeux du projet…"
+                      placeholder={t('newSim.gen.descriptionPlaceholder')}
                       rows={3}
                       value={genForm.projectDescription}
                       onChange={(e) => setGenForm((p) => ({ ...p, projectDescription: e.target.value }))}
@@ -446,11 +446,11 @@ export default function CreateSimulationPage() {
 
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-foreground">
-                      Objectifs d'apprentissage
-                      <span className="text-muted-foreground font-normal ml-1">(optionnel)</span>
+                      {t('newSim.gen.objectives')}
+                      <span className="text-muted-foreground font-normal ml-1">{t('common.optionalParen')}</span>
                     </label>
                     <Textarea
-                      placeholder="Ex. : gestion des risques, planification agile, communication…"
+                      placeholder={t('newSim.gen.objectivesPlaceholder')}
                       rows={3}
                       value={genForm.learningObjectives}
                       onChange={(e) => setGenForm((p) => ({ ...p, learningObjectives: e.target.value }))}
@@ -459,11 +459,11 @@ export default function CreateSimulationPage() {
 
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-foreground">
-                      Contraintes spécifiques
-                      <span className="text-muted-foreground font-normal ml-1">(optionnel)</span>
+                      {t('newSim.gen.constraints')}
+                      <span className="text-muted-foreground font-normal ml-1">{t('common.optionalParen')}</span>
                     </label>
                     <Textarea
-                      placeholder="Ex. : budget limité, équipe réduite, délai serré…"
+                      placeholder={t('newSim.gen.constraintsPlaceholder')}
                       rows={3}
                       value={genForm.constraints}
                       onChange={(e) => setGenForm((p) => ({ ...p, constraints: e.target.value }))}
@@ -482,12 +482,12 @@ export default function CreateSimulationPage() {
                   {generating ? (
                     <>
                       <span className="size-3.5 rounded-full border-2 border-current border-t-transparent animate-spin" />
-                      Génération en cours…
+                      {t('newSim.gen.generating')}
                     </>
                   ) : (
                     <>
                       <KeenIcon icon="add-files" style="duotone" />
-                      Générer la simulation
+                      {t('newSim.gen.submit')}
                     </>
                   )}
                 </Button>

@@ -3,6 +3,10 @@ import { api } from '@/lib/api-client';
 export interface AiEvaluationResult {
   coaching: string;
   comparison: string | null;
+  /** Optional enrichments returned by the decision evaluator when available. */
+  score?: number;
+  scoreJustification?: string;
+  patternAnalysis?: { pattern: string; confidence: number; description: string };
 }
 
 export interface AiReportResult {

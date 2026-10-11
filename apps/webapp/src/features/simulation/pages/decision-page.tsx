@@ -11,6 +11,8 @@ import { toast } from 'sonner';
 import { simulationApi } from '../api/simulation.api';
 import { aiApi, type AiEvaluationResult } from '../api/ai.api';
 import type { Simulation, Decision } from '../types/simulation.types';
+import { useTv } from '@/i18n/app/use-t';
+import { useT } from '@/i18n/app/use-t';
 
 function kpiColor(value: number): string {
   if (value > 0) return 'text-success';
@@ -18,15 +20,9 @@ function kpiColor(value: number): string {
   return 'text-muted-foreground';
 }
 
-const KPI_LABELS: Record<string, string> = {
-  budget: 'Budget',
-  schedule: 'Délai',
-  quality: 'Qualité',
-  teamMorale: 'Moral équipe',
-  riskLevel: 'Niveau risque',
-};
-
 export default function DecisionPage() {
+  const tv = useTv();
+  const t = useT();
   const { id, decId } = useParams<{ id: string; decId: string }>();
   const navigate = useNavigate();
   const [sim, setSim] = useState<Simulation | null>(null);
@@ -76,7 +72,7 @@ export default function DecisionPage() {
       const dec = simData.decisions?.find((d: Decision) => d.id === decId);
       if (dec) setDecision(dec);
       setSubmitted(true);
-      toast.success('Décision enregistrée. Les KPIs ont été mis à jour.');
+      toast.success(t('decision.savedKpis'));
 
       // Trigger AI analysis (fail silently)
       setAiLoading(true);
@@ -87,7 +83,7 @@ export default function DecisionPage() {
         .finally(() => setAiLoading(false));
     } catch (err: any) {
       setError(err.message);
-      toast.error('Erreur lors de la prise de décision.');
+      toast.error(t('decision.error'));
     } finally {
       setSubmitting(false);
     }
@@ -112,16 +108,16 @@ export default function DecisionPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Décision" />
+          <ToolbarHeading title={t('dashboard.activity.decision')} />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-destructive text-sm">
-              {error || 'Décision introuvable.'}
+              {error || t('decision.notFound')}
             </p>
-            <Button variant="link" asChild>
+            <Button mode="link" asChild>
               <Link to={id ? `/simulations/${id}` : '/simulations'}>
-                Retour à la simulation
+                {t('decision.backToSim')}
               </Link>
             </Button>
           </CardContent>
@@ -133,11 +129,11 @@ export default function DecisionPage() {
   return (
     <div className="container">
       <Toolbar>
-        <ToolbarHeading title="Décision" />
+        <ToolbarHeading title={t('dashboard.activity.decision')} />
         <ToolbarActions>
           <Button variant="outline" asChild>
             <Link to={`/simulations/${id}`}>
-              <KeenIcon icon="arrow-left" style="duotone" className="size-4" /> Retour à la simulation
+              <KeenIcon icon="arrow-left" style="duotone" className="size-4" /> {t('decision.backToSim')}
             </Link>
           </Button>
         </ToolbarActions>
@@ -155,7 +151,7 @@ export default function DecisionPage() {
           <MarkdownContent content={decision.context} className="text-muted-foreground" />
           {decision.timeLimitSeconds && !submitted && (
             <p className="mt-3 text-sm text-warning">
-              <KeenIcon icon="time" style="duotone" className="size-3 inline" /> Limite de temps : {Math.round(decision.timeLimitSeconds / 60)} minutes
+              <KeenIcon icon="time" style="duotone" className="size-3 inline" /> {t('decision.timeLimit', { min: Math.round(decision.timeLimitSeconds / 60) })}
             </p>
           )}
         </CardContent>
@@ -163,7 +159,7 @@ export default function DecisionPage() {
 
       {/* Options */}
       <div className="space-y-3 mb-5">
-        <h3 className="text-sm font-semibold">Options disponibles</h3>
+        <h3 className="text-sm font-semibold">{t('decision.options')}</h3>
         {decision.options.map((option, index) => {
           const isSelected = selectedOption === index;
           const isChosen = submitted && decision.selectedOption === index;
@@ -219,7 +215,7 @@ export default function DecisionPage() {
                                   : 'bg-muted text-muted-foreground'
                             }`}
                           >
-                            {KPI_LABELS[key] || key}: {(val as number) > 0 ? '+' : ''}{val as number}
+                            {tv('kpiKey', key)} : {(val as number) > 0 ? '+' : ''}{val as number}
                           </span>
                         ))}
                       </div>
@@ -237,17 +233,17 @@ export default function DecisionPage() {
         <div className="flex justify-end gap-3">
           <Button variant="outline" asChild>
             <Link to={`/simulations/${id}`}>
-              Annuler
+              {t('common.cancel')}
             </Link>
           </Button>
           <Button onClick={handleConfirm} disabled={selectedOption === null || submitting}>
             {submitting ? (
               <>
                 <span className="animate-spin inline-block"><KeenIcon icon="loading" style="duotone" className="size-4" /></span>
-                Validation...
+                {t('decision.confirming')}
               </>
             ) : (
-              'Confirmer la décision'
+              t('decision.confirm')
             )}
           </Button>
         </div>
@@ -258,14 +254,14 @@ export default function DecisionPage() {
         <Card className="mt-5 border-success/30 bg-success/10">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm text-success">
-              <KeenIcon icon="check-circle" style="duotone" className="size-4 text-success" /> Impact de votre décision
+              <KeenIcon icon="check-circle" style="duotone" className="size-4 text-success" /> {t('decision.impact')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
               {Object.entries(decision.kpiImpact).map(([key, val]) => (
                 <div key={key} className="text-center p-2 bg-white rounded-lg border border-success/20">
-                  <p className="text-sm text-muted-foreground">{KPI_LABELS[key] || key}</p>
+                  <p className="text-sm text-muted-foreground">{tv('kpiKey', key)}</p>
                   <p className={`text-lg font-bold ${kpiColor(val as number)}`}>
                     {(val as number) > 0 ? '+' : ''}{val as number}
                   </p>
@@ -275,7 +271,7 @@ export default function DecisionPage() {
             <div className="mt-4 text-center">
               <Button asChild>
                 <Link to={`/simulations/${id}`}>
-                  Retour au tableau de bord
+                  {t('decision.backToCockpit')}
                 </Link>
               </Button>
             </div>
@@ -285,10 +281,10 @@ export default function DecisionPage() {
 
       {submitted && (!decision.kpiImpact || Object.keys(decision.kpiImpact).length === 0) && (
         <div className="mt-5 text-center">
-          <p className="text-sm text-success mb-3">Décision enregistrée.</p>
+          <p className="text-sm text-success mb-3">{t('decision.saved')}</p>
           <Button asChild>
             <Link to={`/simulations/${id}`}>
-              Retour au tableau de bord
+              {t('decision.backToCockpit')}
             </Link>
           </Button>
         </div>
@@ -299,7 +295,7 @@ export default function DecisionPage() {
         <Card className="mt-5 border-primary/20 bg-primary/5">
           <CardContent className="py-6 text-center">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto mb-2" />
-            <p className="text-sm text-primary">Analyse de votre décision en cours...</p>
+            <p className="text-sm text-primary">{t('decision.analyzing')}</p>
           </CardContent>
         </Card>
       )}
@@ -307,7 +303,7 @@ export default function DecisionPage() {
       {submitted && aiAnalysis && (
         <Card className="mt-5 border-primary/20 bg-primary/5">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm text-primary">Analyse de votre décision</CardTitle>
+            <CardTitle className="text-sm text-primary">{t('decision.analysis')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {aiAnalysis.score !== undefined && (
@@ -318,7 +314,7 @@ export default function DecisionPage() {
                   {aiAnalysis.score}
                 </div>
                 <div>
-                  <p className="text-sm font-medium">Score de la décision</p>
+                  <p className="text-sm font-medium">{t('decision.score')}</p>
                   {aiAnalysis.scoreJustification && (
                     <p className="text-sm text-muted-foreground">{aiAnalysis.scoreJustification}</p>
                   )}
@@ -326,19 +322,19 @@ export default function DecisionPage() {
               </div>
             )}
             <div>
-              <h4 className="text-sm font-semibold text-primary mb-1">Coaching</h4>
+              <h4 className="text-sm font-semibold text-primary mb-1">{t('decision.coaching')}</h4>
               <MarkdownContent content={aiAnalysis.coaching} />
             </div>
             {aiAnalysis.comparison && (
               <div>
-                <h4 className="text-sm font-semibold text-primary mb-1">Comparaison avec l'optimal</h4>
+                <h4 className="text-sm font-semibold text-primary mb-1">{t('decision.comparison')}</h4>
                 <MarkdownContent content={aiAnalysis.comparison} />
               </div>
             )}
             {aiAnalysis.patternAnalysis && (
               <div className="border-t border-primary/20 pt-3">
                 <h4 className="text-sm font-semibold text-primary mb-1">
-                  Profil décisionnel : <span className="capitalize">{aiAnalysis.patternAnalysis.pattern === 'cautious' ? 'Prudent' : aiAnalysis.patternAnalysis.pattern === 'aggressive' ? 'Audacieux' : aiAnalysis.patternAnalysis.pattern === 'balanced' ? 'Équilibre' : 'Variable'}</span>
+                  {t('decision.pattern')} <span className="capitalize">{tv('decisionPattern', aiAnalysis.patternAnalysis.pattern, t('decisionPattern.variable'))}</span>
                   <span className="text-primary/60 font-normal ml-1">({aiAnalysis.patternAnalysis.confidence}%)</span>
                 </h4>
                 <p className="text-sm text-primary">{aiAnalysis.patternAnalysis.description}</p>
