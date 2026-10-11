@@ -7,13 +7,11 @@ import { Button } from '@/components/ui/button';
 import { usePublicSession } from '../providers/public-session';
 import { MeshBackground } from '../components/mesh-background';
 import { useScrollContainer } from '../hooks/use-scroll-container';
-import { usePublicLocale } from '../hooks/use-public-locale';
-import { publicPath } from '@/i18n/public-locale';
+import { DemoDialog } from '../components/demo-dialog';
 
 export function HeroSection() {
   const { formatMessage } = useIntl();
   const { user } = usePublicSession();
-  const locale = usePublicLocale();
   const reduced = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const container = useScrollContainer(sectionRef);
@@ -54,15 +52,17 @@ export function HeroSection() {
                 <Link to={primaryCta.to}>{formatMessage({ id: primaryCta.id })}</Link>
               </Button>
             </motion.div>
-            <Link
-              to={publicPath('demo', locale)}
-              className="group inline-flex items-center gap-2 text-sm font-medium text-foreground/70 transition-colors hover:text-foreground"
-            >
-              <span className="flex size-9 items-center justify-center rounded-full border-2 border-current transition-transform group-hover:scale-105">
-                <Play size={14} className="ml-0.5" aria-hidden="true" />
-              </span>
-              {formatMessage({ id: 'hero.secondary' })}
-            </Link>
+            <DemoDialog>
+              <button
+                type="button"
+                className="group inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-foreground/70 transition-colors hover:text-foreground"
+              >
+                <span className="flex size-9 items-center justify-center rounded-full border-2 border-current transition-transform group-hover:scale-105">
+                  <Play size={14} className="ml-0.5" aria-hidden="true" />
+                </span>
+                {formatMessage({ id: 'hero.secondary' })}
+              </button>
+            </DemoDialog>
           </div>
         </motion.div>
         </div>
