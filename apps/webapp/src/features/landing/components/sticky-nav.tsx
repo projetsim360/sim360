@@ -5,10 +5,11 @@ import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Logo } from '@/components/logo';
-import { useAuth } from '@/providers/auth-provider';
+import { usePublicSession } from '../providers/public-session';
 import { resolveAssetUrl } from '@/lib/asset-url';
 import { getUserDisplayName, getUserInitials } from '@/lib/user-display';
 import { cn } from '@/lib/utils';
+import { findScrollParent } from '@/lib/scroll-parent';
 import { usePublicPath } from '../hooks/use-public-locale';
 import { LanguageSwitcher } from './language-switcher';
 
@@ -24,7 +25,7 @@ const NAV_LINKS = [
  * While the session is being restored, a fixed-width skeleton keeps the layout still.
  */
 function AuthActions({ stacked = false, onNavigate }: { stacked?: boolean; onNavigate?: () => void }) {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading } = usePublicSession();
   const { formatMessage } = useIntl();
   const wide = stacked ? 'w-full' : undefined;
 
@@ -35,41 +36,32 @@ function AuthActions({ stacked = false, onNavigate }: { stacked?: boolean; onNav
   if (user) {
     const avatarSrc = resolveAssetUrl(user.avatar);
     return (
-      <Link to="/dashboard" onClick={onNavigate} className={wide}>
-        <Button variant="primary" size="sm" className={cn('gap-2 pl-1.5', wide)}>
+      <Button asChild variant="primary" size="sm" className={cn('gap-2 pl-1.5 bg-[var(--accent-500)] text-[var(--brand-900)] hover:bg-[var(--accent-400)] hover:text-[var(--brand-900)]', wide)}>
+        <Link to="/dashboard" onClick={onNavigate}>
           <Avatar className="size-6">
             {avatarSrc && <AvatarImage src={avatarSrc} alt={getUserDisplayName(user)} className="object-cover" />}
             <AvatarFallback className="text-[10px]">{getUserInitials(user)}</AvatarFallback>
           </Avatar>
           {formatMessage({ id: 'nav.dashboard' })}
-        </Button>
-      </Link>
+        </Link>
+      </Button>
     );
   }
 
   return (
     <>
-      <Link to="/auth/sign-in" onClick={onNavigate} className={wide}>
-        <Button variant="outline" size="sm" className={wide}>
+      <Button asChild variant="outline" size="sm" className={wide}>
+        <Link to="/auth/sign-in" onClick={onNavigate}>
           {formatMessage({ id: 'nav.signIn' })}
-        </Button>
-      </Link>
-      <Link to="/auth/sign-up" onClick={onNavigate} className={wide}>
-        <Button variant="primary" size="sm" className={wide}>
+        </Link>
+      </Button>
+      <Button asChild variant="primary" size="sm" className={cn('bg-[var(--accent-500)] text-[var(--brand-900)] hover:bg-[var(--accent-400)] hover:text-[var(--brand-900)]', wide)}>
+        <Link to="/auth/sign-up" onClick={onNavigate}>
           {formatMessage({ id: 'nav.freeTrial' })}
-        </Button>
-      </Link>
+        </Link>
+      </Button>
     </>
   );
-}
-
-/** Nearest ancestor that scrolls vertically, or the window. `html`/`body` are `h-full` here, so the page scrolls inside `#root`. */
-function findScrollParent(start: HTMLElement | null): HTMLElement | Window {
-  for (let el = start; el && el !== document.body; el = el.parentElement) {
-    const { overflowY } = getComputedStyle(el);
-    if (overflowY === 'auto' || overflowY === 'scroll') return el;
-  }
-  return window;
 }
 
 export function StickyNav() {
@@ -98,8 +90,8 @@ export function StickyNav() {
         scrolled || mobileOpen ? 'border-b border-border bg-card/80 shadow-sm backdrop-blur-md' : 'bg-transparent',
       )}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-        <Link to={to('/')} aria-label={formatMessage({ id: 'nav.home' })}>
+      <div className={cn('mx-auto flex max-w-7xl items-center justify-between px-6 transition-[padding] duration-300 lg:px-8', scrolled ? 'py-2.5' : 'py-4')}>
+        <Link to={to('/')} title={formatMessage({ id: 'nav.home' })}>
           <Logo />
         </Link>
 

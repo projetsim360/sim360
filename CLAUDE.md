@@ -97,6 +97,7 @@ Domain modules:
 - State: TanStack React Query for server state (staleTime: 5min), no global state library
 - Routing: `src/routing/app-routing-setup.tsx` with auth provider, layout switcher, socket/notification providers
 - Menu config: `src/config/menu.config.ts` is the single source of truth for all navigation menus
+- Public site (landing, `/` and `/en`): separate entry `site.html` → `src/site-main.tsx` → `src/features/landing/`, prerendered to `dist/site-fr.html` / `dist/site-en.html` by `scripts/prerender.mjs` during `pnpm build`. Which paths use it: `apps/webapp/public-paths.mjs` (dev/preview middleware) and the `$spa_entry` map in `nginx.prod.conf.template` (prod). Public pages must stay SSR-safe (no `window`/`localStorage` during render) and read the session from `usePublicSession()`, not `useAuth()`.
 
 #### Design System (MUST follow)
 

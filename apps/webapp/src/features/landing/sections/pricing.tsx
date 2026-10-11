@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { useIntl } from 'react-intl';
 import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/providers/auth-provider';
+import { usePublicSession } from '../providers/public-session';
 import { cn } from '@/lib/utils';
 import { Reveal } from '../components/reveal';
 import { usePublicLocale } from '../hooks/use-public-locale';
@@ -21,7 +21,7 @@ function BillingToggle({ period, onChange }: { period: BillingPeriod; onChange: 
       onClick={() => onChange(value)}
       className={cn(
         'rounded-full px-4 py-1.5 text-sm font-medium transition-colors',
-        period === value ? 'bg-[var(--accent-500)] text-white shadow-sm' : 'text-foreground/70 hover:text-foreground',
+        period === value ? 'bg-[var(--accent-500)] text-[var(--brand-900)] shadow-sm' : 'text-foreground/70 hover:text-foreground',
       )}
     >
       {formatMessage({ id: labelId })}
@@ -71,33 +71,28 @@ function PlanPrice({ plan, period }: { plan: PublicPlan; period: BillingPeriod }
 
 function PlanCta({ plan }: { plan: PublicPlan }) {
   const { formatMessage } = useIntl();
-  const { user } = useAuth();
+  const { user } = usePublicSession();
   const variant = plan.featured ? 'primary' : 'outline';
+  const tone = plan.featured ? 'bg-[var(--accent-500)] text-[var(--brand-900)] hover:bg-[var(--accent-400)] hover:text-[var(--brand-900)]' : '';
 
   if (plan.cta === 'contact') {
     return (
-      <a href={CONTACT_HREF} className="block">
-        <Button variant={variant} size="sm" className="w-full">
-          {formatMessage({ id: 'pricing.cta.contact' })}
-        </Button>
-      </a>
+      <Button asChild variant={variant} size="sm" className={cn('w-full', tone)}>
+        <a href={CONTACT_HREF}>{formatMessage({ id: 'pricing.cta.contact' })}</a>
+      </Button>
     );
   }
   if (user) {
     return (
-      <Link to="/dashboard" className="block">
-        <Button variant={variant} size="sm" className="w-full">
-          {formatMessage({ id: 'nav.dashboard' })}
-        </Button>
-      </Link>
+      <Button asChild variant={variant} size="sm" className={cn('w-full', tone)}>
+        <Link to="/dashboard">{formatMessage({ id: 'nav.dashboard' })}</Link>
+      </Button>
     );
   }
   return (
-    <Link to="/auth/sign-up" className="block">
-      <Button variant={variant} size="sm" className="w-full">
-        {formatMessage({ id: plan.cta === 'signup' ? 'pricing.cta.signup' : 'pricing.cta.start' })}
-      </Button>
-    </Link>
+    <Button asChild variant={variant} size="sm" className={cn('w-full', tone)}>
+      <Link to="/auth/sign-up">{formatMessage({ id: plan.cta === 'signup' ? 'pricing.cta.signup' : 'pricing.cta.start' })}</Link>
+    </Button>
   );
 }
 

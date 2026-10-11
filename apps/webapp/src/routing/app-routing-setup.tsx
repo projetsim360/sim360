@@ -1,22 +1,23 @@
+import { lazy, Suspense } from 'react';
 import { Route, Routes, Navigate } from 'react-router';
 import { SimexShell } from '@/components/layouts/simex-shell';
 import { AuthLayout } from '@/components/auth/auth-layout';
 import { ProtectedRoute } from '@/components/auth/protected-route';
-import { SignUpPage } from '@/pages/auth/sign-up';
-import { SignInPage } from '@/pages/auth/sign-in';
-import { VerifyEmailPage } from '@/pages/auth/verify-email';
-import { VerifyEmailSentPage } from '@/pages/auth/verify-email-sent';
-import { ForgotPasswordPage } from '@/pages/auth/forgot-password';
-import { CheckEmailPage } from '@/pages/auth/check-email';
-import { ResetPasswordPage } from '@/pages/auth/reset-password';
-import { ResetPasswordSuccessPage } from '@/pages/auth/reset-password-success';
-import { GoogleCallbackPage } from '@/pages/auth/google-callback';
-import { VerifyTwoFactorPage } from '@/pages/auth/verify-2fa';
-import { ConfirmEmailChangePage } from '@/pages/auth/confirm-email-change';
-import { ProfileWizardPage } from '@/pages/profile/wizard';
-import { SettingsPage } from '@/pages/settings';
 
-import { landingRoutes } from '@/features/landing/config/landing.routes';
+// Named-export pages, loaded on demand so the public landing does not pay for them.
+const SignUpPage = lazy(() => import('@/pages/auth/sign-up').then((m) => ({ default: m.SignUpPage })));
+const SignInPage = lazy(() => import('@/pages/auth/sign-in').then((m) => ({ default: m.SignInPage })));
+const VerifyEmailPage = lazy(() => import('@/pages/auth/verify-email').then((m) => ({ default: m.VerifyEmailPage })));
+const VerifyEmailSentPage = lazy(() => import('@/pages/auth/verify-email-sent').then((m) => ({ default: m.VerifyEmailSentPage })));
+const ForgotPasswordPage = lazy(() => import('@/pages/auth/forgot-password').then((m) => ({ default: m.ForgotPasswordPage })));
+const CheckEmailPage = lazy(() => import('@/pages/auth/check-email').then((m) => ({ default: m.CheckEmailPage })));
+const ResetPasswordPage = lazy(() => import('@/pages/auth/reset-password').then((m) => ({ default: m.ResetPasswordPage })));
+const ResetPasswordSuccessPage = lazy(() => import('@/pages/auth/reset-password-success').then((m) => ({ default: m.ResetPasswordSuccessPage })));
+const GoogleCallbackPage = lazy(() => import('@/pages/auth/google-callback').then((m) => ({ default: m.GoogleCallbackPage })));
+const VerifyTwoFactorPage = lazy(() => import('@/pages/auth/verify-2fa').then((m) => ({ default: m.VerifyTwoFactorPage })));
+const ConfirmEmailChangePage = lazy(() => import('@/pages/auth/confirm-email-change').then((m) => ({ default: m.ConfirmEmailChangePage })));
+const ProfileWizardPage = lazy(() => import('@/pages/profile/wizard').then((m) => ({ default: m.ProfileWizardPage })));
+const SettingsPage = lazy(() => import('@/pages/settings').then((m) => ({ default: m.SettingsPage })));
 import {
   dashboardRoutes,
   simulationRoutes,
@@ -37,6 +38,7 @@ import {
 
 export function AppRoutingSetup() {
   return (
+    <Suspense fallback={null}>
     <Routes>
       {/* Auth routes (public) */}
       <Route element={<AuthLayout />}>
@@ -84,12 +86,13 @@ export function AppRoutingSetup() {
       </Route>
 
       {/* Public routes (no auth, no layout) */}
-      {landingRoutes}
+      {/* Public pages (/ and /en) are served by the separate site entry, see site-main.tsx */}
       {badgeVerifyRoute}
       {recruitmentJoinRoute}
 
       {/* Catch-all redirect */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
+    </Suspense>
   );
 }

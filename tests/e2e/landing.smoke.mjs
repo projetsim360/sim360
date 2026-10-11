@@ -18,7 +18,8 @@ const browser = await chromium.launch();
 for (const locale of ['fr', 'en']) {
   for (const logged of [false, true]) {
     for (const [w, h, tag] of [[1280, 900, 'desktop'], [375, 812, 'mobile']]) {
-      const context = await browser.newContext({ viewport: { width: w, height: h }, locale: locale === 'fr' ? 'fr-CA' : 'en-CA' });
+      const reducedMotion = locale === 'en' && !logged && tag === 'mobile' ? 'reduce' : 'no-preference';
+      const context = await browser.newContext({ viewport: { width: w, height: h }, locale: locale === 'fr' ? 'fr-CA' : 'en-CA', reducedMotion });
       // Stub the API: session restore returns a learner, everything else is unauthorised.
       // Playwright checks routes last-registered first: the broad 401 stub goes first, the user stub wins.
       await context.route('**/api/v1/**', (route) => route.fulfill({ status: 401, json: { message: 'stub' } }));
@@ -48,6 +49,16 @@ for (const locale of ['fr', 'en']) {
         noDeadLinks: (await page.locator('footer a[href="#"]').count()) === 0,
         noIa: !/(^|[^A-Za-zÀ-ÿ])IA([^A-Za-zÀ-ÿ]|$)/.test(await page.locator('body').innerText()),
         noPageErrors: errors.length === 0,
+        // The landing is prerendered at build time: the raw HTML already contains the page (no JS needed to paint).
+        prerendered: await page.request.get(`${base}${locale === 'en' ? '/en' : '/'}`).then((r) => r.text()).then((t) => /<h1[\s>]/.test(t) && t.includes(`lang="${exp.lang}"`)),
+        // Every landing image must exist (a missing file is hidden by onError, invisible to the eye).
+        // Lazy images below the fold never load in a static viewport, so check the files over HTTP.
+        imagesLoad: await (async () => {
+          const srcs = await page.evaluate(() => [...document.querySelectorAll('img')].map((i) => i.currentSrc || i.src));
+          if (srcs.length === 0) return false;
+          const statuses = await Promise.all(srcs.map((src) => page.request.get(src).then((r) => r.status()).catch(() => 0)));
+          return statuses.every((st) => st === 200);
+        })(),
       };
       // Mobile: open the burger menu to screenshot it once
       if (tag === 'mobile') {
@@ -72,7 +83,7 @@ for (const locale of ['fr', 'en']) {
         await page.screenshot({ path: `${out}/${locale}-${logged ? 'logged' : 'guest'}-${tag}-footer.png` });
       }
       const failed = Object.entries(checks).filter(([, ok]) => !ok).map(([k]) => k);
-      results.push({ case: `${locale} ${logged ? 'logged' : 'guest'} ${tag}`, failed, errors: errors.slice(0, 2) });
+      results.push({ case: `${locale} ${logged ? 'logged' : 'guest'} ${tag}${reducedMotion === 'reduce' ? ' reduced-motion' : ''}`, failed, errors: errors.slice(0, 2) });
       await context.close();
     }
   }

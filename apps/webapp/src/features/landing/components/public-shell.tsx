@@ -15,7 +15,8 @@ export function PublicShell({ locale }: { locale: PublicLocale }) {
   const { pathname } = useLocation();
   const messages = PUBLIC_MESSAGES[locale];
   const bare = stripLocalePrefix(pathname);
-  const origin = typeof window === 'undefined' ? '' : window.location.origin;
+  // Fixed public origin: prerendered HTML has no window, and localhost must not leak into canonical URLs.
+  const origin = import.meta.env.VITE_PUBLIC_ORIGIN || 'https://simex-pro.com';
 
   return (
     <IntlProvider locale={locale} defaultLocale={DEFAULT_PUBLIC_LOCALE} messages={messages}>

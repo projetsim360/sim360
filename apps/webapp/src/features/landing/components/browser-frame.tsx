@@ -24,7 +24,7 @@ export function BrowserFrame({ url, children, className, aspect = 'aspect-[4/3]'
         <span className="size-3 rounded-full bg-[#ff5f56]" />
         <span className="size-3 rounded-full bg-[#ffbd2e]" />
         <span className="size-3 rounded-full bg-[#27c93f]" />
-        <span className="ml-4 flex-1 rounded bg-white/10 px-3 py-0.5 text-center text-[10px] text-white/40">{url}</span>
+        <span className="ml-4 flex-1 rounded bg-white/10 px-3 py-0.5 text-center text-[10px] text-white/60">{url}</span>
       </div>
       <div className="relative flex-1 min-h-0">{children}</div>
     </div>
