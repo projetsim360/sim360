@@ -36,7 +36,7 @@ function LinkColumn({ titleId, links }: { titleId: 'footer.product' | 'footer.co
   if (ready.length === 0) return null;
   return (
     <div>
-      <h4 className="mb-5 text-sm font-semibold text-white">{formatMessage({ id: titleId })}</h4>
+      <h3 className="mb-5 text-sm font-semibold text-white">{formatMessage({ id: titleId })}</h3>
       <ul className="space-y-3">
         {ready.map((link) => (
           <li key={link.labelKey}>
@@ -83,12 +83,12 @@ export function Footer() {
         </div>
 
         <div className="flex flex-col items-start justify-between gap-4 border-t border-white/10 pt-8 md:flex-row md:items-center">
-          <p className="text-sm text-white/40">{formatMessage({ id: 'footer.copyright' }, { year: new Date().getFullYear() })}</p>
+          <p className="text-sm text-white/60">{formatMessage({ id: 'footer.copyright' }, { year: new Date().getFullYear() })}</p>
           {legal.length > 0 && (
             <ul className="flex flex-wrap gap-6">
               {legal.map((link) => (
                 <li key={link.labelKey}>
-                  <FooterAnchor link={link} className="text-xs text-white/40 transition-colors hover:text-white/70" />
+                  <FooterAnchor link={link} className="text-xs text-white/60 transition-colors hover:text-white" />
                 </li>
               ))}
             </ul>

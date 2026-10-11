@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 import { useIntl } from 'react-intl';
 import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/providers/auth-provider';
+import { usePublicSession } from '../providers/public-session';
 import { Reveal } from '../components/reveal';
 
 const POINTS = ['pilot.point.1', 'pilot.point.2', 'pilot.point.3'] as const;
@@ -13,7 +13,7 @@ const POINTS = ['pilot.point.1', 'pilot.point.2', 'pilot.point.3'] as const;
  */
 export function PilotBand() {
   const { formatMessage } = useIntl();
-  const { user } = useAuth();
+  const { user } = usePublicSession();
 
   return (
     <section id="pilote" className="scroll-mt-20 border-y border-border bg-card/40 px-6 py-16 lg:px-8">
@@ -33,11 +33,9 @@ export function PilotBand() {
             ))}
           </ul>
           {!user && (
-            <Link to="/auth/sign-up" className="mt-6 block">
-              <Button variant="primary" size="sm" className="w-full">
-                {formatMessage({ id: 'pilot.cta' })}
-              </Button>
-            </Link>
+            <Button asChild variant="primary" size="sm" className="mt-6 w-full bg-[var(--accent-500)] text-[var(--brand-900)] hover:bg-[var(--accent-400)] hover:text-[var(--brand-900)]">
+              <Link to="/auth/sign-up">{formatMessage({ id: 'pilot.cta' })}</Link>
+            </Button>
           )}
         </div>
       </Reveal>

@@ -18,7 +18,7 @@ export function FaqSection() {
               id="faq.subtitle"
               values={{
                 email: (
-                  <a href={`mailto:${CONTACT_EMAIL}`} className="text-[var(--accent-400)] hover:underline">
+                  <a key="email" href={`mailto:${CONTACT_EMAIL}`} className="text-[var(--accent-400)] hover:underline">
                     {CONTACT_EMAIL}
                   </a>
                 ),
