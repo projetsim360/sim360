@@ -22,6 +22,7 @@ import { CreateCustomMeetingDto, SendMessageDto } from './dto';
 import { OPENING_MESSAGE_KIND, needsOpening } from './meeting-opening.util';
 import { sectorLabel } from '../simulations/sector-labels';
 import { seedsFromSummary } from '../action-items/action-items.util';
+import { PlanQuotaService } from '../plans/plan-quota.service';
 
 interface MessageEvent {
   data: string;
@@ -54,6 +55,7 @@ export class MeetingsService {
     private orchestrator: AiOrchestratorService,
     private config: ConfigService,
     private tokenTracker: TokenTrackerService,
+    private quotas: PlanQuotaService,
   ) {}
 
   async findAllBySimulation(
@@ -86,6 +88,17 @@ export class MeetingsService {
         _count: { select: { messages: true } },
       },
     });
+  }
+
+  /**
+   * A written meeting switching to voice consumes a voice start: check the quota, then record
+   * the meeting as AUDIO so it is counted. Meetings started in AUDIO were checked at start.
+   */
+  private async ensureVoiceAllowed(meeting: { id: string; mode: string; simulation: { tenantId: string } }, userId: string) {
+    if (meeting.mode === 'AUDIO') return;
+    await this.quotas.assertCanStartMeeting(meeting.simulation.tenantId, userId, 'AUDIO');
+    await this.prisma.meeting.update({ where: { id: meeting.id }, data: { mode: 'AUDIO' } });
+    meeting.mode = 'AUDIO';
   }
 
   async findOne(id: string, userId: string) {
@@ -244,6 +257,7 @@ export class MeetingsService {
     if (simulation.status === 'COMPLETED' || simulation.status === 'ABANDONED') {
       throw new BadRequestException('Impossible de planifier une réunion dans une simulation terminée');
     }
+    await this.quotas.assertCanCreateCustomMeeting(tenantId);
 
     const objectives = dto.objectives.map((o) => o.trim()).filter(Boolean);
     const meeting = await this.prisma.meeting.create({
@@ -286,6 +300,11 @@ export class MeetingsService {
     if (meeting.status !== 'SCHEDULED') {
       throw new BadRequestException('Cette réunion ne peut pas être démarrée');
     }
+    await this.quotas.assertCanStartMeeting(
+      meeting.simulation.tenantId,
+      userId,
+      meeting.mode === 'AUDIO' ? 'AUDIO' : 'TEXT',
+    );
 
     const updated = await this.prisma.meeting.update({
       where: { id },
@@ -587,6 +606,7 @@ export class MeetingsService {
     if (meeting.status !== 'IN_PROGRESS') {
       throw new BadRequestException('La réunion doit être en cours pour démarrer une session audio');
     }
+    await this.ensureVoiceAllowed(meeting, userId);
 
     const openaiKey = this.config.get<string>('ai.openaiApiKey');
     if (!openaiKey) {
@@ -691,6 +711,7 @@ export class MeetingsService {
     if (meeting.status !== 'IN_PROGRESS') {
       throw new BadRequestException('La réunion doit être en cours pour démarrer les sessions audio');
     }
+    await this.ensureVoiceAllowed(meeting, userId);
 
     // Filter participants if specific IDs provided, otherwise use all
     let targetParticipants = meeting.participants;

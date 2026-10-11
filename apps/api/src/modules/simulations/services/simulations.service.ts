@@ -1,6 +1,7 @@
 import { Injectable, Inject, forwardRef, Logger, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { PrismaService, EventPublisherService, EventType, AggregateType, CacheEvict } from '@sim360/core';
 import { Prisma, SimulationStatus, TenantPlan } from '@prisma/client';
+import { PlanQuotaService } from '../../plans/plan-quota.service';
 import { CreateSimulationDto } from '../dto/create-simulation.dto';
 import { MakeDecisionDto } from '../dto/make-decision.dto';
 import { RespondEventDto } from '../dto/respond-event.dto';
@@ -52,6 +53,7 @@ export class SimulationsService {
     @Inject(forwardRef(() => SimulatedEmailsService))
     private simulatedEmailsService: SimulatedEmailsService,
     private profileConfigService: ProfileConfigService,
+    private quotas: PlanQuotaService,
   ) {}
 
   private async recordKpiSnapshot(
@@ -109,6 +111,7 @@ export class SimulationsService {
 
     if (!scenario) throw new NotFoundException('Scenario introuvable');
     if (!scenario.isPublished) throw new BadRequestException('Ce scenario n\'est pas encore disponible');
+    await this.quotas.assertCanUseScenario(tenantId, scenario.requiredPlan);
 
     const projectTemplate = scenario.projectTemplate as Record<string, any>;
     const initialKpis = scenario.initialKpis as Record<string, number>;
