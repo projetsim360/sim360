@@ -34,7 +34,7 @@ export function ConfirmEmailChangePage() {
   if (status === 'loading') {
     return (
       <AuthCard
-        title="Confirmer le changement d'email."
+        title="Confirmer le changement de courriel."
         subtitle="Cette action mettra à jour votre adresse de connexion."
       >
         <div className="flex justify-center py-4">
@@ -50,7 +50,7 @@ export function ConfirmEmailChangePage() {
   if (status === 'success') {
     return (
       <AuthCard
-        title="Email modifié."
+        title="Courriel modifié."
         subtitle={message}
       >
         <p className="text-sm text-muted-foreground">
@@ -79,7 +79,7 @@ export function ConfirmEmailChangePage() {
         <AlertDescription>{message}</AlertDescription>
       </Alert>
       <p className="text-xs text-muted-foreground">
-        Si le problème persiste, vous pouvez relancer le changement d'email depuis les paramètres de votre compte.
+        Si le problème persiste, vous pouvez relancer le changement de courriel depuis les paramètres de votre compte.
       </p>
       <Button variant="outline" asChild className="w-full">
         <Link to="/auth/sign-in">Retour à la connexion</Link>

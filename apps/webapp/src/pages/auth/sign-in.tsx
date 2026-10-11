@@ -13,7 +13,7 @@ import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { AuthCard } from '@/components/auth/auth-card';
 
 const signInSchema = z.object({
-  email: z.string().email('Email invalide'),
+  email: z.string().email('Courriel invalide'),
   password: z.string().min(1, 'Requis'),
   rememberMe: z.boolean().optional(),
 });
@@ -80,7 +80,7 @@ export function SignInPage() {
   return (
     <AuthCard
       title="Bon retour."
-      subtitle="Continuez votre progression de PM."
+      subtitle="Reprenez vos simulations là où vous les avez laissées."
       topSlot={googleButton}
       bottomSlot={
         <>
@@ -105,9 +105,9 @@ export function SignInPage() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Courriel</FormLabel>
                 <FormControl>
-                  <Input placeholder="votre@email.com" type="email" {...field} />
+                  <Input placeholder="vous@exemple.com" type="email" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -147,19 +147,19 @@ export function SignInPage() {
             )}
           />
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-3">
             <FormField
               control={form.control}
               name="rememberMe"
               render={({ field }) => (
-                <FormItem className="flex items-center gap-2 space-y-0">
+                <FormItem className="flex-row items-center gap-2 space-y-0">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormLabel className="text-sm text-muted-foreground cursor-pointer font-normal">
+                  <FormLabel className="cursor-pointer whitespace-nowrap text-sm font-normal text-muted-foreground">
                     Se souvenir de moi
                   </FormLabel>
                 </FormItem>
@@ -167,7 +167,7 @@ export function SignInPage() {
             />
             <Link
               to="/auth/forgot-password"
-              className="text-[14px] text-[var(--accent-600)] hover:underline font-medium"
+              className="shrink-0 whitespace-nowrap text-[14px] font-medium text-[var(--accent-600)] hover:underline"
             >
               Mot de passe oublié ?
             </Link>

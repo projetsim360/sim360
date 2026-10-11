@@ -3,25 +3,19 @@ import { AuthBranding } from './auth-branding';
 
 export function AuthLayout() {
   return (
-    <div className="flex flex-col min-h-screen w-full">
-      <div className="grid lg:grid-cols-2 grow">
-        {/* Form panel — left on desktop, second (below branding) on mobile */}
-        <div
-          className="relative flex justify-center items-center p-6 lg:p-12 order-2 lg:order-1 bg-background min-h-[60vh] lg:min-h-screen"
-          style={{
-            backgroundImage:
-              'radial-gradient(ellipse 80% 60% at 50% 30%, rgba(238,122,58,0.06) 0%, transparent 60%)',
-          }}
-        >
+    <div className="flex min-h-screen w-full flex-col">
+      <div className="grid grow grid-rows-[auto_1fr] lg:grid-cols-2 lg:grid-rows-1">
+        {/* Form panel: left on desktop, below the compact branding header on mobile */}
+        <main className="relative order-2 flex items-start justify-center bg-background bg-[radial-gradient(ellipse_80%_60%_at_50%_30%,rgba(238,122,58,0.06)_0%,transparent_60%)] p-4 sm:items-center sm:p-6 lg:order-1 lg:min-h-screen lg:p-12">
           <div className="relative w-full max-w-[460px]">
             <Outlet />
           </div>
-        </div>
+        </main>
 
-        {/* Branding panel — right on desktop, first (top) on mobile */}
-        <div className="order-1 lg:order-2 min-h-[40vh] lg:min-h-screen">
+        {/* Branding panel: right on desktop, compact header on mobile */}
+        <aside className="order-1 lg:order-2 lg:min-h-screen">
           <AuthBranding />
-        </div>
+        </aside>
       </div>
     </div>
   );

@@ -27,7 +27,7 @@ export function AuthCard({
     <div
       className={cn(
         'relative w-full rounded-2xl bg-card',
-        'p-8 sm:p-10 lg:p-12',
+        'p-6 sm:p-10 lg:p-12',
         className,
       )}
     >

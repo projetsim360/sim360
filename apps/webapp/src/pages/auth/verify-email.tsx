@@ -43,7 +43,7 @@ export function VerifyEmailPage() {
   if (status === 'success') {
     return (
       <AuthCard
-        title="Email vérifié."
+        title="Courriel vérifié."
         subtitle="Votre compte est maintenant actif. Vous pouvez vous connecter."
       >
         <Button asChild className="w-full">

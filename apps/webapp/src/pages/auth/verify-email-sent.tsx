@@ -25,7 +25,7 @@ export function VerifyEmailSentPage() {
 
   return (
     <AuthCard
-      title="Vérifiez votre boîte mail."
+      title="Vérifiez vos courriels."
       subtitle={
         email ? (
           <>
