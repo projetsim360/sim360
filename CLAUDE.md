@@ -131,6 +131,7 @@ Copy `.env.example` to `.env`. Key variables:
 - `ANTHROPIC_API_KEY` / `OPENAI_API_KEY`: AI providers
 - `JWT_SECRET` / `JWT_REFRESH_SECRET`: Auth tokens
 - `SMTP_HOST`: MailHog in dev (port 1025, UI on 8025)
+- `STORAGE_PROVIDER`: `local` (default, `./uploads` + persistent volume in prod) or `gcs` (`GCS_BUCKET`, `GCS_PROJECT_ID`, `GCS_KEY_JSON`)
 
 ## Conventions
 
