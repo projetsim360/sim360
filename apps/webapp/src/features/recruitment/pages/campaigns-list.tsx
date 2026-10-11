@@ -9,16 +9,19 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useCampaigns } from '../api/recruitment.api';
 import { CampaignStatusBadge } from '../components/campaign-status-badge';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useT } from '@/i18n/app/use-t';
 
-const STATUS_TABS: Array<{ value: string; label: string }> = [
-  { value: 'all', label: 'Toutes' },
-  { value: 'DRAFT', label: 'Brouillon' },
-  { value: 'ACTIVE', label: 'Actives' },
-  { value: 'CLOSED', label: 'Clôturées' },
-  { value: 'ARCHIVED', label: 'Archivées' },
+const STATUS_TABS: Array<{ value: string; label: AppMessageKey }> = [
+  { value: 'all', label: 'recruit.tab.all' },
+  { value: 'DRAFT', label: 'recruit.tab.DRAFT' },
+  { value: 'ACTIVE', label: 'recruit.tab.ACTIVE' },
+  { value: 'CLOSED', label: 'recruit.tab.CLOSED' },
+  { value: 'ARCHIVED', label: 'recruit.tab.ARCHIVED' },
 ];
 
 export default function CampaignsListPage() {
+  const t = useT();
   const [statusFilter, setStatusFilter] = useState('all');
   const { data, isLoading, error } = useCampaigns(
     statusFilter !== 'all' ? { status: statusFilter } : undefined,
@@ -29,12 +32,12 @@ export default function CampaignsListPage() {
   return (
     <div className="container">
       <Toolbar>
-        <ToolbarHeading title="Campagnes de recrutement" />
+        <ToolbarHeading title={t('recruit.campaigns')} />
         <ToolbarActions>
           <Button variant="primary" size="sm" asChild>
             <Link to="/recruitment/campaigns/new">
               <KeenIcon icon="plus" style="duotone" className="size-4" />
-              Nouvelle campagne
+              {t('recruit.newCampaign')}
             </Link>
           </Button>
         </ToolbarActions>
@@ -43,7 +46,7 @@ export default function CampaignsListPage() {
           <TabsList variant="line">
             {STATUS_TABS.map((tab) => (
               <TabsTrigger key={tab.value} value={tab.value}>
-                {tab.label}
+                {t(tab.label)}
               </TabsTrigger>
             ))}
           </TabsList>
@@ -57,7 +60,7 @@ export default function CampaignsListPage() {
           <Card>
             <CardContent className="py-8 text-center">
               <p className="text-destructive text-sm">
-                Erreur lors du chargement des campagnes.
+                {t('recruit.loadError')}
               </p>
             </CardContent>
           </Card>
@@ -66,9 +69,9 @@ export default function CampaignsListPage() {
             <CardContent>
               <EmptyState
                 icon="briefcase"
-                title="Aucune campagne"
-                description="Créez votre première campagne pour évaluer des candidats par simulation."
-                action={{ label: 'Nouvelle campagne', href: '/recruitment/campaigns/new' }}
+                title={t('recruit.noCampaigns')}
+                description={t('recruit.noCampaignsDesc')}
+                action={{ label: t('recruit.newCampaign'), href: '/recruitment/campaigns/new' }}
               />
             </CardContent>
           </Card>
@@ -79,13 +82,13 @@ export default function CampaignsListPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Titre</TableHead>
-                      <TableHead>Poste</TableHead>
-                      <TableHead>Statut</TableHead>
-                      <TableHead className="text-center">Candidats</TableHead>
-                      <TableHead className="text-center">Terminés</TableHead>
-                      <TableHead className="text-right">Score moy.</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
+                      <TableHead>{t('recruit.col.title')}</TableHead>
+                      <TableHead>{t('recruit.col.job')}</TableHead>
+                      <TableHead>{t('actions.statusLabel')}</TableHead>
+                      <TableHead className="text-center">{t('recruit.col.candidates')}</TableHead>
+                      <TableHead className="text-center">{t('recruit.col.completed')}</TableHead>
+                      <TableHead className="text-right">{t('recruit.col.avgScore')}</TableHead>
+                      <TableHead className="text-right">{t('recruit.col.actions')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

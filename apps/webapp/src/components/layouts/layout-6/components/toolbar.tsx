@@ -4,6 +4,7 @@ import { MENU_SIDEBAR_COMPACT } from '@/config/layout-6.config';
 import { MenuItem } from '@/config/types';
 import { cn } from '@/lib/utils';
 import { useMenu } from '@/hooks/use-menu';
+import { useMenuLabel } from '@/i18n/app/menu-labels';
 
 export interface ToolbarHeadingProps {
   title?: string | ReactNode;
@@ -32,6 +33,7 @@ function ToolbarBreadcrumbs() {
   const { pathname } = useLocation();
   const { getBreadcrumb, isActive } = useMenu(pathname);
   const items: MenuItem[] = getBreadcrumb(MENU_SIDEBAR_COMPACT);
+  const menuLabel = useMenuLabel();
 
   if (items.length === 0) {
     return null;
@@ -55,7 +57,7 @@ function ToolbarBreadcrumbs() {
                     : 'text-secondary-foreground hover:text-primary',
                 )}
               >
-                {item.title}
+                {menuLabel(item.title)}
               </Link>
             ) : (
               <span
@@ -63,7 +65,7 @@ function ToolbarBreadcrumbs() {
                   isLast ? 'text-mono' : 'text-secondary-foreground',
                 )}
               >
-                {item.title}
+                {menuLabel(item.title)}
               </span>
             )}
             {!isLast && <span className="text-muted-foreground">/</span>}
@@ -77,6 +79,7 @@ function ToolbarBreadcrumbs() {
 const ToolbarHeading = ({ title = '', description, children }: ToolbarHeadingProps) => {
   const { pathname } = useLocation();
   const { getCurrentItem } = useMenu(pathname);
+  const menuLabel = useMenuLabel();
   const item = getCurrentItem(MENU_SIDEBAR_COMPACT);
 
   // Pages that pass their own <h1>/<p> used to see them silently dropped.
@@ -91,7 +94,7 @@ const ToolbarHeading = ({ title = '', description, children }: ToolbarHeadingPro
   return (
     <div data-slot="toolbar-heading" className="flex flex-col md:flex-row md:items-center flex-wrap gap-1 lg:gap-5">
       <div className="flex flex-col gap-0.5">
-        <h1 className="font-medium text-lg text-mono">{title || item?.title}</h1>
+        <h1 className="font-medium text-lg text-mono">{title || menuLabel(item?.title)}</h1>
         {description && <p className="text-sm text-muted-foreground">{description}</p>}
       </div>
       <ToolbarBreadcrumbs />

@@ -10,8 +10,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { useShortlist } from '../api/recruitment.api';
 import { CandidateStatusBadge } from '../components/candidate-status-badge';
+import { useT } from '@/i18n/app/use-t';
 
 export default function ShortlistPage() {
+  const t = useT();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [count, setCount] = useState(5);
@@ -39,7 +41,7 @@ export default function ShortlistPage() {
     return (
       <div className="container space-y-5">
         <Toolbar>
-          <ToolbarHeading title="Shortlist" />
+          <ToolbarHeading title={t('recruit.shortlist')} />
         </Toolbar>
         <Skeleton className="h-20 rounded-lg" />
         <div className="space-y-3">
@@ -55,11 +57,11 @@ export default function ShortlistPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Shortlist" />
+          <ToolbarHeading title={t('recruit.shortlist')} />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-destructive text-sm">Impossible de charger la shortlist.</p>
+            <p className="text-destructive text-sm">{t('recruit.shortlistError')}</p>
           </CardContent>
         </Card>
       </div>
@@ -69,16 +71,16 @@ export default function ShortlistPage() {
   return (
     <div className="container space-y-5">
       <Toolbar>
-        <ToolbarHeading title="Shortlist" />
+        <ToolbarHeading title={t('recruit.shortlist')} />
         <ToolbarActions>
           {selectedForCompare.length === 2 && (
             <Button variant="primary" size="sm" onClick={handleCompare}>
               <KeenIcon icon="arrow-two-diagonals" style="duotone" className="size-4" />
-              Comparer
+              {t('recruit.compare')}
             </Button>
           )}
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Top</span>
+            <span className="text-sm text-muted-foreground">{t('recruit.top')}</span>
             {[3, 5, 10].map((n) => (
               <Button
                 key={n}
@@ -93,7 +95,7 @@ export default function ShortlistPage() {
           <Button variant="outline" size="sm" asChild>
             <Link to={`/recruitment/campaigns/${id}`}>
               <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
-              Retour
+              {t('common.back')}
             </Link>
           </Button>
         </ToolbarActions>
@@ -111,7 +113,7 @@ export default function ShortlistPage() {
                     Sur {shortlist.totalCandidates} candidats, voici les {shortlist.candidates.length} que nous recommandons
                   </p>
                   <p className="text-sm text-muted-foreground mt-0.5">
-                    Sélectionnez 2 candidats pour les comparer
+                    {t('recruit.pickTwo')}
                   </p>
                 </div>
               </div>
@@ -124,7 +126,7 @@ export default function ShortlistPage() {
                 {selectedForCompare.length === 2 && (
                   <Button variant="primary" size="sm" onClick={handleCompare}>
                     <KeenIcon icon="arrow-two-diagonals" style="duotone" className="size-4" />
-                    Comparer
+                    {t('recruit.compare')}
                   </Button>
                 )}
               </div>
@@ -138,7 +140,7 @@ export default function ShortlistPage() {
             const isSelected = selectedForCompare.includes(candidate.id);
             const candidateName = candidate.user
               ? `${candidate.user.firstName} ${candidate.user.lastName}`
-              : 'Candidat';
+              : t('recruit.candidate');
 
             return (
               <Card
@@ -186,14 +188,14 @@ export default function ShortlistPage() {
                             ? Math.round(candidate.globalScore)
                             : '-'}
                         </p>
-                        <p className="text-[10px] text-muted-foreground">Score</p>
+                        <p className="text-[10px] text-muted-foreground">{t('recruit.score')}</p>
                       </div>
                       {candidate.matchPercentage !== undefined && candidate.matchPercentage !== null && (
                         <div className="text-right">
                           <p className="text-xl font-bold text-primary">
                             {Math.round(candidate.matchPercentage)}%
                           </p>
-                          <p className="text-[10px] text-muted-foreground">Match</p>
+                          <p className="text-[10px] text-muted-foreground">{t('recruit.match')}</p>
                         </div>
                       )}
                       <Button variant="ghost" size="sm" asChild onClick={(e) => e.stopPropagation()}>
@@ -211,7 +213,7 @@ export default function ShortlistPage() {
 
         {selectedForCompare.length > 0 && selectedForCompare.length < 2 && (
           <p className="text-sm text-muted-foreground text-center">
-            Sélectionnez un deuxième candidat pour lancer la comparaison.
+            {t('recruit.pickSecond')}
           </p>
         )}
     </div>
