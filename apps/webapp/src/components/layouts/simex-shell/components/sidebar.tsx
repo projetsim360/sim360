@@ -324,7 +324,7 @@ export function Sidebar({ className }: SidebarProps) {
     <aside
       aria-expanded={!sidebarCollapsed}
       className={cn(
-        'simex-sidebar fixed left-0 z-40 flex flex-col overflow-y-auto',
+        'simex-sidebar fixed left-0 z-40 flex flex-col overflow-hidden',
         // Mobile: slide in/out with translate; Desktop: always visible
         'transition-transform duration-[220ms] ease-out',
         sidebarMobileOpen ? 'translate-x-0' : '-translate-x-full',
@@ -363,8 +363,9 @@ export function Sidebar({ className }: SidebarProps) {
         )}
       </Link>
 
-      {/* Navigation */}
-      <nav className="flex flex-col gap-0">
+      {/* Navigation: the only scrolling region, so the footer card below stays visible
+          however many accordions are open. */}
+      <nav className="simex-nav-scroll flex min-h-0 flex-1 flex-col gap-0 overflow-y-auto">
         {visibleItems.map((item, idx) => {
           if (item.heading) {
             // Hide section titles when collapsed
@@ -386,11 +387,12 @@ export function Sidebar({ className }: SidebarProps) {
         })}
       </nav>
 
-      {/* Sidebar footer card — hidden when collapsed */}
+      {/* Sidebar footer card — hidden when collapsed, and on short viewports where it would starve the nav */}
       {!sidebarCollapsed && (
         <div
           className={cn(
-            'simex-sidebar-card relative mt-auto overflow-hidden rounded-md border border-[var(--shell-border)] p-4',
+            'simex-sidebar-card relative mt-3 shrink-0 overflow-hidden rounded-md border border-[var(--shell-border)] p-4',
+            'hidden [@media(min-height:720px)]:block',
             'bg-gradient-to-b from-[var(--shell-soft)] to-transparent',
           )}
         >
