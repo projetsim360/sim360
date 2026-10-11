@@ -2059,6 +2059,7 @@ export const fr = {
   'billing.checkoutSuccess': 'Paiement reçu. Votre plan sera actif dans quelques instants.',
   'billing.checkoutCancel': 'Paiement annulé. Aucun montant n’a été prélevé.',
   'billing.error': 'Le service de paiement est indisponible. Réessayez plus tard.',
+  'billing.alreadySubscribed': 'Un abonnement est déjà actif. Modifiez-le depuis « Gérer l’abonnement ».',
 } as const;
 
 export type AppMessageKey = keyof typeof fr;

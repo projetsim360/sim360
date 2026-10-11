@@ -107,7 +107,7 @@ function fakePrisma(users: FakeUser[]) {
   const billingEvent = {
     create: async ({ data }: { data: { stripeEventId: string } }) => {
       if (events.has(data.stripeEventId)) {
-        throw new Prisma.PrismaClientKnownRequestError('dup', { code: 'P2002', clientVersion: 'test' });
+        throw new Prisma.PrismaClientKnownRequestError('dup', { code: 'P2002', clientVersion: 'test', meta: { target: ['stripeEventId'] } });
       }
       events.add(data.stripeEventId);
     },
@@ -173,7 +173,7 @@ test('checkout completed stores ids and plan; replay is a no-op', async () => {
   const event = {
     id: 'evt_c1',
     type: 'checkout.session.completed',
-    data: { object: { mode: 'subscription', client_reference_id: 'u1', customer: 'cus_1', subscription: 'sub_1', metadata: { userId: 'u1', plan: 'PRO' } } },
+    data: { object: { mode: 'subscription', payment_status: 'paid', client_reference_id: 'u1', customer: 'cus_1', subscription: 'sub_1', metadata: { userId: 'u1', plan: 'PRO' } } },
   };
   const { body, header } = signed(event);
   assert.deepEqual(await svc.handleWebhook(body, header), { received: true });
@@ -223,4 +223,30 @@ test('an unknown price or customer changes nothing but is acknowledged', async (
   s = signed({ id: 'evt_x2', type: 'customer.subscription.updated', data: { object: { id: 'sub_9', customer: 'cus_9', status: 'active', metadata: {}, items: { data: [] } } } });
   assert.deepEqual(await svc.handleWebhook(s.body, s.header), { received: true, ignored: 'customer.subscription.updated' });
   assert.ok(prisma.events.has('evt_x2'));
+});
+
+test('an unpaid checkout (delayed payment) keeps the ids but grants no plan', async () => {
+  const { svc, users } = service([{ id: 'u1', email: 'a@b.ca' }]);
+  const { body, header } = signed({
+    id: 'evt_c2',
+    type: 'checkout.session.completed',
+    data: { object: { mode: 'subscription', payment_status: 'unpaid', client_reference_id: 'u1', customer: 'cus_1', subscription: 'sub_1', metadata: { userId: 'u1', plan: 'PRO' } } },
+  });
+  await svc.handleWebhook(body, header);
+  assert.equal(users[0].plan, undefined);
+  assert.equal(users[0].subscriptionStatus, 'incomplete');
+  assert.equal(users[0].stripeSubscriptionId, 'sub_1');
+});
+
+test('a unique clash other than the event id is not swallowed as a duplicate', async () => {
+  const { svc, prisma } = service([{ id: 'u1', email: 'a@b.ca' }]);
+  prisma.user.update = async () => {
+    throw new Prisma.PrismaClientKnownRequestError('dup', { code: 'P2002', clientVersion: 'test', meta: { target: ['stripeCustomerId'] } });
+  };
+  const { body, header } = signed({
+    id: 'evt_c3',
+    type: 'checkout.session.completed',
+    data: { object: { mode: 'subscription', payment_status: 'paid', client_reference_id: 'u1', customer: 'cus_1', subscription: 'sub_1', metadata: { plan: 'PRO' } } },
+  });
+  await assert.rejects(svc.handleWebhook(body, header), Prisma.PrismaClientKnownRequestError);
 });

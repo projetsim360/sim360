@@ -2060,4 +2060,5 @@ export const en = {
   'billing.checkoutSuccess': 'Payment received. Your plan will be active in a moment.',
   'billing.checkoutCancel': 'Payment cancelled. You were not charged.',
   'billing.error': 'The payment service is unavailable. Try again later.',
+  'billing.alreadySubscribed': 'A subscription is already active. Change it from “Manage subscription”.',
 } as const satisfies Record<AppMessageKey, string>;

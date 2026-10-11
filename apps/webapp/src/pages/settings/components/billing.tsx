@@ -27,6 +27,9 @@ interface PlanUsage {
 
 const PILL = 'px-3 py-1.5 text-[12px] font-semibold rounded-md transition-colors';
 
+/** Same set as ACTIVE_STATUSES in the API: a live subscription blocks a new checkout. */
+const LIVE_STATUSES = new Set(['active', 'trialing', 'past_due', 'incomplete']);
+
 /**
  * Personal subscription (Stripe Checkout, CAD). Prices come from the public grid so the
  * landing page and this section always agree; the plan itself is only ever set by the
@@ -52,23 +55,27 @@ export function Billing() {
     window.history.replaceState(null, '', `${window.location.pathname}${query ? `?${query}` : ''}${window.location.hash}`);
   }, [t]);
 
+  /** Server messages are French-only: map the known cases to the catalogue. */
+  const onError = (e: { status?: number }) =>
+    toast.error(t(e.status === 409 ? 'billing.alreadySubscribed' : 'billing.error'));
+
   const redirect = (r: { url: string }) => {
     window.location.href = r.url;
   };
   const checkout = useMutation({
     mutationFn: (plan: PaidPlan) => api.post<{ url: string }>('/billing/checkout', { plan, period }),
     onSuccess: redirect,
-    onError: (e: Error) => toast.error(e.message || t('billing.error')),
+    onError,
   });
   const portal = useMutation({
     mutationFn: () => api.post<{ url: string }>('/billing/portal'),
     onSuccess: redirect,
-    onError: (e: Error) => toast.error(e.message || t('billing.error')),
+    onError,
   });
 
   const data = status.data;
   const currentPlan = usage.data?.plan ?? data?.plan ?? 'FREE';
-  const hasSubscription = !!data?.subscriptionStatus && data.subscriptionStatus !== 'canceled';
+  const hasSubscription = !!data?.subscriptionStatus && LIVE_STATUSES.has(data.subscriptionStatus);
   const offers = data?.enabled && !hasSubscription ? data.offers.filter((o) => o.period === period) : [];
   const periods = Array.from(new Set(data?.offers.map((o) => o.period) ?? [])) as BillingPeriod[];
 

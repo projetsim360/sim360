@@ -40,7 +40,8 @@ export interface BillingStatus {
 
 type WebhookResult = { received: true; duplicate?: boolean; ignored?: string };
 
-const ACTIVE_STATUSES = new Set(['active', 'trialing', 'past_due', 'incomplete']);
+/** Statuses that block a new checkout: the subscription is live or being paid. Mirrored in the webapp. */
+export const ACTIVE_STATUSES = new Set(['active', 'trialing', 'past_due', 'incomplete']);
 
 /**
  * Personal subscriptions through Stripe Checkout (STARTER and PRO, monthly or annual, in CAD).
@@ -71,7 +72,7 @@ export class BillingService {
   }
 
   private stripe(): Stripe {
-    if (!this.config) throw new ServiceUnavailableException('Billing is not configured');
+    if (!this.config) throw new ServiceUnavailableException('La facturation n’est pas configurée.');
     if (!this.client) this.client = new Stripe(this.config.secretKey, { apiVersion: STRIPE_API_VERSION });
     return this.client;
   }
@@ -81,7 +82,7 @@ export class BillingService {
       where: { id: userId },
       select: { plan: true, subscriptionStatus: true, currentPeriodEnd: true, stripeCustomerId: true },
     });
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) throw new NotFoundException('Utilisateur introuvable');
     return {
       enabled: this.enabled,
       offers: this.config ? availableOffers(this.config) : [],
@@ -94,15 +95,15 @@ export class BillingService {
 
   async createCheckout(userId: string, plan: PaidPlan, period: BillingPeriod): Promise<{ url: string }> {
     const config = this.config;
-    if (!config) throw new ServiceUnavailableException('Billing is not configured');
-    if (!config.prices[plan][period]) throw new BadRequestException(`No price configured for ${plan} ${period}`);
+    if (!config) throw new ServiceUnavailableException('La facturation n’est pas configurée.');
+    if (!config.prices[plan][period]) throw new BadRequestException(`Aucun prix configuré pour ${plan} ${period}.`);
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: { id: true, email: true, language: true, stripeCustomerId: true, stripeSubscriptionId: true, subscriptionStatus: true },
     });
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) throw new NotFoundException('Utilisateur introuvable');
     if (user.stripeSubscriptionId && user.subscriptionStatus && ACTIVE_STATUSES.has(user.subscriptionStatus)) {
-      throw new ConflictException('An active subscription already exists: change it from the customer portal');
+      throw new ConflictException('Un abonnement est déjà actif. Modifiez-le depuis le portail client.');
     }
     const session = await this.stripe().checkout.sessions.create(
       buildCheckoutParams(config, {
@@ -114,15 +115,15 @@ export class BillingService {
         locale: user.language === 'en' ? 'en' : 'fr',
       }),
     );
-    if (!session.url) throw new ServiceUnavailableException('Stripe did not return a checkout URL');
+    if (!session.url) throw new ServiceUnavailableException('Stripe n’a pas renvoyé de lien de paiement.');
     return { url: session.url };
   }
 
   async createPortal(userId: string): Promise<{ url: string }> {
     const config = this.config;
-    if (!config) throw new ServiceUnavailableException('Billing is not configured');
+    if (!config) throw new ServiceUnavailableException('La facturation n’est pas configurée.');
     const user = await this.prisma.user.findUnique({ where: { id: userId }, select: { stripeCustomerId: true } });
-    if (!user?.stripeCustomerId) throw new BadRequestException('No billing account yet');
+    if (!user?.stripeCustomerId) throw new BadRequestException('Aucun compte de facturation pour le moment.');
     const session = await this.stripe().billingPortal.sessions.create({
       customer: user.stripeCustomerId,
       return_url: `${config.appUrl}/settings#billing`,
@@ -133,13 +134,13 @@ export class BillingService {
   /** Verifies the signature on the raw body, then applies the event once. */
   async handleWebhook(rawBody: Buffer | undefined, signature: string | undefined): Promise<WebhookResult> {
     const config = this.config;
-    if (!config?.webhookSecret) throw new ServiceUnavailableException('Billing webhook is not configured');
-    if (!rawBody || !signature) throw new BadRequestException('Missing Stripe signature or body');
+    if (!config?.webhookSecret) throw new ServiceUnavailableException('Le webhook de facturation n’est pas configuré.');
+    if (!rawBody || !signature) throw new BadRequestException('Signature ou corps Stripe manquant.');
     let event: Stripe.Event;
     try {
       event = this.stripe().webhooks.constructEvent(rawBody, signature, config.webhookSecret);
     } catch {
-      throw new BadRequestException('Invalid Stripe signature');
+      throw new BadRequestException('Signature Stripe invalide.');
     }
     return this.applyEvent(event, config);
   }
@@ -152,7 +153,8 @@ export class BillingService {
         if (change) await tx.user.update({ where: { id: change.userId }, data: change.data });
       });
     } catch (err) {
-      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
+      // Only a clash on the event id means "already applied"; any other unique violation is a real error.
+      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002' && String(err.meta?.target ?? '').includes('stripeEventId')) {
         return { received: true, duplicate: true };
       }
       throw err;
@@ -174,16 +176,13 @@ export class BillingService {
         if (session.mode !== 'subscription') return null;
         const userId = session.client_reference_id ?? session.metadata?.userId;
         if (!userId || !(await this.userExists(userId))) return null;
+        const ids = { stripeCustomerId: idOf(session.customer), stripeSubscriptionId: idOf(session.subscription) };
+        // Delayed methods (e.g. pre-authorized debit) complete as "unpaid": keep the ids, and let the
+        // customer.subscription.* events grant the plan once Stripe confirms the payment.
+        const paid = session.payment_status === 'paid' || session.payment_status === 'no_payment_required';
+        if (!paid) return { userId, data: { ...ids, subscriptionStatus: 'incomplete' } };
         const plan = session.metadata?.plan === 'PRO' || session.metadata?.plan === 'STARTER' ? session.metadata.plan : undefined;
-        return {
-          userId,
-          data: {
-            stripeCustomerId: idOf(session.customer),
-            stripeSubscriptionId: idOf(session.subscription),
-            subscriptionStatus: 'active',
-            ...(plan ? { plan } : {}),
-          },
-        };
+        return { userId, data: { ...ids, subscriptionStatus: 'active', ...(plan ? { plan } : {}) } };
       }
       case 'customer.subscription.created':
       case 'customer.subscription.updated':
