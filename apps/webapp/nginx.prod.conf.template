@@ -134,7 +134,7 @@ server {
     }
 
     # Static assets — long cache with immutable
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|webp|avif)$ {
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|webp|avif|mp4|webm|vtt)$ {
         expires 1y;
         add_header Cache-Control "public, immutable";
         access_log off;

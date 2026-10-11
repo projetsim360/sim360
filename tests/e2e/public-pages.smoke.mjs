@@ -65,8 +65,10 @@ for (const route of PUBLIC_ROUTES) {
       checks.contactSuccess = (await page.locator('main [role="status"]').count()) === 1;
     }
     if (route.id === 'demo') {
-      // No video file yet: the player must fall back to the honest "coming" card.
-      checks.demoFallback = (await page.locator('main a[href="/auth/sign-up"]').count()) >= 1;
+      // With the video files published the player is shown; without them, the honest "coming" card.
+      const video = await page.request.get(`${base}/media/landing/demo-${locale}.mp4`).then((r) => r.ok() && (r.headers()['content-type'] ?? '').startsWith('video/'));
+      checks.demoPlayer = video ? (await page.locator('main video').count()) === 1 : (await page.locator('main a[href="/auth/sign-up"]').count()) >= 1;
+      if (video) checks.demoSubtitles = (await page.request.get(`${base}/media/landing/demo-${locale}.vtt`).then((r) => r.text())).startsWith('WEBVTT');
     }
     checks.noPageErrors = errors.length === 0;
 
