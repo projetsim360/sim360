@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { KeenIcon } from '@/components/keenicons';
 import { toast } from 'sonner';
 import { useShareBadge } from '../api/valorization.api';
+import { useT } from '@/i18n/app/use-t';
 
 interface ShareBadgeDialogProps {
   badgeId: string;
@@ -26,6 +27,7 @@ export function ShareBadgeDialog({
   open,
   onOpenChange,
 }: ShareBadgeDialogProps) {
+  const t = useT();
   const shareMutation = useShareBadge();
   const [currentShareUrl, setCurrentShareUrl] = useState<string | null>(null);
 
@@ -37,16 +39,16 @@ export function ShareBadgeDialog({
     try {
       const result = await shareMutation.mutateAsync(badgeId);
       setCurrentShareUrl(result.shareUrl || `${window.location.origin}/badges/${badgeId}/verify`);
-      toast.success('Lien de partage généré avec succès');
+      toast.success(t('valo.share.generated'));
     } catch {
-      toast.error('Erreur lors de la génération du lien');
+      toast.error(t('valo.share.error'));
     }
   };
 
   const handleCopyLink = () => {
     if (verifyUrl) {
       navigator.clipboard.writeText(verifyUrl);
-      toast.success('Lien copie dans le presse-papiers');
+      toast.success(t('valo.copied'));
     }
   };
 
@@ -61,10 +63,9 @@ export function ShareBadgeDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Partager ce badge</DialogTitle>
+          <DialogTitle>{t('valo.share.title')}</DialogTitle>
           <DialogDescription>
-            Générez un lien de vérification public pour partager votre badge
-            de compétence.
+            {t('valo.share.desc')}
           </DialogDescription>
         </DialogHeader>
         <DialogBody className="space-y-4">
@@ -77,7 +78,7 @@ export function ShareBadgeDialog({
               className="w-full"
             >
               <KeenIcon icon="share" style="duotone" className="text-sm mr-2" />
-              {shareMutation.isPending ? 'Génération...' : 'Générer un lien de partage'}
+              {shareMutation.isPending ? t('valo.share.generating') : t('valo.share.generate')}
             </Button>
           ) : (
             <div className="space-y-3">
@@ -86,7 +87,7 @@ export function ShareBadgeDialog({
                 <span className="text-sm text-muted-foreground truncate flex-1">
                   {verifyUrl}
                 </span>
-                <Button variant="ghost" size="sm" mode="icon" aria-label="Copier le lien" onClick={handleCopyLink}>
+                <Button variant="ghost" size="sm" mode="icon" aria-label={t('valo.copyLink')} onClick={handleCopyLink}>
                   <KeenIcon icon="copy" style="duotone" className="text-sm" />
                 </Button>
               </div>
@@ -100,7 +101,7 @@ export function ShareBadgeDialog({
                   onClick={handleCopyLink}
                 >
                   <KeenIcon icon="copy" style="duotone" className="text-sm mr-2" />
-                  Copier le lien
+                  {t('valo.copyLink')}
                 </Button>
                 <Button
                   variant="primary"
@@ -117,7 +118,7 @@ export function ShareBadgeDialog({
         </DialogBody>
         <DialogFooter>
           <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
-            Fermer
+            {t('common.close')}
           </Button>
         </DialogFooter>
       </DialogContent>

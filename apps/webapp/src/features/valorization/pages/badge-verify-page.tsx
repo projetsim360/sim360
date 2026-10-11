@@ -4,8 +4,10 @@ import { Badge } from '@/components/ui/badge';
 import { KeenIcon } from '@/components/keenicons';
 import { useBadgeVerification } from '../api/valorization.api';
 import { CompetencyRadarChart } from '../components/competency-radar-chart';
+import { useT } from '@/i18n/app/use-t';
 
 export default function BadgeVerifyPage() {
+  const t = useT();
   const { badgeId } = useParams<{ badgeId: string }>();
   const { data, isLoading, error } = useBadgeVerification(badgeId!);
 
@@ -24,10 +26,10 @@ export default function BadgeVerifyPage() {
           <CardContent className="py-12 text-center space-y-3">
             <KeenIcon icon="shield-cross" style="duotone" className="text-4xl text-destructive" />
             <h1 className="text-lg font-semibold text-foreground">
-              Badge non valide
+              {t('valo.verify.invalid')}
             </h1>
             <p className="text-sm text-muted-foreground">
-              Ce badge n'existe pas ou le lien de vérification est invalide.
+              {t('valo.verify.invalidDesc')}
             </p>
           </CardContent>
         </Card>
@@ -46,7 +48,7 @@ export default function BadgeVerifyPage() {
             <div className="flex items-center justify-center gap-2 text-success">
               <KeenIcon icon="shield-tick" style="duotone" className="text-2xl" />
               <span className="text-sm font-semibold uppercase tracking-wide">
-                Badge vérifié par Simex pro
+                {t('valo.verify.verified')}
               </span>
             </div>
 
@@ -88,7 +90,7 @@ export default function BadgeVerifyPage() {
         {/* Competency radar */}
         <Card>
           <CardHeader>
-            <CardTitle>Compétences évaluées</CardTitle>
+            <CardTitle>{t('valo.assessedSkills')}</CardTitle>
           </CardHeader>
           <CardContent>
             <CompetencyRadarChart scores={badge.competencyScores} />
@@ -97,8 +99,8 @@ export default function BadgeVerifyPage() {
 
         {/* Footer */}
         <p className="text-center text-sm text-muted-foreground">
-          Ce badge a été généré par la plateforme Simex pro.
-          Il atteste des compétences en gestion de projet évaluées lors d'une simulation.
+          {t('valo.verify.footer')}
+          {t('valo.verify.attests')}
         </p>
       </div>
     </div>

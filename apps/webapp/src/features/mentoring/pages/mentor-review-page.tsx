@@ -24,6 +24,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { useReview, useCreateReview } from '../api/mentoring.api';
+import { useT } from '@/i18n/app/use-t';
 
 const reviewSchema = z.object({
   humanScore: z.coerce
@@ -52,13 +53,14 @@ const reviewSchema = z.object({
     .max(100, 'Maximum 100')
     .optional()
     .or(z.literal('')),
-  feedback: z.string().min(1, 'Le feedback est requis'),
+  feedback: z.string().min(1, 'mentoring.reviewForm.feedbackRequired'),
   recommendations: z.string().optional(),
 });
 
 type ReviewFormValues = z.infer<typeof reviewSchema>;
 
 export default function MentorReviewPage() {
+  const t = useT();
   const { evaluationId } = useParams<{ evaluationId: string }>();
   const navigate = useNavigate();
   const { data: review, isLoading } = useReview(evaluationId ?? '');
@@ -100,11 +102,11 @@ export default function MentorReviewPage() {
       },
       {
         onSuccess: () => {
-          toast.success('Review soumise avec succès');
+          toast.success(t('mentoring.reviewSent'));
           navigate('/mentoring');
         },
         onError: () => {
-          toast.error('Erreur lors de la soumission de la review');
+          toast.error(t('mentoring.reviewError'));
         },
       },
     );
@@ -115,16 +117,16 @@ export default function MentorReviewPage() {
       <Toolbar>
         <ToolbarHeading>
           <h1 className="text-xl font-medium text-gray-900">
-            Review Mentor
+            {t('mentoring.reviewTitle')}
           </h1>
           <p className="text-sm text-gray-700">
-            Évaluez le livrable et fournissez votre feedback
+            {t('mentoring.reviewDesc')}
           </p>
         </ToolbarHeading>
         <ToolbarActions>
           <Button variant="outline" size="sm" onClick={() => navigate('/mentoring')}>
             <KeenIcon icon="arrow-left" style="duotone" className="text-sm" />
-            Retour
+            {t('common.back')}
           </Button>
         </ToolbarActions>
       </Toolbar>
@@ -135,7 +137,7 @@ export default function MentorReviewPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <KeenIcon icon="ai-network" style="duotone" />
-              Évaluation automatique existante
+              {t('mentoring.autoEval')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -147,9 +149,9 @@ export default function MentorReviewPage() {
             ) : review ? (
               <div className="flex items-center gap-4">
                 <div className="text-sm">
-                  <span className="text-muted-foreground">Livrable : </span>
+                  <span className="text-muted-foreground">{t('mentoring.deliverableColon')}</span>
                   <span className="font-medium">
-                    {review.deliverable?.title ?? 'Non disponible'}
+                    {review.deliverable?.title ?? t('mentoring.unavailable')}
                   </span>
                 </div>
                 {review.score !== undefined && (
@@ -165,7 +167,7 @@ export default function MentorReviewPage() {
               </div>
             ) : (
               <p className="text-sm text-muted-foreground">
-                Aucune évaluation trouvée pour cet identifiant
+                {t('mentoring.noEval')}
               </p>
             )}
           </CardContent>
@@ -176,7 +178,7 @@ export default function MentorReviewPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <KeenIcon icon="clipboard-check" style="duotone" />
-              Formulaire de review
+              {t('mentoring.reviewForm.title')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -191,7 +193,7 @@ export default function MentorReviewPage() {
                     name="humanScore"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Score humain (0-100) *</FormLabel>
+                        <FormLabel>{t('mentoring.reviewForm.human')}</FormLabel>
                         <FormControl>
                           <Input
                             type="number"
@@ -217,7 +219,7 @@ export default function MentorReviewPage() {
                             type="number"
                             min={0}
                             max={100}
-                            placeholder="Optionnel"
+                            placeholder={t('mentoring.reviewForm.optional')}
                             {...field}
                           />
                         </FormControl>
@@ -231,13 +233,13 @@ export default function MentorReviewPage() {
                     name="diplomacyScore"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Diplomatie (0-100)</FormLabel>
+                        <FormLabel>{t('mentoring.reviewForm.diplomacy')}</FormLabel>
                         <FormControl>
                           <Input
                             type="number"
                             min={0}
                             max={100}
-                            placeholder="Optionnel"
+                            placeholder={t('mentoring.reviewForm.optional')}
                             {...field}
                           />
                         </FormControl>
@@ -257,7 +259,7 @@ export default function MentorReviewPage() {
                             type="number"
                             min={0}
                             max={100}
-                            placeholder="Optionnel"
+                            placeholder={t('mentoring.reviewForm.optional')}
                             {...field}
                           />
                         </FormControl>
@@ -276,7 +278,7 @@ export default function MentorReviewPage() {
                       <FormControl>
                         <Textarea
                           rows={4}
-                          placeholder="Votre feedback détaillé sur le livrable..."
+                          placeholder={t('mentoring.reviewForm.feedbackPh')}
                           {...field}
                         />
                       </FormControl>
@@ -290,11 +292,11 @@ export default function MentorReviewPage() {
                   name="recommendations"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Recommandations</FormLabel>
+                      <FormLabel>{t('mentoring.reviewForm.recommendations')}</FormLabel>
                       <FormControl>
                         <Textarea
                           rows={3}
-                          placeholder="Vos recommandations pour l'apprenant (optionnel)..."
+                          placeholder={t('mentoring.reviewForm.recommendationsPh')}
                           {...field}
                         />
                       </FormControl>
@@ -317,12 +319,12 @@ export default function MentorReviewPage() {
                           style="duotone"
                           className="animate-spin text-sm"
                         />
-                        Envoi en cours...
+                        {t('mentoring.reviewForm.sending')}
                       </>
                     ) : (
                       <>
                         <KeenIcon icon="check" style="duotone" className="text-sm" />
-                        Soumettre la review
+                        {t('mentoring.reviewForm.submit')}
                       </>
                     )}
                   </Button>

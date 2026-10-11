@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { HELP_TOPICS, contextualSuggestions, matchHelpTopic, normalizeText } from '../../src/features/assistant/lib/help-topics';
+import { HELP_TOPICS, HELP_TOPICS_EN, contextualSuggestions, helpTopicsFor, matchHelpTopic, normalizeText } from '../../src/features/assistant/lib/help-topics';
 
 test('the example questions from the user test are answered', () => {
   assert.equal(matchHelpTopic('Comment démarrer une simulation ?')?.id, 'start-simulation');
@@ -28,4 +28,15 @@ test('suggestions follow the current page', () => {
   assert.deepEqual(contextualSuggestions('/settings').map((t) => t.id), ['edit-profile', 'security', 'timezone']);
   assert.ok(contextualSuggestions('/meetings/abc').some((t) => t.id === 'meeting-run'));
   assert.ok(contextualSuggestions('/dashboard').length >= 3);
+});
+
+test('the English knowledge base mirrors the French one', () => {
+  assert.deepEqual(HELP_TOPICS_EN.map((t) => [t.id, t.link?.to]), HELP_TOPICS.map((t) => [t.id, t.link?.to]));
+  assert.equal(helpTopicsFor('en'), HELP_TOPICS_EN);
+  assert.equal(helpTopicsFor('fr'), HELP_TOPICS);
+});
+
+test('English questions match English topics', () => {
+  assert.equal(matchHelpTopic('how do I schedule a meeting', HELP_TOPICS_EN)?.id, 'plan-meeting');
+  assert.equal(matchHelpTopic('turn on two-factor', HELP_TOPICS_EN)?.id, 'security');
 });

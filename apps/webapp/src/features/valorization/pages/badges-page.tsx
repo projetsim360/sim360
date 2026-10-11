@@ -4,8 +4,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { useMyBadges } from '../api/valorization.api';
 import { BadgeCard } from '../components/badge-card';
+import { useT } from '@/i18n/app/use-t';
 
 export default function BadgesPage() {
+  const t = useT();
   const { data: badges, isLoading, error } = useMyBadges();
 
   if (isLoading) {
@@ -13,8 +15,8 @@ export default function BadgesPage() {
       <div className="container-fixed space-y-5">
         <Toolbar>
           <ToolbarHeading>
-            <h1 className="text-xl font-medium text-gray-900">Mes badges</h1>
-            <p className="text-sm text-gray-700">Vos badges de compétence obtenus</p>
+            <h1 className="text-xl font-medium text-gray-900">{t('menu.myBadges')}</h1>
+            <p className="text-sm text-gray-700">{t('valo.badgesDesc')}</p>
           </ToolbarHeading>
         </Toolbar>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -47,13 +49,13 @@ export default function BadgesPage() {
       <div className="container-fixed space-y-5">
         <Toolbar>
           <ToolbarHeading>
-            <h1 className="text-xl font-medium text-gray-900">Mes badges</h1>
+            <h1 className="text-xl font-medium text-gray-900">{t('menu.myBadges')}</h1>
           </ToolbarHeading>
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-sm text-destructive">
-              Impossible de charger vos badges.
+              {t('valo.badgesLoadError')}
             </p>
           </CardContent>
         </Card>
@@ -65,11 +67,11 @@ export default function BadgesPage() {
     <div className="container-fixed space-y-5">
       <Toolbar>
         <ToolbarHeading>
-          <h1 className="text-xl font-medium text-gray-900">Mes badges</h1>
+          <h1 className="text-xl font-medium text-gray-900">{t('menu.myBadges')}</h1>
           <p className="text-sm text-gray-700">
             {badges && badges.length > 0
-              ? `${badges.length} badge(s) de compétence`
-              : 'Vos badges de compétence obtenus'}
+              ? t('valo.badgeCount', { count: badges.length })
+              : t('valo.badgesDesc')}
           </p>
         </ToolbarHeading>
       </Toolbar>
@@ -79,8 +81,8 @@ export default function BadgesPage() {
           <CardContent>
             <EmptyState
               icon="award"
-              title="Aucun badge"
-              description="Terminez une simulation pour obtenir votre premier badge de compétence."
+              title={t('valo.noBadges')}
+              description={t('valo.noBadgesDesc')}
             />
           </CardContent>
         </Card>

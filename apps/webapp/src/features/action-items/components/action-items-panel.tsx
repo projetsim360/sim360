@@ -26,6 +26,8 @@ import {
   toDateInputValue,
 } from '../config/action-items.config';
 import type { ActionItem, ActionItemStatus } from '../types/action-item.types';
+import { useAppLocale } from '@/providers/locale-provider';
+import { useT } from '@/i18n/app/use-t';
 
 interface ActionItemsPanelProps {
   simulationId: string;
@@ -38,23 +40,24 @@ interface ActionItemsPanelProps {
   showMeeting?: boolean;
 }
 
-const PM_LABEL = 'Chef de projet (moi)';
 
 export function ActionItemsPanel({
   simulationId,
   meetingId,
   assigneeSuggestions = [],
-  title = 'Actions de suivi',
+  title,
   showMeeting = false,
 }: ActionItemsPanelProps) {
+  const { intlLocale } = useAppLocale();
+  const t = useT();
   const { query, create, update, remove } = useActionItems(simulationId, meetingId);
   const items = query.data ?? [];
 
   const assigneeOptions = useMemo(() => {
-    const names = new Set<string>([PM_LABEL, ...assigneeSuggestions]);
+    const names = new Set<string>([t('actions.pmLabel'), ...assigneeSuggestions]);
     for (const it of items) if (it.assignee) names.add(it.assignee);
     return [...names].map((n) => ({ value: n, label: n }));
-  }, [assigneeSuggestions, items]);
+  }, [assigneeSuggestions, items, t]);
 
   const [draftTitle, setDraftTitle] = useState('');
   const [draftAssignee, setDraftAssignee] = useState('');
@@ -64,11 +67,11 @@ export function ActionItemsPanel({
   const openCount = items.filter((i) => i.status === 'TODO' || i.status === 'IN_PROGRESS').length;
 
   const submit = () => {
-    const t = draftTitle.trim();
-    if (!t) return;
+    const trimmed = draftTitle.trim();
+    if (!trimmed) return;
     create.mutate(
       {
-        title: t,
+        title: trimmed,
         assignee: draftAssignee || undefined,
         dueDate: draftDue || undefined,
         meetingId,
@@ -91,7 +94,7 @@ export function ActionItemsPanel({
       <CardHeader className="pb-3">
         <CardTitle className="font-display text-base flex items-center gap-2 text-[var(--brand-700)]">
           <KeenIcon icon="clipboard" style="duotone" className="size-4 text-[var(--accent-500)]" />
-          {title}
+          {title ?? t('actions.title')}
           <span className="inline-flex items-center justify-center rounded-full bg-[var(--accent-100)] px-2 py-0.5 text-[11px] font-bold text-[var(--accent-700)]">
             {openCount} ouverte{openCount > 1 ? 's' : ''}
           </span>
@@ -108,12 +111,12 @@ export function ActionItemsPanel({
         )}
 
         {query.isError && (
-          <p className="text-sm text-destructive">Impossible de charger les actions de suivi.</p>
+          <p className="text-sm text-destructive">{t('actions.loadError')}</p>
         )}
 
         {!query.isLoading && items.length === 0 && !query.isError && (
           <p className="text-sm text-[var(--neutral-500)]">
-            Aucune action pour l'instant. Ajoutez la première ci-dessous.
+            {t('actions.empty')}
           </p>
         )}
 
@@ -131,7 +134,7 @@ export function ActionItemsPanel({
               <div className="flex items-start gap-2">
                 <button
                   type="button"
-                  aria-label={closed ? 'Rouvrir l’action' : 'Marquer comme terminée'}
+                  aria-label={closed ? t('actions.reopen') : t('actions.markDone')}
                   onClick={() => patch(item, { status: closed ? 'TODO' : 'DONE' })}
                   className={cn(
                     'mt-0.5 flex size-5 shrink-0 cursor-pointer items-center justify-center rounded border',
@@ -147,12 +150,12 @@ export function ActionItemsPanel({
                     {item.title}
                   </p>
                   {showMeeting && item.meeting && (
-                    <p className="mt-0.5 text-[11px] text-[var(--neutral-500)]">Réunion : {item.meeting.title}</p>
+                    <p className="mt-0.5 text-[11px] text-[var(--neutral-500)]">{t('actions.meetingColon', { title: item.meeting.title })}</p>
                   )}
                 </div>
                 <button
                   type="button"
-                  aria-label="Supprimer l’action"
+                  aria-label={t('actions.delete')}
                   onClick={() => setToDelete(item)}
                   className="shrink-0 cursor-pointer rounded p-1 text-[var(--neutral-400)] hover:bg-[var(--neutral-100)] hover:text-[var(--error-600)]"
                 >
@@ -165,16 +168,16 @@ export function ActionItemsPanel({
                   value={item.assignee ?? ''}
                   onChange={(v) => patch(item, { assignee: v || null })}
                   options={assigneeOptions}
-                  placeholder="Responsable"
-                  searchPlaceholder="Choisir ou saisir un nom…"
+                  placeholder={t('actions.owner')}
+                  searchPlaceholder={t('actions.ownerSearch')}
                   allowCustom
-                  customLabel={(q) => `Attribuer à « ${q} »`}
+                  customLabel={(q) => t('actions.assignTo', { name: q })}
                   className="h-8 text-xs"
                 />
                 <div className="flex flex-col gap-0.5">
                   <Input
                     type="date"
-                    aria-label="Échéance"
+                    aria-label={t('actions.due')}
                     value={toDateInputValue(item.dueDate)}
                     onChange={(e) => patch(item, { dueDate: e.target.value || null })}
                     className={cn('h-8 text-xs', overdue && 'border-[var(--error-400)] text-[var(--error-700)]')}
@@ -184,18 +187,18 @@ export function ActionItemsPanel({
                   )}
                   {overdue && item.dueDate && (
                     <span className="text-[10px] font-semibold text-[var(--error-700)]">
-                      En retard depuis le {formatDueDate(item.dueDate)}
+                      {t('actions.overdueSince', { date: formatDueDate(item.dueDate, intlLocale) })}
                     </span>
                   )}
                 </div>
                 <Select value={item.status} onValueChange={(v) => patch(item, { status: v as ActionItemStatus })}>
-                  <SelectTrigger aria-label="Statut" className={cn('h-8 text-xs', ACTION_STATUS_TONE[item.status])}>
+                  <SelectTrigger aria-label={t('actions.statusLabel')} className={cn('h-8 text-xs', ACTION_STATUS_TONE[item.status])}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {ACTION_STATUS_OPTIONS.map((opt) => (
                       <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
+                        {t(opt.label)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -214,8 +217,8 @@ export function ActionItemsPanel({
           }}
         >
           <Input
-            aria-label="Nouvelle action"
-            placeholder="Nouvelle action (ex. : envoyer le budget révisé au comité)"
+            aria-label={t('actions.new')}
+            placeholder={t('actions.newPh')}
             value={draftTitle}
             onChange={(e) => setDraftTitle(e.target.value)}
             maxLength={500}
@@ -225,15 +228,15 @@ export function ActionItemsPanel({
               value={draftAssignee}
               onChange={setDraftAssignee}
               options={assigneeOptions}
-              placeholder="Responsable"
-              searchPlaceholder="Choisir ou saisir un nom…"
+              placeholder={t('actions.owner')}
+              searchPlaceholder={t('actions.ownerSearch')}
               allowCustom
-              customLabel={(q) => `Attribuer à « ${q} »`}
+              customLabel={(q) => t('actions.assignTo', { name: q })}
             />
-            <Input type="date" aria-label="Échéance" value={draftDue} onChange={(e) => setDraftDue(e.target.value)} />
+            <Input type="date" aria-label={t('actions.due')} value={draftDue} onChange={(e) => setDraftDue(e.target.value)} />
             <Button type="submit" variant="primary" size="sm" disabled={!draftTitle.trim() || create.isPending}>
               <KeenIcon icon="plus" style="solid" />
-              Ajouter
+              {t('common.add')}
             </Button>
           </div>
         </form>
@@ -242,18 +245,18 @@ export function ActionItemsPanel({
       <AlertDialog open={!!toDelete} onOpenChange={(open) => !open && setToDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Supprimer cette action ?</AlertDialogTitle>
+            <AlertDialogTitle>{t('actions.deleteConfirm')}</AlertDialogTitle>
             <AlertDialogDescription>« {toDelete?.title} » sera définitivement supprimée.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 if (toDelete) remove.mutate(toDelete.id);
                 setToDelete(null);
               }}
             >
-              Supprimer
+              {t('actions.deleteBtn')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

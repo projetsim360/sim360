@@ -14,6 +14,7 @@ import { PmoChat } from './pmo-chat';
 import { PmoContextPanel } from './pmo-context-panel';
 import { usePmoHistory, usePmoContext } from '../api/pmo.api';
 import { useProfileAdaptation } from '@/features/profile/api/profile.api';
+import { useT } from '@/i18n/app/use-t';
 
 interface PmoFabProps {
   simulationId: string;
@@ -23,6 +24,7 @@ interface PmoFabProps {
 const TOOLTIP_STORAGE_KEY = 'pmo_fab_tooltip_seen';
 
 export function PmoFab({ simulationId, pendingActionsCount = 0 }: PmoFabProps) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -69,7 +71,7 @@ export function PmoFab({ simulationId, pendingActionsCount = 0 }: PmoFabProps) {
             <button
               onClick={dismissTooltip}
               className="absolute top-2 right-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-              aria-label="Fermer"
+              aria-label={t('common.close')}
             >
               <KeenIcon icon="cross" style="duotone" className="size-3" />
             </button>
@@ -79,10 +81,10 @@ export function PmoFab({ simulationId, pendingActionsCount = 0 }: PmoFabProps) {
               </div>
               <div>
                 <p className="text-sm font-bold text-foreground">
-                  Je suis votre Agent PMO
+                  {t('pmo.fab.title')}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                  Si vous avez besoin de conseils, d'aide sur vos livrables ou pour prendre une décision, je suis là !
+                  {t('pmo.fab.text')}
                 </p>
               </div>
             </div>
@@ -104,7 +106,7 @@ export function PmoFab({ simulationId, pendingActionsCount = 0 }: PmoFabProps) {
           'cursor-pointer',
           'focus-visible:outline-ring',
         )}
-        aria-label="Ouvrir l'Agent PMO"
+        aria-label={t('pmo.fab.open')}
       >
         <KeenIcon icon="user" style="duotone" className="size-6" />
 
@@ -120,13 +122,13 @@ export function PmoFab({ simulationId, pendingActionsCount = 0 }: PmoFabProps) {
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent className="gap-0 sm:w-[500px] inset-5 start-auto h-auto rounded-lg p-0 sm:max-w-none [&_[data-slot=sheet-close]]:top-4.5 [&_[data-slot=sheet-close]]:end-5">
           <SheetHeader className="mb-0">
-            <SheetTitle className="p-3">Agent PMO</SheetTitle>
+            <SheetTitle className="p-3">{t('pmo.agent')}</SheetTitle>
           </SheetHeader>
           <SheetBody className="grow p-0">
             <Tabs defaultValue="chat" className="w-full h-full flex flex-col">
               <TabsList variant="line" className="w-full px-5 mb-0 shrink-0">
-                <TabsTrigger value="chat">Chat</TabsTrigger>
-                <TabsTrigger value="context">Contexte</TabsTrigger>
+                <TabsTrigger value="chat">{t('pmo.tab.chat')}</TabsTrigger>
+                <TabsTrigger value="context">{t('pmo.tab.context')}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="chat" className="mt-0 flex-1 min-h-0">

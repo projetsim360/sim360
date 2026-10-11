@@ -7,7 +7,10 @@ import { cn } from '@/lib/utils';
 import { differenceInDays, parseISO } from 'date-fns';
 import type { PmoContext } from '../types/pmo.types';
 import type { ProfileAdaptation } from '@/features/profile/types/profile.types';
-import { PMO_TONE_LABELS } from '@/features/profile/types/profile.types';
+import { useTv } from '@/i18n/app/use-t';
+import { useAppLocale } from '@/providers/locale-provider';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useT } from '@/i18n/app/use-t';
 
 interface PmoContextPanelProps {
   context: PmoContext | undefined;
@@ -19,13 +22,13 @@ interface PmoContextPanelProps {
 
 const KPI_CONFIG: Record<
   string,
-  { label: string; icon: string; good: 'high' | 'low' }
+  { label: AppMessageKey; icon: string; good: 'high' | 'low' }
 > = {
-  budget: { label: 'Budget', icon: 'dollar', good: 'high' },
-  schedule: { label: 'Délais', icon: 'time', good: 'high' },
-  quality: { label: 'Qualité', icon: 'verify', good: 'high' },
-  teamMorale: { label: 'Moral', icon: 'people', good: 'high' },
-  riskLevel: { label: 'Risque', icon: 'shield-cross', good: 'low' },
+  budget: { label: 'pmo.kpi.budget', icon: 'dollar', good: 'high' },
+  schedule: { label: 'pmo.kpi.schedule', icon: 'time', good: 'high' },
+  quality: { label: 'pmo.kpi.quality', icon: 'verify', good: 'high' },
+  teamMorale: { label: 'pmo.kpi.morale', icon: 'people', good: 'high' },
+  riskLevel: { label: 'pmo.kpi.risk', icon: 'shield-cross', good: 'low' },
 };
 
 function kpiStatus(key: string, value: number): 'good' | 'warn' | 'bad' | 'none' {
@@ -65,19 +68,19 @@ const TONE_BADGE_VARIANT: Record<ProfileAdaptation['pmoTone'], 'info' | 'success
 };
 
 function getDeadlineInfo(dueDate: string | null): {
-  label: string;
+  label: { id: AppMessageKey; values: { days: number } } | null;
   color: string;
   urgent: boolean;
 } {
-  if (!dueDate) return { label: '', color: 'text-muted-foreground', urgent: false };
+  if (!dueDate) return { label: null, color: 'text-muted-foreground', urgent: false };
   const now = new Date();
   const due = parseISO(dueDate);
   const daysLeft = differenceInDays(due, now);
 
-  if (daysLeft < 0) return { label: `En retard (${Math.abs(daysLeft)}j)`, color: 'text-destructive', urgent: true };
-  if (daysLeft < 2) return { label: `${daysLeft}j restant${daysLeft > 1 ? 's' : ''}`, color: 'text-destructive', urgent: true };
-  if (daysLeft <= 5) return { label: `${daysLeft}j restants`, color: 'text-warning', urgent: true };
-  return { label: `${daysLeft}j restants`, color: 'text-muted-foreground', urgent: false };
+  if (daysLeft < 0) return { label: { id: 'pmo.deadline.late', values: { days: Math.abs(daysLeft) } }, color: 'text-destructive', urgent: true };
+  if (daysLeft < 2) return { label: { id: 'pmo.deadline.left', values: { days: daysLeft } }, color: 'text-destructive', urgent: true };
+  if (daysLeft <= 5) return { label: { id: 'pmo.deadline.left', values: { days: daysLeft } }, color: 'text-warning', urgent: true };
+  return { label: { id: 'pmo.deadline.left', values: { days: daysLeft } }, color: 'text-muted-foreground', urgent: false };
 }
 
 export function PmoContextPanel({
@@ -87,6 +90,9 @@ export function PmoContextPanel({
   onToggle,
   adaptation,
 }: PmoContextPanelProps) {
+  const tv = useTv();
+  const { intlLocale } = useAppLocale();
+  const t = useT();
   const navigate = useNavigate();
   if (collapsed) {
     return (
@@ -95,7 +101,7 @@ export function PmoContextPanel({
           variant="ghost"
           size="icon"
           onClick={onToggle}
-          title="Afficher le contexte"
+          title={t('pmo.showContext')}
         >
           <KeenIcon icon="arrow-left" style="duotone" className="size-4" />
         </Button>
@@ -138,7 +144,7 @@ export function PmoContextPanel({
           {context.kpis && (
             <div>
               <p className="px-1 pb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                Indicateurs clés
+                {t('pmo.keyIndicators')}
               </p>
               <div className="grid grid-cols-2 gap-2">
                 {Object.entries(context.kpis).map(([key, value]) => {
@@ -154,7 +160,7 @@ export function PmoContextPanel({
                       )}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-muted-foreground">{config.label}</span>
+                        <span className="text-xs font-medium text-muted-foreground">{t(config.label)}</span>
                         <span className={cn('text-xl font-extrabold leading-none', KPI_TEXT_CLASS[status])}>
                           {value}%
                         </span>
@@ -218,7 +224,7 @@ export function PmoContextPanel({
                         </Badge>
                         {d.dueDate && (
                           <span className={cn('text-[10px] font-medium', deadline.color)}>
-                            {new Date(d.dueDate).toLocaleDateString('fr-FR')} · {deadline.label}
+                            {new Date(d.dueDate).toLocaleDateString(intlLocale)}{deadline.label && ` · ${t(deadline.label.id, deadline.label.values)}`}
                           </span>
                         )}
                       </div>
@@ -291,26 +297,26 @@ export function PmoContextPanel({
           {adaptation && (
             <Card className="shadow-none">
               <CardHeader className="p-3 pb-2">
-                <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Adaptation profil</CardTitle>
+                <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t('pmo.profileAdaptation')}</CardTitle>
               </CardHeader>
               <CardContent className="p-3 pt-1 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground flex items-center gap-2.5">
                     <KeenIcon icon="message-text" style="duotone" className="text-base shrink-0" />
-                    Ton PMO
+                    {t('pmo.toneLabel')}
                   </span>
                   <Badge
                     variant={TONE_BADGE_VARIANT[adaptation.pmoTone]}
                     appearance="light"
                     size="xs"
                   >
-                    {PMO_TONE_LABELS[adaptation.pmoTone]}
+                    {tv('pmo.tone', adaptation.pmoTone)}
                   </Badge>
                 </div>
                 {adaptation.showGlossaryTooltips && (
                   <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
                     <KeenIcon icon="book" style="duotone" className="text-base shrink-0" />
-                    Glossaire PMI actif
+                    {t('pmo.glossaryOn')}
                   </div>
                 )}
               </CardContent>

@@ -8,8 +8,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useDebriefing } from '../api/valorization.api';
 import { CompetencyRadarChart } from '../components/competency-radar-chart';
 import { DebriefingSection } from '../components/debriefing-section';
+import { useT } from '@/i18n/app/use-t';
 
 export default function DebriefingPage() {
+  const t = useT();
   const { id } = useParams<{ id: string }>();
   const { data, isLoading, error } = useDebriefing(id!);
 
@@ -17,7 +19,7 @@ export default function DebriefingPage() {
     return (
       <div className="container space-y-5">
         <Toolbar>
-          <ToolbarHeading title="Débriefing" />
+          <ToolbarHeading title={t('valo.debrief.title')} />
         </Toolbar>
         {/* Score + info header skeleton */}
         <Card>
@@ -73,12 +75,12 @@ export default function DebriefingPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Débriefing" />
+          <ToolbarHeading title={t('valo.debrief.title')} />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-sm text-destructive">
-              Impossible de charger le débriefing.
+              {t('valo.debrief.loadError')}
             </p>
           </CardContent>
         </Card>
@@ -89,17 +91,17 @@ export default function DebriefingPage() {
   return (
     <div className="container space-y-5">
       <Toolbar>
-        <ToolbarHeading title="Débriefing" />
+        <ToolbarHeading title={t('valo.debrief.title')} />
         <ToolbarActions>
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}/portfolio`}>
               <KeenIcon icon="folder" style="duotone" className="text-sm" />
-              Voir le portfolio
+              {t('valo.seePortfolio')}
             </Link>
           </Button>
           <Button variant="primary" size="sm" disabled>
             <KeenIcon icon="download" style="duotone" className="text-sm" />
-            Télécharger le certificat
+            {t('valo.debrief.certificate')}
           </Button>
         </ToolbarActions>
       </Toolbar>
@@ -114,7 +116,7 @@ export default function DebriefingPage() {
                     {data.globalScore}
                   </span>
                 </div>
-                <span className="text-sm text-muted-foreground mt-2">Score global</span>
+                <span className="text-sm text-muted-foreground mt-2">{t('valo.overallScore')}</span>
               </div>
 
               {/* Simulation info */}
@@ -143,7 +145,7 @@ export default function DebriefingPage() {
         {/* Radar chart */}
         <Card>
           <CardHeader>
-            <CardTitle>Compétences évaluées</CardTitle>
+            <CardTitle>{t('valo.assessedSkills')}</CardTitle>
           </CardHeader>
           <CardContent>
             <CompetencyRadarChart scores={data.competencyScores} />
@@ -153,19 +155,19 @@ export default function DebriefingPage() {
         {/* Strengths, Improvements, Recommendations */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           <DebriefingSection
-            title="Points forts"
+            title={t('valo.strengths')}
             items={data.strengths}
             icon="check-circle"
             iconColor="text-success"
           />
           <DebriefingSection
-            title="Axes d'amélioration"
+            title={t('valo.improvements')}
             items={data.improvements}
             icon="information-2"
             iconColor="text-warning"
           />
           <DebriefingSection
-            title="Recommandations"
+            title={t('evaluation.recommendations')}
             items={data.recommendations}
             icon="message-text"
             iconColor="text-primary"
@@ -177,28 +179,27 @@ export default function DebriefingPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <KeenIcon icon="people" style="duotone" className="text-base text-primary" />
-              Présentation finale
+              {t('valo.debrief.presentation')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-start gap-3">
               <div className="flex-1">
                 <p className="text-sm text-foreground">
-                  L'apprenant a présenté son projet devant un comité d'évaluation
-                  lors de la phase de clôture de la simulation.
+                  {t('valo.debrief.presentationText')}
                 </p>
                 {data.closureMeetingCompleted ? (
                   <div className="mt-3">
                     <Badge variant="success" appearance="light" size="sm">
                       <KeenIcon icon="check-circle" style="duotone" className="text-xs mr-1" />
-                      Présentation effectuée
+                      {t('valo.debrief.presented')}
                     </Badge>
                   </div>
                 ) : (
                   <div className="mt-3">
                     <Badge variant="warning" appearance="light" size="sm">
                       <KeenIcon icon="time" style="duotone" className="text-xs mr-1" />
-                      Présentation non effectuée
+                      {t('valo.debrief.notPresented')}
                     </Badge>
                   </div>
                 )}
@@ -211,7 +212,7 @@ export default function DebriefingPage() {
         {data.debriefingSummary && (
           <Card>
             <CardHeader>
-              <CardTitle>Résumé du débriefing</CardTitle>
+              <CardTitle>{t('valo.debrief.summary')}</CardTitle>
             </CardHeader>
             <CardContent>
               <blockquote className="border-l-4 border-primary pl-4 italic text-sm text-foreground leading-relaxed">
@@ -226,13 +227,13 @@ export default function DebriefingPage() {
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}/cv-suggestions`}>
               <KeenIcon icon="document" style="duotone" className="text-sm" />
-              Suggestions CV
+              {t('valo.cvSuggestions')}
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
             <Link to="/profile/badges">
               <KeenIcon icon="award" style="duotone" className="text-sm" />
-              Mes badges
+              {t('menu.myBadges')}
             </Link>
           </Button>
         </div>

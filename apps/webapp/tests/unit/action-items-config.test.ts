@@ -1,9 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { fr } from '../../src/i18n/app/fr';
 import { ACTION_STATUS_OPTIONS, isActionOverdue, toDateInputValue } from '../../src/features/action-items/config/action-items.config';
 
 test('statuses are labelled in French', () => {
-  assert.deepEqual(ACTION_STATUS_OPTIONS.map((o) => o.label), ['À faire', 'En cours', 'Terminée', 'Annulée']);
+  assert.deepEqual(ACTION_STATUS_OPTIONS.map((o) => fr[o.label]), ['À faire', 'En cours', 'Terminée', 'Annulée']);
 });
 
 test('date input value is YYYY-MM-DD', () => {

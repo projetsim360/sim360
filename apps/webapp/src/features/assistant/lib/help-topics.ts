@@ -104,6 +104,97 @@ export const HELP_TOPICS: HelpTopic[] = [
   },
 ];
 
+/** English knowledge base: same topics and links as the French one. */
+export const HELP_TOPICS_EN: HelpTopic[] = [
+  {
+    id: 'start-simulation',
+    question: 'How do I start a simulation?',
+    keywords: ['start', 'begin', 'launch', 'new simulation', 'simulation'],
+    answer:
+      'Open “New simulation”, pick a scenario from the catalogue (you can filter by sector, level and type of situation), then click “Start the simulation”.',
+    link: { to: '/simulations/new', label: 'New simulation' },
+  },
+  {
+    id: 'generate-scenario',
+    question: 'How do I create a new scenario?',
+    keywords: ['create a scenario', 'new scenario', 'generate', 'custom scenario', 'customize the scenario'],
+    answer:
+      'In “New simulation”, open the “Generate a new simulation” tab. Describe your project, the sector, the level and your learning goals, then start the generation.',
+    link: { to: '/simulations/new', label: 'Generate a simulation' },
+  },
+  {
+    id: 'edit-profile',
+    question: 'Where can I edit my profile?',
+    keywords: ['profile', 'edit my profile', 'photo', 'avatar', 'name', 'job title', 'role', 'phone'],
+    answer: 'You edit your profile in “Settings”: name, job title, photo, phone and bio. Remember to click “Save”.',
+    link: { to: '/settings', label: 'Settings' },
+  },
+  {
+    id: 'security',
+    question: 'How do I turn on two-factor authentication?',
+    keywords: ['2fa', 'two factor', 'two-factor', 'security', 'password', 'authentication'],
+    answer:
+      'In “Settings”, security section, click “Set up” for two-factor authentication. Scan the QR code with your authenticator app, then enter the 6-digit code. Keep your backup codes somewhere safe.',
+    link: { to: '/settings', label: 'Security settings' },
+  },
+  {
+    id: 'timezone',
+    question: 'How do I change my time zone?',
+    keywords: ['time zone', 'timezone', 'time', 'date format', 'preferences'],
+    answer:
+      'In “Settings”, Preferences section, search for your city or time zone (for example America/Toronto for Eastern time), then save.',
+    link: { to: '/settings', label: 'Preferences' },
+  },
+  {
+    id: 'plan-meeting',
+    question: 'How do I schedule a meeting?',
+    keywords: ['schedule', 'plan a meeting', 'meeting', 'organize a meeting', 'new meeting', 'invite', 'participants'],
+    answer:
+      'Open your simulation, go to “Meetings” then “Schedule a meeting”. Choose the topic, the goals and the length, then build the table: role, personality and seniority of each participant.',
+    link: { to: '/simulations?statut=IN_PROGRESS', label: 'My ongoing simulations' },
+  },
+  {
+    id: 'meeting-run',
+    question: 'How does a meeting work?',
+    keywords: ['how does', 'during the meeting', 'speak', 'give the floor', 'audio', 'microphone', 'voice'],
+    answer:
+      'When the meeting opens, the facilitator starts the session and hands you the floor. Choose who to address in “Give the floor”. The timeline shows elapsed and remaining time. Voice mode is turned on with the “Audio” button.',
+  },
+  {
+    id: 'action-items',
+    question: 'Where are the follow-up actions?',
+    keywords: ['follow-up actions', 'action', 'follow up', 'tasks', 'to do', 'owner', 'due date'],
+    answer:
+      'Actions agreed in a meeting appear in the meeting minutes and in “Follow-up actions” in the simulation menu. There you can assign an owner, set a due date and change the status.',
+  },
+  {
+    id: 'completed',
+    question: 'Show me my completed simulations.',
+    keywords: ['completed', 'finished', 'done', 'history', 'past simulations', 'results'],
+    answer: 'Here are your completed simulations. Open one to see the debriefing and the portfolio.',
+    link: { to: '/simulations?statut=COMPLETED', label: 'Completed simulations' },
+  },
+  {
+    id: 'deliverables',
+    question: 'How do I hand in a deliverable?',
+    keywords: ['deliverable', 'hand in', 'submit', 'document', 'charter', 'report'],
+    answer:
+      'In your simulation, open “Deliverables”, write the document from the template provided, then click “Submit”. You will get detailed feedback.',
+  },
+  {
+    id: 'dashboard',
+    question: 'Where is my dashboard?',
+    keywords: ['dashboard', 'home', 'back', 'learner space'],
+    answer: 'The dashboard is always available from “Learner space”, at the top of the left menu.',
+    link: { to: '/dashboard', label: 'Dashboard' },
+  },
+];
+
+/** Knowledge base for the active interface language. */
+export function helpTopicsFor(locale: string): HelpTopic[] {
+  return locale === 'en' ? HELP_TOPICS_EN : HELP_TOPICS;
+}
+
 /** Lower-case and strip accents and punctuation, so « Réunion » matches "reunion". */
 export function normalizeText(text: string): string {
   return text

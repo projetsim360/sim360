@@ -1,7 +1,9 @@
 import { useState, useCallback, useRef } from 'react';
 import { pmoApi } from '../api/pmo.api';
+import { useT } from '@/i18n/app/use-t';
 
 export function usePmoStream(simulationId: string) {
+  const t = useT();
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamedContent, setStreamedContent] = useState('');
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -27,14 +29,14 @@ export function usePmoStream(simulationId: string) {
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({
-            message: 'Erreur lors de la communication avec l\'agent PMO',
+            message: t('pmo.chatError'),
           }));
-          throw new Error(errorData.message || 'Erreur serveur');
+          throw new Error(errorData.message || t('pmo.serverError'));
         }
 
         const reader = response.body?.getReader();
         if (!reader) {
-          throw new Error('Flux de lecture non disponible');
+          throw new Error(t('pmo.streamError'));
         }
 
         const decoder = new TextDecoder();
@@ -88,7 +90,7 @@ export function usePmoStream(simulationId: string) {
         throw error;
       }
     },
-    [simulationId, streamedContent],
+    [simulationId, streamedContent, t],
   );
 
   return { sendMessage, isStreaming, streamedContent, cancelStream };

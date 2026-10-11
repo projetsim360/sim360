@@ -11,8 +11,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Slider } from '@/components/ui/slider';
 import { usePortfolio, valorizationApi } from '../api/valorization.api';
 import { PortfolioDeliverableCard } from '../components/portfolio-deliverable-card';
+import { useTv } from '@/i18n/app/use-t';
+import { useT } from '@/i18n/app/use-t';
 
 export default function PortfolioPage() {
+  const tv = useTv();
+  const t = useT();
   const { id } = useParams<{ id: string }>();
   const { data, isLoading, error } = usePortfolio(id!);
   const [minScore, setMinScore] = useState(0);
@@ -30,7 +34,7 @@ export default function PortfolioPage() {
     return (
       <div className="container space-y-5">
         <Toolbar>
-          <ToolbarHeading title="Portfolio" />
+          <ToolbarHeading title={t('valo.portfolio')} />
         </Toolbar>
         {/* Simulation info header skeleton */}
         <Card>
@@ -71,12 +75,12 @@ export default function PortfolioPage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Portfolio" />
+          <ToolbarHeading title={t('valo.portfolio')} />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-sm text-destructive">
-              Impossible de charger le portfolio.
+              {t('valo.portfolioLoadError')}
             </p>
           </CardContent>
         </Card>
@@ -87,29 +91,29 @@ export default function PortfolioPage() {
   return (
     <div className="container space-y-5">
       <Toolbar>
-        <ToolbarHeading title="Portfolio" />
+        <ToolbarHeading title={t('valo.portfolio')} />
         <ToolbarActions>
           <Button
             variant="outline"
             size="sm"
             onClick={() => {
-              toast.info('Preparation de l\'export PDF...');
+              toast.info(t('valo.exportPdf'));
               window.open(valorizationApi.exportPortfolioPdf(id!));
             }}
           >
             <KeenIcon icon="document" style="duotone" className="text-sm" />
-            Exporter PDF
+            {t('valo.exportPdfBtn')}
           </Button>
           <Button
             variant="outline"
             size="sm"
             onClick={() => {
-              toast.info('Preparation de l\'export ZIP...');
+              toast.info(t('valo.exportZip'));
               window.open(valorizationApi.exportPortfolioZip(id!));
             }}
           >
             <KeenIcon icon="cloud-download" style="duotone" className="text-sm" />
-            Exporter ZIP
+            {t('valo.exportZipBtn')}
           </Button>
         </ToolbarActions>
       </Toolbar>
@@ -152,7 +156,7 @@ export default function PortfolioPage() {
               <div className="flex items-center gap-2 shrink-0">
                 <KeenIcon icon="filter" style="duotone" className="text-sm text-muted-foreground" />
                 <span className="text-sm font-medium text-foreground">
-                  Score minimum :
+                  {t('valo.minScore')}
                 </span>
                 <Badge variant="primary" size="sm">
                   {minScore}
@@ -181,8 +185,8 @@ export default function PortfolioPage() {
             <CardContent>
               <EmptyState
                 icon="briefcase"
-                title="Portfolio vide"
-                description="Votre portfolio se construit avec vos meilleurs livrables. Soumettez et faites évaluer vos livrables."
+                title={t('valo.emptyPortfolio')}
+                description={t('valo.emptyPortfolioDesc')}
               />
             </CardContent>
           </Card>
@@ -205,7 +209,7 @@ export default function PortfolioPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <KeenIcon icon="notepad" style="duotone" className="text-base text-primary" />
-                Leçons apprises
+                {t('valo.lessons')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -227,7 +231,7 @@ export default function PortfolioPage() {
                           appearance="light"
                           size="sm"
                         >
-                          {deliverable.status === 'COMPLETED' ? 'Terminé' : deliverable.status}
+                          {tv('valo.delivStatus', deliverable.status)}
                         </Badge>
                         {(deliverable.evaluation?.grade ?? deliverable.grade) && (
                           <span className="text-sm font-medium text-muted-foreground">
@@ -252,7 +256,7 @@ export default function PortfolioPage() {
           <Button variant="outline" size="sm" asChild>
             <Link to={`/simulations/${id}/debriefing`}>
               <KeenIcon icon="chart" style="duotone" className="text-sm" />
-              Voir le débriefing
+              {t('valo.seeDebrief')}
             </Link>
           </Button>
         </div>
