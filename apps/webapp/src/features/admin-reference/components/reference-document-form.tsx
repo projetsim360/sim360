@@ -28,18 +28,20 @@ import type {
   ReferenceDocumentCategory,
 } from '../types/admin-reference.types';
 import { PHASE_LABELS, CATEGORY_LABELS } from '../types/admin-reference.types';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useT } from '@/i18n/app/use-t';
 
 const PHASES: PhaseType[] = ['INITIATION', 'PLANNING', 'EXECUTION', 'MONITORING', 'CLOSURE'];
 const CATEGORIES: ReferenceDocumentCategory[] = ['TEMPLATE', 'STANDARD', 'BEST_PRACTICE', 'GLOSSARY'];
 
 const documentSchema = z.object({
-  title: z.string().min(1, 'Le titre est requis'),
+  title: z.string().min(1, 'admin.form.titleRequired'),
   category: z.enum(['TEMPLATE', 'STANDARD', 'BEST_PRACTICE', 'GLOSSARY'], {
-    required_error: 'La catégorie est requise',
+    error: 'admin.form.categoryRequired',
   }),
   phase: z.string().optional(),
   pmiProcess: z.string().optional(),
-  content: z.string().min(1, 'Le contenu est requis'),
+  content: z.string().min(1, 'admin.form.contentRequired'),
   term: z.string().optional(),
   example: z.string().optional(),
 });
@@ -69,6 +71,7 @@ export function ReferenceDocumentForm({
   onSubmit,
   isPending,
 }: ReferenceDocumentFormProps) {
+  const t = useT();
   const {
     register,
     handleSubmit,
@@ -134,12 +137,12 @@ export function ReferenceDocumentForm({
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {document ? 'Modifier le document' : 'Nouveau document de référence'}
+            {document ? t('admin.doc.edit') : t('admin.doc.new')}
           </DialogTitle>
           <DialogDescription>
             {document
-              ? 'Modifiez les informations du document de référence.'
-              : 'Remplissez les informations pour créer un nouveau document.'}
+              ? t('admin.doc.editDesc')
+              : t('admin.doc.newDesc')}
           </DialogDescription>
         </DialogHeader>
 
@@ -151,51 +154,51 @@ export function ReferenceDocumentForm({
           >
             {/* Titre */}
             <div className="space-y-1.5">
-              <Label htmlFor="doc-title">Titre</Label>
-              <Input id="doc-title" {...register('title')} placeholder="Titre du document" />
+              <Label htmlFor="doc-title">{t('recruit.col.title')}</Label>
+              <Input id="doc-title" {...register('title')} placeholder={t('admin.doc.titlePh')} />
               {errors.title && (
-                <p className="text-xs text-destructive">{errors.title.message}</p>
+                <p className="text-xs text-destructive">{t(errors.title.message as AppMessageKey)}</p>
               )}
             </div>
 
             {/* Categorie + Phase */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label>Catégorie</Label>
+                <Label>{t('admin.categoryLabel')}</Label>
                 <Select
                   value={categoryValue}
                   onValueChange={(val) => setValue('category', val as ReferenceDocumentCategory)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Sélectionner une catégorie" />
+                    <SelectValue placeholder={t('admin.pickCategory')} />
                   </SelectTrigger>
                   <SelectContent>
                     {CATEGORIES.map((cat) => (
                       <SelectItem key={cat} value={cat}>
-                        {CATEGORY_LABELS[cat]}
+                        {t(CATEGORY_LABELS[cat])}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
                 {errors.category && (
-                  <p className="text-xs text-destructive">{errors.category.message}</p>
+                  <p className="text-xs text-destructive">{t(errors.category.message as AppMessageKey)}</p>
                 )}
               </div>
 
               <div className="space-y-1.5">
-                <Label>Phase PMI (optionnel)</Label>
+                <Label>{t('admin.pmiPhaseOpt')}</Label>
                 <Select
                   value={phaseValue || ''}
                   onValueChange={(val) => setValue('phase', val === '_none' ? '' : val)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Sélectionner une phase" />
+                    <SelectValue placeholder={t('admin.pickPhase')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="_none">Aucune</SelectItem>
+                    <SelectItem value="_none">{t('admin.none')}</SelectItem>
                     {PHASES.map((phase) => (
                       <SelectItem key={phase} value={phase}>
-                        {PHASE_LABELS[phase]}
+                        {t(PHASE_LABELS[phase])}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -205,11 +208,11 @@ export function ReferenceDocumentForm({
 
             {/* Processus PMI */}
             <div className="space-y-1.5">
-              <Label htmlFor="doc-pmiProcess">Processus PMI (optionnel)</Label>
+              <Label htmlFor="doc-pmiProcess">{t('admin.pmiProcessOpt')}</Label>
               <Input
                 id="doc-pmiProcess"
                 {...register('pmiProcess')}
-                placeholder="Ex: 4.1 Elaborer la charte du projet"
+                placeholder={t('admin.doc.processPh')}
               />
             </div>
 
@@ -217,20 +220,20 @@ export function ReferenceDocumentForm({
             {isGlossary && (
               <>
                 <div className="space-y-1.5">
-                  <Label htmlFor="doc-term">Terme</Label>
+                  <Label htmlFor="doc-term">{t('admin.doc.term')}</Label>
                   <Input
                     id="doc-term"
                     {...register('term')}
-                    placeholder="Terme à définir"
+                    placeholder={t('admin.doc.termPh')}
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="doc-example">Exemple concret</Label>
+                  <Label htmlFor="doc-example">{t('admin.doc.example')}</Label>
                   <Textarea
                     id="doc-example"
                     {...register('example')}
-                    placeholder="Un exemple concret illustrant le terme..."
+                    placeholder={t('admin.doc.examplePh')}
                     className="min-h-20"
                   />
                 </div>
@@ -239,15 +242,15 @@ export function ReferenceDocumentForm({
 
             {/* Contenu (Markdown) */}
             <div className="space-y-1.5">
-              <Label htmlFor="doc-content">Contenu (Markdown)</Label>
+              <Label htmlFor="doc-content">{t('admin.doc.content')}</Label>
               <Textarea
                 id="doc-content"
                 {...register('content')}
-                placeholder="Rédigez le contenu du document en Markdown..."
+                placeholder={t('admin.doc.contentPh')}
                 className="min-h-32 font-mono text-xs"
               />
               {errors.content && (
-                <p className="text-xs text-destructive">{errors.content.message}</p>
+                <p className="text-xs text-destructive">{t(errors.content.message as AppMessageKey)}</p>
               )}
             </div>
           </form>
@@ -260,7 +263,7 @@ export function ReferenceDocumentForm({
             type="button"
             onClick={() => onOpenChange(false)}
           >
-            Annuler
+            {t('common.cancel')}
           </Button>
           <Button
             variant="primary"
@@ -269,7 +272,7 @@ export function ReferenceDocumentForm({
             form="reference-document-form"
             disabled={isPending}
           >
-            {isPending ? 'Enregistrement...' : document ? 'Mettre à jour' : 'Créer'}
+            {isPending ? t('common.saving') : document ? t('admin.update') : t('mentoring.create')}
           </Button>
         </DialogFooter>
       </DialogContent>

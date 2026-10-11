@@ -28,6 +28,8 @@ import type {
   UpdateDeliverableTemplateDto,
 } from '../types/admin-reference.types';
 import { PHASE_LABELS, DIFFICULTY_LABELS } from '../types/admin-reference.types';
+import { useAppLocale } from '@/providers/locale-provider';
+import { useT } from '@/i18n/app/use-t';
 
 const PHASES: PhaseType[] = ['INITIATION', 'PLANNING', 'EXECUTION', 'MONITORING', 'CLOSURE'];
 const DIFFICULTIES: DeliverableTemplateDifficulty[] = ['DISCOVERY', 'STANDARD', 'ADVANCED'];
@@ -36,6 +38,8 @@ type SortField = 'title' | 'type' | 'phase' | 'difficulty' | 'version' | 'update
 type SortDir = 'asc' | 'desc';
 
 export default function DeliverableTemplatesPage() {
+  const { intlLocale } = useAppLocale();
+  const t = useT();
   // Filters
   const [search, setSearch] = useState('');
   const [filterPhase, setFilterPhase] = useState<string>('');
@@ -83,12 +87,12 @@ export default function DeliverableTemplatesPage() {
           bVal = b.type.toLowerCase();
           break;
         case 'phase':
-          aVal = PHASE_LABELS[a.phase];
-          bVal = PHASE_LABELS[b.phase];
+          aVal = t(PHASE_LABELS[a.phase]);
+          bVal = t(PHASE_LABELS[b.phase]);
           break;
         case 'difficulty':
-          aVal = DIFFICULTY_LABELS[a.difficulty];
-          bVal = DIFFICULTY_LABELS[b.difficulty];
+          aVal = t(DIFFICULTY_LABELS[a.difficulty]);
+          bVal = t(DIFFICULTY_LABELS[b.difficulty]);
           break;
         case 'version':
           aVal = a.version;
@@ -104,7 +108,7 @@ export default function DeliverableTemplatesPage() {
       return 0;
     });
     return sorted;
-  }, [templates, sortField, sortDir]);
+  }, [templates, sortField, sortDir, t]);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -132,8 +136,8 @@ export default function DeliverableTemplatesPage() {
 
   const handleToggle = (id: string) => {
     toggleMutation.mutate(id, {
-      onSuccess: () => toast.success('Statut mis à jour'),
-      onError: () => toast.error('Erreur lors de la mise à jour du statut'),
+      onSuccess: () => toast.success(t('admin.statusUpdated')),
+      onError: () => toast.error(t('admin.statusError')),
     });
   };
 
@@ -143,20 +147,20 @@ export default function DeliverableTemplatesPage() {
         { id: editingTemplate.id, data },
         {
           onSuccess: () => {
-            toast.success('Template mis à jour');
+            toast.success(t('admin.tpl.updated'));
             setFormOpen(false);
             setEditingTemplate(null);
           },
-          onError: () => toast.error('Erreur lors de la mise à jour'),
+          onError: () => toast.error(t('settings.updateError')),
         },
       );
     } else {
       createMutation.mutate(data as CreateDeliverableTemplateDto, {
         onSuccess: () => {
-          toast.success('Template créé');
+          toast.success(t('admin.tpl.created'));
           setFormOpen(false);
         },
-        onError: () => toast.error('Erreur lors de la création'),
+        onError: () => toast.error(t('admin.createError')),
       });
     }
   };
@@ -164,10 +168,10 @@ export default function DeliverableTemplatesPage() {
   return (
     <>
       <Toolbar>
-        <ToolbarHeading title="Templates de livrables" />
+        <ToolbarHeading title={t('admin.tpl.title')} />
         <ToolbarActions>
           <Button variant="primary" size="sm" onClick={handleCreate}>
-            Nouveau template
+            {t('admin.tpl.newBtn')}
           </Button>
         </ToolbarActions>
       </Toolbar>
@@ -179,7 +183,7 @@ export default function DeliverableTemplatesPage() {
             <div className="flex flex-wrap items-end gap-3">
               <div className="flex-1 min-w-48">
                 <Input
-                  placeholder="Rechercher par titre..."
+                  placeholder={t('admin.searchTitle')}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -188,13 +192,13 @@ export default function DeliverableTemplatesPage() {
               <div className="w-44">
                 <Select value={filterPhase} onValueChange={setFilterPhase}>
                   <SelectTrigger size="sm">
-                    <SelectValue placeholder="Phase PMI" />
+                    <SelectValue placeholder={t('admin.pmiPhase')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="_all">Toutes les phases</SelectItem>
+                    <SelectItem value="_all">{t('admin.allPhases')}</SelectItem>
                     {PHASES.map((phase) => (
                       <SelectItem key={phase} value={phase}>
-                        {PHASE_LABELS[phase]}
+                        {t(PHASE_LABELS[phase])}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -203,7 +207,7 @@ export default function DeliverableTemplatesPage() {
 
               <div className="w-36">
                 <Input
-                  placeholder="Type..."
+                  placeholder={t('admin.typePh')}
                   value={filterType}
                   onChange={(e) => setFilterType(e.target.value)}
                   variant="sm"
@@ -213,13 +217,13 @@ export default function DeliverableTemplatesPage() {
               <div className="w-36">
                 <Select value={filterDifficulty} onValueChange={setFilterDifficulty}>
                   <SelectTrigger size="sm">
-                    <SelectValue placeholder="Difficulté" />
+                    <SelectValue placeholder={t('admin.difficultyLabel')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="_all">Toutes</SelectItem>
+                    <SelectItem value="_all">{t('recruit.tab.all')}</SelectItem>
                     {DIFFICULTIES.map((diff) => (
                       <SelectItem key={diff} value={diff}>
-                        {DIFFICULTY_LABELS[diff]}
+                        {t(DIFFICULTY_LABELS[diff])}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -229,12 +233,12 @@ export default function DeliverableTemplatesPage() {
               <div className="w-32">
                 <Select value={filterActive} onValueChange={setFilterActive}>
                   <SelectTrigger size="sm">
-                    <SelectValue placeholder="Statut" />
+                    <SelectValue placeholder={t('actions.statusLabel')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="_all">Tous</SelectItem>
-                    <SelectItem value="true">Actif</SelectItem>
-                    <SelectItem value="false">Inactif</SelectItem>
+                    <SelectItem value="_all">{t('trainer.filter.all')}</SelectItem>
+                    <SelectItem value="true">{t('admin.active')}</SelectItem>
+                    <SelectItem value="false">{t('admin.inactive')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -251,7 +255,7 @@ export default function DeliverableTemplatesPage() {
                     setSearch('');
                   }}
                 >
-                  Réinitialiser
+                  {t('admin.reset')}
                 </Button>
               )}
             </div>
@@ -269,7 +273,7 @@ export default function DeliverableTemplatesPage() {
           <Card>
             <CardContent className="py-8 text-center">
               <p className="text-sm text-destructive">
-                Erreur lors du chargement des templates.
+                {t('admin.tpl.loadError')}
               </p>
             </CardContent>
           </Card>
@@ -280,9 +284,9 @@ export default function DeliverableTemplatesPage() {
             <CardContent>
               <EmptyState
                 icon="document"
-                title="Aucun template"
-                description="Aucun template ne correspond à vos filtres."
-                action={{ label: 'Créer un premier template', onClick: handleCreate }}
+                title={t('admin.tpl.empty')}
+                description={t('admin.tpl.emptyDesc')}
+                action={{ label: t('admin.tpl.createFirst'), onClick: handleCreate }}
               />
             </CardContent>
           </Card>
@@ -299,43 +303,43 @@ export default function DeliverableTemplatesPage() {
                         className="px-4 py-3 text-left font-medium text-muted-foreground cursor-pointer hover:text-foreground"
                         onClick={() => handleSort('title')}
                       >
-                        Titre{sortIcon('title')}
+                        {t('recruit.col.title')}{sortIcon('title')}
                       </th>
                       <th
                         className="px-4 py-3 text-left font-medium text-muted-foreground cursor-pointer hover:text-foreground"
                         onClick={() => handleSort('type')}
                       >
-                        Type{sortIcon('type')}
+                        {t('admin.type')}{sortIcon('type')}
                       </th>
                       <th
                         className="px-4 py-3 text-left font-medium text-muted-foreground cursor-pointer hover:text-foreground"
                         onClick={() => handleSort('phase')}
                       >
-                        Phase{sortIcon('phase')}
+                        {t('recruit.detail.phase')}{sortIcon('phase')}
                       </th>
                       <th
                         className="px-4 py-3 text-left font-medium text-muted-foreground cursor-pointer hover:text-foreground"
                         onClick={() => handleSort('difficulty')}
                       >
-                        Difficulté{sortIcon('difficulty')}
+                        {t('admin.difficultyLabel')}{sortIcon('difficulty')}
                       </th>
                       <th
                         className="px-4 py-3 text-center font-medium text-muted-foreground cursor-pointer hover:text-foreground"
                         onClick={() => handleSort('version')}
                       >
-                        Version{sortIcon('version')}
+                        {t('admin.version')}{sortIcon('version')}
                       </th>
                       <th className="px-4 py-3 text-center font-medium text-muted-foreground">
-                        Statut
+                        {t('actions.statusLabel')}
                       </th>
                       <th
                         className="px-4 py-3 text-left font-medium text-muted-foreground cursor-pointer hover:text-foreground"
                         onClick={() => handleSort('updatedAt')}
                       >
-                        Modifié{sortIcon('updatedAt')}
+                        {t('admin.modified')}{sortIcon('updatedAt')}
                       </th>
                       <th className="px-4 py-3 text-right font-medium text-muted-foreground">
-                        Actions
+                        {t('recruit.col.actions')}
                       </th>
                     </tr>
                   </thead>
@@ -349,7 +353,7 @@ export default function DeliverableTemplatesPage() {
                         <td className="px-4 py-3 text-muted-foreground">{tpl.type}</td>
                         <td className="px-4 py-3">
                           <Badge variant="info" appearance="light" size="sm">
-                            {PHASE_LABELS[tpl.phase]}
+                            {t(PHASE_LABELS[tpl.phase])}
                           </Badge>
                         </td>
                         <td className="px-4 py-3">
@@ -364,7 +368,7 @@ export default function DeliverableTemplatesPage() {
                             appearance="light"
                             size="sm"
                           >
-                            {DIFFICULTY_LABELS[tpl.difficulty]}
+                            {t(DIFFICULTY_LABELS[tpl.difficulty])}
                           </Badge>
                         </td>
                         <td className="px-4 py-3 text-center text-muted-foreground">
@@ -376,11 +380,11 @@ export default function DeliverableTemplatesPage() {
                             appearance="light"
                             size="sm"
                           >
-                            {tpl.isActive ? 'Actif' : 'Inactif'}
+                            {tpl.isActive ? t('admin.active') : t('admin.inactive')}
                           </Badge>
                         </td>
                         <td className="px-4 py-3 text-muted-foreground">
-                          {new Date(tpl.updatedAt).toLocaleDateString('fr-FR')}
+                          {new Date(tpl.updatedAt).toLocaleDateString(intlLocale)}
                         </td>
                         <td className="px-4 py-3 text-right">
                           <div className="flex items-center justify-end gap-1">
@@ -389,7 +393,7 @@ export default function DeliverableTemplatesPage() {
                               size="sm"
                               onClick={() => handleEdit(tpl)}
                             >
-                              Modifier
+                              {t('admin.edit')}
                             </Button>
                             <Button
                               variant="ghost"
@@ -397,7 +401,7 @@ export default function DeliverableTemplatesPage() {
                               onClick={() => handleToggle(tpl.id)}
                               disabled={toggleMutation.isPending}
                             >
-                              {tpl.isActive ? 'Désactiver' : 'Activer'}
+                              {tpl.isActive ? t('admin.deactivate') : t('admin.activate')}
                             </Button>
                           </div>
                         </td>

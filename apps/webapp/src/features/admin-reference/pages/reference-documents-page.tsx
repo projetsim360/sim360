@@ -27,6 +27,8 @@ import type {
   UpdateReferenceDocumentDto,
 } from '../types/admin-reference.types';
 import { PHASE_LABELS, CATEGORY_LABELS } from '../types/admin-reference.types';
+import { useAppLocale } from '@/providers/locale-provider';
+import { useT } from '@/i18n/app/use-t';
 
 const PHASES: PhaseType[] = ['INITIATION', 'PLANNING', 'EXECUTION', 'MONITORING', 'CLOSURE'];
 const CATEGORIES: ReferenceDocumentCategory[] = ['TEMPLATE', 'STANDARD', 'BEST_PRACTICE', 'GLOSSARY'];
@@ -35,6 +37,8 @@ type SortField = 'title' | 'category' | 'phase' | 'version' | 'updatedAt';
 type SortDir = 'asc' | 'desc';
 
 export default function ReferenceDocumentsPage() {
+  const { intlLocale } = useAppLocale();
+  const t = useT();
   // Filters
   const [search, setSearch] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('');
@@ -75,12 +79,12 @@ export default function ReferenceDocumentsPage() {
           bVal = b.title.toLowerCase();
           break;
         case 'category':
-          aVal = CATEGORY_LABELS[a.category];
-          bVal = CATEGORY_LABELS[b.category];
+          aVal = t(CATEGORY_LABELS[a.category]);
+          bVal = t(CATEGORY_LABELS[b.category]);
           break;
         case 'phase':
-          aVal = a.phase ? PHASE_LABELS[a.phase] : '';
-          bVal = b.phase ? PHASE_LABELS[b.phase] : '';
+          aVal = a.phase ? t(PHASE_LABELS[a.phase]) : '';
+          bVal = b.phase ? t(PHASE_LABELS[b.phase]) : '';
           break;
         case 'version':
           aVal = a.version;
@@ -96,7 +100,7 @@ export default function ReferenceDocumentsPage() {
       return 0;
     });
     return sorted;
-  }, [documents, sortField, sortDir]);
+  }, [documents, sortField, sortDir, t]);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -128,20 +132,20 @@ export default function ReferenceDocumentsPage() {
         { id: editingDocument.id, data },
         {
           onSuccess: () => {
-            toast.success('Document mis à jour');
+            toast.success(t('admin.doc.updated'));
             setFormOpen(false);
             setEditingDocument(null);
           },
-          onError: () => toast.error('Erreur lors de la mise à jour'),
+          onError: () => toast.error(t('settings.updateError')),
         },
       );
     } else {
       createMutation.mutate(data as CreateReferenceDocumentDto, {
         onSuccess: () => {
-          toast.success('Document créé');
+          toast.success(t('admin.doc.created'));
           setFormOpen(false);
         },
-        onError: () => toast.error('Erreur lors de la création'),
+        onError: () => toast.error(t('admin.createError')),
       });
     }
   };
@@ -149,10 +153,10 @@ export default function ReferenceDocumentsPage() {
   return (
     <>
       <Toolbar>
-        <ToolbarHeading title="Documents de référence" />
+        <ToolbarHeading title={t('admin.doc.title')} />
         <ToolbarActions>
           <Button variant="primary" size="sm" onClick={handleCreate}>
-            Nouveau document
+            {t('admin.doc.newBtn')}
           </Button>
         </ToolbarActions>
       </Toolbar>
@@ -164,7 +168,7 @@ export default function ReferenceDocumentsPage() {
             <div className="flex flex-wrap items-end gap-3">
               <div className="flex-1 min-w-48">
                 <Input
-                  placeholder="Rechercher par titre..."
+                  placeholder={t('admin.searchTitle')}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -173,13 +177,13 @@ export default function ReferenceDocumentsPage() {
               <div className="w-44">
                 <Select value={filterCategory} onValueChange={setFilterCategory}>
                   <SelectTrigger size="sm">
-                    <SelectValue placeholder="Catégorie" />
+                    <SelectValue placeholder={t('admin.categoryLabel')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="_all">Toutes les catégories</SelectItem>
+                    <SelectItem value="_all">{t('admin.allCategories')}</SelectItem>
                     {CATEGORIES.map((cat) => (
                       <SelectItem key={cat} value={cat}>
-                        {CATEGORY_LABELS[cat]}
+                        {t(CATEGORY_LABELS[cat])}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -189,13 +193,13 @@ export default function ReferenceDocumentsPage() {
               <div className="w-44">
                 <Select value={filterPhase} onValueChange={setFilterPhase}>
                   <SelectTrigger size="sm">
-                    <SelectValue placeholder="Phase PMI" />
+                    <SelectValue placeholder={t('admin.pmiPhase')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="_all">Toutes les phases</SelectItem>
+                    <SelectItem value="_all">{t('admin.allPhases')}</SelectItem>
                     {PHASES.map((phase) => (
                       <SelectItem key={phase} value={phase}>
-                        {PHASE_LABELS[phase]}
+                        {t(PHASE_LABELS[phase])}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -205,12 +209,12 @@ export default function ReferenceDocumentsPage() {
               <div className="w-32">
                 <Select value={filterActive} onValueChange={setFilterActive}>
                   <SelectTrigger size="sm">
-                    <SelectValue placeholder="Statut" />
+                    <SelectValue placeholder={t('actions.statusLabel')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="_all">Tous</SelectItem>
-                    <SelectItem value="true">Actif</SelectItem>
-                    <SelectItem value="false">Inactif</SelectItem>
+                    <SelectItem value="_all">{t('trainer.filter.all')}</SelectItem>
+                    <SelectItem value="true">{t('admin.active')}</SelectItem>
+                    <SelectItem value="false">{t('admin.inactive')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -226,7 +230,7 @@ export default function ReferenceDocumentsPage() {
                     setSearch('');
                   }}
                 >
-                  Réinitialiser
+                  {t('admin.reset')}
                 </Button>
               )}
             </div>
@@ -244,7 +248,7 @@ export default function ReferenceDocumentsPage() {
           <Card>
             <CardContent className="py-8 text-center">
               <p className="text-sm text-destructive">
-                Erreur lors du chargement des documents.
+                {t('admin.doc.loadError')}
               </p>
             </CardContent>
           </Card>
@@ -255,9 +259,9 @@ export default function ReferenceDocumentsPage() {
             <CardContent>
               <EmptyState
                 icon="folder"
-                title="Aucun document"
-                description="Aucun document ne correspond à vos filtres."
-                action={{ label: 'Créer un premier document', onClick: handleCreate }}
+                title={t('admin.doc.empty')}
+                description={t('admin.doc.emptyDesc')}
+                action={{ label: t('admin.doc.createFirst'), onClick: handleCreate }}
               />
             </CardContent>
           </Card>
@@ -274,37 +278,37 @@ export default function ReferenceDocumentsPage() {
                         className="px-4 py-3 text-left font-medium text-muted-foreground cursor-pointer hover:text-foreground"
                         onClick={() => handleSort('title')}
                       >
-                        Titre{sortIcon('title')}
+                        {t('recruit.col.title')}{sortIcon('title')}
                       </th>
                       <th
                         className="px-4 py-3 text-left font-medium text-muted-foreground cursor-pointer hover:text-foreground"
                         onClick={() => handleSort('category')}
                       >
-                        Catégorie{sortIcon('category')}
+                        {t('admin.categoryLabel')}{sortIcon('category')}
                       </th>
                       <th
                         className="px-4 py-3 text-left font-medium text-muted-foreground cursor-pointer hover:text-foreground"
                         onClick={() => handleSort('phase')}
                       >
-                        Phase{sortIcon('phase')}
+                        {t('recruit.detail.phase')}{sortIcon('phase')}
                       </th>
                       <th
                         className="px-4 py-3 text-center font-medium text-muted-foreground cursor-pointer hover:text-foreground"
                         onClick={() => handleSort('version')}
                       >
-                        Version{sortIcon('version')}
+                        {t('admin.version')}{sortIcon('version')}
                       </th>
                       <th className="px-4 py-3 text-center font-medium text-muted-foreground">
-                        Statut
+                        {t('actions.statusLabel')}
                       </th>
                       <th
                         className="px-4 py-3 text-left font-medium text-muted-foreground cursor-pointer hover:text-foreground"
                         onClick={() => handleSort('updatedAt')}
                       >
-                        Modifié{sortIcon('updatedAt')}
+                        {t('admin.modified')}{sortIcon('updatedAt')}
                       </th>
                       <th className="px-4 py-3 text-right font-medium text-muted-foreground">
-                        Actions
+                        {t('recruit.col.actions')}
                       </th>
                     </tr>
                   </thead>
@@ -329,13 +333,13 @@ export default function ReferenceDocumentsPage() {
                             appearance="light"
                             size="sm"
                           >
-                            {CATEGORY_LABELS[doc.category]}
+                            {t(CATEGORY_LABELS[doc.category])}
                           </Badge>
                         </td>
                         <td className="px-4 py-3">
                           {doc.phase ? (
                             <Badge variant="info" appearance="light" size="sm">
-                              {PHASE_LABELS[doc.phase]}
+                              {t(PHASE_LABELS[doc.phase])}
                             </Badge>
                           ) : (
                             <span className="text-muted-foreground">-</span>
@@ -350,11 +354,11 @@ export default function ReferenceDocumentsPage() {
                             appearance="light"
                             size="sm"
                           >
-                            {doc.isActive ? 'Actif' : 'Inactif'}
+                            {doc.isActive ? t('admin.active') : t('admin.inactive')}
                           </Badge>
                         </td>
                         <td className="px-4 py-3 text-muted-foreground">
-                          {new Date(doc.updatedAt).toLocaleDateString('fr-FR')}
+                          {new Date(doc.updatedAt).toLocaleDateString(intlLocale)}
                         </td>
                         <td className="px-4 py-3 text-right">
                           <Button
@@ -362,7 +366,7 @@ export default function ReferenceDocumentsPage() {
                             size="sm"
                             onClick={() => handleEdit(doc)}
                           >
-                            Modifier
+                            {t('admin.edit')}
                           </Button>
                         </td>
                       </tr>
