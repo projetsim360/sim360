@@ -182,7 +182,7 @@ export class UsersService {
 
   @CacheEvict({ key: 'user:profile::arg0' })
   async uploadAvatar(userId: string, file: Express.Multer.File) {
-    const avatarUrl = await this.storageService.uploadToLocal(file, userId);
+    const avatarUrl = await this.storageService.uploadAvatar(file, userId);
 
     return this.prisma.user.update({
       where: { id: userId },
@@ -204,7 +204,7 @@ export class UsersService {
   async deleteAvatar(userId: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (user?.avatar) {
-      await this.storageService.deleteLocalFile(user.avatar);
+      await this.storageService.deleteAvatar(user.avatar);
     }
 
     return this.prisma.user.update({
@@ -230,7 +230,7 @@ export class UsersService {
 
     // Delete avatar file if exists
     if (user.avatar) {
-      await this.storageService.deleteLocalFile(user.avatar);
+      await this.storageService.deleteAvatar(user.avatar);
     }
 
     // Cascade delete handles refresh tokens, etc.
