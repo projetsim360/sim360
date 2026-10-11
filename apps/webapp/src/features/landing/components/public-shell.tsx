@@ -1,0 +1,37 @@
+import { Outlet, useLocation } from 'react-router';
+import { IntlProvider } from 'react-intl';
+import { Helmet } from 'react-helmet-async';
+import { PUBLIC_MESSAGES } from '@/i18n/public-messages';
+import { DEFAULT_PUBLIC_LOCALE, localizedPath, stripLocalePrefix, type PublicLocale } from '@/i18n/public-locale';
+import { StickyNav } from './sticky-nav';
+import { Footer } from './footer';
+
+/**
+ * Layout of every public page: locale-scoped IntlProvider, document head (lang, title,
+ * canonical and hreflang alternates), sticky nav and footer. Forces dark mode so the
+ * marketing pages ignore the signed-in user's theme preference.
+ */
+export function PublicShell({ locale }: { locale: PublicLocale }) {
+  const { pathname } = useLocation();
+  const messages = PUBLIC_MESSAGES[locale];
+  const bare = stripLocalePrefix(pathname);
+  const origin = typeof window === 'undefined' ? '' : window.location.origin;
+
+  return (
+    <IntlProvider locale={locale} defaultLocale={DEFAULT_PUBLIC_LOCALE} messages={messages}>
+      <Helmet htmlAttributes={{ lang: locale }}>
+        <title>{messages['meta.title']}</title>
+        <meta name="description" content={messages['meta.description']} />
+        <link rel="canonical" href={`${origin}${localizedPath(bare, locale)}`} />
+        <link rel="alternate" hrefLang="fr" href={`${origin}${localizedPath(bare, 'fr')}`} />
+        <link rel="alternate" hrefLang="en" href={`${origin}${localizedPath(bare, 'en')}`} />
+        <link rel="alternate" hrefLang="x-default" href={`${origin}${localizedPath(bare, 'fr')}`} />
+      </Helmet>
+      <div className="dark min-h-screen w-full flex-1 overflow-x-hidden bg-background text-foreground">
+        <StickyNav />
+        <Outlet />
+        <Footer />
+      </div>
+    </IntlProvider>
+  );
+}

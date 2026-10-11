@@ -92,7 +92,7 @@ export function ConferenceControls({
           Rejoindre la conference
         </button>
         <span className="text-[11px] text-white/40">
-          {participantCount} participant{participantCount > 1 ? 's' : ''} IA
+          {participantCount} participant{participantCount > 1 ? 's' : ''} simulé{participantCount > 1 ? 's' : ''}
         </span>
       </div>
     );
