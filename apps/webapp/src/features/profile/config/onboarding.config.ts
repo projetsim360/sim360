@@ -1,44 +1,45 @@
 import type { QuestionnaireData } from '../types/profile.types';
+import type { AppMessageKey } from '@/i18n/app/messages';
 
 export type OnboardingStep = 'profil' | 'aptitude-test' | 'diagnostic' | 'choose-path';
 
 export const STEP_ORDER: OnboardingStep[] = ['profil', 'aptitude-test', 'diagnostic', 'choose-path'];
 
 export interface StepMeta {
-  shortLabel: string;
-  railSubtitle: string;
-  title: string;
-  lead: string;
+  shortLabel: AppMessageKey;
+  railSubtitle: AppMessageKey;
+  title: AppMessageKey;
+  lead: AppMessageKey;
   icon: string;
 }
 
 export const STEP_META: Record<OnboardingStep, StepMeta> = {
   'profil': {
-    shortLabel: 'Profil',
-    railSubtitle: 'Import + questionnaire',
-    title: 'Parlez-nous de vous',
-    lead: "Quelques informations pour personnaliser votre simulation. Importez votre CV pour gagner du temps, ou répondez directement.",
+    shortLabel: 'onboarding.step.profil.short',
+    railSubtitle: 'onboarding.step.profil.rail',
+    title: 'onboarding.step.profil.title',
+    lead: 'onboarding.step.profil.lead',
     icon: 'profile-circle',
   },
   'aptitude-test': {
-    shortLabel: 'Mise en situation',
-    railSubtitle: '3 scénarios',
-    title: 'Mise en situation',
-    lead: "Trois situations concrètes de gestion de projet. Il n'y a pas de mauvaise réponse.",
+    shortLabel: 'onboarding.step.aptitude.short',
+    railSubtitle: 'onboarding.step.aptitude.rail',
+    title: 'onboarding.step.aptitude.title',
+    lead: 'onboarding.step.aptitude.lead',
     icon: 'notepad',
   },
   'diagnostic': {
-    shortLabel: 'Diagnostic',
-    railSubtitle: 'Analyse de profil',
-    title: 'Votre diagnostic',
-    lead: "Voici ce que nous avons compris de votre profil.",
+    shortLabel: 'onboarding.step.diagnostic.short',
+    railSubtitle: 'onboarding.step.diagnostic.rail',
+    title: 'onboarding.step.diagnostic.title',
+    lead: 'onboarding.step.diagnostic.lead',
     icon: 'shield-tick',
   },
   'choose-path': {
-    shortLabel: 'Parcours',
-    railSubtitle: 'Secteur + lancement',
-    title: 'Choisissez votre parcours',
-    lead: "Le secteur dans lequel vous allez piloter votre première simulation.",
+    shortLabel: 'onboarding.step.path.short',
+    railSubtitle: 'onboarding.step.path.rail',
+    title: 'onboarding.step.path.title',
+    lead: 'onboarding.step.path.lead',
     icon: 'route',
   },
 };
@@ -50,8 +51,8 @@ export interface OnboardingLiveState {
 
 export interface StepperItem {
   key: OnboardingStep;
-  shortLabel: string;
-  railSubtitle: string;
+  shortLabel: AppMessageKey;
+  railSubtitle: AppMessageKey;
   isConditional: boolean;
   isActive: boolean;
   displayNumber: number | null;

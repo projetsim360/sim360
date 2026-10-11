@@ -41,36 +41,36 @@ import {
   useSubmitCustomProject,
   useCompleteOnboarding,
 } from '../api/profile.api';
-import { SECTORS, PROFILE_TYPE_LABELS, formatDifficulty } from '../types/profile.types';
+import { SECTORS } from '../types/profile.types';
 import type { CustomProjectData } from '../types/profile.types';
+import { useTv } from '@/i18n/app/use-t';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useT } from '@/i18n/app/use-t';
 
 interface ChoosePathStepProps {
   onBack: () => void;
 }
 
-const customProjectSchema = z.object({
-  projectName: z
-    .string()
-    .min(3, 'Le nom du projet doit contenir au moins 3 caractères.')
-    .max(100, 'Le nom du projet ne doit pas dépasser 100 caractères.'),
-  description: z
-    .string()
-    .min(20, 'La description doit contenir au moins 20 caractères.')
-    .max(1000, 'La description ne doit pas dépasser 1000 caractères.'),
-  sector: z.string().min(1, 'Veuillez sélectionner un secteur.'),
-  teamSize: z
-    .number({ invalid_type_error: 'Veuillez saisir un nombre.' })
-    .min(1, 'L\'équipe doit avoir au moins 1 membre.')
-    .max(100, 'L\'équipe ne peut pas dépasser 100 membres.'),
-  duration: z
-    .number({ invalid_type_error: 'Veuillez saisir un nombre.' })
-    .min(1, 'La durée doit être d\'au moins 1 mois.')
-    .max(36, 'La durée ne peut pas dépasser 36 mois.'),
-});
+const customProjectSchema = (t: (id: AppMessageKey) => string) =>
+  z.object({
+    projectName: z.string().min(3, t('onboarding.custom.err.nameMin')).max(100, t('onboarding.custom.err.nameMax')),
+    description: z.string().min(20, t('onboarding.custom.err.descMin')).max(1000, t('onboarding.custom.err.descMax')),
+    sector: z.string().min(1, t('onboarding.custom.err.sector')),
+    teamSize: z
+      .number({ error: t('onboarding.custom.err.number') })
+      .min(1, t('onboarding.custom.err.teamMin'))
+      .max(100, t('onboarding.custom.err.teamMax')),
+    duration: z
+      .number({ error: t('onboarding.custom.err.number') })
+      .min(1, t('onboarding.custom.err.durationMin'))
+      .max(36, t('onboarding.custom.err.durationMax')),
+  });
 
-type CustomProjectFormValues = z.infer<typeof customProjectSchema>;
+type CustomProjectFormValues = z.infer<ReturnType<typeof customProjectSchema>>;
 
 export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
+  const tv = useTv();
+  const t = useT();
   const navigate = useNavigate();
   const { data: profile } = useProfile();
   const selectSector = useSelectSector();
@@ -87,7 +87,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
   const [submittedProject, setSubmittedProject] = useState<CustomProjectData | null>(null);
 
   const form = useForm<CustomProjectFormValues>({
-    resolver: zodResolver(customProjectSchema),
+    resolver: zodResolver(customProjectSchema(t)),
     defaultValues: {
       projectName: '',
       description: '',
@@ -116,35 +116,35 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
 
     submitCustomProject.mutate(data, {
       onSuccess: () => {
-        toast.success('Projet personnalisé enregistré avec succès.');
+        toast.success(t('onboarding.custom.saved'));
         setSubmittedProject(data);
         setShowCustomDialog(false);
         form.reset();
       },
       onError: () => {
-        toast.error("Erreur lors de l'enregistrement du projet.");
+        toast.error(t('onboarding.custom.saveError'));
       },
     });
   };
 
   const handleComplete = () => {
     if (!selectedSector && !submittedProject) {
-      toast.error('Veuillez sélectionner un secteur ou proposer un projet.');
+      toast.error(t('onboarding.path.needChoice'));
       return;
     }
 
     completeOnboarding.mutate(undefined, {
       onSuccess: () => {
-        toast.success('Onboarding terminé. Bienvenue sur Simex pro !');
+        toast.success(t('onboarding.path.done'));
         navigate('/simulations');
       },
       onError: () => {
-        toast.error("Erreur lors de la finalisation de l'onboarding.");
+        toast.error(t('onboarding.path.doneError'));
       },
     });
   };
 
-  const sectorLabel = SECTORS.find((s) => s.value === submittedProject?.sector)?.label ?? submittedProject?.sector;
+  const sectorLabel = tv('domain', submittedProject?.sector);
 
   return (
     <div className="space-y-6">
@@ -152,24 +152,24 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
       {(profile?.profileType || suggestedDifficulty || (profile?.skills?.length ?? 0) > 0) && (
         <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--brand-100)] bg-[var(--brand-50)] px-4 py-3">
           <span className="me-1 text-[11px] font-bold uppercase tracking-wide text-[var(--brand-600)]">
-            Votre parcours
+            {t('onboarding.path.recap')}
           </span>
           {profile?.profileType && (
             <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--brand-100)] bg-white px-3 py-1 text-xs font-semibold text-[var(--brand-700)]">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--success-500)]" />
-              Profil : {PROFILE_TYPE_LABELS[profile.profileType]}
+              {t('onboarding.path.profile', { value: tv('profileType', profile.profileType) })}
             </span>
           )}
           {suggestedDifficulty && (
             <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--brand-100)] bg-white px-3 py-1 text-xs font-semibold text-[var(--brand-700)]">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--success-500)]" />
-              Difficulté : {formatDifficulty(suggestedDifficulty)}
+              {t('onboarding.path.difficulty', { value: tv('difficulty', suggestedDifficulty.toUpperCase()) })}
             </span>
           )}
           {(profile?.skills?.length ?? 0) > 0 && (
             <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--brand-100)] bg-white px-3 py-1 text-xs font-semibold text-[var(--brand-700)]">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--success-500)]" />
-              {profile!.skills!.length} compétences ciblées
+              {t('onboarding.path.skills', { count: profile!.skills!.length })}
             </span>
           )}
         </div>
@@ -177,9 +177,9 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
 
       {/* Sector Selection */}
       <div>
-        <h3 className="font-display text-[14.5px] font-bold text-[var(--brand-700)]">Secteur de votre simulation</h3>
+        <h3 className="font-display text-[14.5px] font-bold text-[var(--brand-700)]">{t('onboarding.path.sectorTitle')}</h3>
         <p className="mb-3 mt-0.5 text-xs text-muted-foreground">
-          Basé sur votre domaine et l'analyse de votre profil — modifiable.
+          {t('onboarding.path.sectorHint')}
         </p>
         <SectorSelector
           value={selectedSector}
@@ -191,7 +191,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
       {/* Custom project alternative */}
       <div className="flex items-center gap-3 text-xs font-semibold text-muted-foreground">
         <span className="h-px flex-1 bg-border" />
-        ou
+        {t('auth.or')}
         <span className="h-px flex-1 bg-border" />
       </div>
       <div className="flex flex-col gap-3 rounded-xl border border-dashed border-[var(--brand-200)] bg-muted/40 p-4 sm:flex-row sm:items-center">
@@ -199,14 +199,14 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
           <KeenIcon icon="notepad-edit" style="duotone" className="text-lg text-[var(--brand-600)]" />
         </div>
         <div className="flex-1">
-          <p className="text-sm font-bold text-[var(--brand-700)]">Proposer un projet personnalisé</p>
+          <p className="text-sm font-bold text-[var(--brand-700)]">{t('onboarding.custom.title')}</p>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            Décrivez votre propre projet, nous générons un scénario sur mesure.
+            {t('onboarding.custom.text')}
           </p>
         </div>
         <Button variant="outline" size="sm" onClick={() => setShowCustomDialog(true)}>
           <KeenIcon icon="plus" style="duotone" className="text-sm me-1" />
-          Décrire mon projet
+          {t('onboarding.custom.cta')}
         </Button>
       </div>
 
@@ -217,10 +217,10 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
             <div className="flex items-center justify-between">
               <CardTitle className="text-base flex items-center gap-2">
                 <KeenIcon icon="notepad" style="duotone" className="text-lg text-primary" />
-                Projet soumis
+                {t('onboarding.custom.submitted')}
               </CardTitle>
               <Badge variant="success" appearance="light" size="sm">
-                Enregistré
+                {t('onboarding.custom.savedBadge')}
               </Badge>
             </div>
           </CardHeader>
@@ -239,11 +239,11 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
               </div>
               <div className="flex items-center gap-1">
                 <KeenIcon icon="people" style="duotone" className="text-sm text-primary" />
-                <span>{submittedProject.teamSize} membres</span>
+                <span>{t('onboarding.custom.members', { count: submittedProject.teamSize })}</span>
               </div>
               <div className="flex items-center gap-1">
                 <KeenIcon icon="calendar" style="duotone" className="text-sm text-primary" />
-                <span>{submittedProject.duration} mois</span>
+                <span>{t('onboarding.custom.months', { count: submittedProject.duration })}</span>
               </div>
             </div>
           </CardContent>
@@ -256,7 +256,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
         <div className="flex items-center justify-between">
           <Button variant="ghost" className="min-h-[44px] px-4" onClick={onBack}>
             <ArrowLeft className="text-sm me-1" />
-            Retour
+            {t('common.back')}
           </Button>
           <Button
             variant="primary"
@@ -265,12 +265,12 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
             disabled={(!selectedSector && !submittedProject) || completeOnboarding.isPending}
           >
             <Play className="text-sm me-1.5" />
-            {completeOnboarding.isPending ? 'Finalisation…' : 'Lancer ma simulation'}
+            {completeOnboarding.isPending ? t('onboarding.path.finishing') : t('onboarding.path.launch')}
           </Button>
         </div>
         {!selectedSector && !submittedProject && (
           <p className="text-xs text-muted-foreground text-right">
-            Sélectionnez un secteur ou proposez un projet pour continuer.
+            {t('onboarding.path.needChoiceHint')}
           </p>
         )}
       </div>
@@ -281,7 +281,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <KeenIcon icon="notepad-edit" style="duotone" className="text-lg text-primary" />
-              Proposer un projet personnalisé
+              {t('onboarding.custom.title')}
             </DialogTitle>
           </DialogHeader>
           <Form {...form}>
@@ -291,9 +291,9 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
                 name="projectName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nom du projet</FormLabel>
+                    <FormLabel>{t('onboarding.custom.name')}</FormLabel>
                     <FormControl>
-                      <Input placeholder="Ex: Migration CRM pour PME" aria-label="Titre du projet personnalisé" {...field} />
+                      <Input placeholder={t('onboarding.custom.namePlaceholder')} aria-label={t('onboarding.custom.name')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -305,10 +305,10 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>{t('onboarding.custom.description')}</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Décrivez votre projet, ses objectifs et contraintes..."
+                        placeholder={t('onboarding.custom.descriptionPlaceholder')}
                         rows={4}
                         {...field}
                       />
@@ -323,17 +323,17 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
                 name="sector"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Secteur</FormLabel>
+                    <FormLabel>{t('onboarding.custom.sector')}</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Sélectionnez un secteur" />
+                          <SelectValue placeholder={t('onboarding.custom.sectorPlaceholder')} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         {SECTORS.map((sector) => (
                           <SelectItem key={sector.value} value={sector.value}>
-                            {sector.label}
+                            {tv('domain', sector.value)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -349,7 +349,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
                   name="teamSize"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Taille de l'équipe</FormLabel>
+                      <FormLabel>{t('onboarding.custom.team')}</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -370,7 +370,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
                   name="duration"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Durée (mois)</FormLabel>
+                      <FormLabel>{t('onboarding.custom.duration')}</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -394,7 +394,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
                   size="sm"
                   onClick={() => setShowCustomDialog(false)}
                 >
-                  Annuler
+                  {t('common.cancel')}
                 </Button>
                 <Button
                   type="submit"
@@ -402,7 +402,7 @@ export function ChoosePathStep({ onBack }: ChoosePathStepProps) {
                   size="sm"
                   disabled={submitCustomProject.isPending}
                 >
-                  {submitCustomProject.isPending ? 'Envoi...' : 'Soumettre'}
+                  {submitCustomProject.isPending ? t('auth.forgot.sending') : t('common.submit')}
                 </Button>
               </DialogFooter>
             </form>

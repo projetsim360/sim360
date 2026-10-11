@@ -10,8 +10,10 @@ import { ProfilStep } from './profil-step';
 import { AptitudeTestStep } from './aptitude-test-step';
 import { DiagnosticStep } from './diagnostic-step';
 import { ChoosePathStep } from './choose-path-step';
+import { useT } from '@/i18n/app/use-t';
 
 const OnboardingPage = () => {
+  const t = useT();
   const { data: profile } = useProfile();
   const [live, setLive] = useState<OnboardingLiveState>({});
   const handleLive = useCallback(
@@ -103,13 +105,13 @@ const OnboardingPage = () => {
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             >
               <span className="hidden text-[11.5px] font-bold uppercase tracking-wider text-[var(--accent-700)] lg:inline-block">
-                Étape {currentNumber} sur {totalSteps}
+                {t('onboarding.stepOf', { n: currentNumber, total: totalSteps })}
               </span>
               <h1 className="mt-2 font-display text-[25px] font-extrabold tracking-tight text-[var(--brand-700)]">
-                {meta.title}
+                {t(meta.title)}
               </h1>
               <p className="mt-1.5 max-w-[46ch] text-sm leading-relaxed text-[var(--neutral-500)]">
-                {meta.lead}
+                {t(meta.lead)}
               </p>
               <div className="mt-7">{renderBody()}</div>
             </motion.div>

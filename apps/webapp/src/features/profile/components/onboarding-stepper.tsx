@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import { Check } from '@/components/keenicons/icons';
 import type { OnboardingStep, StepperItem } from '../config/onboarding.config';
+import { useT } from '@/i18n/app/use-t';
 
 interface OnboardingStepperProps {
   items: StepperItem[];
@@ -61,6 +62,7 @@ function Dot({ item, compact }: { item: StepperItem; compact?: boolean }) {
 }
 
 export function OnboardingStepper({ items, orientation, onStepClick }: OnboardingStepperProps) {
+  const t = useT();
   const handleKeyDown = useCallback(
     (item: StepperItem) => (e: React.KeyboardEvent) => {
       if ((e.key === 'Enter' || e.key === ' ') && item.isActive && !item.isConditional) {
@@ -73,7 +75,7 @@ export function OnboardingStepper({ items, orientation, onStepClick }: Onboardin
 
   if (orientation === 'horizontal') {
     return (
-      <nav aria-label="Étapes de l'onboarding" className="flex items-center gap-1.5">
+      <nav aria-label={t('onboarding.stepsLabel')} className="flex items-center gap-1.5">
         {items.map((item, i) => (
           <div key={item.key} className="flex items-center gap-1.5">
             <Dot item={item} compact />
@@ -93,7 +95,7 @@ export function OnboardingStepper({ items, orientation, onStepClick }: Onboardin
   }
 
   return (
-    <nav aria-label="Étapes de l'onboarding" className="flex flex-col">
+    <nav aria-label={t('onboarding.stepsLabel')} className="flex flex-col">
       {items.map((item, i) => {
         const last = i === items.length - 1;
         const clickable = item.isActive && !item.isConditional;
@@ -104,7 +106,7 @@ export function OnboardingStepper({ items, orientation, onStepClick }: Onboardin
                 role={clickable ? 'button' : undefined}
                 tabIndex={clickable ? 0 : undefined}
                 aria-current={item.isCurrent ? 'step' : undefined}
-                aria-label={`${item.shortLabel}${item.isCurrent ? ' (en cours)' : item.isCompleted ? ' (terminée)' : ''}`}
+                aria-label={item.isCurrent ? t('onboarding.stepCurrent', { label: t(item.shortLabel) }) : item.isCompleted ? t('onboarding.stepDone', { label: t(item.shortLabel) }) : t(item.shortLabel)}
                 onClick={clickable ? () => onStepClick?.(item.key) : undefined}
                 onKeyDown={handleKeyDown(item)}
                 className={cn(
@@ -136,15 +138,15 @@ export function OnboardingStepper({ items, orientation, onStepClick }: Onboardin
                         : 'text-[var(--brand-300)]',
                   )}
                 >
-                  {item.shortLabel}
+                  {t(item.shortLabel)}
                 </span>
                 {item.isConditional && !item.isActive && (
                   <span className="rounded-full border border-[var(--accent-300)]/40 px-2 py-px text-[9.5px] font-bold uppercase tracking-wide text-[var(--accent-300)]">
-                    si débutant
+                    {t('onboarding.ifBeginner')}
                   </span>
                 )}
               </div>
-              <div className="mt-0.5 text-[11.5px] text-[var(--brand-300)]">{item.railSubtitle}</div>
+              <div className="mt-0.5 text-[11.5px] text-[var(--brand-300)]">{t(item.railSubtitle)}</div>
             </div>
           </div>
         );

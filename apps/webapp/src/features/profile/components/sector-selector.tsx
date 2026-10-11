@@ -6,6 +6,8 @@ import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
 import { SECTORS } from '../types/profile.types';
 import { staggerContainer, staggerItem, cardHover } from '@/lib/motion';
+import { useTv } from '@/i18n/app/use-t';
+import { useT } from '@/i18n/app/use-t';
 
 interface SectorSelectorProps {
   value?: string;
@@ -15,6 +17,8 @@ interface SectorSelectorProps {
 }
 
 export function SectorSelector({ value, suggestedSector, onChange, className }: SectorSelectorProps) {
+  const tv = useTv();
+  const t = useT();
   const reduce = useReducedMotion();
 
   const handleKeyDown = useCallback(
@@ -30,7 +34,7 @@ export function SectorSelector({ value, suggestedSector, onChange, className }: 
   return (
     <motion.div
       role="radiogroup"
-      aria-label="Sélection du secteur de simulation"
+      aria-label={t('onboarding.sector.aria')}
       className={cn('grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4', className)}
       variants={staggerContainer}
       initial={reduce ? false : 'hidden'}
@@ -46,7 +50,7 @@ export function SectorSelector({ value, suggestedSector, onChange, className }: 
               role="radio"
               tabIndex={0}
               aria-checked={isSelected}
-              aria-label={`${sector.label}${isSuggested ? " (suggéré)" : ''}`}
+              aria-label={isSuggested ? t('onboarding.sector.suggestedAria', { label: tv('domain', sector.value) }) : tv('domain', sector.value)}
               className={cn(
                 'relative h-full cursor-pointer outline-none transition-all hover:shadow-md',
                 'focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
@@ -59,7 +63,7 @@ export function SectorSelector({ value, suggestedSector, onChange, className }: 
               <CardContent className="flex flex-col items-center justify-center gap-2.5 p-5">
                 {isSuggested && (
                   <Badge variant="primary" size="xs" className="absolute right-2 top-2">
-                    Suggéré pour vous
+                    {t('onboarding.sector.suggested')}
                   </Badge>
                 )}
                 <div
@@ -80,7 +84,7 @@ export function SectorSelector({ value, suggestedSector, onChange, className }: 
                     isSelected ? 'text-primary' : 'text-foreground',
                   )}
                 >
-                  {sector.label}
+                  {tv('domain', sector.value)}
                 </span>
                 {isSelected && (
                   <div className="absolute left-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary">

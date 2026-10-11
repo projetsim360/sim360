@@ -15,12 +15,14 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { useUploadCv, useImportLinkedin } from '../api/profile.api';
 import type { UserProfile } from '../types/profile.types';
+import { useT } from '@/i18n/app/use-t';
 
 interface ProfileImportPanelProps {
   profile?: UserProfile;
 }
 
 export function ProfileImportPanel({ profile }: ProfileImportPanelProps) {
+  const t = useT();
   const [isDragOver, setIsDragOver] = useState(false);
   const [showLinkedinDialog, setShowLinkedinDialog] = useState(false);
   const [linkedinUrl, setLinkedinUrl] = useState('');
@@ -36,11 +38,11 @@ export function ProfileImportPanel({ profile }: ProfileImportPanelProps) {
       if (!files || files.length === 0) return;
       const file = files[0];
       if (file.type !== 'application/pdf') {
-        toast.error('Seuls les fichiers PDF sont acceptés.');
+        toast.error(t('onboarding.import.pdfOnly'));
         return;
       }
       if (file.size > 5 * 1024 * 1024) {
-        toast.error('Le fichier ne doit pas dépasser 5 Mo.');
+        toast.error(t('onboarding.import.tooBig'));
         return;
       }
       const fd = new FormData();
@@ -53,23 +55,23 @@ export function ProfileImportPanel({ profile }: ProfileImportPanelProps) {
               : undefined;
           toast.success(
             skillCount
-              ? `CV importé. ${skillCount} compétences détectées.`
-              : 'CV importé avec succès.',
+              ? t('onboarding.import.cvDoneSkills', { count: Number(skillCount) })
+              : t('onboarding.import.cvDone'),
           );
         },
-        onError: () => toast.error("Erreur lors de l'import du CV."),
+        onError: () => toast.error(t('onboarding.import.cvError')),
       });
     },
-    [uploadCv],
+    [uploadCv, t],
   );
 
   const validateUrl = (url: string): boolean => {
     if (!url.trim()) {
-      setLinkedinError('Veuillez saisir une URL LinkedIn.');
+      setLinkedinError(t('onboarding.import.linkedinRequired'));
       return false;
     }
     if (!/^https?:\/\/(www\.)?linkedin\.com\/in\/[\w-]+\/?$/.test(url.trim())) {
-      setLinkedinError("URL LinkedIn invalide (ex : https://linkedin.com/in/votre-profil).");
+      setLinkedinError(t('onboarding.import.linkedinInvalid'));
       return false;
     }
     setLinkedinError('');
@@ -82,12 +84,12 @@ export function ProfileImportPanel({ profile }: ProfileImportPanelProps) {
       { linkedinUrl: linkedinUrl.trim() },
       {
         onSuccess: () => {
-          toast.success('Données LinkedIn importées avec succès.');
+          toast.success(t('onboarding.import.linkedinDone'));
           setShowLinkedinDialog(false);
           setLinkedinUrl('');
           setLinkedinError('');
         },
-        onError: () => toast.error("Erreur lors de l'import LinkedIn."),
+        onError: () => toast.error(t('onboarding.import.linkedinError')),
       },
     );
   };
@@ -116,16 +118,16 @@ export function ProfileImportPanel({ profile }: ProfileImportPanelProps) {
         </div>
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm font-bold text-[var(--brand-700)]">Accélérez le profilage</span>
-            <Badge variant="secondary" size="xs">Optionnel</Badge>
+            <span className="text-sm font-bold text-[var(--brand-700)]">{t('onboarding.import.title')}</span>
+            <Badge variant="secondary" size="xs">{t('onboarding.import.optional')}</Badge>
             {(hasCv || hasLinkedin) && (
-              <Badge variant="success" appearance="light" size="xs">Importé</Badge>
+              <Badge variant="success" appearance="light" size="xs">{t('onboarding.import.imported')}</Badge>
             )}
           </div>
           <p className="mt-0.5 text-xs text-muted-foreground">
             {uploadCv.isPending
-              ? 'Analyse du CV en cours…'
-              : 'Importez votre CV ou votre profil LinkedIn pour pré-remplir vos compétences.'}
+              ? t('onboarding.import.analyzing')
+              : t('onboarding.import.text')}
           </p>
         </div>
         <div className="flex gap-2">
@@ -141,7 +143,7 @@ export function ProfileImportPanel({ profile }: ProfileImportPanelProps) {
             onClick={() => document.getElementById('cv-file-input')?.click()}
           >
             <KeenIcon icon="file-up" style="duotone" className="text-sm" />
-            CV (PDF)
+            {t('onboarding.import.cvButton')}
           </Button>
         </div>
         <input
@@ -149,7 +151,7 @@ export function ProfileImportPanel({ profile }: ProfileImportPanelProps) {
           type="file"
           accept=".pdf"
           className="hidden"
-          aria-label="Sélectionner un CV au format PDF"
+          aria-label={t('onboarding.import.cvAria')}
           onChange={(e) => handleFile(e.target.files)}
         />
       </div>
@@ -159,15 +161,15 @@ export function ProfileImportPanel({ profile }: ProfileImportPanelProps) {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <KeenIcon icon="linkedin" style="duotone" className="text-xl text-[#0077B5]" />
-              Importer depuis LinkedIn
+              {t('onboarding.import.linkedinTitle')}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <p className="text-sm text-muted-foreground">
-              Collez l'URL de votre profil LinkedIn. Nous extrairons vos expériences, compétences et formations.
+              {t('onboarding.import.linkedinText')}
             </p>
             <div className="space-y-2">
-              <Label htmlFor="linkedin-url">URL du profil LinkedIn</Label>
+              <Label htmlFor="linkedin-url">{t('onboarding.import.linkedinUrl')}</Label>
               <Input
                 id="linkedin-url"
                 value={linkedinUrl}
@@ -175,7 +177,7 @@ export function ProfileImportPanel({ profile }: ProfileImportPanelProps) {
                   setLinkedinUrl(e.target.value);
                   if (linkedinError) setLinkedinError('');
                 }}
-                placeholder="https://linkedin.com/in/votre-profil"
+                placeholder={t('onboarding.import.linkedinPlaceholder')}
                 aria-invalid={!!linkedinError}
               />
               {linkedinError && <p className="text-xs text-destructive">{linkedinError}</p>}
@@ -191,10 +193,10 @@ export function ProfileImportPanel({ profile }: ProfileImportPanelProps) {
                 setLinkedinError('');
               }}
             >
-              Annuler
+              {t('common.cancel')}
             </Button>
             <Button variant="primary" size="sm" onClick={submitLinkedin} disabled={importLinkedin.isPending}>
-              {importLinkedin.isPending ? 'Import en cours…' : 'Importer'}
+              {importLinkedin.isPending ? t('onboarding.import.importing') : t('onboarding.import.import')}
             </Button>
           </DialogFooter>
         </DialogContent>

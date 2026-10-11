@@ -26,7 +26,7 @@ const signUpSchema = (t: ReturnType<typeof useT>) =>
       password: passwordField(t),
       confirmPassword: z.string(),
       gdprConsent: z.literal(true, {
-        errorMap: () => ({ message: t('auth.signUp.consentRequired') }),
+        error: t('auth.signUp.consentRequired'),
       }),
     })
     .refine((data) => data.password === data.confirmPassword, {

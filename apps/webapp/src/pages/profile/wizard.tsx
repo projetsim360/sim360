@@ -23,15 +23,21 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useAppLocale } from '@/providers/locale-provider';
+import { KeenIcon } from '@/components/keenicons';
+import { useT } from '@/i18n/app/use-t';
 
-const STEPS = [
-  { label: 'Identité', icon: User, description: 'Vos informations' },
-  { label: 'Langue', icon: Globe, description: 'Votre préférence' },
-  { label: 'Expérience', icon: Award, description: 'Votre niveau' },
-  { label: 'Photo', icon: ImageIcon, description: 'Votre avatar' },
+const STEPS: { label: AppMessageKey; icon: typeof User; description: AppMessageKey }[] = [
+  { label: 'wizard.step.identity', icon: User, description: 'wizard.step.identity.desc' },
+  { label: 'wizard.step.language', icon: Globe, description: 'wizard.step.language.desc' },
+  { label: 'wizard.step.experience', icon: Award, description: 'wizard.step.experience.desc' },
+  { label: 'wizard.step.photo', icon: ImageIcon, description: 'wizard.step.photo.desc' },
 ];
 
 export function ProfileWizardPage() {
+  const { locale, setLocale } = useAppLocale();
+  const t = useT();
   const { user, refreshUser } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
@@ -41,7 +47,7 @@ export function ProfileWizardPage() {
   const [formData, setFormData] = useState({
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
-    language: 'fr',
+    language: locale as string,
     experienceLevel: '',
     bio: '',
     jobTitle: '',
@@ -74,7 +80,7 @@ export function ProfileWizardPage() {
       await refreshUser();
       navigate('/dashboard', { replace: true });
     } catch {
-      setError('Une erreur est survenue. Veuillez réessayer.');
+      setError(t('common.genericError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -94,10 +100,10 @@ export function ProfileWizardPage() {
                 <Sparkles className="h-6 w-6 text-primary" />
               </div>
               <h1 className="text-2xl font-bold text-foreground tracking-tight">
-                Complétez votre profil
+                {t('wizard.title')}
               </h1>
               <p className="text-muted-foreground mt-1.5 text-sm">
-                Étape {step + 1} sur {STEPS.length} &mdash; {STEPS[step].description}
+                {t('onboarding.stepOf', { n: step + 1, total: STEPS.length })} &mdash; {t(STEPS[step].description)}
               </p>
             </div>
 
@@ -164,9 +170,9 @@ export function ProfileWizardPage() {
                 {step === 0 && (
                   <div className="space-y-5">
                     <div>
-                      <h3 className="text-base font-semibold text-foreground">Informations de base</h3>
+                      <h3 className="text-base font-semibold text-foreground">{t('wizard.basics.title')}</h3>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Comment souhaitez-vous etre identifie ?
+                        {t('wizard.basics.text')}
                       </p>
                     </div>
 
@@ -174,52 +180,52 @@ export function ProfileWizardPage() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="firstName">
-                            Prénom <span className="text-destructive">*</span>
+                            {t('auth.field.firstName')} <span className="text-destructive">*</span>
                           </Label>
                           <Input
                             id="firstName"
                             value={formData.firstName}
                             onChange={(e) => updateField('firstName', e.target.value)}
-                            placeholder="Votre prénom"
+                            placeholder={t('wizard.basics.firstNamePlaceholder')}
                           />
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="lastName">
-                            Nom <span className="text-destructive">*</span>
+                            {t('auth.field.lastName')} <span className="text-destructive">*</span>
                           </Label>
                           <Input
                             id="lastName"
                             value={formData.lastName}
                             onChange={(e) => updateField('lastName', e.target.value)}
-                            placeholder="Votre nom"
+                            placeholder={t('wizard.basics.lastNamePlaceholder')}
                           />
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="jobTitle">Fonction</Label>
+                        <Label htmlFor="jobTitle">{t('wizard.basics.jobTitle')}</Label>
                         <SearchableCombobox
                           id="jobTitle"
                           value={formData.jobTitle}
                           onChange={(v) => updateField('jobTitle', v)}
                           options={JOB_TITLE_OPTIONS}
-                          placeholder="Choisir ou saisir une fonction"
-                          searchPlaceholder="Rechercher ou saisir une fonction…"
+                          placeholder={t('wizard.basics.jobTitlePlaceholder')}
+                          searchPlaceholder={t('wizard.basics.jobTitleSearch')}
                           allowCustom
-                          customLabel={(q) => `Autre : « ${q} »`}
+                          customLabel={(q) => t('wizard.basics.jobTitleOther', { value: q })}
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="bio">Bio</Label>
+                        <Label htmlFor="bio">{t('wizard.basics.bio')}</Label>
                         <Textarea
                           id="bio"
                           value={formData.bio}
                           onChange={(e) => updateField('bio', e.target.value)}
-                          placeholder="Décrivez-vous en quelques mots…"
+                          placeholder={t('wizard.basics.bioPlaceholder')}
                           rows={3}
                         />
-                        <p className="text-xs text-muted-foreground">Optionnel. Visible par les membres de votre équipe.</p>
+                        <p className="text-xs text-muted-foreground">{t('wizard.basics.bioHint')}</p>
                       </div>
                     </div>
                   </div>
@@ -229,23 +235,27 @@ export function ProfileWizardPage() {
                 {step === 1 && (
                   <div className="space-y-5">
                     <div>
-                      <h3 className="text-base font-semibold text-foreground">Langue préférée</h3>
+                      <h3 className="text-base font-semibold text-foreground">{t('wizard.language.title')}</h3>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Choisissez la langue de l'interface
+                        {t('wizard.language.text')}
                       </p>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                       {[
-                        { value: 'fr', label: 'Français', flag: '\uD83C\uDDEB\uD83C\uDDF7', desc: 'Interface en français' },
-                        { value: 'en', label: 'English', flag: '\uD83C\uDDEC\uD83C\uDDE7', desc: 'English interface' },
+                        { value: 'fr', label: 'Français', code: 'FR', desc: 'Interface en français' }, // i18n-ignore: language names stay in their own language
+                        { value: 'en', label: 'English', code: 'EN', desc: 'English interface' },
                       ].map((lang) => {
                         const selected = formData.language === lang.value;
                         return (
                           <button
                             key={lang.value}
                             type="button"
-                            onClick={() => updateField('language', lang.value)}
+                            onClick={() => {
+                              updateField('language', lang.value);
+                              setLocale(lang.value as 'fr' | 'en');
+                            }}
+                            lang={lang.value}
                             className={`
                               group relative flex flex-col items-center gap-3 p-6 rounded-xl border-2 transition-all duration-200
                               ${selected
@@ -259,7 +269,7 @@ export function ProfileWizardPage() {
                                 <Check className="h-3 w-3 text-primary-foreground" />
                               </div>
                             )}
-                            <span className="text-4xl">{lang.flag}</span>
+                            <span className="flex size-12 items-center justify-center rounded-full bg-muted font-display text-sm font-extrabold text-foreground">{lang.code}</span>
                             <div className="text-center">
                               <p className={`font-semibold text-sm ${selected ? 'text-primary' : 'text-foreground'}`}>
                                 {lang.label}
@@ -277,9 +287,9 @@ export function ProfileWizardPage() {
                 {step === 2 && (
                   <div className="space-y-5">
                     <div>
-                      <h3 className="text-base font-semibold text-foreground">Niveau d'expérience</h3>
+                      <h3 className="text-base font-semibold text-foreground">{t('wizard.experience.title')}</h3>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Cela nous aide à adapter votre expérience
+                        {t('wizard.experience.text')}
                       </p>
                     </div>
 
@@ -287,21 +297,21 @@ export function ProfileWizardPage() {
                       {[
                         {
                           value: 'beginner',
-                          label: 'Débutant',
-                          desc: 'Je découvre la simulation de projet',
-                          emoji: '\uD83C\uDF31',
+                          label: 'wizard.experience.beginner' as AppMessageKey,
+                          desc: 'wizard.experience.beginner.desc' as AppMessageKey,
+                          icon: 'book-open',
                         },
                         {
                           value: 'intermediate',
-                          label: 'Intermédiaire',
-                          desc: 'J\'ai déjà participé à des simulations',
-                          emoji: '\uD83D\uDE80',
+                          label: 'wizard.experience.intermediate' as AppMessageKey,
+                          desc: 'wizard.experience.intermediate.desc' as AppMessageKey,
+                          icon: 'rocket',
                         },
                         {
                           value: 'advanced',
-                          label: 'Avancé',
-                          desc: 'Je maîtrise les concepts de gestion de projet',
-                          emoji: '\u2B50',
+                          label: 'wizard.experience.advanced' as AppMessageKey,
+                          desc: 'wizard.experience.advanced.desc' as AppMessageKey,
+                          icon: 'award',
                         },
                       ].map((level) => {
                         const selected = formData.experienceLevel === level.value;
@@ -318,12 +328,12 @@ export function ProfileWizardPage() {
                               }
                             `}
                           >
-                            <span className="text-2xl flex-shrink-0">{level.emoji}</span>
+                            <KeenIcon icon={level.icon} style="duotone" className="text-2xl flex-shrink-0 text-primary" />
                             <div className="flex-1 min-w-0">
                               <p className={`font-semibold text-sm ${selected ? 'text-primary' : 'text-foreground'}`}>
-                                {level.label}
+                                {t(level.label)}
                               </p>
-                              <p className="text-xs text-muted-foreground mt-0.5">{level.desc}</p>
+                              <p className="text-xs text-muted-foreground mt-0.5">{t(level.desc)}</p>
                             </div>
                             {selected && (
                               <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
@@ -341,9 +351,9 @@ export function ProfileWizardPage() {
                 {step === 3 && (
                   <div className="space-y-5">
                     <div>
-                      <h3 className="text-base font-semibold text-foreground">Photo de profil</h3>
+                      <h3 className="text-base font-semibold text-foreground">{t('wizard.photo.title')}</h3>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Ajoutez une photo pour personnaliser votre compte
+                        {t('wizard.photo.text')}
                       </p>
                     </div>
 
@@ -357,7 +367,7 @@ export function ProfileWizardPage() {
 
                     <div className="bg-muted/50 rounded-lg p-4 border border-border/60">
                       <p className="text-xs text-muted-foreground text-center">
-                        Cette étape est optionnelle. Vous pourrez toujours ajouter ou modifier votre photo dans les paramètres.
+                        {t('wizard.photo.hint')}
                       </p>
                     </div>
                   </div>
@@ -372,7 +382,7 @@ export function ProfileWizardPage() {
                     className={step === 0 ? 'invisible' : ''}
                   >
                     <ArrowLeft className="h-4 w-4 me-2" />
-                    Retour
+                    {t('common.back')}
                   </Button>
 
                   <div className="flex items-center gap-1.5">
@@ -388,12 +398,12 @@ export function ProfileWizardPage() {
 
                   {step < STEPS.length - 1 ? (
                     <Button type="button" onClick={handleNext} disabled={!canNext()}>
-                      Suivant
+                      {t('common.next')}
                       <ArrowRight className="h-4 w-4 ms-2" />
                     </Button>
                   ) : (
                     <Button type="button" onClick={handleComplete} disabled={isSubmitting}>
-                      {isSubmitting ? 'Sauvegarde...' : 'Terminer'}
+                      {isSubmitting ? t('common.saving') : t('common.finish')}
                       {!isSubmitting && <Check className="h-4 w-4 ms-2" />}
                     </Button>
                   )}
@@ -426,11 +436,10 @@ export function ProfileWizardPage() {
             </Link>
             <div className="flex flex-col gap-3">
               <h3 className="text-2xl font-semibold text-white">
-                Bienvenue sur Simex pro
+                {t('dashboard.hero.welcome')}
               </h3>
               <p className="text-base font-medium text-white/80">
-                Configurez votre profil pour profiter pleinement de la plateforme
-                de simulation et gestion intelligente.
+                {t('wizard.brand.text')}
               </p>
             </div>
           </div>

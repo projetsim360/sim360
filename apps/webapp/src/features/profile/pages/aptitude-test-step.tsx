@@ -15,6 +15,10 @@ import { cn } from '@/lib/utils';
 import { useSubmitAptitudeTest } from '../api/profile.api';
 import type { AptitudeTestData } from '../types/profile.types';
 import type { OnboardingLiveState } from '../config/onboarding.config';
+import { SCENARIOS_EN, SCENARIOS_FR, type TestScenario } from '../content/aptitude-scenarios';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useAppLocale } from '@/providers/locale-provider';
+import { useT } from '@/i18n/app/use-t';
 
 interface AptitudeTestStepProps {
   onNext: () => void;
@@ -22,112 +26,11 @@ interface AptitudeTestStepProps {
   onLiveChange?: (live: Partial<OnboardingLiveState>) => void;
 }
 
-interface TestScenario {
-  id: string;
-  title: string;
-  context: string;
-  question: string;
-  options: { value: string; label: string }[];
-  category: 'prioritization' | 'communication' | 'budget';
-}
 
-const SCENARIOS: TestScenario[] = [
-  {
-    id: 'scenario-1',
-    title: 'Gestion des priorités',
-    context:
-      'Vous avez 3 tâches urgentes et seulement 2 heures disponibles : corriger un bug critique en production, préparer la présentation pour le comité de pilotage de demain, et répondre à un appel d\'offre dont la deadline est ce soir.',
-    question: 'Classez ces tâches par ordre de priorité. Quelle approche adoptez-vous ?',
-    options: [
-      {
-        value: '1',
-        label:
-          'Bug critique d\'abord (impact immédiat), puis appel d\'offre (deadline), puis présentation (demain)',
-      },
-      {
-        value: '2',
-        label:
-          'Appel d\'offre d\'abord (deadline ce soir), puis bug critique, puis présentation',
-      },
-      {
-        value: '3',
-        label:
-          'Déléguer le bug à l\'équipe technique, traiter l\'appel d\'offre soi-même, et reporter la présentation',
-      },
-      {
-        value: '4',
-        label:
-          'Traiter les 3 en parallèle en y consacrant 40 minutes chacune',
-      },
-    ],
-    category: 'prioritization',
-  },
-  {
-    id: 'scenario-2',
-    title: 'Gestion de conflit',
-    context:
-      'Un membre de votre équipe est en conflit ouvert avec le client. Lors de la dernière réunion, il a contredit publiquement les exigences du client en affirmant qu\'elles étaient irréalistes. Le client menace d\'escalader au sponsor du projet.',
-    question: 'Que faites-vous en priorité ?',
-    options: [
-      {
-        value: '1',
-        label:
-          'Organiser un entretien individuel avec le membre de l\'équipe pour comprendre ses frustrations, puis une médiation avec le client',
-      },
-      {
-        value: '2',
-        label:
-          'Contacter immédiatement le client pour s\'excuser et retirer le collaborateur du projet',
-      },
-      {
-        value: '3',
-        label:
-          'Envoyer un email au client et au collaborateur pour recadrer les règles de communication',
-      },
-      {
-        value: '4',
-        label:
-          'Laisser la situation se calmer d\'elle-même et intervenir uniquement si le client escalade vraiment',
-      },
-    ],
-    category: 'communication',
-  },
-  {
-    id: 'scenario-3',
-    title: 'Dépassement budgétaire',
-    context:
-      'Votre projet a dépassé le budget initial de 20%. Les causes identifiées sont : des changements de périmètre non formalisés (+12%), des retards fournisseur ayant entraîné des pénalités (+5%), et une sous-estimation initiale (+3%). Le sponsor demande un plan d\'action.',
-    question: 'Quelle action prenez-vous ?',
-    options: [
-      {
-        value: '1',
-        label:
-          'Mettre en place un processus de change control strict, renégocier avec le fournisseur, et présenter une ré-estimation au sponsor',
-      },
-      {
-        value: '2',
-        label:
-          'Réduire le périmètre du projet pour revenir dans le budget initial',
-      },
-      {
-        value: '3',
-        label:
-          'Demander un budget supplémentaire au sponsor en justifiant chaque dépassement',
-      },
-      {
-        value: '4',
-        label:
-          'Absorber le surcoût en réduisant la qualité des livrables restants',
-      },
-    ],
-    category: 'budget',
-  },
-];
-
-const CATEGORY_LABELS: Record<TestScenario['category'], string> = {
-  prioritization: 'Priorisation',
-  communication: 'Communication',
-  budget: 'Gestion budgétaire',
+const CATEGORY_LABELS: Record<TestScenario['category'], AppMessageKey> = {
+  prioritization: 'onboarding.aptitude.cat.prioritization',
+  communication: 'onboarding.aptitude.cat.communication',
+  budget: 'onboarding.aptitude.cat.budget',
 };
 
 const CATEGORY_ICONS: Record<TestScenario['category'], string> = {
@@ -137,12 +40,15 @@ const CATEGORY_ICONS: Record<TestScenario['category'], string> = {
 };
 
 const INTRO_CATEGORIES = [
-  { icon: 'sort', title: 'Priorisation', desc: 'Arbitrer entre urgences concurrentes.', tone: 'bg-[var(--accent-50)] text-[var(--accent-700)]' },
-  { icon: 'people', title: 'Communication', desc: "Gérer un conflit d'équipe ou client.", tone: 'bg-[var(--brand-50)] text-[var(--brand-600)]' },
-  { icon: 'chart-simple', title: 'Gestion budgétaire', desc: 'Réagir à un dépassement de budget.', tone: 'bg-[var(--success-50)] text-[var(--success-700)]' },
-] as const;
+  { icon: 'sort', title: 'onboarding.aptitude.cat.prioritization', desc: 'onboarding.aptitude.cat.prioritization.desc', tone: 'bg-[var(--accent-50)] text-[var(--accent-700)]' },
+  { icon: 'people', title: 'onboarding.aptitude.cat.communication', desc: 'onboarding.aptitude.cat.communication.desc', tone: 'bg-[var(--brand-50)] text-[var(--brand-600)]' },
+  { icon: 'chart-simple', title: 'onboarding.aptitude.cat.budget', desc: 'onboarding.aptitude.cat.budget.desc', tone: 'bg-[var(--success-50)] text-[var(--success-700)]' },
+] as const satisfies readonly { icon: string; title: AppMessageKey; desc: AppMessageKey; tone: string }[];
 
 export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestStepProps) {
+  const { locale } = useAppLocale();
+  const SCENARIOS = locale === 'en' ? SCENARIOS_EN : SCENARIOS_FR;
+  const t = useT();
   const [isStarted, setIsStarted] = useState(false);
   const [currentScenario, setCurrentScenario] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -168,7 +74,7 @@ export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestS
         answeredCategories: SCENARIOS.filter((s) => answers[s.id]).map((s) => s.category),
       },
     });
-  }, [isStarted, showResults, currentScenario, answers, onLiveChange]);
+  }, [isStarted, showResults, currentScenario, answers, onLiveChange, SCENARIOS]);
 
   const handleAnswer = (value: string) => {
     setAnswers((prev) => ({ ...prev, [scenario.id]: value }));
@@ -192,10 +98,10 @@ export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestS
           setResults(aptitudeData.scores);
         }
         setShowResults(true);
-        toast.success("Test d'aptitude soumis avec succès.");
+        toast.success(t('onboarding.aptitude.submitted'));
       },
       onError: () => {
-        toast.error('Erreur lors de la soumission du test.');
+        toast.error(t('onboarding.aptitude.submitError'));
       },
     });
   };
@@ -211,7 +117,7 @@ export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestS
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <KeenIcon icon="sort" style="duotone" className="text-lg text-primary" />
-                  <span className="text-sm font-medium text-foreground">Priorisation</span>
+                  <span className="text-sm font-medium text-foreground">{t('onboarding.aptitude.cat.prioritization')}</span>
                 </div>
                 <Badge variant={scores.prioritization >= 70 ? 'success' : scores.prioritization >= 40 ? 'warning' : 'destructive'} size="sm">
                   {scores.prioritization}%
@@ -226,7 +132,7 @@ export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestS
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <KeenIcon icon="abstract-26" style="duotone" className="text-lg text-primary" />
-                  <span className="text-sm font-medium text-foreground">Logique</span>
+                  <span className="text-sm font-medium text-foreground">{t('onboarding.aptitude.score.logic')}</span>
                 </div>
                 <Badge variant={scores.logic >= 70 ? 'success' : scores.logic >= 40 ? 'warning' : 'destructive'} size="sm">
                   {scores.logic}%
@@ -241,7 +147,7 @@ export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestS
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <KeenIcon icon="chart-simple" style="duotone" className="text-lg text-primary" />
-                  <span className="text-sm font-medium text-foreground">Organisation</span>
+                  <span className="text-sm font-medium text-foreground">{t('onboarding.aptitude.score.organization')}</span>
                 </div>
                 <Badge variant={scores.organization >= 70 ? 'success' : scores.organization >= 40 ? 'warning' : 'destructive'} size="sm">
                   {scores.organization}%
@@ -256,7 +162,7 @@ export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestS
 
         <div className="flex items-center justify-end">
           <Button variant="primary" size="sm" onClick={onNext}>
-            Continuer
+            {t('common.continue')}
             <ArrowRight className="text-sm ms-1" />
           </Button>
         </div>
@@ -270,7 +176,7 @@ export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestS
       <div className="space-y-6">
         <div>
           <h3 className="mb-3 font-display text-[13px] font-bold text-[var(--brand-700)]">
-            Ce que nous allons évaluer
+            {t('onboarding.aptitude.introTitle')}
           </h3>
           <motion.div
             className="grid gap-3 sm:grid-cols-3"
@@ -291,8 +197,8 @@ export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestS
                 <span className={cn('mb-3 flex size-10 items-center justify-center rounded-xl', c.tone)}>
                   <KeenIcon icon={c.icon} style="duotone" className="text-lg" />
                 </span>
-                <div className="text-[13.5px] font-semibold text-foreground">{c.title}</div>
-                <p className="mt-1 text-xs text-muted-foreground">{c.desc}</p>
+                <div className="text-[13.5px] font-semibold text-foreground">{t(c.title)}</div>
+                <p className="mt-1 text-xs text-muted-foreground">{t(c.desc)}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -300,23 +206,23 @@ export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestS
 
         <div className="flex flex-wrap gap-x-6 gap-y-2 rounded-xl border border-border bg-muted/40 px-4 py-3.5 text-[12.5px] font-medium text-muted-foreground">
           <span className="inline-flex items-center gap-2">
-            <KeenIcon icon="notepad" style="duotone" className="text-base text-[var(--brand-500)]" /> 3 scénarios
+            <KeenIcon icon="notepad" style="duotone" className="text-base text-[var(--brand-500)]" /> {t('onboarding.aptitude.fact.scenarios')}
           </span>
           <span className="inline-flex items-center gap-2">
-            <KeenIcon icon="time" style="duotone" className="text-base text-[var(--brand-500)]" /> environ 5 minutes
+            <KeenIcon icon="time" style="duotone" className="text-base text-[var(--brand-500)]" /> {t('onboarding.aptitude.fact.duration')}
           </span>
           <span className="inline-flex items-center gap-2">
-            <KeenIcon icon="check-circle" style="duotone" className="text-base text-[var(--brand-500)]" /> aucune mauvaise réponse
+            <KeenIcon icon="check-circle" style="duotone" className="text-base text-[var(--brand-500)]" /> {t('onboarding.aptitude.fact.noWrong')}
           </span>
         </div>
 
         <div className="flex items-center justify-between border-t border-border pt-5">
           <Button variant="ghost" className="min-h-[44px] px-4" onClick={onBack}>
             <ArrowLeft className="text-sm me-1" />
-            Retour
+            {t('common.back')}
           </Button>
           <Button variant="primary" className="min-h-[44px] px-5" onClick={() => setIsStarted(true)}>
-            Commencer
+            {t('common.start')}
             <ArrowRight className="text-sm ms-1" />
           </Button>
         </div>
@@ -328,11 +234,11 @@ export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestS
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-muted-foreground">
-          Scénario {currentScenario + 1} sur {SCENARIOS.length}
+          {t('onboarding.aptitude.scenarioOf', { n: currentScenario + 1, total: SCENARIOS.length })}
         </p>
         <Badge variant="info" appearance="light" size="lg">
           <KeenIcon icon={CATEGORY_ICONS[scenario.category]} style="duotone" className="text-sm me-1" />
-          {CATEGORY_LABELS[scenario.category]}
+          {t(CATEGORY_LABELS[scenario.category])}
         </Badge>
       </div>
 
@@ -401,7 +307,7 @@ export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestS
           }}
         >
           <ArrowLeft className="text-sm me-1" />
-          {currentScenario === 0 ? 'Retour' : 'Précédent'}
+          {currentScenario === 0 ? t('common.back') : t('common.previous')}
         </Button>
 
         {currentScenario < SCENARIOS.length - 1 ? (
@@ -411,7 +317,7 @@ export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestS
             onClick={() => setCurrentScenario((prev) => prev + 1)}
             disabled={!answers[scenario.id]}
           >
-            Suivant
+            {t('common.next')}
             <ArrowRight className="text-sm ms-1" />
           </Button>
         ) : (
@@ -421,7 +327,7 @@ export function AptitudeTestStep({ onNext, onBack, onLiveChange }: AptitudeTestS
             onClick={handleSubmit}
             disabled={!allAnswered || submitTest.isPending}
           >
-            {submitTest.isPending ? 'Soumission...' : 'Terminer le test'}
+            {submitTest.isPending ? t('onboarding.aptitude.submitting') : t('onboarding.aptitude.finish')}
           </Button>
         )}
       </div>

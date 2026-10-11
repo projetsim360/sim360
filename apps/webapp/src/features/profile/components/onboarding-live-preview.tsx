@@ -8,7 +8,7 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import type { UserProfile } from '../types/profile.types';
-import { PROFILE_TYPE_LABELS, DOMAINS, SECTORS, formatDifficulty } from '../types/profile.types';
+import { useT, useTv } from '@/i18n/app/use-t';
 import type { OnboardingStep, OnboardingLiveState } from '../config/onboarding.config';
 
 type LineState = 'done' | 'active' | 'todo';
@@ -22,21 +22,15 @@ interface PreviewModel {
   badges?: { label: string; on: boolean }[];
 }
 
-const OBJECTIVE_LABELS: Record<string, string> = {
-  reinforce: 'Renforcement',
-  reconversion: 'Reconversion',
-  discovery: 'Découverte',
-};
-const EXPERIENCE_LABELS: Record<string, string> = {
-  none: 'Aucune',
-  beginner: 'Débutant',
-  confirmed: 'Confirmé',
-};
+type T = ReturnType<typeof useT>;
+type TV = ReturnType<typeof useTv>;
 
 function buildModel(
   profile: UserProfile | undefined,
   step: OnboardingStep,
   live: OnboardingLiveState,
+  t: T,
+  tv: TV,
 ): PreviewModel {
   switch (step) {
     case 'profil': {
@@ -45,31 +39,34 @@ function buildModel(
       const skillCount = (profile?.cvData as Record<string, unknown> | undefined)?.skillCount as
         | number
         | undefined;
-      const domainLabel = DOMAINS.find((d) => d.value === q.targetDomain)?.label;
       return {
-        title: 'Votre profil se construit',
+        title: t('onboarding.preview.profileTitle'),
         lines: [
           {
             state: hasImport ? 'done' : 'todo',
             label: hasImport
               ? skillCount
-                ? `CV · ${skillCount} compétences`
-                : 'Données importées'
-              : 'CV / LinkedIn',
+                ? t('onboarding.preview.cvSkills', { count: skillCount })
+                : t('onboarding.preview.imported')
+              : t('onboarding.preview.cvLinkedin'),
           },
           {
             state: q.objective ? 'done' : 'todo',
-            label: q.objective ? `Objectif : ${OBJECTIVE_LABELS[q.objective]}` : 'Objectif',
+            label: q.objective
+              ? t('onboarding.preview.objectiveValue', { value: tv('onboarding.preview.objective', q.objective) })
+              : t('onboarding.preview.objectiveLabel'),
           },
           {
             state: q.targetDomain ? 'done' : 'todo',
-            label: domainLabel ? `Domaine : ${domainLabel}` : 'Domaine visé',
+            label: q.targetDomain
+              ? t('onboarding.preview.domainValue', { value: tv('domain', q.targetDomain) })
+              : t('onboarding.preview.domainLabel'),
           },
           {
             state: q.experienceLevel ? 'done' : 'todo',
             label: q.experienceLevel
-              ? `Expérience : ${EXPERIENCE_LABELS[q.experienceLevel]}`
-              : 'Expérience',
+              ? t('onboarding.preview.experienceValue', { value: tv('onboarding.preview.experience', q.experienceLevel) })
+              : t('onboarding.preview.experienceLabel'),
           },
         ],
       };
@@ -78,12 +75,12 @@ function buildModel(
       const p = live.aptitudeProgress;
       const cats = p?.answeredCategories ?? [];
       return {
-        title: p ? `Scénario ${p.current} / ${p.total}` : 'Mise en situation',
+        title: p ? t('onboarding.preview.scenario', { n: p.current, total: p.total }) : t('onboarding.step.aptitude.title'),
         lines: [],
         badges: [
-          { label: 'Priorisation', on: cats.includes('prioritization') },
-          { label: 'Communication', on: cats.includes('communication') },
-          { label: 'Budget', on: cats.includes('budget') },
+          { label: t('onboarding.aptitude.cat.prioritization'), on: cats.includes('prioritization') },
+          { label: t('onboarding.aptitude.cat.communication'), on: cats.includes('communication') },
+          { label: t('onboarding.preview.budget'), on: cats.includes('budget') },
         ],
       };
     }
@@ -91,35 +88,32 @@ function buildModel(
       const d = profile?.diagnosticData;
       const skillCount = profile?.skills?.length ?? 0;
       if (!d) {
-        return { title: 'Analyse du profil', lines: [{ state: 'active', label: 'Analyse en cours…' }] };
+        return { title: t('onboarding.preview.analysis'), lines: [{ state: 'active', label: t('onboarding.preview.analyzing') }] };
       }
       return {
-        title: 'Analyse du profil',
+        title: t('onboarding.preview.analysis'),
         lines: [
-          { state: 'done', label: `Profil : ${PROFILE_TYPE_LABELS[d.profileType]}` },
-          {
-            state: 'done',
-            label: `${skillCount} compétence${skillCount > 1 ? 's' : ''} à renforcer`,
-          },
-          {
-            state: 'done',
-            label: `Secteur suggéré : ${
-              SECTORS.find((s) => s.value === d.suggestedSector)?.label ?? d.suggestedSector
-            }`,
-          },
+          { state: 'done', label: t('onboarding.path.profile', { value: tv('profileType', d.profileType) }) },
+          { state: 'done', label: t('onboarding.preview.skillsToBuild', { count: skillCount }) },
+          { state: 'done', label: t('onboarding.preview.suggestedSector', { value: tv('domain', d.suggestedSector) }) },
         ],
       };
     }
     case 'choose-path': {
       const sectorValue = profile?.selectedSector ?? profile?.suggestedSector;
-      const sectorLabel = SECTORS.find((s) => s.value === sectorValue)?.label ?? sectorValue;
       const diff = profile?.diagnosticData?.suggestedDifficulty ?? profile?.suggestedDifficulty;
       return {
-        title: 'Prêt à démarrer',
+        title: t('onboarding.preview.ready'),
         lines: [
-          { state: sectorLabel ? 'done' : 'todo', label: sectorLabel ? `Secteur : ${sectorLabel}` : 'Secteur à choisir' },
-          { state: diff ? 'done' : 'todo', label: diff ? `Difficulté : ${formatDifficulty(diff)}` : 'Difficulté' },
-          { state: 'active', label: 'Lancement' },
+          {
+            state: sectorValue ? 'done' : 'todo',
+            label: sectorValue ? t('onboarding.preview.sectorValue', { value: tv('domain', sectorValue) }) : t('onboarding.preview.sectorTodo'),
+          },
+          {
+            state: diff ? 'done' : 'todo',
+            label: diff ? t('onboarding.path.difficulty', { value: tv('difficulty', diff.toUpperCase()) }) : t('onboarding.preview.difficultyLabel'),
+          },
+          { state: 'active', label: t('onboarding.preview.launch') },
         ],
       };
     }
@@ -163,7 +157,9 @@ export function OnboardingLivePreview({
   variant,
 }: OnboardingLivePreviewProps) {
   const [open, setOpen] = useState(false);
-  const model = buildModel(profile, currentStep, live);
+  const t = useT();
+  const tv = useTv();
+  const model = buildModel(profile, currentStep, live, t, tv);
   const total = model.lines.length || (model.badges?.length ?? 0);
   const done =
     model.lines.filter((l) => l.state === 'done').length +
@@ -221,7 +217,7 @@ export function OnboardingLivePreview({
         <CollapsibleTrigger className="flex w-full items-center justify-between px-4 py-3">
           <span className="flex items-center gap-2 text-[12.5px] font-semibold text-foreground">
             <KeenIcon icon="profile-circle" style="duotone" className="text-base text-[var(--brand-600)]" />
-            Votre profil
+            {t('onboarding.preview.yourProfile')}
           </span>
           <span className="text-[11px] text-muted-foreground">
             {done}/{total} · {model.title}
