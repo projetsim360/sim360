@@ -10,6 +10,7 @@
 @source "../i18n";
 @source "../components/logo";
 @source "../components/ui/button.tsx";
+@source "../components/ui/dialog.tsx";
 @source "../components/ui/avatar.tsx";
 @source "../components/ui/form.tsx";
 @source "../components/ui/label.tsx";
