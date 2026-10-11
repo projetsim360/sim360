@@ -7,8 +7,8 @@ export interface MeetingTimeline {
   overtime: boolean;
   /** "05 min / 60 min" (or "05 min" without planned duration). */
   label: string;
-  /** "Reste 55 min", "Dépassement de 3 min" or null. */
-  remainingLabel: string | null;
+  /** Catalogue message for "55 min left" / "3 min over", or null. */
+  remainingLabel: { id: 'meeting.timeline.left' | 'meeting.timeline.over'; values: { min: number } } | null;
 }
 
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -39,7 +39,7 @@ export function computeMeetingTimeline(elapsedSeconds: number, durationMinutes?:
     overtime,
     label: `${pad(elapsedMinutes)} min / ${planned} min`,
     remainingLabel: overtime
-      ? `Dépassement de ${Math.max(1, elapsedMinutes - planned)} min`
-      : `Reste ${Math.max(0, remaining)} min`,
+      ? { id: 'meeting.timeline.over', values: { min: Math.max(1, elapsedMinutes - planned) } }
+      : { id: 'meeting.timeline.left', values: { min: Math.max(0, remaining) } },
   };
 }

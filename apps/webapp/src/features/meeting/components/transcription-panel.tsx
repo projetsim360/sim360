@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type { ConferenceTranscription } from '../types/meeting.types';
+import { useT } from '@/i18n/app/use-t';
 
 interface TranscriptionPanelProps {
   transcriptions: ConferenceTranscription[];
@@ -20,6 +21,7 @@ function formatTime(date: Date): string {
 }
 
 export function TranscriptionPanel({ transcriptions, open, onClose }: TranscriptionPanelProps) {
+  const t = useT();
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -40,7 +42,7 @@ export function TranscriptionPanel({ transcriptions, open, onClose }: Transcript
           <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 shrink-0">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-[var(--success-500)] animate-pulse" />
-              <span className="text-sm font-medium text-muted-foreground dark:text-white/70">Transcription en direct</span>
+              <span className="text-sm font-medium text-muted-foreground dark:text-white/70">{t('room.liveTranscript')}</span>
             </div>
             <button
               type="button"
@@ -68,19 +70,19 @@ export function TranscriptionPanel({ transcriptions, open, onClose }: Transcript
               </div>
             )}
 
-            {transcriptions.map((t) => (
-              <div key={t.id} className="group">
-                {t.role === 'user' ? (
+            {transcriptions.map((tr) => (
+              <div key={tr.id} className="group">
+                {tr.role === 'user' ? (
                   /* User message — right aligned */
                   <div className="flex flex-col items-end">
                     <div className="flex items-center gap-1.5 mb-0.5 mr-1">
                       <span className="text-[10px] text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                        {formatTime(t.timestamp)}
+                        {formatTime(tr.timestamp)}
                       </span>
-                      <span className="text-[10px] text-muted-foreground font-medium">Vous</span>
+                      <span className="text-[10px] text-muted-foreground font-medium">{t('room.you')}</span>
                     </div>
                     <div className="max-w-[88%] rounded-2xl rounded-tr-md px-3 py-2 bg-[var(--accent-500)]/20 text-foreground dark:text-white/90 text-sm leading-relaxed">
-                      {t.content}
+                      {tr.content}
                     </div>
                   </div>
                 ) : (
@@ -88,14 +90,14 @@ export function TranscriptionPanel({ transcriptions, open, onClose }: Transcript
                   <div className="flex flex-col items-start">
                     <div className="flex items-center gap-1.5 mb-0.5 ml-1">
                       <span className={`text-[10px] font-medium ${getParticipantColor()}`}>
-                        {t.participantName}
+                        {tr.participantName}
                       </span>
                       <span className="text-[10px] text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                        {formatTime(t.timestamp)}
+                        {formatTime(tr.timestamp)}
                       </span>
                     </div>
                     <div className={`max-w-[88%] rounded-2xl rounded-tl-md px-3 py-2 ${getParticipantBg()} text-muted-foreground dark:text-white/70 text-sm leading-relaxed`}>
-                      {t.content}
+                      {tr.content}
                     </div>
                   </div>
                 )}

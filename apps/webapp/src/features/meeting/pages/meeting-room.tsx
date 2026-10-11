@@ -10,8 +10,10 @@ import { MeetingBriefing } from '../components/meeting-briefing';
 import { MeetingRoomShell } from '../components/meeting-room-shell';
 import { MeetingCompleted } from '../components/meeting-completed';
 import type { MeetingDetail } from '../types/meeting.types';
+import { useT } from '@/i18n/app/use-t';
 
 export default function MeetingRoomPage() {
+  const t = useT();
   const { meetingId } = useParams<{ meetingId: string }>();
   const [meeting, setMeeting] = useState<MeetingDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -65,17 +67,17 @@ export default function MeetingRoomPage() {
       <div>
         <PageHeader
           breadcrumbs={[
-            { label: 'Tableau de bord', to: '/dashboard' },
-            { label: 'Simulations', to: '/simulations' },
-            { label: 'Réunion' },
+            { label: t('menu.dashboard'), to: '/dashboard' },
+            { label: t('menu.simulations'), to: '/simulations' },
+            { label: t('dashboard.activity.meeting') },
           ]}
-          title="Réunion"
+          title={t('dashboard.activity.meeting')}
         />
         <div className="px-6 pb-6">
           <Card>
             <CardContent className="py-8 text-center">
-              <p className="text-[var(--error-700)] text-sm">{error || 'Réunion introuvable.'}</p>
-              <Button variant="link" asChild><Link to="/simulations">Retour aux simulations</Link></Button>
+              <p className="text-[var(--error-700)] text-sm">{error || t('meetings.notFound')}</p>
+              <Button mode="link" asChild><Link to="/simulations">{t('meetings.backToSims')}</Link></Button>
             </CardContent>
           </Card>
         </div>
@@ -84,9 +86,9 @@ export default function MeetingRoomPage() {
   }
 
   const breadcrumbs = [
-    { label: 'Tableau de bord', to: '/dashboard' },
-    { label: 'Simulations', to: '/simulations' },
-    { label: 'Réunions', to: `/simulations/${meeting.simulationId}/meetings` },
+    { label: t('menu.dashboard'), to: '/dashboard' },
+    { label: t('menu.simulations'), to: '/simulations' },
+    { label: t('dashboard.priority.meetings'), to: `/simulations/${meeting.simulationId}/meetings` },
     { label: meeting.title },
   ];
 
@@ -94,7 +96,7 @@ export default function MeetingRoomPage() {
     <Button variant="outline" size="sm" asChild>
       <Link to={`/simulations/${meeting.simulationId}/meetings`}>
         <KeenIcon icon="arrow-left" style="duotone" className="text-xs" />
-        Réunions
+        {t('dashboard.priority.meetings')}
       </Link>
     </Button>
   );
@@ -102,7 +104,7 @@ export default function MeetingRoomPage() {
   if (meeting.status === 'SCHEDULED') {
     return (
       <div>
-        <PageHeader breadcrumbs={breadcrumbs} title={meeting.title} subtitle="Briefing avant le démarrage" actions={backAction} />
+        <PageHeader breadcrumbs={breadcrumbs} title={meeting.title} subtitle={t('meetings.briefing')} actions={backAction} />
         <div className="px-6 pb-6">
           <MeetingBriefing meeting={meeting} onStart={handleStart} actionLoading={actionLoading} />
         </div>
@@ -122,7 +124,7 @@ export default function MeetingRoomPage() {
   if (meeting.status === 'COMPLETED') {
     return (
       <div>
-        <PageHeader breadcrumbs={breadcrumbs} title="Compte-rendu" subtitle={meeting.title} actions={backAction} />
+        <PageHeader breadcrumbs={breadcrumbs} title={t('meetings.minutes')} subtitle={meeting.title} actions={backAction} />
         <div className="px-6 pb-6">
           <MeetingCompleted meeting={meeting} />
         </div>
@@ -140,7 +142,7 @@ export default function MeetingRoomPage() {
             <div className="size-12 mx-auto rounded-xl bg-[var(--error-50)] flex items-center justify-center">
               <KeenIcon icon="cross-circle" style="duotone" className="size-6 text-[var(--error-500)]" />
             </div>
-            <p className="text-sm text-[var(--neutral-600)]">Cette réunion a été annulée.</p>
+            <p className="text-sm text-[var(--neutral-600)]">{t('meetings.cancelled')}</p>
           </CardContent>
         </Card>
       </div>

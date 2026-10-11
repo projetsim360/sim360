@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { KeenIcon } from '@/components/keenicons';
 import { meetingApi } from '../api/meeting.api';
 import type { MeetingParticipant } from '../types/meeting.types';
+import { useT } from '@/i18n/app/use-t';
 
 interface Transcription {
   id: string;
@@ -22,6 +23,7 @@ interface AudioMeetingProps {
 type ConnectionStatus = 'idle' | 'connecting' | 'connected' | 'error' | 'closed';
 
 export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }: AudioMeetingProps) {
+  const t = useT();
   const [status, setStatus] = useState<ConnectionStatus>('idle');
   const [muted, setMuted] = useState(false);
   const [transcriptions, setTranscriptions] = useState<Transcription[]>([]);
@@ -149,14 +151,14 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
           setStatus('connected');
         } else if (pc.connectionState === 'failed' || pc.connectionState === 'disconnected') {
           setStatus('error');
-          setError('Connexion perdue');
+          setError(t('room.connectionLost'));
         }
       };
 
       setStatus('connected');
     } catch (err: any) {
       setStatus('error');
-      setError(err.message || 'Erreur de connexion');
+      setError(err.message || t('room.connectionError'));
     }
   }, [meetingId]);
 
@@ -166,9 +168,9 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
       try {
         await meetingApi.saveTranscriptions(
           meetingId,
-          transcriptions.map((t) => ({
-            role: t.role,
-            content: t.content,
+          transcriptions.map((tr) => ({
+            role: tr.role,
+            content: tr.content,
             participantId: participants[0]?.id,
           })),
         );
@@ -199,11 +201,11 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
   }, []);
 
   const statusLabel: Record<ConnectionStatus, string> = {
-    idle: 'Prêt',
-    connecting: 'Connexion...',
-    connected: 'Connecté',
-    error: 'Erreur',
-    closed: 'Déconnecté',
+    idle: t('room.status.idle'),
+    connecting: t('room.status.connecting'),
+    connected: t('room.status.connected'),
+    error: t('room.status.error'),
+    closed: t('room.status.closed'),
   };
 
   const statusVariant: Record<ConnectionStatus, 'secondary' | 'primary' | 'success' | 'destructive' | 'warning'> = {
@@ -221,7 +223,7 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <KeenIcon icon="microphone" style="duotone" className="size-5 text-primary" />
-            <span className="text-sm font-medium">Réunion Audio</span>
+            <span className="text-sm font-medium">{t('room.audioMeeting')}</span>
             <Badge variant={statusVariant[status]} appearance="light" size="sm">
               {statusLabel[status]}
             </Badge>
@@ -268,33 +270,33 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
         <div className="h-[300px] overflow-y-auto space-y-3 mb-4 border rounded-lg p-3">
           {transcriptions.length === 0 && status !== 'connected' && (
             <p className="text-center text-muted-foreground text-sm py-8">
-              Démarrez la session audio pour commencer.
+              {t('room.audioStartHint')}
             </p>
           )}
           {transcriptions.length === 0 && status === 'connected' && (
             <p className="text-center text-muted-foreground text-sm py-8">
-              En écoute... Parlez pour commencer.
+              {t('room.listening')}
             </p>
           )}
-          {transcriptions.map((t) => (
+          {transcriptions.map((tr) => (
             <div
-              key={t.id}
-              className={`flex ${t.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              key={tr.id}
+              className={`flex ${tr.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div className="max-w-[75%]">
-                {t.role === 'assistant' && (
+                {tr.role === 'assistant' && (
                   <p className="text-[10px] text-muted-foreground mb-0.5 ml-1">
-                    {participants[0]?.name ?? 'Participant'}
+                    {participants[0]?.name ?? t('room.participant')}
                   </p>
                 )}
                 <div
                   className={`rounded-lg px-3 py-2 text-sm ${
-                    t.role === 'user'
+                    tr.role === 'user'
                       ? 'bg-primary text-white'
                       : 'bg-muted text-foreground'
                   }`}
                 >
-                  {t.content}
+                  {tr.content}
                 </div>
               </div>
             </div>
@@ -307,7 +309,7 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
           {status === 'idle' || status === 'closed' || status === 'error' ? (
             <Button onClick={connect}>
               <KeenIcon icon="microphone" style="duotone" className="size-4" />
-              Démarrer la session audio
+              {t('room.audioStart')}
             </Button>
           ) : (
             <>
@@ -321,7 +323,7 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
                   style="duotone"
                   className="size-4"
                 />
-                {muted ? 'Désactiver le mute' : 'Mute'}
+                {muted ? t('room.unmute') : t('room.mute')}
               </Button>
               <Button
                 variant="destructive"
@@ -329,7 +331,7 @@ export function AudioMeeting({ meetingId, participants, onTranscriptionsReady }:
                 onClick={disconnect}
               >
                 <KeenIcon icon="cross-circle" style="duotone" className="size-4" />
-                Terminer
+                {t('common.finish')}
               </Button>
             </>
           )}

@@ -119,7 +119,7 @@ export function useRealtimeConnections({
               {
                 id: crypto.randomUUID(),
                 participantId: null,
-                participantName: 'Vous',
+                participantName: 'Vous', // i18n-ignore: internal speaker id, the UI renders the user's label itself
                 role: 'user',
                 content: data.transcript ?? '',
                 timestamp: new Date(),

@@ -7,6 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { ChatBubble } from './chat-bubble';
 import { participantAvatarColor } from './participant-avatar';
 import type { ChatMessage, MeetingParticipant } from '../types/meeting.types';
+import { useT } from '@/i18n/app/use-t';
 
 interface MeetingChatPanelProps {
   variant: 'full' | 'drawer';
@@ -38,6 +39,7 @@ export function MeetingChatPanel({
   scrollRef,
   inputRef,
 }: MeetingChatPanelProps) {
+  const t = useT();
   const dark = variant === 'drawer';
 
   return (
@@ -52,9 +54,9 @@ export function MeetingChatPanel({
               <div className={cn('size-12 rounded-2xl flex items-center justify-center mb-3', dark ? 'bg-white/8' : 'bg-[var(--brand-50)]')}>
                 <span className={cn('size-5 rounded-full border-2 border-t-transparent animate-spin', dark ? 'border-[var(--accent-300)]' : 'border-[var(--brand-500)]')} />
               </div>
-              <p className={cn('text-sm font-medium', dark ? 'text-[var(--brand-50)]' : 'text-foreground')}>La réunion démarre…</p>
+              <p className={cn('text-sm font-medium', dark ? 'text-[var(--brand-50)]' : 'text-foreground')}>{t('room.starting')}</p>
               <p className={cn('text-xs mt-1 max-w-xs', dark ? 'text-[var(--brand-200)]' : 'text-[var(--neutral-500)]')}>
-                Les participants s'installent, l'animateur va ouvrir la séance.
+                {t('room.startingHint')}
               </p>
             </div>
           )}
@@ -63,9 +65,9 @@ export function MeetingChatPanel({
               <div className={cn('size-12 rounded-2xl flex items-center justify-center mb-3', dark ? 'bg-white/8' : 'bg-[var(--brand-50)]')}>
                 <KeenIcon icon="message-text" style="duotone" className={cn('size-6', dark ? 'text-[var(--accent-300)]' : 'text-[var(--brand-500)]')} />
               </div>
-              <p className={cn('text-sm font-medium', dark ? 'text-[var(--brand-50)]' : 'text-foreground')}>Démarrez la conversation</p>
+              <p className={cn('text-sm font-medium', dark ? 'text-[var(--brand-50)]' : 'text-foreground')}>{t('room.startConversation')}</p>
               <p className={cn('text-xs mt-1 max-w-xs', dark ? 'text-[var(--brand-200)]' : 'text-[var(--neutral-500)]')}>
-                Échangez avec les participants pour atteindre les objectifs de la réunion.
+                {t('room.startConversationHint')}
               </p>
             </div>
           )}
@@ -79,7 +81,7 @@ export function MeetingChatPanel({
         {participants.length > 1 && (
           <div className="flex items-center gap-1.5 mb-2 flex-wrap">
             <span className={cn('text-[10px] uppercase tracking-wider font-semibold shrink-0', dark ? 'text-[var(--brand-200)]' : 'text-[var(--neutral-500)]')}>
-              Parler à
+              {t('room.speakTo')}
             </span>
             {participants.map((p) => {
               const active = selectedParticipant?.id === p.id;
@@ -121,8 +123,8 @@ export function MeetingChatPanel({
                 onSend();
               }
             }}
-            placeholder={`Message pour ${selectedParticipant?.name ?? 'le participant'}…`}
-            aria-label="Message pour le participant"
+            placeholder={t('room.messageFor', { name: selectedParticipant?.name ?? t('room.theParticipant') })}
+            aria-label={t('room.messageAria')}
             disabled={streaming || opening}
             className={cn('flex-1 border-0 shadow-none focus-visible:ring-0 focus-visible:outline-none bg-transparent px-0 h-9', dark && 'text-white placeholder:text-[var(--brand-200)]')}
           />
@@ -131,7 +133,7 @@ export function MeetingChatPanel({
             size="icon"
             onClick={onSend}
             disabled={!input.trim() || streaming || opening}
-            title="Envoyer"
+            title={t('room.send')}
             className="shrink-0 size-8 rounded-lg bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
           >
             <KeenIcon icon="arrow-up" style="duotone" className="size-3.5" />

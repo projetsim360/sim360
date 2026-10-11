@@ -1,6 +1,7 @@
 import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
 import { computeMeetingTimeline } from '../lib/meeting-timeline';
+import { useT } from '@/i18n/app/use-t';
 
 interface MeetingTimelineChipProps {
   elapsedSeconds: number;
@@ -10,13 +11,15 @@ interface MeetingTimelineChipProps {
 
 /** Elapsed / planned duration with a progress bar ("05 min / 60 min", "Reste 55 min"). */
 export function MeetingTimelineChip({ elapsedSeconds, durationMinutes, className }: MeetingTimelineChipProps) {
+  const tr = useT();
   const t = computeMeetingTimeline(elapsedSeconds, durationMinutes);
+  const remaining = t.remainingLabel ? tr(t.remainingLabel.id, t.remainingLabel.values) : null;
   const nearEnd = t.progress !== null && t.progress >= 0.85 && !t.overtime;
 
   return (
     <div
       role="timer"
-      aria-label={t.remainingLabel ? `${t.label}, ${t.remainingLabel}` : t.label}
+      aria-label={remaining ? `${t.label}, ${remaining}` : t.label}
       className={cn('inline-flex min-w-[140px] flex-col gap-1 rounded-lg bg-white/10 px-2.5 py-1.5', className)}
     >
       <div className="flex items-center justify-between gap-2 text-xs font-medium text-white tabular-nums">
@@ -31,7 +34,7 @@ export function MeetingTimelineChip({ elapsedSeconds, durationMinutes, className
               t.overtime ? 'text-[#FCA5A5]' : nearEnd ? 'text-[var(--warning-300,#FCD34D)]' : 'text-white/60',
             )}
           >
-            {t.remainingLabel}
+            {remaining}
           </span>
         )}
       </div>
