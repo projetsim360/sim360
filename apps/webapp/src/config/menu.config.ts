@@ -28,7 +28,7 @@ import { mentoringMenuItems } from '@/features/mentoring/config/mentoring.menu';
 /** Sidebar accordion — layouts 1,3,5,6,8,10,11,18,19,23,26,27,30 */
 export const APP_SIDEBAR_MENU: MenuConfig = [
   {
-    title: 'Dashboard',
+    title: 'Tableau de bord',
     icon: LayoutDashboard,
     path: '/dashboard',
   },
@@ -68,7 +68,7 @@ export const APP_SIDEBAR_MENU: MenuConfig = [
 
 /** Header horizontal — layouts 2,11,18,19,22,23,25,26,32,34 */
 export const APP_HEADER_MENU: MenuConfig = [
-  { title: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+  { title: 'Tableau de bord', path: '/dashboard', icon: LayoutDashboard },
   { title: 'Simulations', path: '/simulations', icon: Play },
   { title: 'Réunions', path: '/meetings', icon: MessageSquare },
   { title: 'Rapports', path: '/reports', icon: FileBarChart },
@@ -79,7 +79,7 @@ export const APP_HEADER_MENU: MenuConfig = [
 /** Icon rail / dual sidebars — layouts 3,4,14,16,17,20,21,26,30 */
 export const APP_ICON_RAIL_MENU: MenuConfig = [
   {
-    title: 'Dashboard',
+    title: 'Tableau de bord',
     icon: LayoutDashboard,
     path: '/dashboard',
     rootPath: '/dashboard',
@@ -113,7 +113,7 @@ export const APP_ICON_RAIL_MENU: MenuConfig = [
 
 /** Mega-menu desktop — layouts 1,7,9 */
 export const APP_MEGA_MENU: MenuConfig = [
-  { title: 'Dashboard', path: '/dashboard' },
+  { title: 'Tableau de bord', path: '/dashboard' },
   {
     title: 'Application',
     children: [
@@ -171,7 +171,7 @@ export const APP_MEGA_MENU: MenuConfig = [
 
 /** Mega-menu mobile — layouts 1,7,9 */
 export const APP_MEGA_MENU_MOBILE: MenuConfig = [
-  { title: 'Dashboard', path: '/dashboard' },
+  { title: 'Tableau de bord', path: '/dashboard' },
   {
     title: 'Application',
     children: [
@@ -234,12 +234,12 @@ export const APP_WORKSPACES_MENU: MenuConfig = [
 /** Toolbars — layouts 14,20 */
 export const APP_TOOLBAR_MENU: MenuConfig = [
   { title: "Vue d'ensemble", path: '#', icon: List },
-  { title: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+  { title: 'Tableau de bord', path: '/dashboard', icon: LayoutDashboard },
 ];
 
 /** Navbars secondaires — layouts 18,22 */
 export const APP_NAVBAR_MENU: MenuConfig = [
-  { title: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+  { title: 'Tableau de bord', path: '/dashboard', icon: LayoutDashboard },
   { title: 'Simulations', path: '/simulations', icon: Play },
   { title: 'Rapports', path: '/reports', icon: FileBarChart },
 ];
