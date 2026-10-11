@@ -12,7 +12,11 @@ map $host:$uri $bounce_apex_non_root {
     "~^simex-pro\.com:/api/" "";
     "~^simex-pro\.com:/socket\.io/" "";
     "~^simex-pro\.com:/health$" "";
-    "~^simex-pro\.com:[^?]+\.(js|css|map|json|png|jpg|jpeg|gif|ico|svg|webp|avif|woff|woff2|ttf|eot|txt|xml|webmanifest)$" "";
+    # Static media and fonts of the public site must stay on the apex: a redirect to the app
+    # host makes <video>, <track> and font requests cross-origin (CORS, "unsafe attempt to load").
+    "~^simex-pro\.com:/media/" "";
+    "~^simex-pro\.com:/fonts/" "";
+    "~^simex-pro\.com:[^?]+\.(js|css|map|json|png|jpg|jpeg|gif|ico|svg|webp|avif|woff|woff2|ttf|eot|txt|xml|webmanifest|mp4|webm|vtt)$" "";
 
     # Public site pages (served by site.html) stay on the apex: French at "/", English under "/en".
     # Keep in sync with apps/webapp/public-paths.ts and the $spa_entry map below.
