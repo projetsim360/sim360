@@ -10,15 +10,38 @@ import { resolveAssetUrl } from '@/lib/asset-url';
 import { getUserDisplayName, getUserInitials } from '@/lib/user-display';
 import { cn } from '@/lib/utils';
 import { findScrollParent } from '@/lib/scroll-parent';
-import { usePublicPath } from '../hooks/use-public-locale';
+import { usePublicLocale, usePublicPath } from '../hooks/use-public-locale';
+import { publicPath } from '@/i18n/public-locale';
 import { LanguageSwitcher } from './language-switcher';
 
 const NAV_LINKS = [
   { id: 'nav.features', href: '#fonctionnalites' },
   { id: 'nav.howItWorks', href: '#comment-ca-marche' },
+  { id: 'nav.demo', route: 'demo' },
   { id: 'nav.pricing', href: '#tarifs' },
   { id: 'nav.faq', href: '#faq' },
 ] as const;
+
+const NAV_CLASS = 'text-sm font-medium text-foreground/70 transition-colors hover:text-foreground';
+
+/** Landing anchor (relative to the home page of the current language) or a public page. */
+function NavLink({ link, onNavigate }: { link: (typeof NAV_LINKS)[number]; onNavigate?: () => void }) {
+  const { formatMessage } = useIntl();
+  const locale = usePublicLocale();
+  const label = formatMessage({ id: link.id });
+  if ('route' in link) {
+    return (
+      <Link to={publicPath(link.route, locale)} onClick={onNavigate} className={NAV_CLASS}>
+        {label}
+      </Link>
+    );
+  }
+  return (
+    <a href={`${publicPath('home', locale)}${link.href}`} onClick={onNavigate} className={NAV_CLASS}>
+      {label}
+    </a>
+  );
+}
 
 /**
  * Sign-in / trial buttons for visitors, a single "Dashboard" entry for signed-in users.
@@ -97,13 +120,7 @@ export function StickyNav() {
 
         <nav className="hidden items-center gap-8 md:flex">
           {NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={`${to('/')}${link.href}`}
-              className="text-sm font-medium text-foreground/70 transition-colors hover:text-foreground"
-            >
-              {formatMessage({ id: link.id })}
-            </a>
+            <NavLink key={link.id} link={link} />
           ))}
         </nav>
 
@@ -126,14 +143,7 @@ export function StickyNav() {
       {mobileOpen && (
         <div className="flex flex-col gap-5 border-t border-border bg-card px-6 py-6 md:hidden">
           {NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={`${to('/')}${link.href}`}
-              className="text-sm font-medium text-foreground/70 transition-colors hover:text-foreground"
-              onClick={closeMobile}
-            >
-              {formatMessage({ id: link.id })}
-            </a>
+            <NavLink key={link.id} link={link} onNavigate={closeMobile} />
           ))}
           <LanguageSwitcher className="-ml-2.5 self-start" onNavigate={closeMobile} />
           <div className="flex flex-col gap-3 border-t border-border pt-4">
