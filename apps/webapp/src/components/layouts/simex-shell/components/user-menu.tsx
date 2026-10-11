@@ -1,10 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { User, Settings, Briefcase, LifeBuoy, Keyboard, LogOut } from 'lucide-react';
+import { User, Settings, Briefcase, LifeBuoy, Keyboard, LogOut, Languages } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/providers/auth-provider';
 import { getUserDisplayName } from '@/lib/user-display';
 import { useShellState } from '../state/shell-state-provider';
+import { useT } from '@/i18n/app/use-t';
+import { useAppLocale } from '@/providers/locale-provider';
+import { APP_LOCALES } from '@/i18n/app/locale';
 
 interface UserMenuProps {
   className?: string;
@@ -16,6 +19,8 @@ const ITEM_BASE =
 export function UserMenu({ className }: UserMenuProps) {
   const { userMenuOpen, setUserMenuOpen } = useShellState();
   const { user, logout } = useAuth();
+  const t = useT();
+  const { locale, setLocale } = useAppLocale();
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Outside-click handler: close when clicking outside this menu
@@ -47,7 +52,7 @@ export function UserMenu({ className }: UserMenuProps) {
     <div
       ref={menuRef}
       role="menu"
-      aria-label="Menu utilisateur"
+      aria-label={t('shell.userMenu.label')}
       className={cn(
         'fixed right-4 z-60 min-w-[240px] max-w-[calc(100vw-2rem)] rounded-md border border-border bg-card p-2',
         className,
@@ -71,7 +76,7 @@ export function UserMenu({ className }: UserMenuProps) {
         className={cn(ITEM_BASE, 'text-foreground')}
       >
         <User className="size-4 shrink-0 text-muted-foreground" />
-        Mon profil
+        {t('shell.userMenu.profile')}
       </Link>
       <Link
         to="/settings"
@@ -80,7 +85,7 @@ export function UserMenu({ className }: UserMenuProps) {
         className={cn(ITEM_BASE, 'text-foreground')}
       >
         <Settings className="size-4 shrink-0 text-muted-foreground" />
-        Paramètres
+        {t('shell.userMenu.settings')}
       </Link>
       <button
         type="button"
@@ -90,7 +95,7 @@ export function UserMenu({ className }: UserMenuProps) {
         className={cn(ITEM_BASE, 'text-foreground w-full text-left bg-transparent border-0 disabled:opacity-50 disabled:cursor-not-allowed')}
       >
         <Briefcase className="size-4 shrink-0 text-muted-foreground" />
-        Mon organisation
+        {t('shell.userMenu.organization')}
       </button>
 
       {/* Separator */}
@@ -104,7 +109,7 @@ export function UserMenu({ className }: UserMenuProps) {
         className={cn(ITEM_BASE, 'text-foreground w-full text-left bg-transparent border-0 disabled:opacity-50 disabled:cursor-not-allowed')}
       >
         <LifeBuoy className="size-4 shrink-0 text-muted-foreground" />
-        Aide &amp; support
+        {t('shell.userMenu.help')}
       </button>
       <button
         type="button"
@@ -114,8 +119,33 @@ export function UserMenu({ className }: UserMenuProps) {
         className={cn(ITEM_BASE, 'text-foreground w-full text-left bg-transparent border-0 disabled:opacity-50 disabled:cursor-not-allowed')}
       >
         <Keyboard className="size-4 shrink-0 text-muted-foreground" />
-        Raccourcis clavier
+        {t('shell.userMenu.shortcuts')}
       </button>
+
+      {/* Language */}
+      <div className="mx-1 my-1.5 h-px bg-border" />
+      <div className="flex items-center gap-3 px-3 py-1.5 text-[13.5px] text-foreground" role="group" aria-label={t('shell.userMenu.language')}>
+        <Languages className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+        <span className="flex-1">{t('shell.userMenu.language')}</span>
+        <div className="flex rounded-md border border-border p-0.5">
+          {APP_LOCALES.map((l) => (
+            <button
+              key={l}
+              type="button"
+              role="menuitemradio"
+              aria-checked={locale === l}
+              lang={l}
+              onClick={() => setLocale(l)}
+              className={cn(
+                'rounded px-2 py-0.5 text-xs font-semibold uppercase transition-colors',
+                locale === l ? 'bg-[var(--accent-500)] text-white' : 'text-muted-foreground hover:text-foreground',
+              )}
+            >
+              {l}
+            </button>
+          ))}
+        </div>
+      </div>
 
       {/* Separator */}
       <div className="mx-1 my-1.5 h-px bg-border" />
@@ -127,7 +157,7 @@ export function UserMenu({ className }: UserMenuProps) {
         className={cn(ITEM_BASE, 'text-[var(--error-700)] w-full text-left bg-transparent border-0')}
       >
         <LogOut className="size-4 shrink-0 text-[var(--error-500)]" />
-        Se déconnecter
+        {t('shell.userMenu.signOut')}
       </button>
     </div>
   );

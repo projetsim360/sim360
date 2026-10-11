@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
-import { getWorkspaceLabel } from '@/lib/user-display';
+import { workspaceLabelKey } from '@/lib/user-display';
+import { useT } from '@/i18n/app/use-t';
 import { useAuth } from '@/providers/auth-provider';
 
 interface WorkspaceSwitcherProps {
@@ -13,11 +14,12 @@ interface WorkspaceSwitcherProps {
  */
 export function WorkspaceSwitcher({ className, collapsed = false }: WorkspaceSwitcherProps) {
   const { user } = useAuth();
-  const label = getWorkspaceLabel(user?.role);
+  const t = useT();
+  const label = t(workspaceLabelKey(user?.role));
 
   return (
     <div
-      aria-label={`Espace ${label}`}
+      aria-label={t('shell.workspace.aria', { label })}
       className={cn(
         'simex-workspace-switch flex w-full items-center gap-2.5 overflow-hidden',
         'rounded-md border border-[var(--shell-border)] bg-[var(--shell-soft)]',
@@ -33,7 +35,7 @@ export function WorkspaceSwitcher({ className, collapsed = false }: WorkspaceSwi
       {!collapsed && (
         <span className="simex-workspace-label flex-1 whitespace-nowrap text-left">
           <span className="block text-[11px] font-semibold uppercase tracking-[1px] text-[var(--shell-fg-muted)]">
-            Espace&nbsp;<strong className="font-bold tracking-[0.5px] text-[var(--shell-fg-strong)]">{label}</strong>
+            {t('shell.workspace.prefix')}&nbsp;<strong className="font-bold tracking-[0.5px] text-[var(--shell-fg-strong)]">{label}</strong>
           </span>
         </span>
       )}

@@ -11,16 +11,20 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { AuthCard } from '@/components/auth/auth-card';
+import { emailField } from '@/components/auth/auth-schemas';
+import { useT } from '@/i18n/app/use-t';
 
-const signInSchema = z.object({
-  email: z.string().email('Courriel invalide'),
-  password: z.string().min(1, 'Requis'),
-  rememberMe: z.boolean().optional(),
-});
+const signInSchema = (t: ReturnType<typeof useT>) =>
+  z.object({
+    email: emailField(t),
+    password: z.string().min(1, t('auth.field.required')),
+    rememberMe: z.boolean().optional(),
+  });
 
-type SignInForm = z.infer<typeof signInSchema>;
+type SignInForm = z.infer<ReturnType<typeof signInSchema>>;
 
 export function SignInPage() {
+  const t = useT();
   const { login, isLoggedIn, isLoading } = useAuth();
   const navigate = useNavigate();
   const [serverError, setServerError] = useState('');
@@ -35,7 +39,7 @@ export function SignInPage() {
   }, [isLoading, isLoggedIn, navigate]);
 
   const form = useForm<SignInForm>({
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(signInSchema(t)),
     defaultValues: { rememberMe: false },
   });
 
@@ -54,7 +58,7 @@ export function SignInPage() {
         setServerError(msg.split(':').slice(1).join(':'));
         return;
       }
-      setServerError(error.message || 'Identifiants incorrects');
+      setServerError(error.message || t('auth.signIn.badCredentials'));
     } finally {
       setIsSubmitting(false);
     }
@@ -72,21 +76,21 @@ export function SignInPage() {
           <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
           <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
         </svg>
-        Continuer avec Google
+        {t('auth.google.continue')}
       </a>
     </Button>
   ) : undefined;
 
   return (
     <AuthCard
-      title="Bon retour."
-      subtitle="Reprenez vos simulations là où vous les avez laissées."
+      title={t('auth.signIn.title')}
+      subtitle={t('auth.signIn.subtitle')}
       topSlot={googleButton}
       bottomSlot={
         <>
-          Pas encore de compte ?{' '}
+          {t('auth.signIn.noAccount')}{' '}
           <Link to="/auth/sign-up" className="font-medium text-[var(--accent-600)] hover:underline">
-            Créer un compte
+            {t('auth.signIn.createAccount')}
           </Link>
         </>
       }
@@ -105,9 +109,9 @@ export function SignInPage() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Courriel</FormLabel>
+                <FormLabel>{t('auth.field.email')}</FormLabel>
                 <FormControl>
-                  <Input placeholder="vous@exemple.com" type="email" {...field} />
+                  <Input placeholder={t('auth.field.emailPlaceholder')} type="email" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -119,11 +123,11 @@ export function SignInPage() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Mot de passe</FormLabel>
+                <FormLabel>{t('auth.field.password')}</FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Input
-                      placeholder="Votre mot de passe"
+                      placeholder={t('auth.field.passwordPlaceholder')}
                       type={passwordVisible ? 'text' : 'password'}
                       {...field}
                     />
@@ -160,7 +164,7 @@ export function SignInPage() {
                     />
                   </FormControl>
                   <FormLabel className="cursor-pointer whitespace-nowrap text-sm font-normal text-muted-foreground">
-                    Se souvenir de moi
+                    {t('auth.signIn.remember')}
                   </FormLabel>
                 </FormItem>
               )}
@@ -169,12 +173,12 @@ export function SignInPage() {
               to="/auth/forgot-password"
               className="shrink-0 whitespace-nowrap text-[14px] font-medium text-[var(--accent-600)] hover:underline"
             >
-              Mot de passe oublié ?
+              {t('auth.signIn.forgot')}
             </Link>
           </div>
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? 'Connexion...' : 'Se connecter'}
+            {isSubmitting ? t('auth.signIn.submitting') : t('auth.signIn.submit')}
           </Button>
         </form>
       </Form>

@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
 import type { GettingStarted } from '../types/dashboard.types';
+import { useT } from '@/i18n/app/use-t';
+import type { AppMessageKey } from '@/i18n/app/messages';
 
 interface GettingStartedCardProps {
   data: GettingStarted;
@@ -12,18 +14,18 @@ interface GettingStartedCardProps {
 
 interface StepItem {
   key: keyof Omit<GettingStarted, 'completionPercent'>;
-  label: string;
-  description: string;
+  label: AppMessageKey;
+  description: AppMessageKey;
   icon: string;
   link?: string;
 }
 
 const STEPS: StepItem[] = [
-  { key: 'profileCompleted', label: 'Profil', description: 'Complétez votre profil', icon: 'profile-circle', link: '/onboarding' },
-  { key: 'firstSimulationLaunched', label: 'Simulation', description: 'Lancez votre première simulation', icon: 'rocket', link: '/simulations/new' },
-  { key: 'firstDeliverableSubmitted', label: 'Livrable', description: 'Soumettez un livrable', icon: 'document' },
-  { key: 'firstDebriefingViewed', label: 'Débriefing', description: 'Consultez votre débriefing', icon: 'teacher' },
-  { key: 'firstPortfolioShared', label: 'Portfolio', description: 'Partagez votre portfolio', icon: 'share', link: '/profile/badges' },
+  { key: 'profileCompleted', label: 'dashboard.steps.profile', description: 'dashboard.steps.profile.text', icon: 'profile-circle', link: '/onboarding' },
+  { key: 'firstSimulationLaunched', label: 'dashboard.steps.simulation', description: 'dashboard.steps.simulation.text', icon: 'rocket', link: '/simulations/new' },
+  { key: 'firstDeliverableSubmitted', label: 'dashboard.steps.deliverable', description: 'dashboard.steps.deliverable.text', icon: 'document' },
+  { key: 'firstDebriefingViewed', label: 'dashboard.steps.debrief', description: 'dashboard.steps.debrief.text', icon: 'teacher' },
+  { key: 'firstPortfolioShared', label: 'dashboard.steps.portfolio', description: 'dashboard.steps.portfolio.text', icon: 'share', link: '/profile/badges' },
 ];
 
 function CircularProgress({ value, size = 52 }: { value: number; size?: number }) {
@@ -65,6 +67,7 @@ function CircularProgress({ value, size = 52 }: { value: number; size?: number }
 }
 
 export function GettingStartedCard({ data }: GettingStartedCardProps) {
+  const t = useT();
   const [dismissed, setDismissed] = useState(false);
   const allComplete = data.completionPercent === 100;
   const completedCount = STEPS.filter((s) => data[s.key]).length;
@@ -80,12 +83,12 @@ export function GettingStartedCard({ data }: GettingStartedCardProps) {
               <KeenIcon icon="check-circle" style="duotone" className="text-xl text-[var(--brand-600)]" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-foreground">Bravo ! Vous avez tout explore</p>
-              <p className="text-xs text-muted-foreground">Vous maîtrisez les bases de la plateforme</p>
+              <p className="text-sm font-semibold text-foreground">{t('dashboard.steps.doneTitle')}</p>
+              <p className="text-xs text-muted-foreground">{t('dashboard.steps.doneText')}</p>
             </div>
           </div>
           <Button variant="ghost" size="sm" onClick={() => setDismissed(true)}>
-            Masquer
+            {t('common.hide')}
           </Button>
         </CardContent>
       </Card>
@@ -102,9 +105,9 @@ export function GettingStartedCard({ data }: GettingStartedCardProps) {
               <KeenIcon icon="rocket" style="duotone" className="text-xl text-[var(--brand-600)]" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-foreground">Premiers pas</h3>
+              <h3 className="text-sm font-bold text-foreground">{t('dashboard.steps.title')}</h3>
               <p className="text-xs text-muted-foreground mt-0.5">
-                {completedCount}/{STEPS.length} etapes completees
+                {t('dashboard.steps.progress', { done: completedCount, total: STEPS.length })}
               </p>
             </div>
           </div>
@@ -178,7 +181,7 @@ export function GettingStartedCard({ data }: GettingStartedCardProps) {
                     completed ? 'line-through text-muted-foreground' : isNext ? 'text-foreground font-medium' : 'text-muted-foreground',
                   )}
                 >
-                  {step.description}
+                  {t(step.description)}
                 </span>
                 {step.link && !completed && (
                   <KeenIcon icon="right" style="duotone" className="text-xs text-muted-foreground" />
@@ -211,6 +214,7 @@ function StepNode({
   completed: boolean;
   isNext: boolean;
 }) {
+  const t = useT();
   const node = (
     <div
       className={cn(
@@ -249,7 +253,7 @@ function StepNode({
               : 'text-muted-foreground',
         )}
       >
-        {step.label}
+        {t(step.label)}
       </span>
     </div>
   );

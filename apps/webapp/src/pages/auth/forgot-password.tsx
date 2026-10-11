@@ -8,19 +8,22 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { AuthCard } from '@/components/auth/auth-card';
+import { useT } from '@/i18n/app/use-t';
 
-const forgotSchema = z.object({
-  email: z.string().email('Courriel invalide'),
-});
+const forgotSchema = (invalidEmail: string) =>
+  z.object({
+    email: z.string().email(invalidEmail),
+  });
 
-type ForgotForm = z.infer<typeof forgotSchema>;
+type ForgotForm = z.infer<ReturnType<typeof forgotSchema>>;
 
 export function ForgotPasswordPage() {
+  const t = useT();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<ForgotForm>({
-    resolver: zodResolver(forgotSchema),
+    resolver: zodResolver(forgotSchema(t('auth.field.emailInvalid'))),
   });
 
   const onSubmit = async (data: ForgotForm) => {
@@ -37,14 +40,14 @@ export function ForgotPasswordPage() {
 
   return (
     <AuthCard
-      title="Mot de passe oublié ?"
-      subtitle="On vous envoie un lien sécurisé."
+      title={t('auth.forgot.title')}
+      subtitle={t('auth.forgot.subtitle')}
       bottomSlot={
         <Link
           to="/auth/sign-in"
           className="font-medium text-[var(--accent-600)] hover:underline"
         >
-          Retour à la connexion
+          {t('auth.backToSignIn')}
         </Link>
       }
     >
@@ -55,9 +58,9 @@ export function ForgotPasswordPage() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Courriel</FormLabel>
+                <FormLabel>{t('auth.field.email')}</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="vous@exemple.com" {...field} />
+                  <Input type="email" placeholder={t('auth.field.emailPlaceholder')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -65,7 +68,7 @@ export function ForgotPasswordPage() {
           />
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? 'Envoi...' : 'Envoyer le lien'}
+            {isSubmitting ? t('auth.forgot.sending') : t('auth.forgot.submit')}
           </Button>
         </form>
       </Form>

@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
 import type { NextStep } from '../types/dashboard.types';
+import { useT } from '@/i18n/app/use-t';
+import type { AppMessageKey } from '@/i18n/app/messages';
 
 interface NextStepCardProps {
   data: NextStep | null;
@@ -11,53 +13,54 @@ interface NextStepCardProps {
 
 const STEP_CONFIG: Record<
   string,
-  { icon: string; getTitle: (count: number) => string; color: string; bgIcon: string }
+  { icon: string; title: AppMessageKey; color: string; bgIcon: string }
 > = {
   pending_decisions: {
     icon: 'question-2',
-    getTitle: (n) => `Vous avez ${n} décision${n > 1 ? 's' : ''} en attente`,
+    title: 'dashboard.next.decisions',
     color: 'text-[#4b2f95] dark:text-brand-400',
     bgIcon: 'bg-primary/15 dark:bg-primary/20',
   },
   pending_events: {
     icon: 'flash',
-    getTitle: () => 'Un événement nécessite votre attention',
+    title: 'dashboard.next.event',
     color: 'text-warning',
     bgIcon: 'bg-warning/15 dark:bg-warning/20',
   },
   pending_meetings: {
     icon: 'message-text',
-    getTitle: () => 'Une réunion est planifiée',
+    title: 'dashboard.next.meeting',
     color: 'text-info',
     bgIcon: 'bg-info/15 dark:bg-info/20',
   },
   pending_deliverables: {
     icon: 'document',
-    getTitle: () => 'Un livrable attend d\'être soumis',
+    title: 'dashboard.next.deliverable',
     color: 'text-[#4b2f95] dark:text-brand-400',
     bgIcon: 'bg-primary/15 dark:bg-primary/20',
   },
   pending_emails: {
     icon: 'sms',
-    getTitle: (n) => `Vous avez ${n} email${n > 1 ? 's' : ''} non lu${n > 1 ? 's' : ''}`,
+    title: 'dashboard.next.emails',
     color: 'text-info',
     bgIcon: 'bg-info/15 dark:bg-info/20',
   },
   debriefing_available: {
     icon: 'teacher',
-    getTitle: () => 'Consultez votre débriefing',
+    title: 'dashboard.steps.debrief.text',
     color: 'text-success',
     bgIcon: 'bg-success/15 dark:bg-success/20',
   },
   all_clear: {
     icon: 'check-circle',
-    getTitle: () => 'Tout est à jour !',
+    title: 'dashboard.allClear',
     color: 'text-success',
     bgIcon: 'bg-success/15 dark:bg-success/20',
   },
 };
 
 export function NextStepCard({ data }: NextStepCardProps) {
+  const t = useT();
   const config = data ? STEP_CONFIG[data.type] : STEP_CONFIG['all_clear'];
   const isAllClear = !data || data.type === 'all_clear';
 
@@ -78,10 +81,10 @@ export function NextStepCard({ data }: NextStepCardProps) {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-0.5">
-            {isAllClear ? 'Statut' : 'Prochaine étape'}
+            {isAllClear ? t('dashboard.hero.status') : t('dashboard.next.label')}
           </p>
           <h3 className={cn('text-sm font-bold', config?.color ?? 'text-foreground')}>
-            {config?.getTitle(data?.count ?? 0) ?? 'Prochaine étape'}
+            {config ? t(config.title, { count: data?.count ?? 0 }) : t('dashboard.next.label')}
           </h3>
           {data?.simulationName && (
             <p className="text-xs text-muted-foreground mt-0.5 truncate">
@@ -92,7 +95,7 @@ export function NextStepCard({ data }: NextStepCardProps) {
         {!isAllClear && data && (
           <Button variant="primary" size="sm" asChild className="shrink-0">
             <Link to={data.link}>
-              Continuer
+              {t('common.continue')}
               <KeenIcon icon="right" style="duotone" className="text-xs ms-1" />
             </Link>
           </Button>

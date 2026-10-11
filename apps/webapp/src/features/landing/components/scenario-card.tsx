@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import type { PublicMessageKey } from '@/i18n/public-messages';
 import type { PublicScenario } from '../types/public-scenario';
 import { usePublicSession } from '../providers/public-session';
+import { useAppLink } from '../hooks/use-public-locale';
 
 const LEVEL_TONE: Record<PublicScenario['difficulty'], string> = {
   BEGINNER: 'bg-emerald-500/15 text-emerald-400',
@@ -14,6 +15,7 @@ const LEVEL_TONE: Record<PublicScenario['difficulty'], string> = {
 };
 
 export function ScenarioCard({ scenario }: { scenario: PublicScenario }) {
+  const appLink = useAppLink();
   const { formatMessage } = useIntl();
   const { user } = usePublicSession();
   const sectorKey = `sector.${scenario.sector}` as PublicMessageKey;
@@ -51,7 +53,7 @@ export function ScenarioCard({ scenario }: { scenario: PublicScenario }) {
       <div className="mt-auto flex items-center justify-between gap-3 pt-6">
         <span className="text-xs text-muted-foreground">{formatMessage({ id: `scenarios.plan.${scenario.requiredPlan}` })}</span>
         <Button asChild variant="outline" size="sm">
-          <Link to={user ? `/simulations/new?scenario=${scenario.id}` : '/auth/sign-up'}>{formatMessage({ id: user ? 'scenarios.ctaLoggedIn' : 'scenarios.cta' })}</Link>
+          <Link to={appLink(user ? `/simulations/new?scenario=${scenario.id}` : '/auth/sign-up')}>{formatMessage({ id: user ? 'scenarios.ctaLoggedIn' : 'scenarios.cta' })}</Link>
         </Button>
       </div>
     </article>

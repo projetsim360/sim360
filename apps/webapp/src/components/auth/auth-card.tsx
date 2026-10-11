@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 import { cn } from '@/lib/utils';
+import { useT } from '@/i18n/app/use-t';
 
 interface AuthCardProps {
   /** Main heading — h1 Montserrat 800. Use sentence case French. */
@@ -23,6 +24,7 @@ export function AuthCard({
   children,
   className,
 }: AuthCardProps) {
+  const t = useT();
   return (
     <div
       className={cn(
@@ -48,7 +50,7 @@ export function AuthCard({
         {topSlot ? (
           <div className="flex flex-col gap-6">
             {topSlot}
-            <Divider label="ou" />
+            <Divider label={t('auth.or')} />
           </div>
         ) : null}
 

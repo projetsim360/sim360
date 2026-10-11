@@ -10,7 +10,7 @@ import { resolveAssetUrl } from '@/lib/asset-url';
 import { getUserDisplayName, getUserInitials } from '@/lib/user-display';
 import { cn } from '@/lib/utils';
 import { findScrollParent } from '@/lib/scroll-parent';
-import { usePublicLocale, usePublicPath } from '../hooks/use-public-locale';
+import { usePublicLocale, usePublicPath, useAppLink } from '../hooks/use-public-locale';
 import { publicPath } from '@/i18n/public-locale';
 import { LanguageSwitcher } from './language-switcher';
 
@@ -48,6 +48,7 @@ function NavLink({ link, onNavigate }: { link: (typeof NAV_LINKS)[number]; onNav
  * While the session is being restored, a fixed-width skeleton keeps the layout still.
  */
 function AuthActions({ stacked = false, onNavigate }: { stacked?: boolean; onNavigate?: () => void }) {
+  const appLink = useAppLink();
   const { user, isLoading } = usePublicSession();
   const { formatMessage } = useIntl();
   const wide = stacked ? 'w-full' : undefined;
@@ -60,7 +61,7 @@ function AuthActions({ stacked = false, onNavigate }: { stacked?: boolean; onNav
     const avatarSrc = resolveAssetUrl(user.avatar);
     return (
       <Button asChild variant="primary" size="sm" className={cn('gap-2 pl-1.5 bg-[var(--accent-500)] text-[var(--brand-900)] hover:bg-[var(--accent-400)] hover:text-[var(--brand-900)]', wide)}>
-        <Link to="/dashboard" onClick={onNavigate}>
+        <Link to={appLink('/dashboard')} onClick={onNavigate}>
           <Avatar className="size-6">
             {avatarSrc && <AvatarImage src={avatarSrc} alt={getUserDisplayName(user)} className="object-cover" />}
             <AvatarFallback className="text-[10px]">{getUserInitials(user)}</AvatarFallback>
@@ -74,12 +75,12 @@ function AuthActions({ stacked = false, onNavigate }: { stacked?: boolean; onNav
   return (
     <>
       <Button asChild variant="outline" size="sm" className={wide}>
-        <Link to="/auth/sign-in" onClick={onNavigate}>
+        <Link to={appLink('/auth/sign-in')} onClick={onNavigate}>
           {formatMessage({ id: 'nav.signIn' })}
         </Link>
       </Button>
       <Button asChild variant="primary" size="sm" className={cn('bg-[var(--accent-500)] text-[var(--brand-900)] hover:bg-[var(--accent-400)] hover:text-[var(--brand-900)]', wide)}>
-        <Link to="/auth/sign-up" onClick={onNavigate}>
+        <Link to={appLink('/auth/sign-up')} onClick={onNavigate}>
           {formatMessage({ id: 'nav.freeTrial' })}
         </Link>
       </Button>

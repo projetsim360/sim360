@@ -53,3 +53,17 @@ const WORKSPACE_LABELS: Record<string, string> = {
 export function getWorkspaceLabel(role: string | null | undefined): string {
   return (role && WORKSPACE_LABELS[role]) || 'Apprenant';
 }
+
+const ROLES = ['SUPER_ADMIN', 'ADMIN', 'MANAGER', 'MENTOR', 'MEMBER', 'VIEWER'] as const;
+type KnownRole = (typeof ROLES)[number];
+const isKnownRole = (role: string | null | undefined): role is KnownRole => !!role && (ROLES as readonly string[]).includes(role);
+
+/** Catalogue key of a role name (`role.<ROLE>`), for the translated shell. */
+export function roleLabelKey(role: string | null | undefined) {
+  return `role.${isKnownRole(role) ? role : 'MEMBER'}` as const;
+}
+
+/** Catalogue key of the workspace badge (`workspace.<ROLE>`). */
+export function workspaceLabelKey(role: string | null | undefined) {
+  return `workspace.${isKnownRole(role) ? role : 'MEMBER'}` as const;
+}

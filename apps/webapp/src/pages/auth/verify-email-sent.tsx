@@ -2,8 +2,11 @@ import { useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { api } from '@/lib/api-client';
 import { AuthCard } from '@/components/auth/auth-card';
+import { useT } from '@/i18n/app/use-t';
+import { Msg } from '@/i18n/app/msg';
 
 export function VerifyEmailSentPage() {
+  const t = useT();
   const location = useLocation();
   const email = (location.state as any)?.email || '';
   const [resending, setResending] = useState(false);
@@ -25,15 +28,12 @@ export function VerifyEmailSentPage() {
 
   return (
     <AuthCard
-      title="Vérifiez vos courriels."
+      title={t('auth.checkEmail.title')}
       subtitle={
         email ? (
-          <>
-            Un lien de vérification a été envoyé à{' '}
-            <strong>{email}</strong>.
-          </>
+          <Msg id="auth.verifySent.sentTo" values={{ email: <strong>{email}</strong> }} />
         ) : (
-          'Un lien de vérification a été envoyé à votre adresse email.'
+          t('auth.verifySent.sent')
         )
       }
       bottomSlot={
@@ -45,19 +45,19 @@ export function VerifyEmailSentPage() {
               disabled={resending || resent}
               className="font-medium text-[var(--accent-600)] hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {resent ? 'Email renvoyé !' : resending ? 'Envoi...' : (
-                <>Vous n&apos;avez rien reçu ? <strong>Renvoyer</strong></>
+              {resent ? t('auth.verifySent.resent') : resending ? t('auth.forgot.sending') : (
+                <Msg id="auth.verifySent.resend" values={{ b: (chunks) => <strong>{chunks}</strong> }} />
               )}
             </button>
           )}
           <Link to="/auth/sign-in" className="font-medium text-[var(--accent-600)] hover:underline">
-            Se connecter
+            {t('auth.signIn.submit')}
           </Link>
         </div>
       }
     >
       <p className="text-sm text-muted-foreground">
-        Cliquez sur le lien pour activer votre compte.
+        {t('auth.verifySent.hint')}
       </p>
     </AuthCard>
   );

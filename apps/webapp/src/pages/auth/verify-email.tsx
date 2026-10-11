@@ -3,8 +3,10 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { api } from '@/lib/api-client';
 import { Button } from '@/components/ui/button';
 import { AuthCard } from '@/components/auth/auth-card';
+import { useT } from '@/i18n/app/use-t';
 
 export function VerifyEmailPage() {
+  const t = useT();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
   const [status, setStatus] = useState<'loading' | 'success' | 'expired' | 'error'>('loading');
@@ -30,8 +32,8 @@ export function VerifyEmailPage() {
   if (status === 'loading') {
     return (
       <AuthCard
-        title="Vérification en cours…"
-        subtitle="Patientez quelques instants."
+        title={t('auth.verifyEmail.loadingTitle')}
+        subtitle={t('auth.verifyEmail.loadingSubtitle')}
       >
         <div className="flex justify-center py-4">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--brand-700)] border-t-transparent" />
@@ -43,11 +45,11 @@ export function VerifyEmailPage() {
   if (status === 'success') {
     return (
       <AuthCard
-        title="Courriel vérifié."
-        subtitle="Votre compte est maintenant actif. Vous pouvez vous connecter."
+        title={t('auth.verifyEmail.doneTitle')}
+        subtitle={t('auth.verifyEmail.doneSubtitle')}
       >
         <Button asChild className="w-full">
-          <Link to="/auth/sign-in">Se connecter</Link>
+          <Link to="/auth/sign-in">{t('auth.signIn.submit')}</Link>
         </Button>
       </AuthCard>
     );
@@ -56,16 +58,16 @@ export function VerifyEmailPage() {
   if (status === 'expired') {
     return (
       <AuthCard
-        title="Lien expiré."
-        subtitle="Le lien de vérification a expiré. Demandez un nouveau lien."
+        title={t('auth.verifyEmail.expiredTitle')}
+        subtitle={t('auth.verifyEmail.expiredSubtitle')}
         bottomSlot={
           <Link to="/auth/sign-in" className="font-medium text-[var(--accent-600)] hover:underline">
-            Retour à la connexion
+            {t('auth.backToSignIn')}
           </Link>
         }
       >
         <Button asChild className="w-full">
-          <Link to="/auth/sign-in">Retour à la connexion</Link>
+          <Link to="/auth/sign-in">{t('auth.backToSignIn')}</Link>
         </Button>
       </AuthCard>
     );
@@ -74,16 +76,16 @@ export function VerifyEmailPage() {
   // status === 'error'
   return (
     <AuthCard
-      title="Erreur de vérification."
-      subtitle="Le lien de vérification est invalide ou a déjà été utilisé."
+      title={t('auth.verifyEmail.errorTitle')}
+      subtitle={t('auth.verifyEmail.errorSubtitle')}
       bottomSlot={
         <Link to="/auth/sign-in" className="font-medium text-[var(--accent-600)] hover:underline">
-          Retour à la connexion
+          {t('auth.backToSignIn')}
         </Link>
       }
     >
       <Button asChild className="w-full">
-        <Link to="/auth/sign-in">Retour à la connexion</Link>
+        <Link to="/auth/sign-in">{t('auth.backToSignIn')}</Link>
       </Button>
     </AuthCard>
   );

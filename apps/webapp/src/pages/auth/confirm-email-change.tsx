@@ -5,8 +5,10 @@ import { AlertCircle } from '@/components/keenicons/icons';
 import { Alert, AlertIcon, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { AuthCard } from '@/components/auth/auth-card';
+import { useT } from '@/i18n/app/use-t';
 
 export function ConfirmEmailChangePage() {
+  const t = useT();
   const [searchParams] = useSearchParams();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('');
@@ -15,7 +17,7 @@ export function ConfirmEmailChangePage() {
     const token = searchParams.get('token');
     if (!token) {
       setStatus('error');
-      setMessage('Le lien de confirmation est invalide. Aucun token fourni.');
+      setMessage(t('auth.confirmEmail.noToken'));
       return;
     }
 
@@ -23,25 +25,25 @@ export function ConfirmEmailChangePage() {
       .get<{ message: string }>(`/auth/confirm-email-change?token=${token}`)
       .then((res) => {
         setStatus('success');
-        setMessage(res.message || 'Votre adresse email a été mise à jour avec succès.');
+        setMessage(res.message || t('auth.confirmEmail.updated'));
       })
       .catch((err: any) => {
         setStatus('error');
-        setMessage(err.message || 'Le lien de confirmation est invalide ou a expiré.');
+        setMessage(err.message || t('auth.confirmEmail.invalid'));
       });
-  }, [searchParams]);
+  }, [searchParams, t]);
 
   if (status === 'loading') {
     return (
       <AuthCard
-        title="Confirmer le changement de courriel."
-        subtitle="Cette action mettra à jour votre adresse de connexion."
+        title={t('auth.confirmEmail.title')}
+        subtitle={t('auth.confirmEmail.subtitle')}
       >
         <div className="flex justify-center py-4">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--brand-700)] border-t-transparent" />
         </div>
         <p className="text-sm text-center text-muted-foreground">
-          Nous vérifions votre nouvelle adresse email…
+          {t('auth.confirmEmail.checking')}
         </p>
       </AuthCard>
     );
@@ -50,14 +52,14 @@ export function ConfirmEmailChangePage() {
   if (status === 'success') {
     return (
       <AuthCard
-        title="Courriel modifié."
+        title={t('auth.confirmEmail.doneTitle')}
         subtitle={message}
       >
         <p className="text-sm text-muted-foreground">
-          Veuillez vous reconnecter avec votre nouvelle adresse.
+          {t('auth.confirmEmail.signInAgain')}
         </p>
         <Button asChild className="w-full">
-          <Link to="/auth/sign-in">Se reconnecter</Link>
+          <Link to="/auth/sign-in">{t('auth.confirmEmail.signInAgainCta')}</Link>
         </Button>
       </AuthCard>
     );
@@ -66,11 +68,11 @@ export function ConfirmEmailChangePage() {
   // status === 'error'
   return (
     <AuthCard
-      title="Échec de la vérification."
-      subtitle="Le lien de confirmation est invalide ou a expiré."
+      title={t('auth.confirmEmail.failedTitle')}
+      subtitle={t('auth.confirmEmail.invalid')}
       bottomSlot={
         <Link to="/auth/sign-in" className="font-medium text-[var(--accent-600)] hover:underline">
-          Retour à la connexion
+          {t('auth.backToSignIn')}
         </Link>
       }
     >
@@ -79,10 +81,10 @@ export function ConfirmEmailChangePage() {
         <AlertDescription>{message}</AlertDescription>
       </Alert>
       <p className="text-xs text-muted-foreground">
-        Si le problème persiste, vous pouvez relancer le changement de courriel depuis les paramètres de votre compte.
+        {t('auth.confirmEmail.retryHint')}
       </p>
       <Button variant="outline" asChild className="w-full">
-        <Link to="/auth/sign-in">Retour à la connexion</Link>
+        <Link to="/auth/sign-in">{t('auth.backToSignIn')}</Link>
       </Button>
     </AuthCard>
   );

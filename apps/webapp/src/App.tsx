@@ -9,6 +9,7 @@ import { LayoutSwitcherProvider } from '@/providers/layout-switcher-provider';
 import { AuthProvider } from '@/providers/auth-provider';
 import { SocketProvider } from '@/providers/socket-provider';
 import { NotificationProvider } from '@/providers/notification-provider';
+import { LocaleProvider } from '@/providers/locale-provider';
 
 const { BASE_URL } = import.meta.env;
 
@@ -22,6 +23,7 @@ export function App() {
       disableTransitionOnChange
       enableColorScheme
     >
+      <LocaleProvider>
       <HelmetProvider>
         <LoadingBarContainer>
           <BrowserRouter basename={BASE_URL}>
@@ -40,6 +42,7 @@ export function App() {
           </BrowserRouter>
         </LoadingBarContainer>
       </HelmetProvider>
+      </LocaleProvider>
     </ThemeProvider>
   );
 }
