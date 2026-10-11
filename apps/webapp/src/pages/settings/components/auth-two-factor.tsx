@@ -9,10 +9,12 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from '@/components/ui/input-otp';
 import { useAuth } from '@/providers/auth-provider';
 import { api } from '@/lib/api-client';
+import { useT } from '@/i18n/app/use-t';
 
 type Step = 'idle' | 'password' | 'qrcode' | 'backup-codes';
 
 export function AuthTwoFactor() {
+  const t = useT();
   const { user, refreshUser } = useAuth();
   const isEnabled = user?.twoFactorEnabled ?? false;
 
@@ -60,7 +62,7 @@ export function AuthTwoFactor() {
       setSecret(response.secret);
       setStep('qrcode');
     } catch (err: any) {
-      setError(err?.message || 'Erreur lors de la génération du secret');
+      setError(err?.message || t('settings.2fa.genError'));
     } finally {
       setIsLoading(false);
     }
@@ -76,7 +78,7 @@ export function AuthTwoFactor() {
       setStep('backup-codes');
       await refreshUser();
     } catch (err: any) {
-      setError(err?.message || 'Code invalide');
+      setError(err?.message || t('settings.2fa.invalidCode'));
     } finally {
       setIsLoading(false);
     }
@@ -90,7 +92,7 @@ export function AuthTwoFactor() {
       await refreshUser();
       resetState();
     } catch (err: any) {
-      setError(err?.message || 'Erreur lors de la désactivation');
+      setError(err?.message || t('settings.2fa.disableError'));
     } finally {
       setIsLoading(false);
     }
@@ -108,7 +110,7 @@ export function AuthTwoFactor() {
       setStep('backup-codes');
       setShowRegen(false);
     } catch (err: any) {
-      setError(err?.message || 'Erreur lors de la régénération');
+      setError(err?.message || t('settings.2fa.regenError'));
     } finally {
       setIsLoading(false);
     }
@@ -128,15 +130,15 @@ export function AuthTwoFactor() {
         <CardHeader className="flex-col items-start gap-1 pt-5 pb-4 border-b-0">
           <div className="flex items-center justify-between w-full">
             <span className="text-[10px] font-bold uppercase tracking-[1.2px] text-[var(--accent-700)] dark:text-[var(--accent-300)]">
-              COMPTE
+              {t('settings.kicker.account')}
             </span>
-            <Badge variant="outline">Non activé</Badge>
+            <Badge variant="outline">{t('settings.2fa.off')}</Badge>
           </div>
           <h2 className="font-display text-[19px] font-bold text-foreground m-0">
-            Authentification à deux facteurs (2FA)
+            {t('settings.2fa.title')}
           </h2>
           <p className="text-[13px] text-muted-foreground m-0">
-            Renforcez la sécurité de votre compte avec un second facteur.
+            {t('settings.2fa.desc')}
           </p>
         </CardHeader>
         <CardContent>
@@ -146,15 +148,15 @@ export function AuthTwoFactor() {
             </div>
             <div className="flex flex-col gap-px">
               <span className="text-sm font-medium text-foreground">
-                Application d'authentification (TOTP)
+                {t('settings.2fa.app')}
               </span>
               <span className="text-sm text-muted-foreground">
-                Protection renforcée avec une application comme Google Authenticator ou Authy.
+                {t('settings.2fa.appDesc')}
               </span>
             </div>
           </div>
           <div className="flex justify-end">
-            <Button onClick={() => setStep('password')}>Configurer</Button>
+            <Button onClick={() => setStep('password')}>{t('settings.2fa.setup')}</Button>
           </div>
         </CardContent>
       </Card>
@@ -170,10 +172,10 @@ export function AuthTwoFactor() {
       >
         <CardHeader className="flex-col items-start gap-1 pt-5 pb-4 border-b-0">
           <span className="text-[10px] font-bold uppercase tracking-[1.2px] text-[var(--accent-700)] dark:text-[var(--accent-300)]">
-            COMPTE · CONFIGURATION 2FA · ÉTAPE 1/3
+            {t('settings.2fa.step1')}
           </span>
           <h2 className="font-display text-[19px] font-bold text-foreground m-0">
-            Confirmez votre mot de passe
+            {t('settings.2fa.confirmPassword')}
           </h2>
         </CardHeader>
         <CardContent>
@@ -183,10 +185,10 @@ export function AuthTwoFactor() {
             </Alert>
           )}
           <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5 mb-5">
-            <Label className="flex w-full max-w-56">Mot de passe actuel</Label>
+            <Label className="flex w-full max-w-56">{t('settings.password.current')}</Label>
             <Input
               type="password"
-              placeholder="Entrez votre mot de passe"
+              placeholder={t('settings.2fa.passwordPh')}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && password && handleGenerateSecret()}
@@ -194,10 +196,10 @@ export function AuthTwoFactor() {
             />
           </div>
           <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={resetState}>Annuler</Button>
+            <Button variant="outline" onClick={resetState}>{t('common.cancel')}</Button>
             <Button onClick={handleGenerateSecret} disabled={!password || isLoading}>
               {isLoading && <Loader2 className="size-4 animate-spin mr-2" />}
-              Continuer
+              {t('common.continue')}
             </Button>
           </div>
         </CardContent>
@@ -214,10 +216,10 @@ export function AuthTwoFactor() {
       >
         <CardHeader className="flex-col items-start gap-1 pt-5 pb-4 border-b-0">
           <span className="text-[10px] font-bold uppercase tracking-[1.2px] text-[var(--accent-700)] dark:text-[var(--accent-300)]">
-            COMPTE · CONFIGURATION 2FA · ÉTAPE 2/3
+            {t('settings.2fa.step2')}
           </span>
           <h2 className="font-display text-[19px] font-bold text-foreground m-0">
-            Scannez le QR code
+            {t('settings.2fa.scanTitle')}
           </h2>
         </CardHeader>
         <CardContent>
@@ -228,20 +230,20 @@ export function AuthTwoFactor() {
           )}
           <div className="flex flex-col items-center gap-4 mb-6">
             <p className="text-sm text-muted-foreground text-center">
-              Scannez ce QR code avec votre application d'authentification
+              {t('settings.2fa.scanDesc')}
             </p>
             {qrCode && (
-              <img src={qrCode} alt="QR Code 2FA" className="w-48 h-48 rounded-lg border" />
+              <img src={qrCode} alt={t('settings.2fa.qrAlt')} className="w-48 h-48 rounded-lg border" />
             )}
             <div className="text-center">
-              <p className="text-xs text-muted-foreground mb-1">Ou entrez ce code manuellement :</p>
+              <p className="text-xs text-muted-foreground mb-1">{t('settings.2fa.manual')}</p>
               <code className="text-sm font-mono bg-muted px-3 py-1.5 rounded select-all">
                 {secret}
               </code>
             </div>
           </div>
           <div className="flex flex-col items-center gap-4">
-            <p className="text-sm font-medium">Entrez le code à 6 chiffres pour vérifier</p>
+            <p className="text-sm font-medium">{t('settings.2fa.enterCode')}</p>
             <InputOTP
               maxLength={6}
               value={code}
@@ -266,12 +268,12 @@ export function AuthTwoFactor() {
             {isLoading && (
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Loader2 className="size-4 animate-spin" />
-                <span className="text-sm">Vérification...</span>
+                <span className="text-sm">{t('settings.2fa.verifying')}</span>
               </div>
             )}
           </div>
           <div className="flex justify-end mt-4">
-            <Button variant="outline" onClick={resetState}>Annuler</Button>
+            <Button variant="outline" onClick={resetState}>{t('common.cancel')}</Button>
           </div>
         </CardContent>
       </Card>
@@ -287,20 +289,20 @@ export function AuthTwoFactor() {
       >
         <CardHeader className="flex-col items-start gap-1 pt-5 pb-4 border-b-0">
           <span className="text-[10px] font-bold uppercase tracking-[1.2px] text-[var(--accent-700)] dark:text-[var(--accent-300)]">
-            COMPTE · CODES DE SECOURS
+            {t('settings.2fa.backupKicker')}
           </span>
           <h2 className="font-display text-[19px] font-bold text-foreground m-0">
-            Sauvegardez ces codes
+            {t('settings.2fa.saveCodes')}
           </h2>
           <p className="text-[13px] text-muted-foreground m-0">
-            Chaque code ne peut être utilisé qu'une fois — gardez-les en lieu sûr.
+            {t('settings.2fa.onceEach')}
           </p>
         </CardHeader>
         <CardContent>
           <Alert className="mb-4">
             <AlertDescription>
-              Conservez ces codes en lieu sûr. Chaque code ne peut être utilisé qu'une seule fois.
-              Si vous perdez l'accès à votre application d'authentification, ces codes vous permettront de vous connecter.
+              {t('settings.2fa.keepSafe')}
+              {t('settings.2fa.lostAccess')}
             </AlertDescription>
           </Alert>
           <div className="grid grid-cols-2 gap-2 mb-6">
@@ -315,9 +317,9 @@ export function AuthTwoFactor() {
           </div>
           <div className="flex justify-end gap-2">
             <Button variant="outline" onClick={copyBackupCodes}>
-              Copier les codes
+              {t('settings.2fa.copyCodes')}
             </Button>
-            <Button onClick={resetState}>Terminé</Button>
+            <Button onClick={resetState}>{t('settings.2fa.done')}</Button>
           </div>
         </CardContent>
       </Card>
@@ -334,17 +336,17 @@ export function AuthTwoFactor() {
         <CardHeader className="flex-col items-start gap-1 pt-5 pb-4 border-b-0">
           <div className="flex items-center justify-between w-full">
             <span className="text-[10px] font-bold uppercase tracking-[1.2px] text-[var(--accent-700)] dark:text-[var(--accent-300)]">
-              COMPTE
+              {t('settings.kicker.account')}
             </span>
             <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-              Activé
+              {t('settings.2fa.on')}
             </Badge>
           </div>
           <h2 className="font-display text-[19px] font-bold text-foreground m-0">
             Authentification à deux facteurs (2FA)
           </h2>
           <p className="text-[13px] text-muted-foreground m-0">
-            Votre compte est protégé par un second facteur.
+            {t('settings.2fa.protected')}
           </p>
         </CardHeader>
         <CardContent>
@@ -363,7 +365,7 @@ export function AuthTwoFactor() {
                 Application d'authentification (TOTP)
               </span>
               <span className="text-sm text-muted-foreground">
-                Votre compte est protégé par l'authentification à deux facteurs.
+                {t('settings.2fa.protectedLong')}
               </span>
             </div>
           </div>
@@ -371,23 +373,23 @@ export function AuthTwoFactor() {
           {/* Disable section */}
           {showDisable && (
             <div className="border border-border rounded-xl p-4 mb-4">
-              <p className="text-sm font-medium mb-3">Désactiver le 2FA</p>
+              <p className="text-sm font-medium mb-3">{t('settings.2fa.disableTitle')}</p>
               <div className="flex flex-col gap-3">
                 <Input
                   type="password"
-                  placeholder="Mot de passe"
+                  placeholder={t('auth.field.password')}
                   value={disablePassword}
                   onChange={(e) => setDisablePassword(e.target.value)}
                 />
                 <Input
-                  placeholder="Code TOTP (6 chiffres)"
+                  placeholder={t('settings.2fa.totpPh')}
                   value={disableCode}
                   onChange={(e) => setDisableCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                   maxLength={6}
                 />
                 <div className="flex justify-end gap-2">
                   <Button variant="outline" size="sm" onClick={() => { setShowDisable(false); setError(''); }}>
-                    Annuler
+                    {t('common.cancel')}
                   </Button>
                   <Button
                     variant="destructive"
@@ -396,7 +398,7 @@ export function AuthTwoFactor() {
                     disabled={!disablePassword || disableCode.length !== 6 || isLoading}
                   >
                     {isLoading && <Loader2 className="size-4 animate-spin mr-2" />}
-                    Confirmer la désactivation
+                    {t('settings.2fa.confirmDisable')}
                   </Button>
                 </div>
               </div>
@@ -406,23 +408,23 @@ export function AuthTwoFactor() {
           {/* Regenerate backup codes section */}
           {showRegen && (
             <div className="border border-border rounded-xl p-4 mb-4">
-              <p className="text-sm font-medium mb-3">Régénérer les codes de secours</p>
+              <p className="text-sm font-medium mb-3">{t('settings.2fa.regenTitle')}</p>
               <div className="flex flex-col gap-3">
                 <Input
                   type="password"
-                  placeholder="Mot de passe"
+                  placeholder={t('auth.field.password')}
                   value={regenPassword}
                   onChange={(e) => setRegenPassword(e.target.value)}
                 />
                 <Input
-                  placeholder="Code TOTP (6 chiffres)"
+                  placeholder={t('settings.2fa.totpPh')}
                   value={regenCode}
                   onChange={(e) => setRegenCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                   maxLength={6}
                 />
                 <div className="flex justify-end gap-2">
                   <Button variant="outline" size="sm" onClick={() => { setShowRegen(false); setError(''); }}>
-                    Annuler
+                    {t('common.cancel')}
                   </Button>
                   <Button
                     size="sm"
@@ -430,7 +432,7 @@ export function AuthTwoFactor() {
                     disabled={!regenPassword || regenCode.length !== 6 || isLoading}
                   >
                     {isLoading && <Loader2 className="size-4 animate-spin mr-2" />}
-                    Régénérer
+                    {t('settings.2fa.regen')}
                   </Button>
                 </div>
               </div>
@@ -440,10 +442,10 @@ export function AuthTwoFactor() {
           {!showDisable && !showRegen && (
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => { setShowRegen(true); setShowDisable(false); }}>
-                Régénérer les codes de secours
+                {t('settings.2fa.regenTitle')}
               </Button>
               <Button variant="destructive" onClick={() => { setShowDisable(true); setShowRegen(false); }}>
-                Désactiver
+                {t('settings.2fa.disable')}
               </Button>
             </div>
           )}

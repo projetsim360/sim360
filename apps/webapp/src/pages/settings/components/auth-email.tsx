@@ -7,11 +7,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useT } from '@/i18n/app/use-t';
 
 const FIELD_ROW =
   'grid grid-cols-1 sm:grid-cols-[170px_minmax(0,1fr)] gap-3 sm:gap-4 items-center py-3 border-t border-[var(--neutral-100)] dark:border-white/[0.06] first:border-t-0 first:pt-1';
 
 export function AuthEmail() {
+  const t = useT();
   const { user } = useAuth();
   const [editing, setEditing] = useState(false);
   const [newEmail, setNewEmail] = useState('');
@@ -27,7 +29,7 @@ export function AuthEmail() {
       setSent(true);
       setEditing(false);
     } catch (error: any) {
-      toast.error(error.message || "Erreur lors du changement d'email");
+      toast.error(error.message || t('settings.email.changeError'));
     } finally {
       setLoading(false);
     }
@@ -46,11 +48,11 @@ export function AuthEmail() {
     >
       <CardHeader className="flex-col items-start gap-1 pt-5 pb-4 border-b-0">
         <span className="text-[10px] font-bold uppercase tracking-[1.2px] text-[var(--accent-700)] dark:text-[var(--accent-300)]">
-          COMPTE
+          {t('settings.kicker.account')}
         </span>
-        <h2 className="font-display text-[19px] font-bold text-foreground m-0">Email</h2>
+        <h2 className="font-display text-[19px] font-bold text-foreground m-0">{t('auth.field.email')}</h2>
         <p className="text-[13px] text-muted-foreground m-0">
-          Adresse utilisée pour la connexion et les notifications.
+          {t('settings.email.desc')}
         </p>
       </CardHeader>
 
@@ -65,7 +67,7 @@ export function AuthEmail() {
 
         <div className={FIELD_ROW}>
           <Label htmlFor="auth-email-current" className="text-[13px] font-medium text-foreground">
-            Email actuel
+            {t('settings.email.current')}
           </Label>
           <Input id="auth-email-current" type="text" value={user?.email || ''} disabled />
         </div>
@@ -74,12 +76,12 @@ export function AuthEmail() {
           <>
             <div className={FIELD_ROW}>
               <Label htmlFor="auth-email-new" className="text-[13px] font-medium text-foreground">
-                Nouvel email
+                {t('settings.email.new')}
               </Label>
               <Input
                 id="auth-email-new"
                 type="email"
-                placeholder="nouvel@email.com"
+                placeholder={t('settings.email.newPh')}
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
                 autoFocus
@@ -87,29 +89,29 @@ export function AuthEmail() {
             </div>
             <div className={FIELD_ROW}>
               <Label htmlFor="auth-email-password" className="text-[13px] font-medium text-foreground">
-                Mot de passe
+                {t('auth.field.password')}
               </Label>
               <Input
                 id="auth-email-password"
                 type="password"
-                placeholder="Confirmez avec votre mot de passe"
+                placeholder={t('settings.email.confirmPh')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-[var(--neutral-100)] dark:border-white/[0.06]">
               <Button variant="outline" onClick={handleCancel} disabled={loading}>
-                Annuler
+                {t('common.cancel')}
               </Button>
               <Button onClick={handleSubmit} disabled={loading || !newEmail.trim() || !password.trim()}>
-                {loading ? 'Envoi…' : 'Envoyer la vérification'}
+                {loading ? t('settings.sending') : t('settings.email.sendVerification')}
               </Button>
             </div>
           </>
         ) : (
           <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-[var(--neutral-100)] dark:border-white/[0.06]">
             <Button variant="outline" size="sm" onClick={() => { setEditing(true); setSent(false); }}>
-              Changer d'email
+              {t('settings.email.change')}
             </Button>
           </div>
         )}

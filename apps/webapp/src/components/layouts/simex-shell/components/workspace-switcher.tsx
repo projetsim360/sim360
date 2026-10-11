@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils';
 import { workspaceLabelKey } from '@/lib/user-display';
 import { useT } from '@/i18n/app/use-t';
+import { Msg } from '@/i18n/app/msg';
 import { useAuth } from '@/providers/auth-provider';
 
 interface WorkspaceSwitcherProps {
@@ -35,7 +36,10 @@ export function WorkspaceSwitcher({ className, collapsed = false }: WorkspaceSwi
       {!collapsed && (
         <span className="simex-workspace-label flex-1 whitespace-nowrap text-left">
           <span className="block text-[11px] font-semibold uppercase tracking-[1px] text-[var(--shell-fg-muted)]">
-            {t('shell.workspace.prefix')}&nbsp;<strong className="font-bold tracking-[0.5px] text-[var(--shell-fg-strong)]">{label}</strong>
+            <Msg
+              id="shell.workspace.badge"
+              values={{ label, b: (chunks) => <strong className="font-bold tracking-[0.5px] text-[var(--shell-fg-strong)]">{chunks}</strong> }}
+            />
           </span>
         </span>
       )}

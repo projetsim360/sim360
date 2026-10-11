@@ -7,6 +7,9 @@ import { KeenIcon } from '@/components/keenicons';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { aiUsageApi } from '../api/ai-usage.api';
 import type { AiQuota, AiBilling } from '../api/ai-usage.api';
+import { useTv } from '@/i18n/app/use-t';
+import { useAppLocale } from '@/providers/locale-provider';
+import { useT } from '@/i18n/app/use-t';
 
 function formatTokens(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
@@ -36,19 +39,10 @@ function getProgressColor(percent: number): string {
   return 'bg-primary';
 }
 
-const OPERATION_LABELS: Record<string, string> = {
-  complete: 'Complétion générique',
-  meeting_respond: 'Réponse réunion (controller)',
-  meeting_stream: 'Réponse réunion (stream)',
-  meeting_summary: 'Résumé réunion',
-  meeting_structured_summary: 'Résumé structuré',
-  decision_evaluate: 'Évaluation décision',
-  phase_report: 'Rapport de phase',
-  final_report: 'Rapport final',
-  event_description: 'Description événement',
-};
-
 export default function TokenUsagePage() {
+  const tv = useTv();
+  const { intlLocale } = useAppLocale();
+  const t = useT();
   const [quota, setQuota] = useState<AiQuota | null>(null);
   const [billing, setBilling] = useState<AiBilling | null>(null);
   const [loading, setLoading] = useState(true);
@@ -60,7 +54,7 @@ export default function TokenUsagePage() {
         setQuota(q);
         setBilling(b);
       })
-      .catch((err) => setError(err.message ?? 'Erreur de chargement'))
+      .catch((err) => setError(err.message ?? t('usage.loadError')))
       .finally(() => setLoading(false));
   }, []);
 
@@ -68,7 +62,7 @@ export default function TokenUsagePage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Utilisation IA" />
+          <ToolbarHeading title={t('menu.aiUsage')} />
         </Toolbar>
         <div className="flex justify-center py-16">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
@@ -81,7 +75,7 @@ export default function TokenUsagePage() {
     return (
       <div className="container">
         <Toolbar>
-          <ToolbarHeading title="Utilisation IA" />
+          <ToolbarHeading title={t('menu.aiUsage')} />
         </Toolbar>
         <Card>
           <CardContent className="py-8 text-center">
@@ -100,7 +94,7 @@ export default function TokenUsagePage() {
     : 0;
 
   const periodLabel = billing?.periodStart
-    ? new Date(billing.periodStart).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+    ? new Date(billing.periodStart).toLocaleDateString(intlLocale, { month: 'long', year: 'numeric' })
     : '';
 
   const currency = billing?.currency ?? 'USD';
@@ -108,18 +102,18 @@ export default function TokenUsagePage() {
   return (
     <div className="container">
       <Toolbar>
-        <ToolbarHeading title="Utilisation IA" />
+        <ToolbarHeading title={t('menu.aiUsage')} />
       </Toolbar>
 
       {/* Period + margin badge */}
       {periodLabel && (
         <div className="flex items-center gap-2 mb-5">
           <Badge variant="primary" appearance="light" size="sm">
-            Période : {periodLabel}
+            {t('usage.period', { period: periodLabel })}
           </Badge>
           {billing && (
             <Badge variant="secondary" appearance="light" size="sm">
-              Marge : {billing.marginPercent}%
+              {t('usage.margin', { pct: billing.marginPercent })}
             </Badge>
           )}
         </div>
@@ -128,30 +122,30 @@ export default function TokenUsagePage() {
       {/* Billing total + stats */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
         <StatCard
-          label="Coût total"
+          label={t('usage.totalCost')}
           value={billing ? `${billing.totalCost.toFixed(2)}` : '0'}
           sub={currency}
           color="text-foreground"
         />
         <StatCard
-          label="Tokens entree"
+          label={t('usage.inputTokens')}
           value={formatTokens(quota?.currentMonthInput ?? 0)}
           sub={`/ ${formatTokens(quota?.monthlyInputLimit ?? 0)}`}
           color={getUsageColor(inputPercent)}
         />
         <StatCard
-          label="Tokens sortie"
+          label={t('usage.outputTokens')}
           value={formatTokens(quota?.currentMonthOutput ?? 0)}
           sub={`/ ${formatTokens(quota?.monthlyOutputLimit ?? 0)}`}
           color={getUsageColor(outputPercent)}
         />
         <StatCard
-          label="Appels IA"
+          label={t('usage.calls')}
           value={String(billing?.totalCalls ?? 0)}
           color="text-primary"
         />
         <StatCard
-          label="Coût / appel"
+          label={t('usage.costPerCall')}
           value={billing && billing.totalCalls > 0
             ? `${(billing.totalCost / billing.totalCalls).toFixed(4)}`
             : '0'}
@@ -166,14 +160,14 @@ export default function TokenUsagePage() {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
               <KeenIcon icon="arrow-down" style="duotone" className="size-4" />
-              Quota entree
+              {t('usage.inputQuota')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">
-                  {formatTokens(quota?.currentMonthInput ?? 0)} utilises
+                  {t('usage.used', { n: formatTokens(quota?.currentMonthInput ?? 0) })}
                 </span>
                 <span className={`font-semibold ${getUsageColor(inputPercent)}`}>
                   {inputPercent}%
@@ -182,7 +176,7 @@ export default function TokenUsagePage() {
               <Progress value={inputPercent} className="h-2.5" indicatorClassName={getProgressColor(inputPercent)} />
               <div className="flex items-center justify-between text-[10px] text-muted-foreground">
                 <span>0</span>
-                <span>Limite : {formatTokens(quota?.monthlyInputLimit ?? 0)}</span>
+                <span>{t('usage.limit', { n: formatTokens(quota?.monthlyInputLimit ?? 0) })}</span>
               </div>
             </div>
           </CardContent>
@@ -192,14 +186,14 @@ export default function TokenUsagePage() {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
               <KeenIcon icon="arrow-up" style="duotone" className="size-4" />
-              Quota sortie
+              {t('usage.outputQuota')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">
-                  {formatTokens(quota?.currentMonthOutput ?? 0)} utilises
+                  {t('usage.used', { n: formatTokens(quota?.currentMonthOutput ?? 0) })}
                 </span>
                 <span className={`font-semibold ${getUsageColor(outputPercent)}`}>
                   {outputPercent}%
@@ -208,7 +202,7 @@ export default function TokenUsagePage() {
               <Progress value={outputPercent} className="h-2.5" indicatorClassName={getProgressColor(outputPercent)} />
               <div className="flex items-center justify-between text-[10px] text-muted-foreground">
                 <span>0</span>
-                <span>Limite : {formatTokens(quota?.monthlyOutputLimit ?? 0)}</span>
+                <span>{t('usage.limit', { n: formatTokens(quota?.monthlyOutputLimit ?? 0) })}</span>
               </div>
             </div>
           </CardContent>
@@ -221,7 +215,7 @@ export default function TokenUsagePage() {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
               <KeenIcon icon="setting-2" style="duotone" className="size-4" />
-              Coût par modèle
+              {t('usage.byModel')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -229,11 +223,11 @@ export default function TokenUsagePage() {
               <Table className="text-sm">
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="text-left">Modèle</TableHead>
-                    <TableHead className="text-right">Entree</TableHead>
-                    <TableHead className="text-right">Sortie</TableHead>
-                    <TableHead className="text-right">Appels</TableHead>
-                    <TableHead className="text-right">Coût</TableHead>
+                    <TableHead className="text-left">{t('usage.model')}</TableHead>
+                    <TableHead className="text-right">{t('usage.in')}</TableHead>
+                    <TableHead className="text-right">{t('usage.out')}</TableHead>
+                    <TableHead className="text-right">{t('usage.callsCol')}</TableHead>
+                    <TableHead className="text-right">{t('usage.cost')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -259,7 +253,7 @@ export default function TokenUsagePage() {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
               <KeenIcon icon="category" style="duotone" className="size-4" />
-              Coût par opération
+              {t('usage.byOperation')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -267,17 +261,17 @@ export default function TokenUsagePage() {
               <Table className="text-sm">
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="text-left">Operation</TableHead>
-                    <TableHead className="text-right">Entree</TableHead>
-                    <TableHead className="text-right">Sortie</TableHead>
-                    <TableHead className="text-right">Appels</TableHead>
-                    <TableHead className="text-right">Coût</TableHead>
+                    <TableHead className="text-left">{t('usage.operation')}</TableHead>
+                    <TableHead className="text-right">{t('usage.in')}</TableHead>
+                    <TableHead className="text-right">{t('usage.out')}</TableHead>
+                    <TableHead className="text-right">{t('usage.callsCol')}</TableHead>
+                    <TableHead className="text-right">{t('usage.cost')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {billing.byOperation.map((row) => (
                     <TableRow key={row.operation}>
-                      <TableCell>{OPERATION_LABELS[row.operation] ?? row.operation}</TableCell>
+                      <TableCell>{tv('usage.op', row.operation)}</TableCell>
                       <TableCell className="text-right">{formatTokens(row.inputTokens)}</TableCell>
                       <TableCell className="text-right">{formatTokens(row.outputTokens)}</TableCell>
                       <TableCell className="text-right">{row.calls}</TableCell>
@@ -297,7 +291,7 @@ export default function TokenUsagePage() {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
               <KeenIcon icon="chart-line" style="duotone" className="size-4" />
-              Coût par projet
+              {t('usage.byProject')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -305,13 +299,13 @@ export default function TokenUsagePage() {
               <Table className="text-sm">
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="text-left">Projet</TableHead>
-                    <TableHead className="text-left">Scénario</TableHead>
-                    <TableHead className="text-right">Entree</TableHead>
-                    <TableHead className="text-right">Sortie</TableHead>
-                    <TableHead className="text-right">Appels</TableHead>
-                    <TableHead className="text-right">Coût</TableHead>
-                    <TableHead className="text-right">Part</TableHead>
+                    <TableHead className="text-left">{t('usage.project')}</TableHead>
+                    <TableHead className="text-left">{t('usage.scenario')}</TableHead>
+                    <TableHead className="text-right">{t('usage.in')}</TableHead>
+                    <TableHead className="text-right">{t('usage.out')}</TableHead>
+                    <TableHead className="text-right">{t('usage.callsCol')}</TableHead>
+                    <TableHead className="text-right">{t('usage.cost')}</TableHead>
+                    <TableHead className="text-right">{t('usage.share')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -354,12 +348,10 @@ export default function TokenUsagePage() {
             </div>
             <div className="text-sm text-muted-foreground space-y-1">
               <p>
-                Les coûts sont calculés automatiquement à partir du tarif de chaque modèle IA
-                avec une marge de {billing?.marginPercent ?? 30}%.
+                {t('usage.infoCost', { pct: billing?.marginPercent ?? 30 })}
               </p>
               <p>
-                Les quotas sont réinitialisés au début de chaque mois.
-                Le coût affiché correspond à la période en cours.
+                {t('usage.infoQuota')}
               </p>
             </div>
           </div>

@@ -1,9 +1,11 @@
 import { cn } from '@/lib/utils';
+import type { AppMessageKey } from '@/i18n/app/messages';
+import { useT } from '@/i18n/app/use-t';
 
 /* ----------------------------------------------------------------
-   SettingsScrollspy — sous-composant local au visuel premium.
-   Émet les ancres `data-scrollspy-anchor={target}` que le hook
-   <Scrollspy> de pages/settings/index.tsx consomme déjà.
+   SettingsScrollspy: local sub-component for the settings nav.
+   Emits `data-scrollspy-anchor={target}` anchors consumed by the
+   <Scrollspy> hook in pages/settings/index.tsx.
    ---------------------------------------------------------------- */
 
 interface SettingsScrollspyItem {
@@ -20,32 +22,33 @@ interface SettingsScrollspyGroup {
 
 const GROUPS: SettingsScrollspyGroup[] = [
   {
-    label: 'Compte',
+    label: 'settings.nav.account',
     items: [
-      { title: 'Profil', target: 'basic_settings' },
-      { title: 'Email', target: 'auth_email' },
-      { title: 'Mot de passe', target: 'auth_password' },
-      { title: 'Connexion sociale', target: 'auth_social' },
-      { title: 'Double auth.', target: 'auth_two_factor' },
+      { title: 'settings.profile.title', target: 'basic_settings' },
+      { title: 'auth.field.email', target: 'auth_email' },
+      { title: 'auth.field.password', target: 'auth_password' },
+      { title: 'settings.social.title', target: 'auth_social' },
+      { title: 'settings.nav.twoFactor', target: 'auth_two_factor' },
     ],
   },
   {
-    label: 'Application',
+    label: 'settings.nav.app',
     items: [
-      { title: 'Préférences', target: 'preferences_general' },
-      { title: 'Apparence', target: 'preferences_appearance' },
-      { title: 'Notifications', target: 'preferences_notifications' },
+      { title: 'settings.prefs.title', target: 'preferences_general' },
+      { title: 'settings.nav.appearance', target: 'preferences_appearance' },
+      { title: 'settings.notif.title', target: 'preferences_notifications' },
     ],
   },
   {
-    label: 'Avancé',
-    items: [{ title: 'Supprimer le compte', target: 'delete_account', danger: true }],
+    label: 'settings.nav.advanced',
+    items: [{ title: 'settings.delete.title', target: 'delete_account', danger: true }],
   },
 ];
 
 export function SettingsSidebar() {
+  const t = useT();
   return (
-    <nav aria-label="Sections des paramètres" className="flex flex-col">
+    <nav aria-label={t('settings.nav.label')} className="flex flex-col">
       {GROUPS.map((group) => (
         <div key={group.label} className="mb-1">
           <div
@@ -54,7 +57,7 @@ export function SettingsSidebar() {
               'text-[var(--neutral-400)] dark:text-[var(--neutral-500)]',
             )}
           >
-            {group.label}
+            {t(group.label as AppMessageKey)}
           </div>
           <ul className="flex flex-col">
             {group.items.map((item) => (
@@ -85,7 +88,7 @@ export function SettingsSidebar() {
                         : 'bg-[var(--neutral-300)] dark:bg-[var(--neutral-600)] group-data-[active=true]:bg-[var(--accent-500)]',
                     )}
                   />
-                  {item.title}
+                  {t(item.title as AppMessageKey)}
                 </a>
               </li>
             ))}

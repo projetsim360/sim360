@@ -17,11 +17,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useT } from '@/i18n/app/use-t';
 
 const FIELD_ROW =
   'grid grid-cols-1 sm:grid-cols-[170px_minmax(0,1fr)] gap-3 sm:gap-4 items-center py-3 border-t border-[var(--neutral-100)] dark:border-white/[0.06] first:border-t-0 first:pt-1';
 
 export function Preferences() {
+  const t = useT();
   const id1 = useId();
   const id2 = useId();
   const { user, refreshUser } = useAuth();
@@ -33,9 +35,9 @@ export function Preferences() {
       listTimezones().map((tz) => ({
         value: tz,
         label: formatTimezoneLabel(tz),
-        group: PREFERRED_TIMEZONES.includes(tz) ? 'Suggestions' : 'Tous les fuseaux',
+        group: PREFERRED_TIMEZONES.includes(tz) ? t('settings.tz.suggestions') : t('settings.tz.all'),
       })),
-    [],
+    [t],
   );
   const [dateFormat, setDateFormat] = useState('dd_mm_yyyy');
   const [simulationViewMode, setSimulationViewMode] = useState('modal');
@@ -66,9 +68,9 @@ export function Preferences() {
         emailVisibility,
       });
       await refreshUser();
-      toast.success('Préférences enregistrées');
+      toast.success(t('settings.prefs.saved'));
     } catch {
-      toast.error('Erreur lors de la sauvegarde');
+      toast.error(t('settings.saveError'));
     } finally {
       setLoading(false);
     }
@@ -81,45 +83,45 @@ export function Preferences() {
     >
       <CardHeader className="flex-col items-start gap-1 pt-5 pb-4 border-b-0">
         <span className="text-[10px] font-bold uppercase tracking-[1.2px] text-[var(--accent-700)] dark:text-[var(--accent-300)]">
-          APPLICATION
+          {t('settings.kicker.app')}
         </span>
-        <h2 className="font-display text-[19px] font-bold text-foreground m-0">Préférences</h2>
+        <h2 className="font-display text-[19px] font-bold text-foreground m-0">{t('settings.prefs.title')}</h2>
         <p className="text-[13px] text-muted-foreground m-0">
-          Vos préférences d'usage de la plateforme.
+          {t('settings.prefs.desc')}
         </p>
       </CardHeader>
 
       <CardContent className="pt-2">
         {/* Fuseau horaire */}
         <div className={FIELD_ROW}>
-          <Label className="text-[13px] font-medium text-foreground">Fuseau horaire</Label>
+          <Label className="text-[13px] font-medium text-foreground">{t('settings.prefs.timezone')}</Label>
           <SearchableCombobox
             value={timezone}
             onChange={setTimezone}
             options={timezoneOptions}
-            searchPlaceholder="Rechercher une ville ou un fuseau…"
-            emptyText="Aucun fuseau horaire trouvé"
+            searchPlaceholder={t('settings.prefs.tzSearch')}
+            emptyText={t('settings.prefs.tzEmpty')}
           />
         </div>
 
         {/* Format de date */}
         <div className={FIELD_ROW}>
-          <Label className="text-[13px] font-medium text-foreground">Format de date</Label>
+          <Label className="text-[13px] font-medium text-foreground">{t('settings.prefs.dateFormat')}</Label>
           <Select value={dateFormat} onValueChange={setDateFormat}>
             <SelectTrigger>
-              <SelectValue placeholder="Sélectionner" />
+              <SelectValue placeholder={t('settings.select')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="dd_mm_yyyy">JJ/MM/AAAA</SelectItem>
-              <SelectItem value="mm_dd_yyyy">MM/JJ/AAAA</SelectItem>
-              <SelectItem value="yyyy_mm_dd">AAAA-MM-JJ</SelectItem>
+              <SelectItem value="dd_mm_yyyy">{t('settings.prefs.ddmmyyyy')}</SelectItem>
+              <SelectItem value="mm_dd_yyyy">{t('settings.prefs.mmddyyyy')}</SelectItem>
+              <SelectItem value="yyyy_mm_dd">{t('settings.prefs.yyyymmdd')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         {/* Ouverture des simulations */}
         <div className={FIELD_ROW}>
-          <Label className="text-[13px] font-medium text-foreground">Ouvrir en…</Label>
+          <Label className="text-[13px] font-medium text-foreground">{t('settings.prefs.openIn')}</Label>
           <RadioGroup
             value={simulationViewMode}
             onValueChange={setSimulationViewMode}
@@ -128,13 +130,13 @@ export function Preferences() {
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="modal" id={id1} />
               <Label htmlFor={id1} className="text-foreground text-[13px] font-normal">
-                Modal
+                {t('settings.prefs.modal')}
               </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="fullscreen" id={id2} />
               <Label htmlFor={id2} className="text-foreground text-[13px] font-normal">
-                Plein écran
+                {t('settings.prefs.fullscreen')}
               </Label>
             </div>
           </RadioGroup>
@@ -142,7 +144,7 @@ export function Preferences() {
 
         {/* Affichage */}
         <div className={FIELD_ROW}>
-          <Label className="text-[13px] font-medium text-foreground">Affichage</Label>
+          <Label className="text-[13px] font-medium text-foreground">{t('settings.prefs.display')}</Label>
           <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-1">
               <div className="flex items-center space-x-2">
@@ -155,11 +157,11 @@ export function Preferences() {
                   htmlFor="pref-show-sim-names"
                   className="text-[13px] font-normal text-foreground"
                 >
-                  Afficher les noms des simulations
+                  {t('settings.prefs.showSimNames')}
                 </Label>
               </div>
               <div className="text-[11px] text-muted-foreground pl-6">
-                Voir le nom à côté de chaque icône
+                {t('settings.prefs.showSimNamesDesc')}
               </div>
             </div>
             <div className="flex flex-col gap-1">
@@ -173,11 +175,11 @@ export function Preferences() {
                   htmlFor="pref-show-linked-reports"
                   className="text-[13px] font-normal text-foreground"
                 >
-                  Afficher les rapports liés
+                  {t('settings.prefs.showReports')}
                 </Label>
               </div>
               <div className="text-[11px] text-muted-foreground pl-6">
-                Afficher les noms des rapports liés aux simulations
+                {t('settings.prefs.showReportsDesc')}
               </div>
             </div>
           </div>
@@ -186,7 +188,7 @@ export function Preferences() {
         {/* Visibilité email */}
         <div className={FIELD_ROW}>
           <Label htmlFor="pref-email-visibility" className="text-[13px] font-medium text-foreground">
-            Visibilité de l'email
+            {t('settings.prefs.emailVisibility')}
           </Label>
           <div className="flex items-center gap-2.5">
             <Switch
@@ -195,13 +197,13 @@ export function Preferences() {
               checked={emailVisibility}
               onCheckedChange={setEmailVisibility}
             />
-            <span className="text-[12px] text-muted-foreground">Visible</span>
+            <span className="text-[12px] text-muted-foreground">{t('settings.prefs.visible')}</span>
           </div>
         </div>
 
         <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-[var(--neutral-100)] dark:border-white/[0.06]">
           <Button onClick={handleSave} disabled={loading}>
-            {loading ? 'Sauvegarde…' : 'Enregistrer'}
+            {loading ? t('settings.saving') : t('common.save')}
           </Button>
         </div>
       </CardContent>
