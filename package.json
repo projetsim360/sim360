@@ -15,6 +15,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "typecheck": "turbo typecheck",
     "test:smoke": "node tests/e2e/retours-test.smoke.mjs",
+    "test:smoke:landing": "node tests/e2e/landing.smoke.mjs",
     "test:unit": "pnpm test:unit:core && pnpm test:unit:api && pnpm test:unit:webapp",
     "test:unit:core": "tsx --tsconfig libs/core/tsconfig.json --test libs/core/test/*.test.ts",
     "test:unit:api": "tsx --tsconfig apps/api/tsconfig.json --test apps/api/test/*.test.ts",

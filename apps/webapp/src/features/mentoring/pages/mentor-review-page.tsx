@@ -130,7 +130,7 @@ export default function MentorReviewPage() {
       </Toolbar>
 
       <div className="container-fixed space-y-5">
-        {/* Evaluation IA info */}
+        {/* Automatic evaluation summary */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">

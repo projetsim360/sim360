@@ -1,4 +1,3 @@
-import { lazy, Suspense } from 'react';
 import { Route, Routes, Navigate } from 'react-router';
 import { SimexShell } from '@/components/layouts/simex-shell';
 import { AuthLayout } from '@/components/auth/auth-layout';
@@ -17,7 +16,7 @@ import { ConfirmEmailChangePage } from '@/pages/auth/confirm-email-change';
 import { ProfileWizardPage } from '@/pages/profile/wizard';
 import { SettingsPage } from '@/pages/settings';
 
-const LandingPage = lazy(() => import('@/pages/landing/landing-page'));
+import { landingRoutes } from '@/features/landing/config/landing.routes';
 import {
   dashboardRoutes,
   simulationRoutes,
@@ -85,7 +84,7 @@ export function AppRoutingSetup() {
       </Route>
 
       {/* Public routes (no auth, no layout) */}
-      <Route path="/" element={<Suspense><LandingPage /></Suspense>} />
+      {landingRoutes}
       {badgeVerifyRoute}
       {recruitmentJoinRoute}
 
