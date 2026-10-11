@@ -3,12 +3,14 @@ import { useEffect, useState } from 'react';
 import { Sun, Moon } from '@/components/keenicons/icons';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useT } from '@/i18n/app/use-t';
 
 interface ThemeToggleProps {
   className?: string;
 }
 
 export function ThemeToggle({ className }: ThemeToggleProps) {
+  const t = useT();
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -23,8 +25,8 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
     <Button
       variant="ghost"
       mode="icon"
-      aria-label={isDark ? 'Activer le thème clair' : 'Activer le thème sombre'}
-      title={isDark ? 'Thème clair' : 'Thème sombre'}
+      aria-label={isDark ? t('shell.topbar.lightTheme') : t('shell.topbar.darkTheme')}
+      title={isDark ? t('shell.topbar.lightTheme') : t('shell.topbar.darkTheme')}
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
       className={cn('rounded-lg', className)}
     >

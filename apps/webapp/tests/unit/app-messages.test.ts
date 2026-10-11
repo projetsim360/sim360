@@ -80,6 +80,9 @@ const CONVERTED = [
   'features/recruitment/components',
   'features/admin-reference/pages',
   'features/admin-reference/components',
+  'components/common/searchable-combobox.tsx',
+  'components/theme-toggle',
+  'components/layouts/simex-shell/components/notif-popover.tsx',
 ];
 const FRENCH = /[À-ÿ]|\b(le|la|les|des|du|une|et|vous|votre|vos|pour|avec|dans|aucun|aucune|Mes|Mon|Votre|Nouvelle|Voir|Rechercher|Fermer|Annuler|Retour|Suivant)\b/;
 

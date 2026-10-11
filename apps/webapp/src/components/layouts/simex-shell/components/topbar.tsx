@@ -8,6 +8,7 @@ import { roleLabelKey, getUserDisplayName, getUserInitials } from '@/lib/user-di
 import { useAuth } from '@/providers/auth-provider';
 import { useShellState } from '../state/shell-state-provider';
 import { useT } from '@/i18n/app/use-t';
+import { useNotificationContext } from '@/providers/notification-provider';
 
 interface TopbarProps {
   className?: string;
@@ -15,6 +16,7 @@ interface TopbarProps {
 
 export function Topbar({ className }: TopbarProps) {
   const t = useT();
+  const { unreadCount } = useNotificationContext();
   const {
     toggleSidebar,
     toggleSidebarMobile,
@@ -151,10 +153,12 @@ export function Topbar({ className }: TopbarProps) {
         >
           <Bell className="size-[18px]" />
           {/* Unread dot */}
-          <span
-            className="absolute right-2 top-[7px] size-2 rounded-full bg-[var(--error-500)]"
-            style={{ border: '2px solid var(--shell-bell-ring, var(--brand-700))' }}
-          />
+          {unreadCount > 0 && (
+            <span
+              className="absolute right-2 top-[7px] size-2 rounded-full bg-[var(--error-500)]"
+              style={{ border: '2px solid var(--shell-bell-ring, var(--brand-700))' }}
+            />
+          )}
         </button>
 
         {/* Agent PMO pill */}

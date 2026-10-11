@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { useT } from '@/i18n/app/use-t';
 
 export interface ComboboxOption {
   value: string;
@@ -38,15 +39,20 @@ export function SearchableCombobox({
   value,
   onChange,
   options,
-  placeholder = 'Sélectionner',
-  searchPlaceholder = 'Rechercher…',
-  emptyText = 'Aucun résultat',
+  placeholder: placeholderProp,
+  searchPlaceholder: searchPlaceholderProp,
+  emptyText: emptyTextProp,
   allowCustom = false,
-  customLabel = (q) => `Utiliser « ${q} »`,
+  customLabel: customLabelProp,
   id,
   className,
   disabled,
 }: SearchableComboboxProps) {
+  const t = useT();
+  const placeholder = placeholderProp ?? t('settings.select');
+  const searchPlaceholder = searchPlaceholderProp ?? t('combobox.search');
+  const emptyText = emptyTextProp ?? t('combobox.empty');
+  const customLabel = customLabelProp ?? ((q: string) => t('combobox.use', { value: q }));
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
 
@@ -93,7 +99,7 @@ export function SearchableCombobox({
         <Command>
           <CommandInput placeholder={searchPlaceholder} value={query} onValueChange={setQuery} />
           <CommandList className="max-h-[300px]">
-            <CommandEmpty>{allowCustom ? 'Saisissez votre fonction puis validez.' : emptyText}</CommandEmpty>
+            <CommandEmpty>{allowCustom ? t('combobox.typeToAdd') : emptyText}</CommandEmpty>
             {showCustom && (
               <CommandGroup>
                 <CommandItem value={`__custom__${trimmed}`} onSelect={() => select(trimmed)}>
