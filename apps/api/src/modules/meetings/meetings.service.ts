@@ -95,7 +95,8 @@ export class MeetingsService {
    * the meeting as AUDIO so it is counted. Meetings started in AUDIO were checked at start.
    */
   private async ensureVoiceAllowed(meeting: { id: string; mode: string; simulation: { tenantId: string } }, userId: string) {
-    if (meeting.mode === 'AUDIO') return;
+    // Without enforcement (pilot) the meeting keeps its mode: the room reopens as the learner left it.
+    if (meeting.mode === 'AUDIO' || !this.quotas.enforced) return;
     await this.quotas.assertCanStartMeeting(meeting.simulation.tenantId, userId, 'AUDIO');
     await this.prisma.meeting.update({ where: { id: meeting.id }, data: { mode: 'AUDIO' } });
     meeting.mode = 'AUDIO';
