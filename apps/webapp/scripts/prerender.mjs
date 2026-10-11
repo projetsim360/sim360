@@ -12,7 +12,7 @@ const template = readFileSync(join(dist, 'site.html'), 'utf8');
 const { render } = await import(pathToFileURL(join(dist, 'ssr', 'site-prerender.js')).href);
 
 for (const page of PRERENDERED_PAGES) {
-  const rendered = render(page.path);
+  const rendered = await render(page.path);
   // React 19 hoists resource hints (e.g. the preload of an <img fetchPriority="high">) to the start
   // of a fragment render. They belong in <head>; left inside #root they break hydration.
   const hoisted = rendered.html.match(/^(?:<link [^>]*\/>)+/)?.[0] ?? '';

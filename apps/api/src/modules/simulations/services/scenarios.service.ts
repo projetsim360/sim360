@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService, EventPublisherService, EventType, AggregateType } from '@sim360/core';
+import { PrismaService, EventPublisherService, EventType, AggregateType, Cacheable } from '@sim360/core';
 import { Difficulty, Sector, TenantPlan, PhaseType, ScenarioType } from '@prisma/client';
 import { CreateScenarioDto } from '../dto/create-scenario.dto';
 import { UpdateScenarioDto } from '../dto/update-scenario.dto';
@@ -30,6 +30,29 @@ export class ScenariosService {
       },
       orderBy: { createdAt: 'desc' },
     });
+  }
+
+  /** Published scenarios with public fields only, for the marketing catalogue. Cached 5 minutes. */
+  @Cacheable({ key: 'scenarios:public-catalogue', ttl: 300 })
+  async findPublicCatalogue() {
+    const scenarios = await this.prisma.scenario.findMany({
+      where: { isPublished: true, isArchived: false },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        sector: true,
+        difficulty: true,
+        scenarioType: true,
+        estimatedDurationHours: true,
+        requiredPlan: true,
+        competencies: true,
+        objectives: true,
+        _count: { select: { phases: true } },
+      },
+      orderBy: [{ difficulty: 'asc' }, { createdAt: 'asc' }],
+    });
+    return scenarios.map(({ _count, ...scenario }) => ({ ...scenario, phaseCount: _count.phases }));
   }
 
   async findOne(id: string) {
