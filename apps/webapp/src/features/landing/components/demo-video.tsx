@@ -34,7 +34,7 @@ export function DemoVideo() {
         <h2 className="font-display text-xl font-bold text-foreground">{formatMessage({ id: 'demo.unavailable.title' })}</h2>
         <p className="mt-2 max-w-md text-muted-foreground">{formatMessage({ id: 'demo.unavailable.text' })}</p>
         <Button asChild variant="primary" size="sm" className="mt-6 bg-[var(--accent-500)] text-[var(--brand-900)] hover:bg-[var(--accent-400)] hover:text-[var(--brand-900)]">
-          <Link to={appLink('/auth/sign-up')}>{formatMessage({ id: 'demo.cta' })}</Link>
+          <Link reloadDocument to={appLink('/auth/sign-up')}>{formatMessage({ id: 'demo.cta' })}</Link>
         </Button>
       </div>
     );

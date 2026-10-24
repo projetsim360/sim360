@@ -61,7 +61,7 @@ function AuthActions({ stacked = false, onNavigate }: { stacked?: boolean; onNav
     const avatarSrc = resolveAssetUrl(user.avatar);
     return (
       <Button asChild variant="primary" size="sm" className={cn('gap-2 pl-1.5 bg-[var(--accent-500)] text-[var(--brand-900)] hover:bg-[var(--accent-400)] hover:text-[var(--brand-900)]', wide)}>
-        <Link to={appLink('/dashboard')} onClick={onNavigate}>
+        <Link reloadDocument to={appLink('/dashboard')} onClick={onNavigate}>
           <Avatar className="size-6">
             {avatarSrc && <AvatarImage src={avatarSrc} alt={getUserDisplayName(user)} className="object-cover" />}
             <AvatarFallback className="text-[10px]">{getUserInitials(user)}</AvatarFallback>
@@ -75,12 +75,12 @@ function AuthActions({ stacked = false, onNavigate }: { stacked?: boolean; onNav
   return (
     <>
       <Button asChild variant="outline" size="sm" className={wide}>
-        <Link to={appLink('/auth/sign-in')} onClick={onNavigate}>
+        <Link reloadDocument to={appLink('/auth/sign-in')} onClick={onNavigate}>
           {formatMessage({ id: 'nav.signIn' })}
         </Link>
       </Button>
       <Button asChild variant="primary" size="sm" className={cn('bg-[var(--accent-500)] text-[var(--brand-900)] hover:bg-[var(--accent-400)] hover:text-[var(--brand-900)]', wide)}>
-        <Link to={appLink('/auth/sign-up')} onClick={onNavigate}>
+        <Link reloadDocument to={appLink('/auth/sign-up')} onClick={onNavigate}>
           {formatMessage({ id: 'nav.freeTrial' })}
         </Link>
       </Button>

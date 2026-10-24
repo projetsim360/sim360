@@ -36,7 +36,7 @@ export function PilotBand() {
           </ul>
           {!user && (
             <Button asChild variant="primary" size="sm" className="mt-6 w-full bg-[var(--accent-500)] text-[var(--brand-900)] hover:bg-[var(--accent-400)] hover:text-[var(--brand-900)]">
-              <Link to={appLink('/auth/sign-up')}>{formatMessage({ id: 'pilot.cta' })}</Link>
+              <Link reloadDocument to={appLink('/auth/sign-up')}>{formatMessage({ id: 'pilot.cta' })}</Link>
             </Button>
           )}
         </div>

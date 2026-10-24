@@ -8,8 +8,8 @@ mkdirSync(out, { recursive: true });
 
 const FAKE_USER = { id: 'u1', email: 'marie@example.com', firstName: 'Marie', lastName: 'Tremblay', role: 'LEARNER', avatar: null };
 const EXPECT = {
-  fr: { lang: 'fr', signIn: 'Connexion', dashboard: 'Tableau de bord', price: '19 $', switch: 'English', switchHref: '/en' },
-  en: { lang: 'en', signIn: 'Sign in', dashboard: 'Dashboard', price: '$19', switch: 'Français', switchHref: '/' },
+  fr: { lang: 'fr', signIn: 'Connexion', dashboard: 'Tableau de bord', price: '19 $', switch: 'English', switchHref: '/en', signInHref: '/auth/sign-in', dashboardHref: '/dashboard' },
+  en: { lang: 'en', signIn: 'Sign in', dashboard: 'Dashboard', price: '$19', switch: 'Français', switchHref: '/', signInHref: '/auth/sign-in?lang=en', dashboardHref: '/dashboard?lang=en' },
 };
 
 const results = [];
@@ -42,8 +42,8 @@ for (const locale of ['fr', 'en']) {
         canonical: (await page.locator('link[rel="canonical"]').getAttribute('href'))?.endsWith(locale === 'en' ? '/en' : '/') ?? false,
         switcher: (await nav.locator(`a[hreflang]:has-text("${exp.switch}")`).first().getAttribute('href')) === exp.switchHref,
         authCta: logged
-          ? (await nav.locator('a[href="/dashboard"]', { hasText: exp.dashboard }).count()) >= 1 && (await nav.locator('a[href="/auth/sign-in"]').count()) === 0
-          : (await nav.locator('a[href="/auth/sign-in"]', { hasText: exp.signIn }).count()) >= 1 && (await nav.locator('a[href="/dashboard"]').count()) === 0,
+          ? (await nav.locator(`a[href="${exp.dashboardHref}"]`, { hasText: exp.dashboard }).count()) >= 1 && (await nav.locator(`a[href="${exp.signInHref}"]`).count()) === 0
+          : (await nav.locator(`a[href="${exp.signInHref}"]`, { hasText: exp.signIn }).count()) >= 1 && (await nav.locator(`a[href="${exp.dashboardHref}"]`).count()) === 0,
         price: (await page.locator('#tarifs').innerText()).replace(/\s/g, ' ').includes(exp.price),
         noFakeProof: !/BOUYGUES|KPMG|12 ?000|650\+/.test(await page.locator('body').innerText()),
         noDeadLinks: (await page.locator('footer a[href="#"]').count()) === 0,
@@ -65,8 +65,8 @@ for (const locale of ['fr', 'en']) {
         await nav.locator('button[aria-expanded]').click();
         await page.waitForTimeout(300);
         checks.mobileMenuAuth = logged
-          ? (await nav.locator('a[href="/dashboard"]', { hasText: exp.dashboard }).count()) >= 1
-          : (await nav.locator('a[href="/auth/sign-in"]', { hasText: exp.signIn }).count()) >= 1;
+          ? (await nav.locator(`a[href="${exp.dashboardHref}"]`, { hasText: exp.dashboard }).count()) >= 1
+          : (await nav.locator(`a[href="${exp.signInHref}"]`, { hasText: exp.signIn }).count()) >= 1;
         await page.screenshot({ path: `${out}/${locale}-${logged ? 'logged' : 'guest'}-${tag}-menu.png` });
         await nav.locator('button[aria-expanded]').click();
       }
