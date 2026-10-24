@@ -132,6 +132,12 @@ server {
         add_header Cache-Control "public";
     }
 
+    # Landing page. Must be an exact match: in `location /`, `$uri/` matches the web root
+    # directory for "/" and the index directive then serves the application's index.html.
+    location = / {
+        try_files /site-fr.html =404;
+    }
+
     # SPA routing — non-file requests go to the public site or the application entry
     location / {
         try_files $uri $uri/ $spa_entry;
