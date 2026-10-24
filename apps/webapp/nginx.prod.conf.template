@@ -62,6 +62,14 @@ map $uri $spa_entry {
     "~^/en/" /site.html;
 }
 
+# HTML entries must be revalidated on every visit: without Cache-Control the browser
+# reuses a stale index.html heuristically, and a new deploy never reaches returning
+# visitors. Hashed /assets/ files keep their long cache (own add_header below).
+map $sent_http_content_type $html_cache_control {
+    default "";
+    "~^text/html" "no-cache";
+}
+
 server {
     listen ${PORT};
     server_name _;
@@ -80,6 +88,7 @@ server {
     add_header X-Content-Type-Options "nosniff" always;
     add_header X-XSS-Protection "1; mode=block" always;
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Cache-Control $html_cache_control;
 
     # simex-pro.com (apex) — only "/" stays here; deeper paths go to app.
     if ($bounce_apex_non_root) {

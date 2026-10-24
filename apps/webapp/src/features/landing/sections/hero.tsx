@@ -51,7 +51,7 @@ export function HeroSection() {
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <motion.div whileHover={reduced ? undefined : { y: -2 }} whileTap={{ scale: 0.98 }} transition={{ duration: 0.2 }}>
               <Button asChild variant="primary" size="lg" className="bg-[var(--accent-500)] text-[var(--brand-900)] hover:bg-[var(--accent-400)] hover:text-[var(--brand-900)] shadow-[0_12px_32px_rgba(238,122,58,0.35)]">
-                <Link to={primaryCta.to}>{formatMessage({ id: primaryCta.id })}</Link>
+                <Link reloadDocument to={primaryCta.to}>{formatMessage({ id: primaryCta.id })}</Link>
               </Button>
             </motion.div>
             <DemoDialog>

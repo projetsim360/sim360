@@ -86,13 +86,13 @@ function PlanCta({ plan }: { plan: PublicPlan }) {
   if (user) {
     return (
       <Button asChild variant={variant} size="sm" className={cn('w-full', tone)}>
-        <Link to={appLink('/dashboard')}>{formatMessage({ id: 'nav.dashboard' })}</Link>
+        <Link reloadDocument to={appLink('/dashboard')}>{formatMessage({ id: 'nav.dashboard' })}</Link>
       </Button>
     );
   }
   return (
     <Button asChild variant={variant} size="sm" className={cn('w-full', tone)}>
-      <Link to={appLink('/auth/sign-up')}>{formatMessage({ id: plan.cta === 'signup' ? 'pricing.cta.signup' : 'pricing.cta.start' })}</Link>
+      <Link reloadDocument to={appLink('/auth/sign-up')}>{formatMessage({ id: plan.cta === 'signup' ? 'pricing.cta.signup' : 'pricing.cta.start' })}</Link>
     </Button>
   );
 }

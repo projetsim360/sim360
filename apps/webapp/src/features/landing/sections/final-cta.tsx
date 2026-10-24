@@ -28,12 +28,12 @@ export function FinalCta() {
         <p className="mx-auto mb-10 max-w-2xl text-lg text-white/80">{formatMessage({ id: 'cta.text' })}</p>
         {user ? (
           <Button asChild variant="primary" size="lg" className="bg-[var(--accent-500)] text-[var(--brand-900)] hover:bg-[var(--accent-400)] hover:text-[var(--brand-900)]">
-            <Link to={appLink('/simulations')}>{formatMessage({ id: 'cta.buttonLoggedIn' })}</Link>
+            <Link reloadDocument to={appLink('/simulations')}>{formatMessage({ id: 'cta.buttonLoggedIn' })}</Link>
           </Button>
         ) : (
           <>
             <Button asChild variant="primary" size="lg" className="bg-[var(--accent-500)] text-[var(--brand-900)] hover:bg-[var(--accent-400)] hover:text-[var(--brand-900)] shadow-[0_12px_32px_rgba(238,122,58,0.35)]">
-              <Link to={appLink('/auth/sign-up')}>{formatMessage({ id: 'cta.button' })}</Link>
+              <Link reloadDocument to={appLink('/auth/sign-up')}>{formatMessage({ id: 'cta.button' })}</Link>
             </Button>
             <p className="mt-4 text-sm text-white/60">{formatMessage({ id: 'cta.note' })}</p>
           </>

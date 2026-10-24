@@ -53,7 +53,7 @@ export function ScenarioCard({ scenario }: { scenario: PublicScenario }) {
       <div className="mt-auto flex items-center justify-between gap-3 pt-6">
         <span className="text-xs text-muted-foreground">{formatMessage({ id: `scenarios.plan.${scenario.requiredPlan}` })}</span>
         <Button asChild variant="outline" size="sm">
-          <Link to={appLink(user ? `/simulations/new?scenario=${scenario.id}` : '/auth/sign-up')}>{formatMessage({ id: user ? 'scenarios.ctaLoggedIn' : 'scenarios.cta' })}</Link>
+          <Link reloadDocument to={appLink(user ? `/simulations/new?scenario=${scenario.id}` : '/auth/sign-up')}>{formatMessage({ id: user ? 'scenarios.ctaLoggedIn' : 'scenarios.cta' })}</Link>
         </Button>
       </div>
     </article>
